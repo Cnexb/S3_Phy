@@ -1,1 +1,0 @@
-import{c as e}from"./createLabIframe-BiKaeurr.js";import"./index-DFpQZmbZ.js";function l(a){return e(a,{slug:"spectral-overlap",titleKey:"tools.spectralOverlap.title",className:"tool-spectral-overlap-lab",extraParams:()=>"&v=20260722_spectral_overlap_light_v3"})}export{l as createSpectralOverlapLab};
