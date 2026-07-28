@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拋體運動</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --panel: #ffffff;
+            --border: #e8eaed;
+            --text: #1a1c2c;
+            --muted: #6b7280;
+            --btn-bg: #e9ecef;
+            --btn-hover: #dee2e6;
+
+            --color-a: #0ea5e9;
+            --color-a-x: #0891b2;
+            --color-a-y: #7c3aed;
+            --color-b: #d97706;
+            --color-b-x: #ca8a04;
+            --color-b-y: #dc2626;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        html.s3phy-embed, html.s3phy-embed body {
+            height: 100%;
+            overflow: hidden;
+        }
+        html.s3phy-embed .logo { display: none; }
+        html.s3phy-embed .lang-btn { display: none; }
+        html.s3phy-embed .lab-section {
+            flex: 1 1 auto;
+            min-height: 0;
+            height: 100%;
+        }
+        html.s3phy-embed .page-header {
+            padding: 6px 12px 4px;
+        }
+        html.s3phy-embed .page-header h1 { font-size: 1.1rem; }
+        html.s3phy-embed .page-header .subtitle { font-size: 0.75rem; margin-top: 2px; }
+        html.s3phy-embed #controls {
+            max-height: 42vh;
+        }
+
+        .lab-section {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+        }
+
+        .page-header {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 16px 8px;
+        }
+        .page-header-text { flex: 1; text-align: center; }
+        .page-header h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.35rem;
+            background: linear-gradient(90deg, #2563eb, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .page-header .subtitle {
+            color: var(--muted);
+            font-size: 0.82rem;
+            margin-top: 4px;
+        }
+        .lang-btn {
+            background: var(--btn-bg);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover {
+            color: var(--text);
+            border-color: #ced4da;
+            background: var(--btn-hover);
+        }
+
+        #canvas-container {
+            flex: 1 1 auto;
+            position: relative;
+            width: 100%;
+            min-height: 180px;
+            overflow: hidden;
+            background-color: #ffffff;
+            background-image:
+                linear-gradient(rgba(26, 28, 44, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(26, 28, 44, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        canvas { display: block; }
+
+        .left-sidebar {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            bottom: 12px;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+            z-index: 20;
+            max-height: calc(100% - 24px);
+            overflow: auto;
+        }
+
+        .panel-box {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            pointer-events: auto;
+            box-shadow: 0 2px 12px rgba(26, 28, 44, 0.06);
+            backdrop-filter: blur(6px);
+        }
+
+        .logo {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+            text-align: center;
+            padding: 8px 10px;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+        .legend-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2px;
+        }
+        .legend-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-hollow {
+            width: 10px;
+            height: 10px;
+            border: 2px solid;
+            border-radius: 50%;
+            background: transparent;
+        }
+        .legend-label {
+            color: var(--text);
+            font-weight: 700;
+            width: 52px;
+        }
+        .legend-time {
+            margin-top: 4px;
+            border-top: 1px solid var(--border);
+            padding-top: 6px;
+            text-align: center;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stats {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.82rem;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: auto;
+        }
+        .stat-group h4 {
+            margin: 0 0 6px 0;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+            font-size: 0.85rem;
+        }
+        .stat-row {
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+        }
+        .stat-divider {
+            margin: 5px 0;
+            border-top: 1px dashed var(--border);
+        }
+        .stat-highlight {
+            color: var(--text);
+            font-weight: 700;
+        }
+        .text-a { color: var(--color-a); }
+        .text-b { color: var(--color-b); }
+
+        #controls {
+            flex-shrink: 0;
+            background: var(--panel);
+            padding: 10px 16px 14px;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 12px rgba(26, 28, 44, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+            max-height: 42vh;
+            overflow-y: auto;
+        }
+
+        .global-controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .params-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .param-column {
+            flex: 1;
+            max-width: 380px;
+            min-width: 260px;
+            background: #f8f9fa;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-top: 4px solid #888;
+        }
+        .col-a { border-top-color: var(--color-a); }
+        .col-b { border-top-color: var(--color-b); }
+
+        .col-header {
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        input[type="number"] {
+            background: #ffffff;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 58px;
+            padding: 3px 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: right;
+        }
+        .col-a input[type="number"] { color: var(--color-a); }
+        .col-b input[type="number"] { color: var(--color-b); }
+
+        input[type="range"] {
+            width: 100%;
+            cursor: pointer;
+            height: 6px;
+        }
+        .col-a input[type="range"] { accent-color: var(--color-a); }
+        .col-b input[type="range"] { accent-color: var(--color-b); }
+        #input-speed { accent-color: #2563eb; }
+
+        select {
+            width: 100%;
+            padding: 6px 8px;
+            background: #ffffff;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        button.sim-btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
+        .btn-a {
+            background: rgba(14, 165, 233, 0.15);
+            color: #0369a1;
+            border: 1px solid rgba(14, 165, 233, 0.35);
+        }
+        .btn-a:hover { background: rgba(14, 165, 233, 0.25); }
+        .btn-b {
+            background: rgba(217, 119, 6, 0.15);
+            color: #b45309;
+            border: 1px solid rgba(217, 119, 6, 0.35);
+        }
+        .btn-b:hover { background: rgba(217, 119, 6, 0.25); }
+        .btn-both {
+            background: linear-gradient(90deg, rgba(14, 165, 233, 0.2), rgba(217, 119, 6, 0.2));
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-both:hover { opacity: 0.9; }
+        .btn-reset {
+            background: var(--btn-bg);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-reset:hover {
+            background: var(--btn-hover);
+            color: var(--text);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .checkbox-wrapper input { width: 15px; height: 15px; cursor: pointer; accent-color: #2563eb; }
+        .checkbox-wrapper span { font-size: 0.82rem; color: var(--text); font-weight: 600; }
+
+        .extra-params {
+            min-width: 180px;
+            max-width: 220px;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 720px) {
+            .left-sidebar {
+                width: min(200px, 46vw);
+                top: 8px;
+                left: 8px;
+            }
+            .page-header h1 { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="lab-section">
+    <div class="page-header">
+        <div class="page-header-text">
+            <h1 id="page-title">拋體運動</h1>
+            <div class="subtitle" id="page-subtitle">雙球比較 · 頻閃與速度分量</div>
+        </div>
+        <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="simCanvas"></canvas>
+
+        <div class="left-sidebar">
+            <div class="panel-box logo">Unit Education</div>
+
+            <div class="panel-box legend">
+                <div class="legend-row">
+                    <div class="legend-label text-a" id="legend-a">球 A</div>
+                    <div class="legend-group" title="Ball">
+                        <div class="dot" style="background:var(--color-a)"></div>
+                    </div>
+                    <div class="legend-group" title="X">
+                        <div class="dot-hollow" style="border-color:var(--color-a-x)"></div>
+                        <span style="font-size:0.72rem; color:var(--color-a-x)">X</span>
+                    </div>
+                    <div class="legend-group" title="Y">
+                        <div class="dot-hollow" style="border-color:var(--color-a-y)"></div>
+                        <span style="font-size:0.72rem; color:var(--color-a-y)">Y</span>
+                    </div>
+                </div>
+
+                <div class="legend-row">
+                    <div class="legend-label text-b" id="legend-b">球 B</div>
+                    <div class="legend-group" title="Ball">
+                        <div class="dot" style="background:var(--color-b)"></div>
+                    </div>
+                    <div class="legend-group" title="X">
+                        <div class="dot-hollow" style="border-color:var(--color-b-x)"></div>
+                        <span style="font-size:0.72rem; color:var(--color-b-x)">X</span>
+                    </div>
+                    <div class="legend-group" title="Y">
+                        <div class="dot-hollow" style="border-color:var(--color-b-y)"></div>
+                        <span style="font-size:0.72rem; color:var(--color-b-y)">Y</span>
+                    </div>
+                </div>
+
+                <div class="legend-time">
+                    <span id="time-display">T = 0.00 s</span>
+                </div>
+            </div>
+
+            <div class="panel-box stats">
+                <div class="stat-group text-a">
+                    <h4 id="stats-title-a">球 A</h4>
+                    <div class="stat-row"><span>X:</span> <span id="val-xa">0.0</span></div>
+                    <div class="stat-row"><span>Y:</span> <span id="val-ya">0.0</span></div>
+                    <div class="stat-row"><span id="label-max-h-a">最大高度 H:</span> <span id="val-ha" class="stat-highlight">0.0</span></div>
+                    <div class="stat-row"><span id="label-range-a">射程 R:</span> <span id="val-ra" class="stat-highlight">0.0</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-row" style="color:var(--color-a-x)"><span>Vx:</span> <span id="val-vxa">0.0</span></div>
+                    <div class="stat-row" style="color:var(--color-a-y)"><span>Vy:</span> <span id="val-vya">0.0</span></div>
+                </div>
+                <div class="stat-group text-b">
+                    <h4 id="stats-title-b">球 B</h4>
+                    <div class="stat-row"><span>X:</span> <span id="val-xb">0.0</span></div>
+                    <div class="stat-row"><span>Y:</span> <span id="val-yb">0.0</span></div>
+                    <div class="stat-row"><span id="label-max-h-b">最大高度 H:</span> <span id="val-hb" class="stat-highlight">0.0</span></div>
+                    <div class="stat-row"><span id="label-range-b">射程 R:</span> <span id="val-rb" class="stat-highlight">0.0</span></div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-row" style="color:var(--color-b-x)"><span>Vx:</span> <span id="val-vxb">0.0</span></div>
+                    <div class="stat-row" style="color:var(--color-b-y)"><span>Vy:</span> <span id="val-vyb">0.0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <div class="global-controls">
+            <button type="button" class="sim-btn btn-a" id="btn-play-a" onclick="startSim('A')">僅播放 A</button>
+            <button type="button" class="sim-btn btn-b" id="btn-play-b" onclick="startSim('B')">僅播放 B</button>
+            <button type="button" class="sim-btn btn-both" id="btn-play-both" onclick="startSim('BOTH')">同時播放</button>
+            <button type="button" class="sim-btn btn-reset" id="btn-reset" onclick="resetSim()">重置</button>
+
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="check-strobe" checked>
+                <span id="label-strobe">顯示頻閃照片</span>
+            </label>
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="check-velocity">
+                <span id="label-velocity">顯示速度分量</span>
+            </label>
+            <label class="checkbox-wrapper">
+                <input type="checkbox" id="check-half">
+                <span id="label-half">僅顯示至最高點</span>
+            </label>
+        </div>
+
+        <div class="params-container">
+            <div class="param-column col-a">
+                <div class="col-header text-a" id="col-title-a">球 A 參數</div>
+                <div class="control-group">
+                    <div class="label-row"><span id="label-h0-a">高度 H₀ (m)</span><input type="number" id="num-h0-a" value="0"></div>
+                    <input type="range" id="range-h0-a" min="0" max="300" value="0">
+                </div>
+                <div class="control-group">
+                    <div class="label-row"><span id="label-v0-a">初速 v₀ (m/s)</span><input type="number" id="num-v0-a" value="40"></div>
+                    <input type="range" id="range-v0-a" min="10" max="100" value="40">
+                </div>
+                <div class="control-group">
+                    <div class="label-row"><span id="label-angle-a">角度 θ (°)</span><input type="number" id="num-angle-a" value="45"></div>
+                    <input type="range" id="range-angle-a" min="-90" max="90" value="45">
+                </div>
+            </div>
+
+            <div class="param-column col-b">
+                <div class="col-header text-b" id="col-title-b">球 B 參數</div>
+                <div class="control-group">
+                    <div class="label-row"><span id="label-h0-b">高度 H₀ (m)</span><input type="number" id="num-h0-b" value="0"></div>
+                    <input type="range" id="range-h0-b" min="0" max="300" value="0">
+                </div>
+                <div class="control-group">
+                    <div class="label-row"><span id="label-v0-b">初速 v₀ (m/s)</span><input type="number" id="num-v0-b" value="60"></div>
+                    <input type="range" id="range-v0-b" min="10" max="100" value="60">
+                </div>
+                <div class="control-group">
+                    <div class="label-row"><span id="label-angle-b">角度 θ (°)</span><input type="number" id="num-angle-b" value="60"></div>
+                    <input type="range" id="range-angle-b" min="-90" max="90" value="60">
+                </div>
+            </div>
+
+            <div class="control-group extra-params">
+                <div class="label-row"><span id="label-segments">頻閃分割數 (N)</span></div>
+                <select id="select-interval">
+                    <option value="5" id="opt-seg-5">5 段</option>
+                    <option value="10" id="opt-seg-10" selected>10 段</option>
+                    <option value="15" id="opt-seg-15">15 段</option>
+                    <option value="20" id="opt-seg-20">20 段</option>
+                </select>
+
+                <div class="label-row" style="margin-top:10px;"><span id="label-speed">模擬速度</span></div>
+                <input type="range" id="input-speed" min="0.1" max="2.0" step="0.1" value="1.0">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dict = {
+        zh: {
+            langBtn: '🌐 English',
+            docTitle: '拋體運動',
+            pageTitle: '拋體運動',
+            pageSubtitle: '雙球比較 · 頻閃與速度分量',
+            legendA: '球 A',
+            legendB: '球 B',
+            statsA: '球 A',
+            statsB: '球 B',
+            maxH: '最大高度 H:',
+            range: '射程 R:',
+            playA: '僅播放 A',
+            playB: '僅播放 B',
+            playBoth: '同時播放',
+            reset: '重置',
+            strobe: '顯示頻閃照片',
+            velocity: '顯示速度分量',
+            half: '僅顯示至最高點',
+            colA: '球 A 參數',
+            colB: '球 B 參數',
+            h0: '高度 H₀ (m)',
+            v0: '初速 v₀ (m/s)',
+            angle: '角度 θ (°)',
+            segments: '頻閃分割數 (N)',
+            speed: '模擬速度',
+            seg5: '5 段',
+            seg10: '10 段',
+            seg15: '15 段',
+            seg20: '20 段'
+        },
+        en: {
+            langBtn: '🌐 中文',
+            docTitle: 'Projectile Motion',
+            pageTitle: 'Projectile Motion',
+            pageSubtitle: 'Dual-ball comparison · Strobes & velocity components',
+            legendA: 'Ball A',
+            legendB: 'Ball B',
+            statsA: 'Ball A',
+            statsB: 'Ball B',
+            maxH: 'Max H:',
+            range: 'Range R:',
+            playA: 'Play A only',
+            playB: 'Play B only',
+            playBoth: 'Play both',
+            reset: 'Reset',
+            strobe: 'Show strobe frames',
+            velocity: 'Show velocity components',
+            half: 'Show motion to apex only',
+            colA: 'Ball A parameters',
+            colB: 'Ball B parameters',
+            h0: 'Height H₀ (m)',
+            v0: 'Speed v₀ (m/s)',
+            angle: 'Angle θ (°)',
+            segments: 'Strobe segments (N)',
+            speed: 'Simulation speed',
+            seg5: '5 frames',
+            seg10: '10 frames',
+            seg15: '15 frames',
+            seg20: '20 frames'
+        }
+    };
+
+    function hubLangToLocal(lang) {
+        if (lang === 'en') return 'en';
+        return 'zh';
+    }
+
+    const params = new URLSearchParams(location.search);
+    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+
+    function t() { return dict[currentLang]; }
+
+    function updateLanguageUI() {
+        const d = t();
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+        document.title = d.docTitle;
+        document.getElementById('page-title').textContent = d.pageTitle;
+        document.getElementById('page-subtitle').textContent = d.pageSubtitle;
+        document.getElementById('lang-toggle').textContent = d.langBtn;
+        document.getElementById('legend-a').textContent = d.legendA;
+        document.getElementById('legend-b').textContent = d.legendB;
+        document.getElementById('stats-title-a').textContent = d.statsA;
+        document.getElementById('stats-title-b').textContent = d.statsB;
+        document.getElementById('label-max-h-a').textContent = d.maxH;
+        document.getElementById('label-max-h-b').textContent = d.maxH;
+        document.getElementById('label-range-a').textContent = d.range;
+        document.getElementById('label-range-b').textContent = d.range;
+        document.getElementById('btn-play-a').textContent = d.playA;
+        document.getElementById('btn-play-b').textContent = d.playB;
+        document.getElementById('btn-play-both').textContent = d.playBoth;
+        document.getElementById('btn-reset').textContent = d.reset;
+        document.getElementById('label-strobe').textContent = d.strobe;
+        document.getElementById('label-velocity').textContent = d.velocity;
+        document.getElementById('label-half').textContent = d.half;
+        document.getElementById('col-title-a').textContent = d.colA;
+        document.getElementById('col-title-b').textContent = d.colB;
+        document.getElementById('label-h0-a').textContent = d.h0;
+        document.getElementById('label-h0-b').textContent = d.h0;
+        document.getElementById('label-v0-a').textContent = d.v0;
+        document.getElementById('label-v0-b').textContent = d.v0;
+        document.getElementById('label-angle-a').textContent = d.angle;
+        document.getElementById('label-angle-b').textContent = d.angle;
+        document.getElementById('label-segments').textContent = d.segments;
+        document.getElementById('label-speed').textContent = d.speed;
+        document.getElementById('opt-seg-5').textContent = d.seg5;
+        document.getElementById('opt-seg-10').textContent = d.seg10;
+        document.getElementById('opt-seg-15').textContent = d.seg15;
+        document.getElementById('opt-seg-20').textContent = d.seg20;
+    }
+
+    document.getElementById('lang-toggle').addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        updateLanguageUI();
+    });
+
+    window.addEventListener('message', (ev) => {
+        if (ev.data?.type !== 's3phy:lang') return;
+        currentLang = hubLangToLocal(ev.data.lang);
+        updateLanguageUI();
+    });
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const g = 9.8;
+    let simTime = 0;
+    let isRunning = false;
+    let animationId;
+    let simSpeed = 1.0;
+    let activeMode = 'BOTH';
+    let isHalfMotion = false;
+    let showStrobe = true;
+    let showVelocity = false;
+    let numSegments = 10;
+
+    const ballA = {
+        h0: 0, v0: 40, angle: 45,
+        color: '#0ea5e9', colorGhost: 'rgba(14, 165, 233, 0.35)',
+        colorX: '#0891b2', colorY: '#7c3aed',
+        path: [], snapshots: [], totalTime: 0
+    };
+
+    const ballB = {
+        h0: 0, v0: 60, angle: 60,
+        color: '#d97706', colorGhost: 'rgba(217, 119, 6, 0.35)',
+        colorX: '#ca8a04', colorY: '#dc2626',
+        path: [], snapshots: [], totalTime: 0
+    };
+
+    let scale = 2.0;
+    const groundOffset = 50;
+    const startX = 280;
+    const velocityScale = 1.5;
+
+    function bindInput(idRange, idNum, obj, prop) {
+        const range = document.getElementById(idRange);
+        const num = document.getElementById(idNum);
+
+        const update = (val) => {
+            val = parseFloat(val);
+            if (Number.isNaN(val)) return;
+            obj[prop] = val;
+            range.value = val;
+            num.value = val;
+            recalcPhysics();
+            draw();
+        };
+
+        range.addEventListener('input', e => update(e.target.value));
+        num.addEventListener('input', e => update(e.target.value));
+        num.addEventListener('change', e => update(e.target.value));
+        update(range.value);
+    }
+
+    bindInput('range-h0-a', 'num-h0-a', ballA, 'h0');
+    bindInput('range-v0-a', 'num-v0-a', ballA, 'v0');
+    bindInput('range-angle-a', 'num-angle-a', ballA, 'angle');
+
+    bindInput('range-h0-b', 'num-h0-b', ballB, 'h0');
+    bindInput('range-v0-b', 'num-v0-b', ballB, 'v0');
+    bindInput('range-angle-b', 'num-angle-b', ballB, 'angle');
+
+    document.getElementById('select-interval').addEventListener('change', (e) => {
+        numSegments = parseInt(e.target.value, 10);
+        recalcPhysics();
+        draw();
+    });
+
+    document.getElementById('input-speed').addEventListener('input', (e) => {
+        simSpeed = parseFloat(e.target.value);
+    });
+
+    document.getElementById('check-strobe').addEventListener('change', (e) => {
+        showStrobe = e.target.checked;
+        draw();
+    });
+
+    document.getElementById('check-velocity').addEventListener('change', (e) => {
+        showVelocity = e.target.checked;
+        draw();
+    });
+
+    document.getElementById('check-half').addEventListener('change', (e) => {
+        isHalfMotion = e.target.checked;
+        recalcPhysics();
+        draw();
+    });
+
+    function getProjectedFullTime(ball) {
+        const rad = ball.angle * Math.PI / 180;
+        const vy0 = ball.v0 * Math.sin(rad);
+        const a = 0.5 * g;
+        const b = -vy0;
+        const c = -ball.h0;
+        const delta = b * b - 4 * a * c;
+        if (delta < 0) return 0;
+        return (-b + Math.sqrt(delta)) / (2 * a);
+    }
+
+    function getLandingTime(ball) {
+        const rad = ball.angle * Math.PI / 180;
+        const vy0 = ball.v0 * Math.sin(rad);
+
+        if (isHalfMotion && ball.angle > 0) {
+            return vy0 / g;
+        }
+        return getProjectedFullTime(ball);
+    }
+
+    function getPos(ball, t) {
+        const effectiveT = Math.min(t, ball.totalTime);
+        const rad = ball.angle * Math.PI / 180;
+        const vx = ball.v0 * Math.cos(rad);
+        const vy0 = ball.v0 * Math.sin(rad);
+
+        const x = vx * effectiveT;
+        const y = ball.h0 + (vy0 * effectiveT) - (0.5 * g * effectiveT * effectiveT);
+        return { x, y: Math.max(0, y) };
+    }
+
+    function recalcPhysics() {
+        [ballA, ballB].forEach(ball => {
+            ball.totalTime = getLandingTime(ball);
+            if (ball.totalTime < 0.1) ball.totalTime = 0.1;
+
+            ball.snapshots = [];
+            ball.path = [];
+
+            for (let i = 0; i <= numSegments; i++) {
+                let tSnap = i * (ball.totalTime / numSegments);
+                if (i === numSegments) tSnap = ball.totalTime;
+                const pos = getPos(ball, tSnap);
+                ball.snapshots.push({ x: pos.x, y: pos.y, t: tSnap });
+            }
+        });
+        updateStats();
+    }
+
+    function startSim(mode) {
+        activeMode = mode;
+        resetSim(false);
+        isRunning = true;
+        lastFrameTime = performance.now();
+        animate();
+    }
+
+    function resetSim(fullReset = true) {
+        isRunning = false;
+        cancelAnimationFrame(animationId);
+        simTime = 0;
+        ballA.path = [];
+        ballB.path = [];
+        recalcPhysics();
+        draw();
+    }
+
+    let lastFrameTime = 0;
+    function animate() {
+        if (!isRunning) return;
+
+        const now = performance.now();
+        let dt = (now - lastFrameTime) / 1000;
+        lastFrameTime = now;
+        if (dt > 0.05) dt = 0.05;
+
+        simTime += dt * simSpeed;
+
+        let maxTime = 0;
+        if (activeMode === 'A' || activeMode === 'BOTH') maxTime = Math.max(maxTime, ballA.totalTime);
+        if (activeMode === 'B' || activeMode === 'BOTH') maxTime = Math.max(maxTime, ballB.totalTime);
+
+        if (simTime >= maxTime) {
+            simTime = maxTime;
+            isRunning = false;
+        }
+
+        if (activeMode === 'A' || activeMode === 'BOTH') {
+            const pos = getPos(ballA, simTime);
+            if (simTime <= ballA.totalTime) ballA.path.push(pos);
+        }
+        if (activeMode === 'B' || activeMode === 'BOTH') {
+            const pos = getPos(ballB, simTime);
+            if (simTime <= ballB.totalTime) ballB.path.push(pos);
+        }
+
+        updateStats();
+        draw();
+
+        if (isRunning) {
+            animationId = requestAnimationFrame(animate);
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('time-display').textContent = `T = ${simTime.toFixed(2)} s`;
+
+        const updateBallStats = (ball, suffix) => {
+            const pos = getPos(ball, simTime);
+            document.getElementById(`val-x${suffix}`).textContent = pos.x.toFixed(1);
+            document.getElementById(`val-y${suffix}`).textContent = pos.y.toFixed(1);
+
+            const rad = ball.angle * Math.PI / 180;
+            let hMax = ball.h0;
+            if (ball.angle > 0) {
+                hMax += Math.pow(ball.v0 * Math.sin(rad), 2) / (2 * g);
+            }
+            document.getElementById(`val-h${suffix}`).textContent = hMax.toFixed(1);
+
+            const vx = ball.v0 * Math.cos(rad);
+            const fullTime = getProjectedFullTime(ball);
+            const range = vx * fullTime;
+            document.getElementById(`val-r${suffix}`).textContent = range.toFixed(1);
+
+            const effectiveT = Math.min(simTime, ball.totalTime);
+            const vy = ball.v0 * Math.sin(rad) - g * effectiveT;
+
+            document.getElementById(`val-vx${suffix}`).textContent = vx.toFixed(1);
+            document.getElementById(`val-vy${suffix}`).textContent = vy.toFixed(1);
+        };
+
+        updateBallStats(ballA, 'a');
+        updateBallStats(ballB, 'b');
+    }
+
+    function resize() {
+        const container = document.getElementById('canvas-container');
+        const w = Math.max(1, container.clientWidth);
+        const h = Math.max(1, container.clientHeight);
+        canvas.width = w;
+        canvas.height = h;
+        draw();
+    }
+    window.addEventListener('resize', resize);
+
+    function drawArrow(ctx, fromX, fromY, toX, toY, color) {
+        const headlen = 10;
+        const dx = toX - fromX;
+        const dy = toY - fromY;
+        const angle = Math.atan2(dy, dx);
+
+        ctx.beginPath();
+        ctx.moveTo(fromX, fromY);
+        ctx.lineTo(toX, toY);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(toX, toY);
+        ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+        ctx.lineTo(toX, toY);
+        ctx.fillStyle = color;
+        ctx.fill();
+    }
+
+    function drawTextWithHalo(ctx, text, x, y, color) {
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#ffffff';
+        ctx.strokeText(text, x, y);
+        ctx.fillStyle = color;
+        ctx.fillText(text, x, y);
+    }
+
+    function draw() {
+        if (!canvas.width || !canvas.height) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const originY = canvas.height - groundOffset;
+        const toPxX = (m) => startX + m * scale;
+        const toPxY = (m) => originY - m * scale;
+
+        ctx.beginPath();
+        ctx.moveTo(0, originY);
+        ctx.lineTo(canvas.width, originY);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(startX, 0);
+        ctx.lineTo(startX, canvas.height);
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.setLineDash([5, 5]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        const drawBallSet = (ball, isActive) => {
+            if (!isActive) return;
+
+            const rad = ball.angle * Math.PI / 180;
+            const vx0 = ball.v0 * Math.cos(rad);
+            const fullTime = getProjectedFullTime(ball);
+            const range = vx0 * fullTime;
+            const rangePx = toPxX(range);
+
+            ctx.beginPath();
+            ctx.moveTo(rangePx, originY);
+            ctx.lineTo(rangePx - 5, originY + 8);
+            ctx.lineTo(rangePx + 5, originY + 8);
+            ctx.closePath();
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+
+            ctx.font = 'bold 12px ui-monospace, SFMono-Regular, Menlo, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = ball.color;
+            ctx.fillText('R', rangePx, originY + 20);
+
+            if (showStrobe) {
+                ball.snapshots.forEach(snap => {
+                    if (simTime >= snap.t) {
+                        const sx = toPxX(snap.x);
+                        const sy = toPxY(snap.y);
+
+                        ctx.beginPath();
+                        ctx.arc(sx, sy, 8, 0, Math.PI * 2);
+                        ctx.fillStyle = ball.colorGhost;
+                        ctx.fill();
+
+                        ctx.beginPath();
+                        ctx.arc(sx, originY, 6, 0, Math.PI * 2);
+                        ctx.strokeStyle = ball.colorX;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.arc(startX, sy, 6, 0, Math.PI * 2);
+                        ctx.strokeStyle = ball.colorY;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        ctx.beginPath();
+                        ctx.moveTo(sx, sy);
+                        ctx.lineTo(sx, originY);
+                        ctx.moveTo(sx, sy);
+                        ctx.lineTo(startX, sy);
+                        ctx.strokeStyle = ball.colorGhost;
+                        ctx.setLineDash([2, 2]);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                });
+            }
+
+            if (ball.path.length > 0) {
+                ctx.beginPath();
+                ctx.moveTo(toPxX(ball.path[0].x), toPxY(ball.path[0].y));
+                for (const p of ball.path) ctx.lineTo(toPxX(p.x), toPxY(p.y));
+                ctx.strokeStyle = ball.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+
+            const currPos = getPos(ball, simTime);
+            const cx = toPxX(currPos.x);
+            const cy = toPxY(currPos.y);
+
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx, originY);
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(startX, cy);
+            ctx.strokeStyle = 'rgba(26, 28, 44, 0.2)';
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            if (showVelocity) {
+                const vx = ball.v0 * Math.cos(rad);
+                const vy = ball.v0 * Math.sin(rad) - g * Math.min(simTime, ball.totalTime);
+
+                const endX = cx + vx * velocityScale;
+                drawArrow(ctx, cx, cy, endX, cy, ball.colorX);
+
+                ctx.font = 'bold 16px ui-monospace, SFMono-Regular, Menlo, monospace';
+                ctx.textAlign = 'center';
+                drawTextWithHalo(ctx, `vx=${vx.toFixed(1)}`, cx + (vx * velocityScale) / 2, cy - 20, ball.colorX);
+
+                const endY = cy - vy * velocityScale;
+                drawArrow(ctx, cx, cy, cx, endY, ball.colorY);
+
+                ctx.textAlign = 'left';
+                const labelY = cy - (vy * velocityScale) / 2;
+                drawTextWithHalo(ctx, `vy=${vy.toFixed(1)}`, cx + 20, labelY + 5, ball.colorY);
+            }
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, 12, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.strokeStyle = '#1a1c2c';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        };
+
+        if (activeMode === 'A' || activeMode === 'BOTH') drawBallSet(ballA, true);
+        if (activeMode === 'B' || activeMode === 'BOTH') drawBallSet(ballB, true);
+    }
+
+    updateLanguageUI();
+    resize();
+    recalcPhysics();
+    draw();
+
+    requestAnimationFrame(() => {
+        resize();
+        draw();
+    });
+</script>
+</body>
+</html>

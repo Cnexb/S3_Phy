@@ -1,11 +1,12 @@
 import { t, getLang } from '../i18n.js';
-import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards } from './hubHelpers.js';
+import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
 const TOOL_ORDER = ['refraction', 'refractionTir'];
+const TOOL_STORAGE_KEY = 's3phy.refraction.tool';
 const WORKSHEET_ORDER = ['lightLens'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
 
@@ -46,7 +47,7 @@ function worksheetLabel(id) {
 
 export function mountRefractionHub(root) {
   let section = sessionStorage.getItem('s3phy.refraction.section') || 'topics';
-  let toolId = 'refraction';
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'refraction');
   let worksheetId = 'lightLens';
 
   let shell = null;
@@ -143,6 +144,7 @@ export function mountRefractionHub(root) {
         getActiveToolId: () => toolId,
         onSelectTool: (id) => {
           toolId = id;
+          saveToolId(TOOL_STORAGE_KEY, toolId);
         },
         mountTool: (stage) => {
           void mountActiveTool(stage);
@@ -187,7 +189,7 @@ export function mountRefractionHub(root) {
       <section class="panel panel--topic-hub">
         <h2>${t('topics.title')}</h2>
         <p class="lead">${t('topics.intro')}</p>
-        <div class="grid cols-2 topic-hub-grid">
+        <div class="grid cols-3 topic-hub-grid">
           ${cards
             .map(([id, key]) => {
               return `
@@ -217,6 +219,7 @@ export function mountRefractionHub(root) {
     section = 'tools';
     sessionStorage.setItem('s3phy.refraction.section', 'tools');
     toolId = b.getAttribute('data-go-tool');
+    saveToolId(TOOL_STORAGE_KEY, toolId);
     shell.updateSection(section);
     renderMain();
   }

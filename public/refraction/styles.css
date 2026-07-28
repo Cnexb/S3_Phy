@@ -1,4 +1,4 @@
-html, body { margin: 0; padding: 0; background: #121624; }
+html, body { margin: 0; padding: 0; background: #f8f9fa; }
 #app { padding: 8px; }
 
 .lang-bar {
@@ -6,14 +6,14 @@ html, body { margin: 0; padding: 0; background: #121624; }
   justify-content: flex-end;
   gap: 8px;
   padding: 12px 24px;
-  background: #121624;
-  border-bottom: 1px solid #1e293b;
+  background: #ffffff;
+  border-bottom: 1px solid #e8eaed;
 }
 
 .lang-btn {
   background: transparent;
-  border: 1px solid #334155;
-  color: #94a3b8;
+  border: 1px solid #e8eaed;
+  color: #6b7280;
   padding: 6px 14px;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -23,13 +23,13 @@ html, body { margin: 0; padding: 0; background: #121624; }
 }
 
 .lang-btn:hover {
-  border-color: #64748b;
-  color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #1a1c2c;
 }
 
 .lang-btn.active {
-  background: #3b82f6;
-  border-color: #3b82f6;
+  background: #2563eb;
+  border-color: #2563eb;
   color: #ffffff;
 }
 
@@ -39,26 +39,27 @@ html.s3phy-embed .lang-bar {
 
 html.s3phy-embed,
 html.s3phy-embed body {
-  height: 100%;
-  overflow: hidden;
-  background: #121624;
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  background: #f8f9fa;
 }
 html.s3phy-embed #app {
   padding: 4px;
-  height: 100%;
-  min-height: 0;
+  height: auto !important;
+  min-height: 100% !important;
   box-sizing: border-box;
 }
 
 .reflab {
-  --reflab-bg: #121624;
-  --reflab-panel: #22293f;
-  --reflab-border: #3f4a66;
-  --reflab-green: #00e676;
-  --reflab-cyan: #22d3ee;
-  --reflab-yellow: #ffcc00;
-  --reflab-text: #ffffff;
-  --reflab-muted: #bac4d6;
+  --reflab-bg: #f8f9fa;
+  --reflab-panel: #ffffff;
+  --reflab-border: #e8eaed;
+  --reflab-green: #16a34a;
+  --reflab-cyan: #0891b2;
+  --reflab-yellow: #ca8a04;
+  --reflab-text: #1a1c2c;
+  --reflab-muted: #6b7280;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--reflab-text);
   background: var(--reflab-bg);
@@ -73,7 +74,7 @@ html.s3phy-embed #app {
   margin: 0;
   font-weight: 800;
   font-size: 1.35rem;
-  background: linear-gradient(90deg, #4db8ff, #00e676);
+  background: linear-gradient(90deg, #2563eb, #16a34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -81,19 +82,16 @@ html.s3phy-embed #app {
 .reflab-sub { color: var(--reflab-muted); font-size: 0.82rem; margin-top: 4px; }
 .reflab-dash {
   display: flex;
-  flex-direction: row;
-  gap: 14px;
+  flex-direction: column;
+  gap: 16px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  align-items: flex-start;
-  justify-content: center;
-  flex-wrap: wrap;
+  align-items: stretch;
 }
 .reflab-viz {
   position: relative;
-  flex: 2;
-  min-width: min(100%, 320px);
+  width: 100%;
   background: var(--reflab-panel);
   padding: 10px;
   border-radius: 16px;
@@ -101,6 +99,40 @@ html.s3phy-embed #app {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 2px 12px rgba(26, 28, 44, 0.04);
+}
+
+.reflab-micro-box {
+  background: #f8f9fa;
+  border: 1px solid var(--reflab-border);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.reflab-micro-title {
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.reflab-micro-title--1 { color: #a16207; }
+.reflab-micro-title--2 { color: var(--reflab-cyan); }
+
+.reflab-particle-canvas-1,
+.reflab-particle-canvas-2 {
+  background: #ffffff;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--reflab-border);
 }
 
 .reflab-toggle-btn {
@@ -108,7 +140,7 @@ html.s3phy-embed #app {
   top: 14px;
   right: 14px;
   z-index: 10;
-  background: rgba(30, 41, 59, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid var(--reflab-border);
   color: var(--reflab-muted);
   padding: 6px 12px;
@@ -121,11 +153,12 @@ html.s3phy-embed #app {
   gap: 6px;
   transition: all 0.2s ease;
   backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(26, 28, 44, 0.06);
 }
 
 .reflab-toggle-btn:hover {
-  background: rgba(51, 65, 85, 0.95);
-  color: #ffffff;
+  background: #ffffff;
+  color: #1a1c2c;
   border-color: var(--reflab-cyan);
 }
 
@@ -138,29 +171,35 @@ html.s3phy-embed #app {
 }
 
 .reflab.reflab-collapsed .reflab-viz {
-  flex: 1 1 100%;
+  width: 100%;
   max-width: 100%;
 }
 
 .reflab-canvas {
-  background: #161a29;
+  background: #f8f9fa;
   border-radius: 12px;
   width: 100%;
   max-width: 100%;
   height: auto;
   display: block;
+  border: 1px solid var(--reflab-border);
 }
 .reflab-controls {
-  flex: 1;
-  min-width: min(100%, 280px);
-  max-width: min(380px, calc(100% - 24px));
+  width: 100%;
+  max-width: 100%;
   background: var(--reflab-panel);
   border-radius: 16px;
-  padding: 16px;
+  padding: 20px;
   border: 1px solid var(--reflab-border);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  box-shadow: 0 2px 12px rgba(26, 28, 44, 0.04);
+}
+.reflab-control-col {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 .reflab-label {
   font-size: 0.8rem;
@@ -174,7 +213,7 @@ html.s3phy-embed #app {
   gap: 6px;
 }
 .reflab-chip {
-  background: #2e3754;
+  background: #f1f3f5;
   color: var(--reflab-muted);
   border: 1px solid transparent;
   padding: 7px 12px;
@@ -183,19 +222,19 @@ html.s3phy-embed #app {
   font-size: 0.85rem;
   font-weight: 600;
 }
-.reflab-chip:hover { color: #fff; border-color: #5a6a8a; }
+.reflab-chip:hover { color: #1a1c2c; border-color: #cbd5e1; }
 .reflab-chip.active {
-  background: rgba(0, 230, 118, 0.15);
+  background: rgba(22, 163, 74, 0.1);
   color: var(--reflab-green);
   border-color: var(--reflab-green);
 }
 .reflab-chips[data-side="1"] .reflab-chip.active {
-  background: rgba(255, 234, 0, 0.15);
-  color: #ffea00;
-  border-color: #ffea00;
+  background: rgba(202, 138, 4, 0.12);
+  color: #a16207;
+  border-color: #ca8a04;
 }
 .reflab-chips[data-side="2"] .reflab-chip.active {
-  background: rgba(34, 211, 238, 0.15);
+  background: rgba(8, 145, 178, 0.1);
   color: var(--reflab-cyan);
   border-color: var(--reflab-cyan);
 }
@@ -221,7 +260,7 @@ html.s3phy-embed #app {
 .reflab-badge {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  background: rgba(0, 230, 118, 0.12);
+  background: rgba(22, 163, 74, 0.1);
   color: var(--reflab-green);
   padding: 2px 8px;
   border-radius: 6px;
@@ -241,9 +280,9 @@ html.s3phy-embed #app {
   font-size: 0.95rem;
   padding: 10px;
   border-radius: 10px;
-  background: rgba(77, 184, 255, 0.12);
-  border: 1px solid rgba(77, 184, 255, 0.35);
-  color: #9fd0ff;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  color: #1d4ed8;
 }
 .reflab-stats { display: flex; flex-direction: column; gap: 6px; }
 .reflab-sr {
@@ -260,15 +299,15 @@ html.s3phy-embed #app {
 .reflab-tir {
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(255, 82, 82, 0.12);
-  border: 1px solid rgba(255, 82, 82, 0.4);
-  color: #ff8a80;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #dc2626;
   font-size: 0.82rem;
   line-height: 1.4;
 }
 .reflab-reset {
-  background: #2e3754;
-  color: #fff;
+  background: #f1f3f5;
+  color: #1a1c2c;
   border: 1px solid var(--reflab-border);
   padding: 10px;
   border-radius: 10px;
@@ -279,6 +318,7 @@ html.s3phy-embed #app {
 .reflab-reset:hover {
   border-color: var(--reflab-cyan);
   color: var(--reflab-cyan);
+  background: #ffffff;
 }
 
 .reflab-controls input[type="range"] {

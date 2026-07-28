@@ -26,8 +26,8 @@
 
         body.tir-app-root {
             font-family: var(--s3-font, 'Inter', 'Noto Sans TC', sans-serif);
-            background-color: #0f172a;
-            color: #e2e8f0;
+            background-color: #f8f9fa;
+            color: #1a1c2c;
             overflow: hidden;
             min-height: 100%;
             height: 100%;
@@ -39,14 +39,15 @@
         }
 
         .neon-text {
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            text-shadow: none;
         }
 
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #ffffff;
+            backdrop-filter: none;
+            border: 1px solid #e8eaed;
             border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(26, 28, 44, 0.06);
         }
 
         input[type=range] {
@@ -59,31 +60,31 @@
             height: 20px;
             width: 20px;
             border-radius: 50%;
-            background: #38bdf8;
+            background: #2563eb;
             cursor: pointer;
             margin-top: -8px;
-            box-shadow: 0 0 10px #38bdf8;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
         }
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 4px;
             cursor: pointer;
-            background: #475569;
+            background: #e8eaed;
             border-radius: 2px;
         }
         input[type=range]::-moz-range-thumb {
             height: 20px;
             width: 20px;
             border-radius: 50%;
-            background: #38bdf8;
+            background: #2563eb;
             cursor: pointer;
-            box-shadow: 0 0 10px #38bdf8;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
             border: none;
         }
         input[type=range]::-moz-range-track {
             width: 100%;
             height: 4px;
-            background: #475569;
+            background: #e8eaed;
             border-radius: 2px;
         }
 
@@ -126,9 +127,9 @@
             width: 32px;
             height: 28px;
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(51, 65, 85, 0.8);
-            color: #38bdf8;
+            border: 1px solid #e8eaed;
+            background: #f1f3f5;
+            color: #2563eb;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
@@ -138,7 +139,7 @@
             transition: all 0.2s;
         }
         .n-btn:hover {
-            background: rgba(56, 189, 248, 0.3);
+            background: rgba(37, 99, 235, 0.1);
             transform: scale(1.05);
         }
         .n-btn:active {
@@ -258,7 +259,7 @@
             min-height: 0;
             overflow-y: auto;
             overflow-x: hidden;
-            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 1px solid #e8eaed;
         }
         .tir-formula-grid {
             display: flex;
@@ -301,9 +302,9 @@
             max-width: 14rem;
             padding: 8px 12px;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(51, 65, 85, 0.8);
-            color: #e2e8f0;
+            border: 1px solid #e8eaed;
+            background: #f8f9fa;
+            color: #1a1c2c;
             font-size: 13px;
             line-height: 1.35;
             font-weight: 500;
@@ -322,8 +323,8 @@
             text-overflow: ellipsis;
         }
         .ray-toggle-btn:hover {
-            background: rgba(56, 189, 248, 0.25);
-            border-color: rgba(56, 189, 248, 0.5);
+            background: rgba(37, 99, 235, 0.08);
+            border-color: rgba(37, 99, 235, 0.35);
         }
         .ray-toggle-btn.rays-hidden {
             opacity: 0.9;
@@ -535,8 +536,8 @@
         <div class="tir-controls-panel tir-tuning-bar glass-panel p-3 sm:p-4 shadow-2xl shrink-0">
             <div class="tir-tune-zone tir-tune-zone-brand">
                 <div class="tir-brand-text">
-                    <h1 class="text-xl sm:text-2xl font-bold mb-0 text-sky-400 neon-text leading-tight">🔥 逃獄遊戲</h1>
-                    <p class="text-sm text-slate-400 mb-0 mt-0.5">The Prison Break: 全反射模擬</p>
+                    <h1 class="text-xl sm:text-2xl font-bold mb-0 text-blue-600 neon-text leading-tight">🔥 逃獄遊戲</h1>
+                    <p class="text-sm text-gray-500 mb-0 mt-0.5">The Prison Break: 全反射模擬</p>
                 </div>
                 <div id="status-badge" class="rounded-lg font-bold text-white text-base sm:text-lg transition-all duration-300 status-escaped">
                     <div class="chibi-container">
@@ -550,10 +551,10 @@
                 <label class="flex flex-col gap-1.5 sm:flex-row sm:justify-between sm:items-center text-base font-medium">
                     <span id="incident-angle-label" class="min-w-0 shrink">入射角 (Incident Angle) <span class="math-inline">\(\theta_1\)</span></span>
                     <div class="flex flex-wrap items-center gap-2">
-                        <button type="button" id="btn-set-critical" class="text-sm bg-sky-700/80 hover:bg-sky-600 text-white px-2.5 py-1.5 rounded transition-colors border border-sky-500/50">設為 \(\theta_c\)</button>
-                        <button type="button" id="btn-set-0" class="text-sm bg-slate-700/80 hover:bg-slate-600 text-white px-2.5 py-1.5 rounded transition-colors border border-slate-500/50">設為 0°</button>
-                        <button type="button" id="btn-set-90" class="text-sm bg-slate-700/80 hover:bg-slate-600 text-white px-2.5 py-1.5 rounded transition-colors border border-slate-500/50">設為 90°</button>
-                        <span id="angle-display" class="text-sky-400 font-mono text-lg tabular-nums">30.0°</span>
+                        <button type="button" id="btn-set-critical" class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded transition-colors border border-blue-500/50">設為 \(\theta_c\)</button>
+                        <button type="button" id="btn-set-0" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 px-2.5 py-1.5 rounded transition-colors border border-gray-200">設為 0°</button>
+                        <button type="button" id="btn-set-90" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 px-2.5 py-1.5 rounded transition-colors border border-gray-200">設為 90°</button>
+                        <span id="angle-display" class="text-blue-600 font-mono text-lg tabular-nums">30.0°</span>
                     </div>
                 </label>
                 <input type="range" id="angle-slider" min="0" max="90" value="30" step="0.1">
@@ -561,19 +562,19 @@
 
             <div class="tir-tune-zone tir-tune-zone-n">
                 <div class="tir-n-grid">
-                    <div class="tir-n-cell bg-slate-800 rounded-lg border border-slate-700">
-                        <div id="n1-label" class="text-sm text-slate-400 mb-1">監獄 (玻璃) <span class="math-inline">\(n_1\)</span></div>
+                    <div class="tir-n-cell bg-gray-50 rounded-lg border border-gray-200">
+                        <div id="n1-label" class="text-sm text-gray-500 mb-1">監獄 (玻璃) <span class="math-inline">\(n_1\)</span></div>
                         <div class="n-control">
                             <button type="button" class="n-btn" id="n1-minus" title="減少 n₁">−</button>
-                            <span id="n1-value" class="text-xl font-mono text-blue-300 n-value">1.50</span>
+                            <span id="n1-value" class="text-xl font-mono text-blue-600 n-value">1.50</span>
                             <button type="button" class="n-btn" id="n1-plus" title="增加 n₁">+</button>
                         </div>
                     </div>
-                    <div class="tir-n-cell bg-slate-800 rounded-lg border border-slate-700">
-                        <div id="n2-label" class="text-sm text-slate-400 mb-1">自由 (空氣) <span class="math-inline">\(n_2\)</span></div>
+                    <div class="tir-n-cell bg-gray-50 rounded-lg border border-gray-200">
+                        <div id="n2-label" class="text-sm text-gray-500 mb-1">自由 (空氣) <span class="math-inline">\(n_2\)</span></div>
                         <div class="n-control">
                             <button type="button" class="n-btn" id="n2-minus" title="減少 n₂">−</button>
-                            <span id="n2-value" class="text-xl font-mono text-gray-300 n-value">1.00</span>
+                            <span id="n2-value" class="text-xl font-mono text-gray-700 n-value">1.00</span>
                             <button type="button" class="n-btn" id="n2-plus" title="增加 n₂">+</button>
                         </div>
                     </div>
@@ -598,42 +599,42 @@
     </div>
 
     <div class="tir-stage-row">
-        <div id="sim-canvas-host" class="flex-1 min-h-0 relative bg-gray-900 flex flex-col overflow-hidden">
-            <button id="lang-toggle-btn" class="absolute top-4 right-4 z-50 bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-600 backdrop-blur-sm transition-colors text-sm font-medium shadow-lg">
+        <div id="sim-canvas-host" class="flex-1 min-h-0 relative bg-white flex flex-col overflow-hidden border border-gray-200 rounded-xl">
+            <button id="lang-toggle-btn" class="absolute top-4 right-4 z-50 bg-white hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 transition-colors text-sm font-medium shadow-sm">
                 EN / 中文
             </button>
-            <div class="absolute inset-0 opacity-20 pointer-events-none z-[1]"
-                 style="background-image: linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px); background-size: 40px 40px;">
+            <div class="absolute inset-0 opacity-30 pointer-events-none z-[1]"
+                 style="background-image: linear-gradient(#e8eaed 1px, transparent 1px), linear-gradient(90deg, #e8eaed 1px, transparent 1px); background-size: 40px 40px;">
             </div>
 
             <div id="sim-canvas-wrap" class="relative z-0 flex-1 min-h-[160px] w-full">
                 <canvas id="simCanvas" class="absolute inset-0 block w-full h-full"></canvas>
             </div>
 
-            <div class="absolute bottom-8 right-8 text-right pointer-events-none opacity-50 z-[2]">
-                <div class="text-6xl font-black text-slate-800">PRISON</div>
-                <div class="text-6xl font-black text-slate-700">BREAK</div>
+            <div class="absolute bottom-8 right-8 text-right pointer-events-none opacity-20 z-[2]">
+                <div class="text-6xl font-black text-gray-200">PRISON</div>
+                <div class="text-6xl font-black text-gray-300">BREAK</div>
             </div>
         </div>
 
         <div class="tir-physics-panel glass-panel p-3 sm:p-4">
-            <h3 id="physics-core-title" class="text-xl font-semibold text-sky-300 mb-2">🧮 物理核心運算</h3>
+            <h3 id="physics-core-title" class="text-xl font-semibold text-blue-600 mb-2">🧮 物理核心運算</h3>
 
             <div class="space-y-2 text-base">
-                <div class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700 shadow-inner" id="theory-box"></div>
+                <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 shadow-inner" id="theory-box"></div>
 
-                <p id="tir-badge" class="text-sky-300 font-semibold text-center text-sm py-1.5 px-2 bg-sky-900/40 rounded-lg border border-sky-600/50 leading-snug">
+                <p id="tir-badge" class="text-blue-700 font-semibold text-center text-sm py-1.5 px-2 bg-blue-50 rounded-lg border border-blue-200 leading-snug">
                     Total Internal Reflection · 完全內反射
                 </p>
 
                 <div class="tir-formula-grid">
-                    <div id="critical-block" class="bg-slate-900 p-2 rounded border border-slate-700">
-                        <p id="critical-angle-label" class="text-sm text-slate-400 mb-1">臨界角 (Critical Angle):</p>
+                    <div id="critical-block" class="bg-white p-2 rounded border border-gray-200">
+                        <p id="critical-angle-label" class="text-sm text-gray-500 mb-1">臨界角 (Critical Angle):</p>
                         <div id="critical-formula" class="text-center my-1 text-base"></div>
                     </div>
 
-                    <div id="snell-block" class="bg-slate-900 p-2 rounded border border-slate-700">
-                        <p id="snell-label" class="text-sm text-slate-400 mb-1">斯涅爾定律 (Snell's Law):</p>
+                    <div id="snell-block" class="bg-white p-2 rounded border border-gray-200">
+                        <p id="snell-label" class="text-sm text-gray-500 mb-1">斯涅爾定律 (Snell's Law):</p>
                         <div id="snell-formula" class="text-center my-1 text-base"></div>
                         <div id="calc-result" class="text-center text-green-400 text-base mt-1"></div>
                     </div>
@@ -900,8 +901,8 @@
             const theoryBox = document.getElementById('theory-box');
             if (n_i > n_r) {
                 theoryBox.innerHTML = `
-                    <p class="mb-2 text-slate-200">${t('theoryDenseRare').replace('N_I', n_i.toFixed(2)).replace('N_R', n_r.toFixed(2))}</p>
-                    <ul class="list-disc pl-5 space-y-1.5 text-slate-300">
+                    <p class="mb-2 text-gray-800">${t('theoryDenseRare').replace('N_I', n_i.toFixed(2)).replace('N_R', n_r.toFixed(2))}</p>
+                    <ul class="list-disc pl-5 space-y-1.5 text-gray-600">
                         <li>${t('theoryDenseRareL1')}</li>
                         <li>${t('theoryDenseRareL2')}</li>
                         <li>${t('theoryDenseRareL3')}</li>
@@ -909,8 +910,8 @@
                 `;
             } else {
                 theoryBox.innerHTML = `
-                    <p class="mb-2 text-slate-200">${t('theoryRareDense').replace('N_I', n_i.toFixed(2)).replace('N_R', n_r.toFixed(2))}</p>
-                    <ul class="list-disc pl-5 space-y-1.5 text-slate-300">
+                    <p class="mb-2 text-gray-800">${t('theoryRareDense').replace('N_I', n_i.toFixed(2)).replace('N_R', n_r.toFixed(2))}</p>
+                    <ul class="list-disc pl-5 space-y-1.5 text-gray-600">
                         <li>${t('theoryRareDenseL1')}</li>
                         <li>${t('theoryRareDenseL2')}</li>
                     </ul>
@@ -988,7 +989,7 @@
             if (!width || !height) return undefined;
             ctx.clearRect(0, 0, width, height);
 
-            ctx.fillStyle = '#0f172a';
+            ctx.fillStyle = '#f8f9fa';
             ctx.fillRect(0, 0, width, centerY);
 
             ctx.beginPath();
@@ -996,17 +997,17 @@
             ctx.closePath();
 
             let glassGradient = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, radius);
-            glassGradient.addColorStop(0, 'rgba(30, 58, 138, 0.6)');
-            glassGradient.addColorStop(1, 'rgba(30, 58, 138, 0.9)');
+            glassGradient.addColorStop(0, 'rgba(191, 219, 254, 0.85)');
+            glassGradient.addColorStop(1, 'rgba(147, 197, 253, 0.95)');
             ctx.fillStyle = glassGradient;
             ctx.fill();
-            ctx.strokeStyle = '#60a5fa';
+            ctx.strokeStyle = '#2563eb';
             ctx.lineWidth = 2;
             ctx.stroke();
 
             ctx.save();
             ctx.clip();
-            ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+            ctx.strokeStyle = 'rgba(26, 28, 44, 0.06)';
             ctx.lineWidth = 1;
             const gridSize = 20;
             for (let x = centerX - radius; x < centerX + radius; x += gridSize) {
@@ -1025,7 +1026,7 @@
 
             ctx.beginPath();
             ctx.setLineDash([5, 5]);
-            ctx.strokeStyle = '#94a3b8';
+            ctx.strokeStyle = '#9ca3af';
             ctx.lineWidth = 1;
             ctx.moveTo(centerX, centerY - radius * 0.8);
             ctx.lineTo(centerX, centerY + radius * 0.8);
@@ -1033,7 +1034,7 @@
             ctx.setLineDash([]);
 
             ctx.beginPath();
-            ctx.strokeStyle = '#cbd5e1';
+            ctx.strokeStyle = '#6b7280';
             ctx.lineWidth = 2;
             ctx.moveTo(centerX - radius - 50, centerY);
             ctx.lineTo(centerX + radius + 50, centerY);
@@ -1041,12 +1042,12 @@
 
             ctx.save();
             ctx.textAlign = 'right';
-            ctx.fillStyle = '#94a3b8';
+            ctx.fillStyle = '#6b7280';
             ctx.font = 'bold 16px system-ui, sans-serif';
             ctx.fillText(t('canvasAir'), centerX - radius - 15, centerY - 30);
             ctx.fillText("n=" + n2.toFixed(2), centerX - radius - 15, centerY - 10);
 
-            ctx.fillStyle = '#60a5fa';
+            ctx.fillStyle = '#2563eb';
             ctx.fillText(t('canvasGlass'), centerX - radius - 15, centerY + 20);
             ctx.fillText("n=" + n1.toFixed(2), centerX - radius - 15, centerY + 40);
             ctx.restore();
@@ -1342,7 +1343,7 @@
 
             ctx.beginPath();
             ctx.setLineDash([2, 4]);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.strokeStyle = 'rgba(37, 99, 235, 0.35)';
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(x, y);
             ctx.stroke();
@@ -1350,7 +1351,7 @@
 
             const textX = x - 15;
             const textY = y + (incidentFromBottom ? 12 : -12);
-            drawAngleLabel(ctx, textX, textY, 'θc ≈ ' + getCriticalAngleDeg().toFixed(1) + '°', 'rgba(255, 255, 255, 0.7)');
+            drawAngleLabel(ctx, textX, textY, 'θc ≈ ' + getCriticalAngleDeg().toFixed(1) + '°', 'rgba(37, 99, 235, 0.85)');
         }
 
         function updateUI(state, theta1Rad, theta2Rad, skipTypeset) {

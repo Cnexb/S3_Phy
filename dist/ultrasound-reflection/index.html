@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超聲波反射</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        html.s3phy-embed body {
+            height: auto;
+            min-height: 100%;
+            justify-content: flex-start;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+        html.s3phy-embed .container {
+            width: 100%;
+            max-width: 800px;
+            box-sizing: border-box;
+        }
+        html.s3phy-embed canvas {
+            width: 100%;
+            height: auto;
+        }
+        html.s3phy-embed .lang-btn { display: none; }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            width: 800px;
+            text-align: center;
+            border: 1px solid #e8eaed;
+        }
+
+        h2 { margin: 0 0 10px 0; color: #0284c7; font-weight: 600; letter-spacing: 0.5px; }
+        .subtitle { color: #6b7280; font-size: 0.9rem; margin-bottom: 20px; }
+
+        canvas {
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.03);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        button {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-main { 
+            background: linear-gradient(135deg, #0284c7, #2563eb); 
+            color: #fff; 
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35); }
+        .btn-main:active { transform: scale(0.98); }
+
+        .btn-reset { background: #e9ecef; color: #495057; border: 1px solid #e8eaed; }
+        .btn-reset:hover { background: #dee2e6; color: #1a1c2c; }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f3f5;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            border: 1px solid #e8eaed;
+        }
+
+        .highlight { color: #b45309; font-weight: bold; }
+        .status-text { color: #6b7280; font-size: 0.9rem; }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        .lang-btn {
+            background: #e9ecef;
+            color: #495057;
+            border: 1px solid #e8eaed;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .lang-btn:hover { background: #dee2e6; color: #1a1c2c; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-row">
+        <div>
+            <h2 id="page-title">超聲波反射</h2>
+            <div class="subtitle" id="page-subtitle">慢動作可視化 • 點物體</div>
+        </div>
+        <button class="lang-btn" id="lang-toggle">🌐 English</button>
+    </div>
+    
+    <canvas id="simCanvas" width="800" height="320"></canvas>
+
+    <div class="status-bar">
+        <div><span id="time-label">時間：</span><span id="timeDisplay" class="highlight">0.000 s</span></div>
+        <div id="statusText" class="status-text">準備就緒</div>
+    </div>
+
+    <div class="controls" style="margin-top:25px;">
+        <button class="btn-main" id="actionBtn" onclick="togglePlay()">▶ 開始</button>
+        <button class="btn-reset" id="resetBtn" onclick="resetSim()">↺ 重設</button>
+    </div>
+</div>
+
+<script>
+    const dict = {
+        zh: {
+            langBtn: '🌐 English',
+            pageTitle: '超聲波反射',
+            pageSubtitle: '慢動作可視化 • 點物體',
+            timeLabel: '時間：',
+            ready: '準備就緒',
+            start: '▶ 開始',
+            pause: '⏸ 暫停',
+            resume: '▶ 繼續',
+            replay: '↺ 重播',
+            reset: '↺ 重設',
+            emitting: '發射訊號中…',
+            reachedCar: '訊號到達汽車… 距離 = 64m + d',
+            reflecting: '反射訊號中…',
+            returned: '訊號返回聲源。',
+            source: '聲源',
+            car: '汽車'
+        },
+        en: {
+            langBtn: '🌐 中文',
+            pageTitle: 'Ultrasound Reflection',
+            pageSubtitle: 'Slow Motion Visualization • Point Object',
+            timeLabel: 'Time: ',
+            ready: 'Ready',
+            readyToStart: 'Ready to start',
+            start: '▶ Start',
+            pause: '⏸ Pause',
+            resume: '▶ Resume',
+            replay: '↺ Replay',
+            reset: '↺ Reset',
+            emitting: 'Emitting Signal...',
+            reachedCar: 'Signal reached Car. Distance = 64m + d',
+            reflecting: 'Reflecting Signal...',
+            returned: 'Signal returned to Source.',
+            source: 'Source',
+            car: 'Car'
+        }
+    };
+
+    function hubLangToLocal(lang) {
+        if (lang === 'en') return 'en';
+        return 'zh';
+    }
+
+    const params = new URLSearchParams(location.search);
+    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const statusText = document.getElementById('statusText');
+    const actionBtn = document.getElementById('actionBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const btnLang = document.getElementById('lang-toggle');
+    const pageTitle = document.getElementById('page-title');
+    const pageSubtitle = document.getElementById('page-subtitle');
+    const timeLabel = document.getElementById('time-label');
+
+    function t() { return dict[currentLang]; }
+
+    function getActionBtnText() {
+        const d = t();
+        if (time >= 0.4) return d.replay;
+        if (isRunning) return d.pause;
+        if (time > 0 || hasPausedAtHit) return d.resume;
+        return d.start;
+    }
+
+    function getStatusText() {
+        const d = t();
+        if (time >= 0.4) return d.returned;
+        if (hasPausedAtHit && !isRunning) return d.reachedCar;
+        if (isRunning) return hasPausedAtHit ? d.reflecting : d.emitting;
+        if (time === 0 && !hasPausedAtHit) return d.ready;
+        return d.ready;
+    }
+
+    function updateLanguageUI() {
+        const d = t();
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+        document.title = d.pageTitle;
+        btnLang.innerText = d.langBtn;
+        pageTitle.innerText = d.pageTitle;
+        pageSubtitle.innerText = d.pageSubtitle;
+        timeLabel.innerText = d.timeLabel;
+        resetBtn.innerText = d.reset;
+        actionBtn.innerText = getActionBtnText();
+        statusText.innerText = getStatusText();
+        if (time >= 0.4) statusText.style.color = '#0284c7';
+        else if (hasPausedAtHit && !isRunning) statusText.style.color = '#db2777';
+        else if (isRunning) statusText.style.color = '#b45309';
+        else statusText.style.color = '#6b7280';
+        draw();
+    }
+
+    btnLang.addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        updateLanguageUI();
+    });
+
+    window.addEventListener('message', (ev) => {
+        if (ev.data?.type !== 's3phy:lang') return;
+        currentLang = hubLangToLocal(ev.data.lang);
+        updateLanguageUI();
+    });
+
+    // --- Visual Configuration ---
+    const START_X = 100;       // Generator
+    const CAR_START_X = 350;   // Car Start (Visual 64m)
+    const CAR_HIT_X = 650;     // Car Hit Position (Exaggerated d)
+    const Y_AXIS = 160;
+
+    // --- State ---
+    let time = 0;
+    let isRunning = false;
+    let animationId;
+    let hasPausedAtHit = false;
+
+    // --- Drawing Functions ---
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Grid/Background Lines
+        ctx.strokeStyle = 'rgba(0,0,0,0.06)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for(let i=50; i<800; i+=50) { ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); }
+        ctx.stroke();
+
+        // 2. Main Axis
+        ctx.beginPath();
+        ctx.strokeStyle = '#adb5bd';
+        ctx.lineWidth = 2;
+        ctx.moveTo(50, Y_AXIS);
+        ctx.lineTo(750, Y_AXIS);
+        ctx.stroke();
+
+        // 3. Generator (Source)
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(START_X - 15, Y_AXIS - 15, 30, 30);
+        ctx.fillStyle = '#7dd3fc';
+        ctx.fillRect(START_X - 10, Y_AXIS - 10, 20, 20);
+        ctx.fillStyle = '#495057';
+        ctx.font = "12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(t().source, START_X, Y_AXIS - 25);
+
+        // 4. Calculate Positions
+        // Map time (0 -> 0.2) to distance (START -> HIT)
+        let progressOut = Math.min(time, 0.2) / 0.2;
+        let progressIn = Math.max(0, time - 0.2) / 0.2;
+
+        // Car Position (Constant Velocity visual)
+        let carX = CAR_START_X + (time / 0.2) * (CAR_HIT_X - CAR_START_X);
+        if(time > 0.4) carX = CAR_HIT_X + ((time-0.2)/0.2) * (CAR_HIT_X - CAR_START_X); // Keep moving
+
+        // Signal Position
+        let signalX;
+        if (time <= 0.2) {
+            signalX = START_X + progressOut * (CAR_HIT_X - START_X);
+        } else {
+            signalX = CAR_HIT_X - progressIn * (CAR_HIT_X - START_X);
+        }
+
+        // 5. Draw Ghost Car (Start Position)
+        ctx.beginPath();
+        ctx.arc(CAR_START_X, Y_AXIS, 3, 0, Math.PI*2);
+        ctx.fillStyle = '#9ca3af';
+        ctx.fill();
+        // Dotted line for start
+        ctx.beginPath(); ctx.setLineDash([4,4]); ctx.strokeStyle='#cbd5e1';
+        ctx.moveTo(CAR_START_X, Y_AXIS-40); ctx.lineTo(CAR_START_X, Y_AXIS+40);
+        ctx.stroke(); ctx.setLineDash([]);
+
+        // 6. Draw Real Car (Point Object)
+        ctx.beginPath();
+        ctx.arc(carX, Y_AXIS, 6, 0, Math.PI*2);
+        ctx.fillStyle = '#db2777';
+        ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(219, 39, 119, 0.3)';
+        ctx.fill(); ctx.shadowBlur = 0;
+        
+        ctx.fillStyle = '#db2777';
+        ctx.font = "bold 14px Arial";
+        ctx.fillText(t().car, carX, Y_AXIS - 15);
+
+        // 7. Draw Signal Pulse
+        if (time <= 0.4) {
+            ctx.beginPath();
+            // Pulse visual
+            let pulseSize = 12;
+            let dir = (time <= 0.2) ? 1 : -1; // Face right or left
+            ctx.arc(signalX, Y_AXIS, pulseSize, -Math.PI/2, Math.PI/2, (dir === -1));
+            ctx.strokeStyle = '#ca8a04';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Glow
+            ctx.beginPath();
+            ctx.arc(signalX, Y_AXIS, pulseSize-4, 0, Math.PI*2);
+            ctx.fillStyle = 'rgba(202, 138, 4, 0.25)';
+            ctx.fill();
+        }
+
+        // 8. Annotations
+        // 64m Bracket
+        drawBracket(START_X, CAR_START_X, Y_AXIS + 50, "64 m", "#495057");
+
+        // 'd' Bracket (Only if car moved enough)
+        if (carX > CAR_START_X + 2) {
+            drawBracket(CAR_START_X, carX, Y_AXIS + 50, "d", "#db2777");
+        }
+
+        // Collision Line
+        if (time >= 0.2) {
+            ctx.beginPath();
+            ctx.setLineDash([4,4]); ctx.strokeStyle='#db2777';
+            ctx.moveTo(CAR_HIT_X, Y_AXIS-40); ctx.lineTo(CAR_HIT_X, Y_AXIS+40);
+            ctx.stroke(); ctx.setLineDash([]);
+        }
+    }
+
+    function drawBracket(x1, x2, y, text, color) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.moveTo(x1, y-5); ctx.lineTo(x1, y);
+        ctx.lineTo(x2, y); ctx.lineTo(x2, y-5);
+        ctx.stroke();
+        ctx.fillStyle = color;
+        ctx.font = "14px Arial";
+        ctx.fillText(text, (x1+x2)/2, y + 20);
+    }
+
+    // --- Animation Loop ---
+    function update() {
+        if (!isRunning) return;
+
+        // SLOW MOTION: Very small increment
+        time += 0.0005; 
+
+        // PAUSE LOGIC at 0.2s
+        if (time >= 0.2 && !hasPausedAtHit) {
+            time = 0.2; // Snap to exact
+            hasPausedAtHit = true;
+            isRunning = false; // Pause
+            actionBtn.innerText = getActionBtnText();
+            statusText.innerText = getStatusText();
+            statusText.style.color = "#db2777";
+            draw();
+            return; 
+        }
+
+        // STOP LOGIC at 0.4s
+        if (time >= 0.4) {
+            time = 0.4;
+            isRunning = false;
+            actionBtn.innerText = getActionBtnText();
+            statusText.innerText = getStatusText();
+            statusText.style.color = "#0284c7";
+            draw();
+            return;
+        }
+
+        timeDisplay.innerText = time.toFixed(3) + " s";
+        draw();
+        animationId = requestAnimationFrame(update);
+    }
+
+    function togglePlay() {
+        if (time >= 0.4) {
+            resetSim();
+            return;
+        }
+
+        isRunning = !isRunning;
+        if (isRunning) {
+            actionBtn.innerText = getActionBtnText();
+            statusText.innerText = getStatusText();
+            statusText.style.color = "#b45309";
+            update();
+        } else {
+            actionBtn.innerText = getActionBtnText();
+            cancelAnimationFrame(animationId);
+        }
+    }
+
+    function resetSim() {
+        isRunning = false;
+        cancelAnimationFrame(animationId);
+        time = 0;
+        hasPausedAtHit = false;
+        actionBtn.innerText = getActionBtnText();
+        timeDisplay.innerText = "0.000 s";
+        statusText.innerText = getStatusText();
+        statusText.style.color = "#6b7280";
+        draw();
+    }
+
+    window.togglePlay = togglePlay;
+    window.resetSim = resetSim;
+
+    // Init
+    updateLanguageUI();
+
+</script>
+
+</body>
+</html>
+

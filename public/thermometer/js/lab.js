@@ -547,7 +547,7 @@ export function createThermometerLab(t, options = {}) {
     const { gx, gy, gw, gh, tickFont, axisFont, yLabelX, xLabelY } = layout;
 
     // Grid lines background
-    ctx.strokeStyle = '#1e1e24';
+    ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1.0;
     for (const tick of yTicks) {
       const yGrid = mapGraphY(tick.value, tick.min, tick.max, gy, gh);
@@ -573,7 +573,7 @@ export function createThermometerLab(t, options = {}) {
     ctx.lineTo(gx + gw, gy + gh);
     ctx.stroke();
 
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#4b5563';
     ctx.font = tickFont;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
@@ -855,7 +855,7 @@ export function createThermometerLab(t, options = {}) {
     // Beaker shadow/background
     ctx.strokeStyle = '#4b5563';
     ctx.lineWidth = 2;
-    ctx.fillStyle = 'rgba(30, 30, 35, 0.6)';
+    ctx.fillStyle = 'rgba(240, 240, 245, 0.6)';
     ctx.beginPath();
     ctx.roundRect(bx, by, bw, bh, [0, 0, 10, 10]);
     ctx.fill();
@@ -1026,7 +1026,7 @@ export function createThermometerLab(t, options = {}) {
     ctx.arc(startX, startY, 3, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = 'rgba(21, 21, 24, 0.9)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
     ctx.strokeStyle = '#06b6d4';
     ctx.lineWidth = 1.0;
     ctx.beginPath();
@@ -1034,7 +1034,7 @@ export function createThermometerLab(t, options = {}) {
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = '#f4f4f5';
+    ctx.fillStyle = '#111827';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     lines.forEach((line, i) => {
@@ -1189,11 +1189,11 @@ export function createThermometerLab(t, options = {}) {
     ctx.stroke();
 
     // Platinum Coil Cutaway (Schematic view inside the tip)
-    ctx.fillStyle = 'rgba(21, 21, 24, 0.8)';
+    ctx.fillStyle = 'rgba(240, 240, 245, 0.85)';
     ctx.fillRect(rx + 2, probeBottom - 45, width - 4, 40);
     
     // Draw platinum coil wire
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = '#4b5563';
     ctx.lineWidth = 1.2;
     ctx.beginPath();
     let cy = probeBottom - 40;
@@ -1372,7 +1372,7 @@ export function createThermometerLab(t, options = {}) {
   function drawGraphCrosshair(ctx, layout, px, py, xVal, yVal, xUnit, yUnit, color) {
     const { gx, gy, gw, gh, tickFont } = layout;
     
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
     ctx.lineWidth = 1.0;
     ctx.setLineDash([4, 4]);
 
@@ -1401,18 +1401,19 @@ export function createThermometerLab(t, options = {}) {
     ctx.beginPath();
     ctx.roundRect(px - xTextW / 2, xTickY - 2, xTextW, xPillH, 3);
     ctx.fill();
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(xText, px, xTickY);
 
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     const yText = `${yVal.toFixed(2)} ${yUnit}`;
     const yTextW = ctx.measureText(yText).width + 10;
+    const yfillStyle = color; // use the same color
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.roundRect(gx - yTextW - 2, py - 7, yTextW, 15, 3);
     ctx.fill();
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = '#ffffff';
     ctx.fillText(yText, gx - 7, py);
   }
 
@@ -1428,12 +1429,12 @@ export function createThermometerLab(t, options = {}) {
     ctx.translate(yLabelX, gy + gh / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.font = axisFont;
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#1f2937';
     ctx.fillText('Length of liquid column / cm', 0, 0);
     ctx.restore();
 
     ctx.font = axisFont;
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#1f2937';
     ctx.textAlign = 'center';
     ctx.fillText('temperature / °C', gx + gw / 2, xLabelY);
 
@@ -1482,12 +1483,12 @@ export function createThermometerLab(t, options = {}) {
     ctx.translate(yLabelX, gy + gh / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.font = axisFont;
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#1f2937';
     ctx.fillText('Resistance of platinum / Ω', 0, 0);
     ctx.restore();
 
     ctx.font = axisFont;
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#1f2937';
     ctx.textAlign = 'center';
     ctx.fillText('temperature / °C', gx + gw / 2, xLabelY);
 
@@ -1546,12 +1547,12 @@ export function createThermometerLab(t, options = {}) {
     ctx.translate(yLabelX, gy + gh / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.font = axisFont;
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#1f2937';
     ctx.fillText('Resistance of thermistor / kΩ', 0, 0);
     ctx.restore();
 
     ctx.font = axisFont;
-    ctx.fillStyle = '#e4e4e7';
+    ctx.fillStyle = '#1f2937';
     ctx.textAlign = 'center';
     ctx.fillText('temperature / °C', gx + gw / 2, xLabelY);
 
@@ -1625,19 +1626,22 @@ export function createThermometerLab(t, options = {}) {
   // Generate beautiful inline SVGs for LaTeX-like math equations
   function renderSVGFormulas() {
     const { sm, md, lg, xs, sub } = TL_SVG;
+    const textColor = 'currentColor'; // automatically adapts to the parent's theme color!
+    const mutedColor = '#4b5563'; // darker grey for better readability in light theme
+
     const liquidFormula = wrap.querySelector('#tl-svg-formula-liquid');
     if (liquidFormula) {
       liquidFormula.innerHTML = `
         <svg height="50" width="240" style="background:transparent; overflow:visible;">
-          <line x1="10" y1="26" x2="100" y2="26" stroke="#fff" stroke-width="1.5" />
-          <text x="55" y="18" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">L<tspan dy="2" font-size="${sub}">100</tspan><tspan dy="-2"> - L</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
-          <text x="55" y="41" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
+          <line x1="10" y1="26" x2="100" y2="26" stroke="${textColor}" stroke-width="1.5" />
+          <text x="55" y="18" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">L<tspan dy="2" font-size="${sub}">100</tspan><tspan dy="-2"> - L</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
+          <text x="55" y="41" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
           
-          <text x="110" y="31" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
+          <text x="110" y="31" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
           
-          <line x1="130" y1="26" x2="220" y2="26" stroke="#fff" stroke-width="1.5" />
-          <text x="175" y="18" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">L<tspan dy="2" font-size="${sub}">T</tspan><tspan dy="-2"> - L</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
-          <text x="175" y="41" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
+          <line x1="130" y1="26" x2="220" y2="26" stroke="${textColor}" stroke-width="1.5" />
+          <text x="175" y="18" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">L<tspan dy="2" font-size="${sub}">T</tspan><tspan dy="-2"> - L</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
+          <text x="175" y="41" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
         </svg>
       `;
     }
@@ -1648,19 +1652,19 @@ export function createThermometerLab(t, options = {}) {
       const lt_l0 = state.currentLength - state.liquidL0;
       liquidFormulaSub.innerHTML = `
         <svg height="90" width="340" style="background:transparent; overflow:visible;">
-          <line x1="10" y1="30" x2="100" y2="30" stroke="#fff" stroke-width="1.2" />
-          <text x="55" y="21" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${state.liquidL100.toFixed(1)} - ${state.liquidL0.toFixed(1)}</text>
-          <text x="55" y="43" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
+          <line x1="10" y1="30" x2="100" y2="30" stroke="${textColor}" stroke-width="1.2" />
+          <text x="55" y="21" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${state.liquidL100.toFixed(1)} - ${state.liquidL0.toFixed(1)}</text>
+          <text x="55" y="43" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
           
-          <text x="110" y="35" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
+          <text x="110" y="35" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
           
-          <line x1="130" y1="30" x2="220" y2="30" stroke="#fff" stroke-width="1.2" />
+          <line x1="130" y1="30" x2="220" y2="30" stroke="${textColor}" stroke-width="1.2" />
           <text x="175" y="21" fill="#06b6d4" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="${sm}" text-anchor="middle">${state.currentLength.toFixed(2)} - ${state.liquidL0.toFixed(1)}</text>
-          <text x="175" y="43" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
+          <text x="175" y="43" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
 
-          <line x1="10" y1="68" x2="90" y2="68" stroke="#fff" stroke-width="1.2" />
+          <line x1="10" y1="68" x2="90" y2="68" stroke="${textColor}" stroke-width="1.2" />
           <text x="50" y="60" fill="#06b6d4" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="${sm}" text-anchor="middle">${lt_l0.toFixed(2)} &times; 100</text>
-          <text x="50" y="82" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${l100_l0.toFixed(1)}</text>
+          <text x="50" y="82" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${l100_l0.toFixed(1)}</text>
           
           <text x="105" y="73" fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" font-size="${lg}" class="tl-final-ans">&rArr; T = ${state.thermometerTemp.toFixed(1)}°C</text>
         </svg>
@@ -1671,15 +1675,15 @@ export function createThermometerLab(t, options = {}) {
     if (resistanceFormula) {
       resistanceFormula.innerHTML = `
         <svg height="50" width="240" style="background:transparent; overflow:visible;">
-          <line x1="10" y1="26" x2="100" y2="26" stroke="#fff" stroke-width="1.5" />
-          <text x="55" y="18" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">R<tspan dy="2" font-size="${sub}">100</tspan><tspan dy="-2"> - R</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
-          <text x="55" y="41" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
+          <line x1="10" y1="26" x2="100" y2="26" stroke="${textColor}" stroke-width="1.5" />
+          <text x="55" y="18" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">R<tspan dy="2" font-size="${sub}">100</tspan><tspan dy="-2"> - R</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
+          <text x="55" y="41" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
           
-          <text x="110" y="31" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
+          <text x="110" y="31" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
           
-          <line x1="130" y1="26" x2="220" y2="26" stroke="#fff" stroke-width="1.5" />
-          <text x="175" y="18" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">R<tspan dy="2" font-size="${sub}">T</tspan><tspan dy="-2"> - R</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
-          <text x="175" y="41" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
+          <line x1="130" y1="26" x2="220" y2="26" stroke="${textColor}" stroke-width="1.5" />
+          <text x="175" y="18" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">R<tspan dy="2" font-size="${sub}">T</tspan><tspan dy="-2"> - R</tspan><tspan dy="2" font-size="${sub}">0</tspan><tspan dy="-2"></tspan></text>
+          <text x="175" y="41" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
         </svg>
       `;
     }
@@ -1690,19 +1694,19 @@ export function createThermometerLab(t, options = {}) {
       const rt_r0 = state.currentResistance - state.resistanceR0;
       resistanceFormulaSub.innerHTML = `
         <svg height="90" width="340" style="background:transparent; overflow:visible;">
-          <line x1="10" y1="30" x2="100" y2="30" stroke="#fff" stroke-width="1.2" />
-          <text x="55" y="21" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${state.resistanceR100.toFixed(1)} - ${state.resistanceR0.toFixed(1)}</text>
-          <text x="55" y="43" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
+          <line x1="10" y1="30" x2="100" y2="30" stroke="${textColor}" stroke-width="1.2" />
+          <text x="55" y="21" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${state.resistanceR100.toFixed(1)} - ${state.resistanceR0.toFixed(1)}</text>
+          <text x="55" y="43" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">100 - 0</text>
           
-          <text x="110" y="35" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
+          <text x="110" y="35" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">=</text>
           
-          <line x1="130" y1="30" x2="220" y2="30" stroke="#fff" stroke-width="1.2" />
+          <line x1="130" y1="30" x2="220" y2="30" stroke="${textColor}" stroke-width="1.2" />
           <text x="175" y="21" fill="#6366f1" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="${sm}" text-anchor="middle">${state.currentResistance.toFixed(2)} - ${state.resistanceR0.toFixed(1)}</text>
-          <text x="175" y="43" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
+          <text x="175" y="43" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">T - 0</text>
 
-          <line x1="10" y1="68" x2="90" y2="68" stroke="#fff" stroke-width="1.2" />
+          <line x1="10" y1="68" x2="90" y2="68" stroke="${textColor}" stroke-width="1.2" />
           <text x="50" y="60" fill="#6366f1" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="${sm}" text-anchor="middle">${rt_r0.toFixed(2)} &times; 100</text>
-          <text x="50" y="82" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${r100_r0.toFixed(1)}</text>
+          <text x="50" y="82" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">${r100_r0.toFixed(1)}</text>
           
           <text x="105" y="73" fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" font-size="${lg}" class="tl-final-ans">&rArr; T = ${state.thermometerTemp.toFixed(1)}°C</text>
         </svg>
@@ -1713,11 +1717,11 @@ export function createThermometerLab(t, options = {}) {
     if (thermistorFormula) {
       thermistorFormula.innerHTML = `
         <svg height="50" width="280" style="background:transparent; overflow:visible;">
-          <text x="10" y="28" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">T =</text>
-          <line x1="40" y1="23" x2="220" y2="23" stroke="#fff" stroke-width="1.5" />
-          <text x="130" y="15" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">1</text>
-          <text x="130" y="38" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${xs}" text-anchor="middle">(1/&beta;) &bull; ln(R<tspan dy="2" font-size="${sub}">T</tspan><tspan dy="-2">/R</tspan><tspan dy="2" font-size="${sub}">25</tspan><tspan dy="-2">) + 1/298.15</tspan></text>
-          <text x="230" y="28" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">- 273.15</text>
+          <text x="10" y="28" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">T =</text>
+          <line x1="40" y1="23" x2="220" y2="23" stroke="${textColor}" stroke-width="1.5" />
+          <text x="130" y="15" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${sm}" text-anchor="middle">1</text>
+          <text x="130" y="38" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${xs}" text-anchor="middle">(1/&beta;) &bull; ln(R<tspan dy="2" font-size="${sub}">T</tspan><tspan dy="-2">/R</tspan><tspan dy="2" font-size="${sub}">25</tspan><tspan dy="-2">) + 1/298.15</tspan></text>
+          <text x="230" y="28" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">- 273.15</text>
         </svg>
       `;
     }
@@ -1727,9 +1731,9 @@ export function createThermometerLab(t, options = {}) {
       const tempK = state.thermometerTemp + 273.15;
       thermistorFormulaSub.innerHTML = `
         <svg height="45" width="280" style="background:transparent; overflow:visible;">
-          <text x="10" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="${md}">
+          <text x="10" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="${md}">
             T<tspan dy="3" font-size="${sub}">K</tspan><tspan dy="-3" fill="#10b981" font-weight="bold"> = ${tempK.toFixed(2)} K</tspan>
-            <tspan fill="#fff"> &rArr; T = </tspan>
+            <tspan fill="${textColor}"> &rArr; T = </tspan>
             <tspan fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" class="tl-final-ans">${state.thermometerTemp.toFixed(1)}°C</tspan>
           </text>
         </svg>
@@ -1761,9 +1765,9 @@ export function createThermometerLab(t, options = {}) {
         <!-- Left Scale: True Scale -->
         <g transform="translate(0, 0)">
           <!-- Glass Tube -->
-          <rect x="80" y="25" width="12" height="115" rx="6" fill="rgba(255,255,255,0.05)" stroke="#4b5563" stroke-width="1" />
+          <rect x="80" y="25" width="12" height="115" rx="6" fill="rgba(0,0,0,0.03)" stroke="#4b5563" stroke-width="1" />
           <!-- Bulb -->
-          <circle cx="86" cy="144" r="10" fill="rgba(255,255,255,0.05)" stroke="#4b5563" stroke-width="1" />
+          <circle cx="86" cy="144" r="10" fill="rgba(0,0,0,0.03)" stroke="#4b5563" stroke-width="1" />
           <!-- Liquid Core -->
           <rect x="84" y="${currentY}" width="4" height="${144 - currentY}" fill="#3b82f6" />
           <circle cx="86" cy="144" r="8" fill="#3b82f6" />
@@ -1780,15 +1784,15 @@ export function createThermometerLab(t, options = {}) {
           <!-- Current Point -->
           <text x="65" y="${currentY + 3}" fill="#34d399" font-size="10" font-weight="bold" text-anchor="end">${displayT.toFixed(1)}°C</text>
 
-          <text x="86" y="170" fill="#a1a1aa" font-size="9" font-weight="bold" text-anchor="middle">${t('tools.thermometerLab.faulty.trueScale')}</text>
+          <text x="86" y="170" fill="#6b7280" font-size="9" font-weight="bold" text-anchor="middle">${t('tools.thermometerLab.faulty.trueScale')}</text>
         </g>
 
         <!-- Right Scale: Faulty Scale -->
         <g transform="translate(130, 0)">
           <!-- Glass Tube -->
-          <rect x="100" y="25" width="12" height="115" rx="6" fill="rgba(255,255,255,0.05)" stroke="#4b5563" stroke-width="1" />
+          <rect x="100" y="25" width="12" height="115" rx="6" fill="rgba(0,0,0,0.03)" stroke="#4b5563" stroke-width="1" />
           <!-- Bulb -->
-          <circle cx="106" cy="144" r="10" fill="rgba(255,255,255,0.05)" stroke="#4b5563" stroke-width="1" />
+          <circle cx="106" cy="144" r="10" fill="rgba(0,0,0,0.03)" stroke="#4b5563" stroke-width="1" />
           <!-- Liquid Core -->
           <rect x="104" y="${currentY}" width="4" height="${144 - currentY}" fill="#f59e0b" />
           <circle cx="106" cy="144" r="8" fill="#f59e0b" />
@@ -1805,7 +1809,7 @@ export function createThermometerLab(t, options = {}) {
           <!-- Current Faulty Point -->
           <text x="125" y="${currentY + 3}" fill="#34d399" font-size="10" font-weight="bold" text-anchor="start">C = ${displayC.toFixed(1)}°C</text>
 
-          <text x="106" y="170" fill="#a1a1aa" font-size="9" font-weight="bold" text-anchor="middle">${t('tools.thermometerLab.faulty.faultyScale')}</text>
+          <text x="106" y="170" fill="#6b7280" font-size="9" font-weight="bold" text-anchor="middle">${t('tools.thermometerLab.faulty.faultyScale')}</text>
         </g>
 
         <!-- Connecting Ratio Indicator Line -->
@@ -1921,14 +1925,17 @@ export function createThermometerLab(t, options = {}) {
     const trueT = ((cm - cf) / interval) * 100;
     const faultyC = (tVal / 100) * interval + cf;
 
+    const textColor = 'currentColor';
+    const mutedColor = '#4b5563';
+
     if (formulaPaneA) {
       formulaPaneA.innerHTML = `
         <svg height="45" width="280" style="background:transparent; overflow:visible;">
-          <text x="10" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="15">T =</text>
-          <line x1="40" y1="21" x2="160" y2="21" stroke="#fff" stroke-width="1.5" />
+          <text x="10" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="15">T =</text>
+          <line x1="40" y1="21" x2="160" y2="21" stroke="${textColor}" stroke-width="1.5" />
           <text x="100" y="15" fill="#06b6d4" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="12" text-anchor="middle">${cm.toFixed(1)} - ${formatFaultyNum(cf)}</text>
-          <text x="100" y="36" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">${cu.toFixed(1)} - ${formatFaultyNum(cf)}</text>
-          <text x="170" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="15">
+          <text x="100" y="36" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">${cu.toFixed(1)} - ${formatFaultyNum(cf)}</text>
+          <text x="170" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="15">
             &times; 100 = <tspan fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" class="tl-final-ans">${trueT.toFixed(1)}°C</tspan>
           </text>
         </svg>
@@ -1938,11 +1945,11 @@ export function createThermometerLab(t, options = {}) {
     if (formulaPaneB) {
       formulaPaneB.innerHTML = `
         <svg height="45" width="280" style="background:transparent; overflow:visible;">
-          <text x="10" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="15">C =</text>
-          <line x1="40" y1="21" x2="150" y2="21" stroke="#fff" stroke-width="1.5" />
+          <text x="10" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="15">C =</text>
+          <line x1="40" y1="21" x2="150" y2="21" stroke="${textColor}" stroke-width="1.5" />
           <text x="95" y="15" fill="#06b6d4" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="12" text-anchor="middle">${tVal.toFixed(1)} &times; ${interval.toFixed(1)}</text>
-          <text x="95" y="36" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">100</text>
-          <text x="158" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="14">
+          <text x="95" y="36" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">100</text>
+          <text x="158" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="14">
             + ${formatFaultyNum(cf)} = <tspan fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" class="tl-final-ans">${faultyC.toFixed(2)}°C</tspan>
           </text>
         </svg>
@@ -2444,14 +2451,17 @@ export function createFaultyScaleCalibrationLab(t) {
     const trueT = ((cm - cf) / interval) * 100;
     const faultyC = (tVal / 100) * interval + cf;
 
+    const textColor = 'currentColor';
+    const mutedColor = '#4b5563';
+
     if (formulaPaneA) {
       formulaPaneA.innerHTML = `
         <svg height="45" width="280" style="background:transparent; overflow:visible;">
-          <text x="10" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="15">T =</text>
-          <line x1="40" y1="21" x2="160" y2="21" stroke="#fff" stroke-width="1.5" />
+          <text x="10" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="15">T =</text>
+          <line x1="40" y1="21" x2="160" y2="21" stroke="${textColor}" stroke-width="1.5" />
           <text x="100" y="15" fill="#06b6d4" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="12" text-anchor="middle">${cm.toFixed(1)} - ${formatFaultyNum(cf)}</text>
-          <text x="100" y="36" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">${cu.toFixed(1)} - ${formatFaultyNum(cf)}</text>
-          <text x="170" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="15">
+          <text x="100" y="36" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">${cu.toFixed(1)} - ${formatFaultyNum(cf)}</text>
+          <text x="170" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="15">
             &times; 100 = <tspan fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" class="tl-final-ans">${trueT.toFixed(1)}°C</tspan>
           </text>
         </svg>
@@ -2461,11 +2471,11 @@ export function createFaultyScaleCalibrationLab(t) {
     if (formulaPaneB) {
       formulaPaneB.innerHTML = `
         <svg height="45" width="280" style="background:transparent; overflow:visible;">
-          <text x="10" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="15">C =</text>
-          <line x1="40" y1="21" x2="150" y2="21" stroke="#fff" stroke-width="1.5" />
+          <text x="10" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="15">C =</text>
+          <line x1="40" y1="21" x2="150" y2="21" stroke="${textColor}" stroke-width="1.5" />
           <text x="95" y="15" fill="#06b6d4" font-family="Cambria, Georgia, serif" font-weight="bold" font-size="12" text-anchor="middle">${tVal.toFixed(1)} &times; ${interval.toFixed(1)}</text>
-          <text x="95" y="36" fill="#a1a1aa" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">100</text>
-          <text x="158" y="26" fill="#fff" font-family="Cambria, Georgia, serif" font-size="14">
+          <text x="95" y="36" fill="${mutedColor}" font-family="Cambria, Georgia, serif" font-size="12" text-anchor="middle">100</text>
+          <text x="158" y="26" fill="${textColor}" font-family="Cambria, Georgia, serif" font-size="14">
             + ${formatFaultyNum(cf)} = <tspan fill="#10b981" font-family="system-ui, sans-serif" font-weight="900" class="tl-final-ans">${faultyC.toFixed(2)}°C</tspan>
           </text>
         </svg>

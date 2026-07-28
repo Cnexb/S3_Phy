@@ -1300,6 +1300,30 @@
     let lang = resolveQuizLang();
     let lastQuestions = [];
     const attemptMap = /* @__PURE__ */ new Map();
+
+    const QUIZ_META = { subject: "PHY", quizId: "phy-heat-ch1" };
+    function reportPhyAttempt(q, isCorrect, state) {
+      try {
+        const payload = {
+          type: "uniplus:quizAnswer",
+          subject: QUIZ_META.subject,
+          quizId: QUIZ_META.quizId,
+          questionId: String(q.id),
+          section: q.section || null,
+          difficulty: q.difficulty || null,
+          stem: q.stem || null,
+          selectedAnswer: state.selected !== undefined && state.selected !== null ? String(state.selected) : (state.fillValues ? JSON.stringify(state.fillValues) : null),
+          correctAnswer: q.answer !== undefined ? String(q.answer) : null,
+          isCorrect: !!isCorrect,
+          attemptNumber: state.wrong + 1,
+          msTaken: 0
+        };
+        window.parent.postMessage(payload, "*");
+        if (window.top !== window.parent) {
+          try { window.top.postMessage(payload, "*"); } catch (_) {}
+        }
+      } catch (_) {}
+    }
     const t = (key) => UI[lang]?.[key] || UI.en[key] || key;
     const els = {
       typeChecks: document.getElementById("quiz-type-checks"),
@@ -1624,6 +1648,7 @@
           if (ok) {
             state.solved = true;
             attemptMap.set(q.id, state);
+            reportPhyAttempt(q, true, state);
             fb.className = "mt-3 text-body-sm p-3 rounded-xl bg-secondary/10 text-secondary font-label-bold";
             fb.textContent = t("correct");
             btn.disabled = true;
@@ -1650,6 +1675,7 @@
           }
           state.solved = true;
           attemptMap.set(q.id, state);
+          reportPhyAttempt(q, false, state);
           showModelAnswer();
           btn.disabled = true;
           optionButtons.forEach((b) => {

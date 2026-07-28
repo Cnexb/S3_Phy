@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>肥皂泡薄膜干涉</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Rajdhani:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --panel-bg: #ffffff;
+            --border: #e8eaed;
+            --text-main: #2c3e50;
+            --text-muted: #6b7280;
+            --highlight: #b45309;
+            --accent: #0284c7;
+            --btn-bg: #e9ecef;
+            --btn-text: #495057;
+        }
+        html.s3phy-embed, html.s3phy-embed body { height: 100%; }
+        html.s3phy-embed .lang-btn { display: none; }
+        body { margin: 0; padding: 0; background-color: var(--bg); color: var(--text-main); font-family: 'Noto Sans TC', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* 左側圖表區 */
+        .graph-container { flex: 1; padding: 20px; display: flex; flex-direction: column; position: relative; }
+        .canvas-wrapper { flex: 1; position: relative; background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        canvas { display: block; width: 100%; height: 100%; }
+        
+        /* 右側控制區 */
+        .control-panel { width: 450px; background: var(--panel-bg); border-left: 1px solid var(--border); padding: 25px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; box-shadow: -2px 0 12px rgba(0,0,0,0.04); z-index: 10; }
+        
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+        h1 { margin: 0; font-size: 20px; color: var(--text-main); line-height: 1.3; }
+        h1 span { color: var(--accent); font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 800; }
+        .lang-btn { background: var(--btn-bg); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; }
+        .lang-btn:hover { color: var(--text-main); border-color: #ced4da; background: #dee2e6; }
+
+        /* 解說面板 */
+        .explanation { background: #eff6ff; border-left: 4px solid var(--accent); padding: 15px; border-radius: 0 8px 8px 0; font-size: 14px; line-height: 1.6; color: var(--text-main); border: 1px solid #bfdbfe; border-left-width: 4px; }
+        
+        /* 公式樣式 */
+        .formula { 
+            font-family: 'Cambria', 'Times New Roman', serif; 
+            font-size: 17px; 
+            font-style: italic; 
+            font-weight: bold;
+            color: var(--text-main); 
+            background: rgba(2, 132, 199, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 8px 12px;
+            margin: 8px 0; 
+            display: block; 
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .highlight-yellow { color: #b45309; background: rgba(251, 191, 36, 0.15); padding: 2px 6px; border-radius: 4px; font-weight: 900; }
+        .highlight-red { color: #dc2626; background: rgba(220, 38, 38, 0.1); padding: 2px 6px; border-radius: 4px; font-weight: 900; }
+        .highlight-green { color: #059669; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; font-weight: 900; }
+
+        /* 控制卡片 */
+        .card { background: #f8f9fa; border: 1px solid var(--border); padding: 15px 20px; border-radius: 12px; }
+        .slider-group { margin-bottom: 12px; }
+        .slider-group:last-child { margin-bottom: 0; }
+        .slider-header { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-muted); font-weight: 700;}
+        .val-display { font-family: 'Rajdhani', sans-serif; font-size: 16px; font-weight: 700; color: var(--text-main); }
+        input[type=range] { width: 100%; cursor: pointer; accent-color: var(--accent); }
+
+        /* 情境按鈕 */
+        .scenario-btns { display: flex; flex-direction: column; gap: 8px; }
+        button.scenario { background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--border); padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; text-align: left; }
+        button.scenario:hover { background: #dee2e6; border-color: #ced4da; }
+        button.scenario.active { background: rgba(2, 132, 199, 0.1); border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 1px rgba(2,132,199,0.15); }
+
+        /* 觀察結果框 */
+        .result-box { display: flex; align-items: center; gap: 15px; background: #f1f3f5; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 5px;}
+        .color-preview { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #dee2e6; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.2s, box-shadow 0.2s; }
+        .result-text { flex: 1; font-size: 15px; font-weight: 700; }
+        .result-sub { font-size: 12px; color: var(--text-muted); font-weight: normal; margin-top: 2px;}
+
+        /* 浮動標籤 */
+        .floating-label { position: absolute; font-size: 15px; font-weight: 700; color: var(--text-muted); pointer-events: none; letter-spacing: 1px; }
+        #label-film { left: 25px; transform: translateY(-50%); color: var(--accent); transition: opacity 0.2s ease; }
+    </style>
+</head>
+<body>
+
+    <div class="graph-container">
+        <div class="canvas-wrapper">
+            <canvas id="simCanvas"></canvas>
+            <div class="floating-label" id="label-air-top" style="top: 25px; left: 25px;">Air (n = 1.0)</div>
+            <div class="floating-label" id="label-film">Soap Film (n = 1.33)</div>
+            <div class="floating-label" id="label-air-bot" style="bottom: 50px; left: 25px;">Air (n = 1.0)</div>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <div class="header-top">
+            <h1 id="page-title">肥皂泡薄膜干涉</h1>
+            <button class="lang-btn" id="lang-toggle">🌐 English</button>
+        </div>
+
+        <div class="explanation" id="exp-text"></div>
+
+        <div class="result-box">
+            <div class="color-preview" id="color-preview"></div>
+            <div>
+                <div class="result-text" id="result-status"></div>
+                <div class="result-sub" id="result-intensity"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="slider-group">
+                <div class="slider-header"><span id="label-wl">入射光波長 (λ)</span> <span class="val-display" id="val-wl">532 nm</span></div>
+                <input type="range" id="slider-wl" min="380" max="750" step="1" value="532">
+            </div>
+            <div class="slider-group">
+                <div class="slider-header"><span id="label-th">薄膜厚度 (t)</span> <span class="val-display" id="val-th">200 nm</span></div>
+                <input type="range" id="slider-th" min="0" max="600" step="1" value="200">
+            </div>
+        </div>
+
+        <div class="scenario-btns">
+            <button class="scenario" id="btn-q-burst"></button>
+            <button class="scenario" id="btn-constructive"></button>
+            <button class="scenario" id="btn-destructive"></button>
+        </div>
+    </div>
+
+<script>
+    const dict = {
+        zh: {
+            title: "肥皂泡薄膜干涉",
+            wl: "入射光波長 (λ)",
+            th: "薄膜厚度 (t)",
+            btnBurst: "🫧 Q(e)：泡泡破裂前（t → 0）",
+            btnConst: "✨ 產生完全相長干涉（亮）",
+            btnDest: "🌑 產生完全相消干涉（暗）",
+            langBtn: "🌐 English",
+            filmLabel: "肥皂膜 (n = 1.33)",
+            airLabel: "空氣 (n = 1.0)",
+            resConst: "相長干涉",
+            resDest: "相消干涉",
+            resPartial: "部分干涉",
+            antiphaseMark: "反相",
+            inphaseMark: "同相",
+            pathDiffMark: "路徑差",
+            remark: "* 註：反射光 p 與入射光反相，反射光 q 與入射光同相。",
+            exp: (wl, wl_prime, t, pathDiff, phaseDiffStr, isConst) => `
+                <b>物理分析：</b><br>
+                1. 膜內波長縮短：<span class="formula">λ' = λ / n = ${wl} / 1.33 ≈ ${wl_prime} nm</span>
+                2. 光線 q 多走的距離：<span class="formula">Δx ≈ 2t = ${2*t} nm = ${pathDiff} λ'</span>
+                3. 反射相位反轉：<br>
+                &nbsp;&nbsp;• 光線 p（空氣→水）：<span class="highlight-red">反轉 λ'/2（反相）</span><br>
+                &nbsp;&nbsp;• 光線 q（水→空氣）：<span class="highlight-green">無反轉（同相）</span><br>
+                4. 總等效路徑差：<br><span class="formula">| Δx - λ'/2 | = ${phaseDiffStr}</span>
+                👉 結論：兩道光波相遇時，呈現 <span class="${isConst ? 'highlight-yellow' : 'highlight-red'}">${isConst ? '相長（亮）' : '相消（暗）'}</span>。
+            `,
+            expZero: `<b>Q(e) 泡泡破裂前分析：</b><br>當厚度 <span class="highlight-yellow">t → 0</span> 時，光線 q 多走的路徑差 Δx 趨近於 0。<br>然而，因為光線 p 反射時有 <span class="highlight-red">λ'/2 的相位反轉</span>，而光線 q 沒有。<br>因此兩道光波相遇時必定是<b>完全反相</b>，產生<span class="highlight-red">相消干涉</span>，導致泡泡看起來是<b>黑色</b>的！`
+        },
+        en: {
+            title: "Thin-film Interference",
+            wl: "Incident Wavelength (λ)",
+            th: "Film Thickness (t)",
+            btnBurst: "🫧 Q(e): Just before bursting (t → 0)",
+            btnConst: "✨ Constructive Interference (Bright)",
+            btnDest: "🌑 Destructive Interference (Dark)",
+            langBtn: "🌐 中文",
+            filmLabel: "Soap Film (n = 1.33)",
+            airLabel: "Air (n = 1.0)",
+            resConst: "Constructive Interference",
+            resDest: "Destructive Interference",
+            resPartial: "Partial Interference",
+            antiphaseMark: "Antiphase",
+            inphaseMark: "In phase",
+            pathDiffMark: "Path Diff.",
+            remark: "* Remark: Ray p is antiphase with the incident ray, ray q is in phase with the incident ray.",
+            exp: (wl, wl_prime, t, pathDiff, phaseDiffStr, isConst) => `
+                <b>Physics Analysis:</b><br>
+                1. Wavelength decreases in film: <span class="formula">λ' = λ / n = ${wl} / 1.33 ≈ ${wl_prime} nm</span>
+                2. Extra distance by ray q: <span class="formula">Δx ≈ 2t = ${2*t} nm = ${pathDiff} λ'</span>
+                3. Phase Shift upon reflection:<br>
+                &nbsp;&nbsp;• Ray p (Air→Film): <span class="highlight-red">Shift by λ'/2 (Antiphase)</span><br>
+                &nbsp;&nbsp;• Ray q (Film→Air): <span class="highlight-green">No shift (In phase)</span><br>
+                4. Total Effective Path Diff:<br><span class="formula">| Δx - λ'/2 | = ${phaseDiffStr}</span>
+                👉 Conclusion: The rays meet and undergo <span class="${isConst ? 'highlight-yellow' : 'highlight-red'}">${isConst ? 'Constructive (Bright)' : 'Destructive (Dark)'}</span> interference.
+            `,
+            expZero: `<b>Q(e) Bursting Analysis:</b><br>As thickness <span class="highlight-yellow">t → 0</span>, the path difference Δx approaches 0.<br>However, ray p undergoes a <span class="highlight-red">shift of λ'/2</span> upon reflection, while ray q does not.<br>Thus, the two rays meet exactly <b>antiphase</b>, causing <span class="highlight-red">destructive interference</span>. This is why the bubble appears <b>black</b> just before it bursts!`
+        }
+    };
+
+    function hubLangToLocal(lang) {
+        if (lang === 'en') return 'en';
+        return 'zh';
+    }
+
+    const params = new URLSearchParams(location.search);
+    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+    const n_film = 1.33;
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const sWl = document.getElementById('slider-wl');
+    const sTh = document.getElementById('slider-th');
+    const vWl = document.getElementById('val-wl');
+    const vTh = document.getElementById('val-th');
+    const expText = document.getElementById('exp-text');
+    const colorPreview = document.getElementById('color-preview');
+    const resStatus = document.getElementById('result-status');
+    const resIntensity = document.getElementById('result-intensity');
+    const btnLang = document.getElementById('lang-toggle');
+
+    function wavelengthToRGB(wavelength) {
+        let r, g, b;
+        if (wavelength >= 380 && wavelength < 440) { r = -(wavelength - 440) / (440 - 380); g = 0; b = 1; } 
+        else if (wavelength >= 440 && wavelength < 490) { r = 0; g = (wavelength - 440) / (490 - 440); b = 1; } 
+        else if (wavelength >= 490 && wavelength < 510) { r = 0; g = 1; b = -(wavelength - 510) / (510 - 490); } 
+        else if (wavelength >= 510 && wavelength < 580) { r = (wavelength - 510) / (580 - 510); g = 1; b = 0; } 
+        else if (wavelength >= 580 && wavelength < 645) { r = 1; g = -(wavelength - 645) / (645 - 580); b = 0; } 
+        else if (wavelength >= 645 && wavelength <= 750) { r = 1; g = 0; b = 0; } 
+        else { r = 0; g = 0; b = 0; }
+        let factor = 1;
+        if (wavelength >= 380 && wavelength < 420) factor = 0.3 + 0.7 * (wavelength - 380) / (420 - 380);
+        else if (wavelength >= 645 && wavelength <= 750) factor = 0.3 + 0.7 * (750 - wavelength) / (750 - 645);
+        return [Math.round(r * factor * 255), Math.round(g * factor * 255), Math.round(b * factor * 255)];
+    }
+
+    function updateLanguageUI() {
+        const t = dict[currentLang];
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+        document.title = t.title;
+        document.getElementById('page-title').innerText = t.title;
+        btnLang.innerText = t.langBtn;
+        document.getElementById('label-wl').innerText = t.wl;
+        document.getElementById('label-th').innerText = t.th;
+        document.getElementById('btn-q-burst').innerText = t.btnBurst;
+        document.getElementById('btn-constructive').innerText = t.btnConst;
+        document.getElementById('btn-destructive').innerText = t.btnDest;
+        document.getElementById('label-film').innerText = t.filmLabel;
+        document.getElementById('label-air-top').innerText = t.airLabel;
+        document.getElementById('label-air-bot').innerText = t.airLabel;
+        updatePhysics();
+    }
+
+    btnLang.addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        updateLanguageUI();
+    });
+
+    window.addEventListener('message', (ev) => {
+        if (ev.data?.type !== 's3phy:lang') return;
+        currentLang = hubLangToLocal(ev.data.lang);
+        updateLanguageUI();
+    });
+
+    function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let animationTime = 0;
+
+    function updatePhysics() {
+        const wl = parseFloat(sWl.value);
+        const th = parseFloat(sTh.value);
+        vWl.innerText = wl + " nm";
+        vTh.innerText = th + " nm";
+
+        const wl_prime = wl / n_film;
+        const extraDistance = 2 * th;
+        
+        const phaseDiffRad = Math.abs((4 * Math.PI * n_film * th / wl) - Math.PI);
+        let intensity = Math.pow(Math.cos(phaseDiffRad / 2), 2);
+        if (intensity < 0.001) intensity = 0;
+
+        const pathDiffLambdaNum = extraDistance / wl_prime;
+        const pathDiffLambda = pathDiffLambdaNum.toFixed(2);
+        
+        const effDiff = Math.abs(pathDiffLambdaNum - 0.5);
+        let phaseDiffStr = `<b>${effDiff.toFixed(2)} λ'</b>`;
+        
+        let isConst = false;
+        const t_dict = dict[currentLang];
+
+        if (intensity > 0.95) {
+            resStatus.innerText = t_dict.resConst;
+            resStatus.style.color = "var(--highlight)";
+            phaseDiffStr += currentLang === 'zh' ? " (整數倍 ➔ 同相)" : " (Integer ➔ In phase)";
+            isConst = true;
+        } else if (intensity < 0.05) {
+            resStatus.innerText = t_dict.resDest;
+            resStatus.style.color = "#ff4d4f";
+            phaseDiffStr += currentLang === 'zh' ? " (半整數倍 ➔ 反相)" : " (Half-integer ➔ Antiphase)";
+            isConst = false;
+        } else {
+            resStatus.innerText = t_dict.resPartial;
+            resStatus.style.color = "#2c3e50";
+            phaseDiffStr += currentLang === 'zh' ? " (非整數倍 ➔ 部分干涉)" : " (Intermediate)";
+            isConst = intensity > 0.5;
+        }
+
+        resIntensity.innerText = currentLang === 'zh'
+            ? `強度：${(intensity * 100).toFixed(1)}%`
+            : `Intensity: ${(intensity * 100).toFixed(1)}%`;
+
+        if (th === 0) {
+            expText.innerHTML = t_dict.expZero;
+        } else {
+            expText.innerHTML = t_dict.exp(wl, Math.round(wl_prime), th, pathDiffLambda, phaseDiffStr, isConst);
+        }
+
+        const rgb = wavelengthToRGB(wl);
+        
+        colorPreview.style.background = `rgb(${Math.round(rgb[0]*intensity)},${Math.round(rgb[1]*intensity)},${Math.round(rgb[2]*intensity)})`;
+        if(intensity > 0.1) {
+            colorPreview.style.boxShadow = `0 0 ${20 * intensity}px rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+        } else {
+            colorPreview.style.boxShadow = 'none';
+        }
+    }
+
+    function drawGrid(ctx, w, h) {
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 40) { ctx.moveTo(x, 0); ctx.lineTo(x, h); }
+        for (let y = 0; y <= h; y += 40) { ctx.moveTo(0, y); ctx.lineTo(w, y); }
+        ctx.stroke();
+    }
+
+    function drawBadge(ctx, text, x, y, colorStr) {
+        ctx.font = 'bold 12px sans-serif';
+        const metrics = ctx.measureText(text);
+        const w = metrics.width + 20;
+        const h = 24;
+        const r = 12;
+
+        ctx.fillStyle = colorStr.replace('1)', '0.15'); 
+        ctx.strokeStyle = colorStr;
+        ctx.lineWidth = 1;
+        
+        ctx.beginPath();
+        ctx.roundRect(x - w - 10, y - h/2, w, h, r);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = colorStr;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, x - w/2 - 10, y);
+        ctx.textAlign = 'left'; 
+    }
+
+    function drawEye(ctx, x, y, angle) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle); 
+        
+        ctx.beginPath();
+        ctx.moveTo(-16, 0);
+        ctx.quadraticCurveTo(0, -12, 16, 0);
+        ctx.quadraticCurveTo(0, 12, -16, 0);
+        ctx.strokeStyle = 'rgba(44, 62, 80, 0.85)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(2, 132, 199, 0.08)';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#0284c7';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#1a1c2c';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(-2, -2, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    function drawWaveLine(ctx, startX, startY, endX, endY, phaseOffset, k, amplitude, color) {
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const angle = Math.atan2(dy, dx);
+
+        ctx.save();
+        ctx.translate(startX, startY);
+        ctx.rotate(angle);
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2.5;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = color;
+        
+        for (let x = 0; x <= dist; x += 1) {
+            const y = amplitude * Math.sin(k * x - animationTime + phaseOffset);
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(dist, 0);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawGrid(ctx, canvas.width, canvas.height);
+        
+        const wl = parseFloat(sWl.value);
+        const th = parseFloat(sTh.value);
+        const rgb = wavelengthToRGB(wl);
+        const colorStr = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+        const t_dict = dict[currentLang];
+        
+        const visualScale = 0.25; 
+
+        // 幾何設定
+        const filmTopY = canvas.height / 2 - 80;
+        const angleInc = Math.PI / 6; // 入射角 30 度
+        const angleRefract = Math.asin(Math.sin(angleInc) / n_film);
+
+        const visualTh = th * visualScale * Math.cos(angleRefract); 
+        const filmBotY = filmTopY + visualTh;
+
+        // ✨ 動態調整 Soap Film 標籤位置 (永遠置中於薄膜內部)
+        const labelFilm = document.getElementById('label-film');
+        labelFilm.style.top = `${filmTopY + visualTh / 2}px`;
+        // 如果厚度太小，隱藏文字避免與邊界線重疊
+        labelFilm.style.opacity = visualTh < 25 ? '0' : '1';
+
+        // 玻璃質感薄膜
+        if (visualTh > 0) {
+            const filmGrad = ctx.createLinearGradient(0, filmTopY, 0, filmBotY);
+            filmGrad.addColorStop(0, 'rgba(2, 132, 199, 0.18)');
+            filmGrad.addColorStop(0.5, 'rgba(2, 132, 199, 0.06)');
+            filmGrad.addColorStop(1, 'rgba(2, 132, 199, 0.18)');
+            ctx.fillStyle = filmGrad;
+            ctx.fillRect(0, filmTopY, canvas.width, visualTh);
+        }
+
+        // 邊界線
+        ctx.shadowBlur = 4;
+        ctx.shadowColor = 'rgba(2, 132, 199, 0.2)';
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(0, filmTopY); ctx.lineTo(canvas.width, filmTopY); ctx.stroke();
+        if (visualTh > 0) {
+            ctx.beginPath(); ctx.moveTo(0, filmBotY); ctx.lineTo(canvas.width, filmBotY); ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+
+        const hitX = canvas.width / 2 - 50;
+        const incLength = 350;
+        const startX = hitX - incLength * Math.sin(angleInc);
+        const startY = filmTopY - incLength * Math.cos(angleInc);
+
+        const pEndX = hitX + incLength * Math.sin(angleInc);
+        const pEndY = filmTopY - incLength * Math.cos(angleInc);
+
+        const baseWlPx = wl * visualScale; 
+        const k_inc = 2 * Math.PI / baseWlPx;
+        const k_film = k_inc * n_film; 
+        const amp = 15;
+
+        // 1. 入射光
+        const phaseIncStart = -k_inc * incLength;
+        drawWaveLine(ctx, startX, startY, hitX, filmTopY, phaseIncStart, k_inc, amp, colorStr);
+
+        // 標示入射波長 λ
+        ctx.save();
+        ctx.fillStyle = colorStr;
+        ctx.font = 'bold 15px sans-serif';
+        ctx.shadowBlur = 2;
+        ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        ctx.textAlign = 'right';
+        ctx.fillText(`λ = ${wl} nm`, hitX - 80, filmTopY - 50);
+        ctx.restore();
+
+        // 2. 反射光 p 
+        drawWaveLine(ctx, hitX, filmTopY, pEndX, pEndY, Math.PI, k_inc, amp, colorStr);
+        
+        ctx.fillStyle = '#2c3e50'; ctx.font = 'italic 18px serif';
+        ctx.fillText('p', hitX + 30, filmTopY - 40);
+        drawBadge(ctx, t_dict.antiphaseMark, hitX, filmTopY - 15, 'rgba(255, 77, 79, 1)');
+
+        if (visualTh > 0) {
+            const distIn1 = visualTh / Math.cos(angleRefract);
+            const botHitX = hitX + distIn1 * Math.sin(angleRefract);
+            const exitX = botHitX + distIn1 * Math.sin(angleRefract);
+            const qEndX = exitX + incLength * Math.sin(angleInc);
+            const qEndY = filmTopY - incLength * Math.cos(angleInc);
+
+            // 3. 膜內折射光 q
+            drawWaveLine(ctx, hitX, filmTopY, botHitX, filmBotY, 0, k_film, amp, colorStr);
+            drawBadge(ctx, t_dict.inphaseMark, botHitX, filmBotY - 15, 'rgba(16, 185, 129, 1)');
+
+            // 標示膜內波長 λ'
+            if (visualTh > 0) {
+                ctx.save();
+                ctx.fillStyle = colorStr;
+                ctx.font = 'bold 15px sans-serif';
+                ctx.shadowBlur = 4;
+                ctx.shadowColor = 'rgba(0,0,0,0.15)';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`λ' ≈ ${Math.round(wl/n_film)} nm`, hitX - 0, filmTopY + visualTh+10);
+                ctx.restore();
+            }
+
+            // 4. 膜內反射光 q
+            drawWaveLine(ctx, botHitX, filmBotY, exitX, filmTopY, k_film * distIn1, k_film, amp, colorStr);
+
+            // 5. 穿出薄膜的光 q
+            const phaseQ_exit = k_film * 2 * distIn1;
+            drawWaveLine(ctx, exitX, filmTopY, qEndX, qEndY, phaseQ_exit, k_inc, amp, colorStr);
+
+            ctx.fillStyle = '#2c3e50'; ctx.font = 'italic 18px serif';
+            ctx.fillText('q', exitX + 30, filmTopY - 40);
+            drawEye(ctx, qEndX + 20, qEndY + 10, Math.PI/6);
+
+            // 繪製厚度 (Thickness t) 標示線
+            const dimX = hitX - 120;
+            ctx.strokeStyle = 'rgba(2, 132, 199, 0.5)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(dimX, filmTopY);
+            ctx.lineTo(dimX, filmBotY);
+            ctx.moveTo(dimX - 8, filmTopY);
+            ctx.lineTo(dimX + 8, filmTopY);
+            ctx.moveTo(dimX - 8, filmBotY);
+            ctx.lineTo(dimX + 8, filmBotY);
+            ctx.stroke();
+
+            ctx.fillStyle = '#0284c7';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.fillText(`t = ${th} nm`, dimX - 12, filmTopY + visualTh / 2);
+            ctx.shadowBlur = 0; 
+
+            // 繪製路徑差 (Path Difference Δx) 標示線
+            const midY = filmTopY + visualTh / 2;
+            const rayMidX = botHitX + (exitX - botHitX) / 2; 
+            const pdLineStartX = rayMidX + 15;
+            const pdLineEndX = exitX + 60;
+            
+            ctx.beginPath();
+            ctx.strokeStyle = 'rgba(180, 83, 9, 0.5)';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 4]);
+            ctx.moveTo(pdLineStartX, midY);
+            ctx.lineTo(pdLineEndX, midY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const wl_prime_draw = wl / n_film;
+            const pdLambda = ((2 * th) / wl_prime_draw).toFixed(2);
+
+            ctx.fillStyle = '#b45309';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.fillText(`${t_dict.pathDiffMark} Δx ≈ 2t = ${2 * th} nm = ${pdLambda} λ'`, pdLineEndX + 8, midY);
+            ctx.shadowBlur = 0; 
+            ctx.textAlign = 'left'; 
+
+        } else {
+            drawWaveLine(ctx, hitX, filmTopY, pEndX, pEndY, 0, k_inc, amp, 'rgba(44,62,80,0.35)');
+            ctx.fillStyle = '#2c3e50'; ctx.font = 'italic 18px serif';
+            ctx.fillText('q', hitX + 50, filmTopY - 20);
+            drawEye(ctx, pEndX + 20, pEndY + 10, Math.PI/6);
+        }
+
+        // 畫布底部註解
+        ctx.fillStyle = 'rgba(44, 62, 80, 0.55)'; 
+        ctx.font = '14px sans-serif';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(t_dict.remark, 25, canvas.height - 25);
+
+        animationTime += 0.04; 
+        requestAnimationFrame(draw);
+    }
+
+    // Event Listeners
+    [sWl, sTh].forEach(el => el.addEventListener('input', () => {
+        document.querySelectorAll('.scenario').forEach(btn => btn.classList.remove('active'));
+        updatePhysics();
+    }));
+
+    document.getElementById('btn-q-burst').addEventListener('click', function() {
+        document.querySelectorAll('.scenario').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        sTh.value = 0;
+        updatePhysics();
+    });
+
+    document.getElementById('btn-constructive').addEventListener('click', function() {
+        document.querySelectorAll('.scenario').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        const wl = parseFloat(sWl.value);
+        const wl_prime = wl / n_film;
+        sTh.value = Math.round(0.25 * wl_prime);
+        updatePhysics();
+    });
+
+    document.getElementById('btn-destructive').addEventListener('click', function() {
+        document.querySelectorAll('.scenario').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        const wl = parseFloat(sWl.value);
+        const wl_prime = wl / n_film;
+        sTh.value = Math.round(0.5 * wl_prime);
+        updatePhysics();
+    });
+
+    // Init
+    updateLanguageUI();
+    draw();
+
+</script>
+</body>
+</html>
+
+
+
+

@@ -307,7 +307,7 @@ html.s3phy-embed .app-root {
 
 .lab-controls-actions button.flex-1 {
   white-space: nowrap;
-  min-width: 0;
+  min-width: max-content;
 }
 
 .lab-controls-drag-handle {

@@ -36,15 +36,16 @@
   --s3-accent-soft: #dbeafe;
   --s3-navy: #1a1c2c;
 
-  /* Lab embed dark chrome */
-  --s3-lab-bg: #1a1c2c;
-  --s3-lab-surface: #252836;
-  --s3-lab-border: #3d4254;
-  --s3-lab-text: #e8eaed;
-  --s3-lab-muted: #9ca3af;
+  /* Lab chrome — light / ivory (match Hub) */
+  --s3-lab-bg: #f8f9fa;
+  --s3-lab-surface: #ffffff;
+  --s3-lab-surface2: #f1f3f5;
+  --s3-lab-border: #e8eaed;
+  --s3-lab-text: #1a1c2c;
+  --s3-lab-muted: #6b7280;
   --s3-lab-accent: #2563eb;
-  --s3-lab-success: #00e676;
-  --s3-lab-cyan: #22d3ee;
+  --s3-lab-success: #16a34a;
+  --s3-lab-cyan: #0891b2;
 
   /* Breakpoints (for reference in media queries) */
   --s3-bp-sm: 768px;

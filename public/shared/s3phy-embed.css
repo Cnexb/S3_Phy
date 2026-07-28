@@ -201,16 +201,38 @@ html.s3phy-embed .app-root {
   min-height: 0;
 }
 
-@media (min-width: 900px) {
-  .lab-section.controls-floating .lab-viz {
-    grid-column: span 6 / span 6;
+@media (min-width: 768px) {
+  /* Keep grid items as 2 parallel columns at >= 768px */
+  html.s3phy-embed .lab-section,
+  html.s3phy-embed .main-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
   }
-  .lab-section.controls-floating .lab-steps {
-    grid-column: span 6 / span 6;
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .main-grid .sim-main-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-steps,
+  html.s3phy-embed .main-grid .tab-sidebar-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  /* Specially for heat transfer conduction / convection / radiation simulation */
+  html.s3phy-embed .main-grid > div:first-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .main-grid > div:last-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    position: absolute !important;
+    z-index: 50 !important;
+    width: 240px !important;
+    max-width: 240px !important;
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
   html.s3phy-embed .lab-section.controls-floating .lab-viz,
   html.s3phy-embed .lab-section.controls-floating .lab-steps {
     grid-column: 1 / -1;
@@ -480,4 +502,111 @@ html.s3phy-embed button,
 html.s3phy-embed input,
 html.s3phy-embed select {
   font-size: max(var(--s3-font-min), 0.875rem);
+}
+
+/* Height adaptive scaling for compact/low-height viewports (height < 720px) */
+@media (max-height: 720px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 13.5px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 11px), 0.85rem) !important;
+  }
+  
+  /* Compact paddings and gaps */
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.5rem 0.625rem !important;
+  }
+  html.s3phy-embed .px-4,
+  html.s3phy-embed .px-5 {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+  html.s3phy-embed .py-4,
+  html.s3phy-embed .py-5,
+  html.s3phy-embed .py-6 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Compact header & tabs */
+  html.s3phy-embed header {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  html.s3phy-embed header h1 {
+    font-size: 1.1rem !important;
+  }
+  
+  /* KaTeX mathematical formulas scaling and tight margins */
+  html.s3phy-embed .lab-steps .katex {
+    font-size: 0.95em !important;
+  }
+  html.s3phy-embed .lab-steps .katex-display {
+    margin: 0.25em 0 !important;
+  }
+  
+  /* Shrink canvas and containers to prevent overflow */
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 120px !important;
+    flex: 1 1 auto !important;
+  }
+  
+  /* Compact parameters/controls */
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    width: 220px !important;
+    max-width: 220px !important;
+    padding: 0.5rem !important;
+  }
+  html.s3phy-embed .lab-controls-body {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .lab-controls-body select,
+  html.s3phy-embed .lab-controls-body input,
+  html.s3phy-embed .lab-controls-body button {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-height: 600px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 12px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 10px), 0.75rem) !important;
+  }
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 100px !important;
+  }
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.375rem 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.25rem !important;
+  }
 }

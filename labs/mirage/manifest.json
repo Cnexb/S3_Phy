@@ -1,0 +1,5 @@
+{
+  "slug": "mirage",
+  "syncAll": true,
+  "exclude": ["manifest.json", "README.md"]
+}

@@ -1,0 +1,8 @@
+{
+  "slug": "sound-refraction-shadow",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

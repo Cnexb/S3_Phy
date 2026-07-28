@@ -154,6 +154,8 @@ export function initRotatingMirror(root, t) {
 
   function draw(incAng, normAng, refAng, origRefAng, iVal) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#f8f9fa';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.beginPath();
     ctx.setLineDash([10, 6]);
@@ -171,7 +173,7 @@ export function initRotatingMirror(root, t) {
 
     ctx.beginPath();
     ctx.lineWidth = 3;
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = '#1a1c2c';
     ctx.moveTo(srcX, srcY);
     ctx.lineTo(CX, CY);
     ctx.stroke();
@@ -181,13 +183,13 @@ export function initRotatingMirror(root, t) {
     const incLen = Math.hypot(CX - srcX, CY - srcY) || 1;
     const incUx = (CX - srcX) / incLen;
     const incUy = (CY - srcY) / incLen;
-    drawArrowhead(midX - incUx * 28, midY - incUy * 28, midX, midY, '#fff', 16);
+    drawArrowhead(midX - incUx * 28, midY - incUy * 28, midX, midY, '#1a1c2c', 16);
 
     ctx.save();
     ctx.font = RAY_LABEL_FONT;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = '#1a1c2c';
     ctx.fillText(t('tools.rotatingMirror.canvas.incident'), srcX, srcY - 12);
     ctx.restore();
 

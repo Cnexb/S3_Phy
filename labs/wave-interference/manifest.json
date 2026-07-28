@@ -1,0 +1,8 @@
+{
+  "slug": "wave-interference",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

@@ -1,11 +1,12 @@
 import { t, getLang } from '../i18n.js';
-import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards } from './hubHelpers.js';
+import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
 const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em'];
+const TOOL_STORAGE_KEY = 's3phy.optics.tool';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
 
@@ -69,7 +70,7 @@ function worksheetLabel(id) {
 
 export function mountOpticsHub(root) {
   let section = sessionStorage.getItem('s3phy.optics.section') || 'topics';
-  let toolId = 'rotatingMirror';
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'rotatingMirror');
   let worksheetId = 'lightLens';
   let lensDefaultKind = 'convex';
 
@@ -187,6 +188,7 @@ export function mountOpticsHub(root) {
         getActiveToolId: () => toolId,
         onSelectTool: (id) => {
           toolId = id;
+          saveToolId(TOOL_STORAGE_KEY, toolId);
         },
         mountTool: (stage) => {
           void mountActiveTool(stage);
@@ -277,6 +279,7 @@ export function mountOpticsHub(root) {
     section = 'tools';
     sessionStorage.setItem('s3phy.optics.section', 'tools');
     toolId = b.getAttribute('data-go-tool');
+    saveToolId(TOOL_STORAGE_KEY, toolId);
     const lk = b.getAttribute('data-lens-kind');
     if (lk === 'convex' || lk === 'concave') lensDefaultKind = lk;
     shell.updateSection(section);

@@ -1,10 +1,10 @@
-html, body { margin: 0; padding: 0; background: #121624; }
+html, body { margin: 0; padding: 0; background: #f8f9fa; }
 #app { padding: 8px; }
 html.s3phy-embed,
 html.s3phy-embed body {
   height: 100%;
   overflow: hidden;
-  background: #121624;
+  background: #f8f9fa;
 }
 html.s3phy-embed #app {
   padding: 4px;
@@ -14,15 +14,15 @@ html.s3phy-embed #app {
 }
 
 .rml {
-  --rml-bg: #121624;
-  --rml-panel: #22293f;
-  --rml-border: #3f4a66;
-  --rml-green: #00e676;
-  --rml-cyan: #22d3ee;
-  --rml-yellow: #ffcc00;
-  --rml-red: #ff5252;
-  --rml-text: #ffffff;
-  --rml-muted: #bac4d6;
+  --rml-bg: #f8f9fa;
+  --rml-panel: #ffffff;
+  --rml-border: #e8eaed;
+  --rml-green: #16a34a;
+  --rml-cyan: #0891b2;
+  --rml-yellow: #ca8a04;
+  --rml-red: #dc2626;
+  --rml-text: #1a1c2c;
+  --rml-muted: #6b7280;
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   color: var(--rml-text);
   background: var(--rml-bg);
@@ -37,7 +37,7 @@ html.s3phy-embed #app {
   margin: 0;
   font-weight: 800;
   font-size: 1.35rem;
-  background: linear-gradient(90deg, #4db8ff, #00e676);
+  background: linear-gradient(90deg, #2563eb, #16a34a);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -64,14 +64,16 @@ html.s3phy-embed #app {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 2px 12px rgba(26, 28, 44, 0.04);
 }
 .rml .rml-canvas {
-  background: #161a29;
+  background: #f8f9fa;
   border-radius: 12px;
   width: 100%;
   max-width: min(100%, 960px);
   height: auto;
   display: block;
+  border: 1px solid var(--rml-border);
 }
 .rml .rml-controls {
   flex: 1;
@@ -84,6 +86,7 @@ html.s3phy-embed #app {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  box-shadow: 0 2px 12px rgba(26, 28, 44, 0.04);
 }
 .rml .rml-toggles {
   display: grid;
@@ -93,7 +96,7 @@ html.s3phy-embed #app {
   border-bottom: 1px solid var(--rml-border);
 }
 .rml .rml-toggle {
-  background: #2e3754;
+  background: #f1f3f5;
   color: var(--rml-muted);
   border: 1px solid transparent;
   padding: 8px 10px;
@@ -106,16 +109,16 @@ html.s3phy-embed #app {
   gap: 8px;
   justify-content: center;
 }
-.rml .rml-toggle:hover { background: #3f4a66; color: #fff; }
-.rml .rml-ind { width: 6px; height: 6px; border-radius: 50%; background: #52525b; flex-shrink: 0; }
-.rml .rml-btn-green.active { background: rgba(0, 230, 118, 0.1); color: var(--rml-green); border-color: rgba(0, 230, 118, 0.3); }
-.rml .rml-btn-green.active .rml-ind { background: var(--rml-green); box-shadow: 0 0 6px var(--rml-green); }
-.rml .rml-btn-cyan.active { background: rgba(34, 211, 238, 0.12); color: var(--rml-cyan); border-color: rgba(34, 211, 238, 0.35); }
-.rml .rml-btn-cyan.active .rml-ind { background: var(--rml-cyan); box-shadow: 0 0 6px var(--rml-cyan); }
+.rml .rml-toggle:hover { background: #e8eaed; color: #1a1c2c; }
+.rml .rml-ind { width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
+.rml .rml-btn-green.active { background: rgba(22, 163, 74, 0.1); color: var(--rml-green); border-color: rgba(22, 163, 74, 0.3); }
+.rml .rml-btn-green.active .rml-ind { background: var(--rml-green); box-shadow: 0 0 6px rgba(22, 163, 74, 0.4); }
+.rml .rml-btn-cyan.active { background: rgba(8, 145, 178, 0.1); color: var(--rml-cyan); border-color: rgba(8, 145, 178, 0.35); }
+.rml .rml-btn-cyan.active .rml-ind { background: var(--rml-cyan); box-shadow: 0 0 6px rgba(8, 145, 178, 0.4); }
 .rml .rml-cg { display: flex; flex-direction: column; gap: 8px; }
 .rml .rml-lr { display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 600; }
 .rml .rml-badge {
-  background: #2e3754;
+  background: #f1f3f5;
   padding: 2px 8px;
   border-radius: 4px;
   font-family: ui-monospace, monospace;
@@ -124,21 +127,23 @@ html.s3phy-embed #app {
 .rml input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; margin: 4px 0; }
 .rml input[type="range"]:focus { outline: none; }
 .rml input[type="range"]::-webkit-slider-runnable-track {
-  width: 100%; height: 6px; cursor: pointer; background: #3f3f46; border-radius: 3px;
+  width: 100%; height: 6px; cursor: pointer; background: #e8eaed; border-radius: 3px;
 }
 .rml input[type="range"]::-webkit-slider-thumb {
   height: 18px; width: 18px; border-radius: 50%; background: #fff; cursor: pointer;
-  -webkit-appearance: none; margin-top: -6px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  -webkit-appearance: none; margin-top: -6px; box-shadow: 0 1px 4px rgba(26, 28, 44, 0.15);
+  border: 2px solid #2563eb;
 }
 .rml input[data-rml-rot]::-webkit-slider-thumb { background: var(--rml-yellow); border: 2px solid #fff; }
-.rml .rml-ticks { display: flex; justify-content: space-between; font-size: 0.68rem; color: #52525b; }
+.rml .rml-ticks { display: flex; justify-content: space-between; font-size: 0.68rem; color: #9ca3af; }
 .rml .rml-stats {
-  background: rgba(0,0,0,0.2);
+  background: #f8f9fa;
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border: 1px solid var(--rml-border);
 }
 .rml .rml-sr {
   display: flex; justify-content: space-between; align-items: center;
@@ -148,8 +153,8 @@ html.s3phy-embed #app {
 .rml .rml-sl { font-size: 0.78rem; color: var(--rml-muted); }
 .rml .rml-sv { font-family: ui-monospace, monospace; font-weight: bold; font-size: 0.95rem; }
 .rml .rml-shift {
-  background: rgba(255, 82, 82, 0.1);
-  border: 1px solid rgba(255, 82, 82, 0.3);
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
   border-radius: 8px;
   padding: 10px;
   display: flex;
@@ -159,8 +164,8 @@ html.s3phy-embed #app {
 .rml .rml-shv { color: var(--rml-red); font-size: 1.1rem; font-weight: bold; font-family: ui-monospace, monospace; }
 .rml .rml-logic {
   font-size: 0.68rem;
-  background: rgba(255, 82, 82, 0.2);
-  color: #ff8a80;
+  background: rgba(220, 38, 38, 0.12);
+  color: #b91c1c;
   padding: 3px 8px;
   border-radius: 10px;
 }
@@ -174,4 +179,4 @@ html.s3phy-embed #app {
   font-size: 0.82rem;
   width: 100%;
 }
-.rml .rml-reset:hover { background: #2e3754; color: #fff; border-color: #52525b; }
+.rml .rml-reset:hover { background: #f1f3f5; color: #1a1c2c; border-color: #cbd5e1; }

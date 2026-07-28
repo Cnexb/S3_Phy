@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>波的衍射</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        html.s3phy-embed .lang-btn { display: none; }
+        html.s3phy-embed body { padding: 12px; }
+        :root {
+            --bg: #f8f9fa;
+            --panel: #ffffff;
+            --text: #2c3e50;
+            --muted: #6c757d;
+            --border: #e9ecef;
+            --wave: #1971c2;
+            --barrier: #212529;
+            --accent: #0c8599;
+            --ok: #0f766e;
+            --warn: #c2410c;
+            --btn: #e9ecef;
+            --btn-text: #495057;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: "Noto Sans TC", "Segoe UI", sans-serif;
+            background: linear-gradient(180deg, #f8f9fa 0%, #eef2f5 100%);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 920px;
+            margin-bottom: 8px;
+            gap: 12px;
+        }
+        .header-text { flex: 1; }
+        h2 {
+            margin: 0 0 6px;
+            color: var(--accent);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+        #page-desc {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
+        .lang-btn {
+            background: var(--btn);
+            color: var(--btn-text);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 920px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .controls, .canvas-card, .invariant, .factor-note {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(44, 62, 80, 0.05);
+        }
+        .controls {
+            padding: 16px 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            align-items: flex-end;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 200px;
+            flex: 1 1 200px;
+        }
+        .slider-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 0.03em;
+        }
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        input[type=range] {
+            flex: 1;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .val {
+            font-variant-numeric: tabular-nums;
+            font-weight: 700;
+            min-width: 4.2rem;
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex: 1 1 240px;
+        }
+        .stat {
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 12px;
+            min-width: 100px;
+            flex: 1;
+        }
+        .stat .k {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 2px;
+        }
+        .stat .v {
+            font-weight: 800;
+            font-size: 0.95rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .canvas-card { padding: 14px; }
+        .canvas-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+        #sceneCanvas {
+            width: 100%;
+            height: 360px;
+            display: block;
+            border-radius: 12px;
+            background: #eef2f6;
+            border: 1px solid var(--border);
+        }
+        .invariant {
+            padding: 14px 18px;
+            border-left: 4px solid var(--ok);
+        }
+        .invariant h3 {
+            margin: 0 0 6px;
+            font-size: 0.95rem;
+            color: var(--ok);
+        }
+        .invariant p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--muted);
+        }
+        .invariant strong { color: var(--text); }
+        .factor-note {
+            padding: 12px 18px;
+            font-size: 0.88rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        .factor-note strong { color: var(--text); }
+    </style>
+</head>
+<body>
+    <div class="header-top">
+        <div class="header-text">
+            <h2 id="page-title">Wave Diffraction</h2>
+            <p id="page-desc">Spreading of waves through a gap — larger λ or smaller gap bends more.</p>
+        </div>
+        <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <span class="slider-label" id="label-lambda">Wavelength λ</span>
+                <div class="slider-row">
+                    <input type="range" id="lambdaSlider" min="16" max="70" step="1" value="36">
+                    <span class="val" id="lambdaVal">36</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <span class="slider-label" id="label-gap">Gap width a</span>
+                <div class="slider-row">
+                    <input type="range" id="gapSlider" min="24" max="160" step="2" value="70">
+                    <span class="val" id="gapVal">70</span>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <span class="k" id="label-ratio">Ratio λ / a</span>
+                    <span class="v" id="ratioVal">0.51</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-card">
+            <div class="canvas-label" id="label-scene">Plane waves → gap → diffracted wavefronts</div>
+            <canvas id="sceneCanvas" width="880" height="360"></canvas>
+        </div>
+
+        <div class="invariant">
+            <h3 id="inv-title">During diffraction</h3>
+            <p id="inv-body"><strong>No change</strong> in speed, wavelength or frequency. Only the direction of wave travel and the wave pattern change.</p>
+        </div>
+
+        <div class="factor-note" id="factor-note">
+            <strong>Degree of diffraction increases</strong> with larger wavelength λ and smaller gap width a.
+        </div>
+    </div>
+
+    <script>
+        const WAVE_SPEED = 1.15; // px per frame — constant (v unchanged)
+
+        const dict = {
+            zh: {
+                title: '波的衍射',
+                desc: '波穿過缺口時散開 — 波長愈長或縫愈窄，彎曲愈多。',
+                lambda: '波長 λ',
+                gap: '縫寬 a',
+                ratio: '比值 λ / a',
+                scene: '平面波 → 縫 → 衍射波前',
+                invTitle: '衍射過程中',
+                invBody: '<strong>不變</strong>：波速、波長、頻率。改變嘅係波嘅傳播方向同波紋樣式。',
+                factor: '<strong>衍射程度增加</strong>：波長 λ 愈大，或者縫寬 a 愈細。',
+                barrier: '障礙物',
+                gapLabel: '縫 a',
+                plane: '入射平面波',
+                diffracted: '衍射波',
+                travel: '傳播方向',
+                lambdaMark: 'λ（不變）',
+                langBtn: '🌐 English'
+            },
+            en: {
+                title: 'Wave Diffraction',
+                desc: 'Spreading of waves through a gap — larger λ or smaller gap bends more.',
+                lambda: 'Wavelength λ',
+                gap: 'Gap width a',
+                ratio: 'Ratio λ / a',
+                scene: 'Plane waves → gap → diffracted wavefronts',
+                invTitle: 'During diffraction',
+                invBody: '<strong>No change</strong> in speed, wavelength or frequency. Only the direction of wave travel and the wave pattern change.',
+                factor: '<strong>Degree of diffraction increases</strong> with larger wavelength λ and smaller gap width a.',
+                barrier: 'Barrier',
+                gapLabel: 'Gap a',
+                plane: 'Incident plane waves',
+                diffracted: 'Diffracted waves',
+                travel: 'Travel direction',
+                lambdaMark: 'λ (unchanged)',
+                langBtn: '🌐 中文'
+            }
+        };
+
+        function hubLangToLocal(lang) {
+            return lang === 'en' ? 'en' : 'zh';
+        }
+
+        const params = new URLSearchParams(location.search);
+        let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+
+        const canvas = document.getElementById('sceneCanvas');
+        const ctx = canvas.getContext('2d');
+        const lambdaSlider = document.getElementById('lambdaSlider');
+        const gapSlider = document.getElementById('gapSlider');
+
+        let phase = 0;
+
+        function lambda() { return parseFloat(lambdaSlider.value); }
+        function gap() { return parseFloat(gapSlider.value); }
+
+        /** Teaching bend factor 0..1 from λ/a */
+        function bendAmount() {
+            const r = lambda() / gap();
+            // λ ≪ a → ~0; λ ≈ a → strong; λ > a → near 1
+            return Math.max(0, Math.min(1, (r - 0.15) / 0.85));
+        }
+
+        function updateLanguageUI() {
+            const t = dict[currentLang];
+            document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+            document.title = t.title;
+            document.getElementById('lang-toggle').innerText = t.langBtn;
+            document.getElementById('page-title').innerText = t.title;
+            document.getElementById('page-desc').innerText = t.desc;
+            document.getElementById('label-lambda').innerText = t.lambda;
+            document.getElementById('label-gap').innerText = t.gap;
+            document.getElementById('label-ratio').innerText = t.ratio;
+            document.getElementById('label-scene').innerText = t.scene;
+            document.getElementById('inv-title').innerText = t.invTitle;
+            document.getElementById('inv-body').innerHTML = t.invBody;
+            document.getElementById('factor-note').innerHTML = t.factor;
+            updateReadouts();
+        }
+
+        function updateReadouts() {
+            const L = lambda();
+            const a = gap();
+            const r = L / a;
+            document.getElementById('lambdaVal').textContent = L.toFixed(0);
+            document.getElementById('gapVal').textContent = a.toFixed(0);
+            document.getElementById('ratioVal').textContent = r.toFixed(2);
+        }
+
+        function layout() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const barrierX = Math.round(w * 0.42);
+            const barrierW = 28;
+            const cy = h / 2;
+            const a = gap();
+            const gapTop = cy - a / 2;
+            const gapBot = cy + a / 2;
+            return { w, h, barrierX, barrierW, cy, gapTop, gapBot, a };
+        }
+
+        function drawBackground(L) {
+            const g = ctx.createLinearGradient(0, 0, L.w, 0);
+            g.addColorStop(0, '#e8eef4');
+            g.addColorStop(0.42, '#eef2f6');
+            g.addColorStop(1, '#e6edf4');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, L.w, L.h);
+        }
+
+        function drawBarrier(L, t) {
+            const { barrierX, barrierW, gapTop, gapBot, h } = L;
+            // Top block
+            fillHatched(barrierX, 0, barrierW, gapTop);
+            // Bottom block
+            fillHatched(barrierX, gapBot, barrierW, h - gapBot);
+
+            // Label clear of the dark barrier (to the left)
+            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
+            const label = t.barrier;
+            const tw = ctx.measureText(label).width;
+            const lx = Math.max(8, barrierX - tw - 12);
+            const ly = 20;
+            ctx.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx.fillRect(lx - 4, ly - 12, tw + 8, 18);
+            ctx.strokeStyle = 'rgba(33,37,41,0.2)';
+            ctx.strokeRect(lx - 4.5, ly - 12.5, tw + 9, 19);
+            ctx.fillStyle = '#212529';
+            ctx.fillText(label, lx, ly);
+        }
+
+        function fillHatched(x, y, w, h) {
+            if (h <= 0) return;
+            ctx.fillStyle = '#343a40';
+            ctx.fillRect(x, y, w, h);
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(x, y, w, h);
+            ctx.clip();
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 1;
+            for (let i = -h; i < w + h; i += 7) {
+                ctx.beginPath();
+                ctx.moveTo(x + i, y);
+                ctx.lineTo(x + i + h, y + h);
+                ctx.stroke();
+            }
+            ctx.restore();
+            ctx.strokeStyle = '#212529';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(x + 0.5, y + 0.5, w - 1, Math.max(0, h - 1));
+        }
+
+        /**
+         * Wavefront y-span on the right of the barrier for a given crest age past the gap.
+         * bend=0: stays within geometric shadow (gap only)
+         * bend=1: nearly semicircle from gap centre
+         */
+        function diffractedHalfHeight(distPast, bend, halfGap, maxSpread) {
+            const geometric = halfGap;
+            const circular = Math.sqrt(halfGap * halfGap + distPast * distPast);
+            const spread = geometric + bend * (circular - geometric);
+            return Math.min(maxSpread, spread);
+        }
+
+        function drawWavefronts(L, t) {
+            const lam = lambda();
+            const b = bendAmount();
+            const leftEnd = L.barrierX;
+            const rightStart = L.barrierX + L.barrierW;
+            const halfGap = L.a / 2;
+            const maxSpread = L.h / 2 - 8;
+
+            ctx.lineWidth = 2.2;
+            ctx.lineCap = 'round';
+
+            // Crests advance +x (left → right), matching the travel arrow
+            const offset = phase % lam;
+
+            // Left: plane wavefronts (vertical lines), spacing = λ
+            ctx.strokeStyle = '#1971c2';
+            for (let x = offset; x < leftEnd; x += lam) {
+                if (x < 4) continue;
+                ctx.globalAlpha = 0.35 + 0.55 * Math.min(1, x / (leftEnd * 0.35));
+                ctx.beginPath();
+                ctx.moveTo(x, 12);
+                ctx.lineTo(x, L.h - 12);
+                ctx.stroke();
+            }
+            ctx.globalAlpha = 1;
+
+            // Through gap + right: same λ spacing, same +x motion
+            for (let x = offset; x < L.w + lam; x += lam) {
+                if (x < leftEnd - 1) continue;
+
+                const pastRight = x - rightStart;
+                ctx.strokeStyle = '#1971c2';
+                ctx.globalAlpha = x < rightStart
+                    ? 0.85
+                    : Math.max(0.28, 1 - pastRight / (L.w * 0.8));
+
+                if (x <= rightStart) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, L.gapTop + 1);
+                    ctx.lineTo(x, L.gapBot - 1);
+                    ctx.stroke();
+                } else {
+                    drawDiffractedCrest(x, rightStart, L, b, halfGap, maxSpread);
+                }
+            }
+            ctx.globalAlpha = 1;
+
+            ctx.fillStyle = '#1971c2';
+            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
+            ctx.fillText(t.plane, 16, L.h - 14);
+            ctx.fillText(t.diffracted, rightStart + 24, 22);
+
+            // Travel arrow (left → right), placed clear of wave crests
+            const arrowY = L.h - 36;
+            drawArrow(24, arrowY, 90, arrowY, '#495057');
+            ctx.fillStyle = '#495057';
+            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
+            ctx.fillText(t.travel, 24, arrowY - 8);
+
+            // λ is horizontal spacing between successive crests
+            drawLambdaBracketHorizontal(offset, lam, 12, leftEnd - 10, L.h * 0.18, t.lambdaMark);
+            drawLambdaBracketHorizontal(offset, lam, rightStart + 16, L.w - 16, L.h * 0.18, t.lambdaMark);
+        }
+
+        function drawDiffractedCrest(crestX, rightStart, L, bend, halfGap, maxSpread) {
+            const dist = Math.max(0.5, crestX - rightStart);
+            const halfH = diffractedHalfHeight(dist, bend, halfGap, maxSpread);
+            const steps = 56;
+            const maxAng = (Math.PI / 2) * (0.12 + 0.88 * bend) * Math.min(1, halfH / Math.max(dist, 1));
+
+            ctx.beginPath();
+            for (let i = 0; i <= steps; i++) {
+                const u = (i / steps) * 2 - 1; // -1 .. +1
+                const flatY = L.cy + u * halfGap;
+                const ang = u * maxAng;
+                const circX = rightStart + dist * Math.cos(ang);
+                const circY = L.cy + dist * Math.sin(ang);
+                const spreadY = L.cy + u * halfH;
+                const py = flatY * (1 - bend) + (circY * bend * 0.65 + spreadY * bend * 0.35);
+                const px = crestX * (1 - bend) + circX * bend;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
+
+        /** Horizontal λ marker between two consecutive crest positions */
+        function drawLambdaBracketHorizontal(phaseOffset, lam, minX, maxX, y, label) {
+            let x1 = phaseOffset;
+            while (x1 < minX) x1 += lam;
+            while (x1 - lam >= minX) x1 -= lam;
+            const x2 = x1 + lam;
+            if (x2 > maxX) return;
+
+            ctx.strokeStyle = '#862e9c';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(x1, y - 6);
+            ctx.lineTo(x1, y + 6);
+            ctx.moveTo(x1, y);
+            ctx.lineTo(x2, y);
+            ctx.moveTo(x2, y - 6);
+            ctx.lineTo(x2, y + 6);
+            ctx.stroke();
+            ctx.fillStyle = '#862e9c';
+            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
+            const mid = (x1 + x2) / 2;
+            const tw = ctx.measureText(label).width;
+            ctx.fillText(label, mid - tw / 2, y - 10);
+        }
+
+        function drawArrow(x0, y0, x1, y1, color) {
+            const ang = Math.atan2(y1 - y0, x1 - x0);
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x1 - 9 * Math.cos(ang - 0.4), y1 - 9 * Math.sin(ang - 0.4));
+            ctx.lineTo(x1 - 9 * Math.cos(ang + 0.4), y1 - 9 * Math.sin(ang + 0.4));
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function draw() {
+            const L = layout();
+            const t = dict[currentLang];
+            ctx.clearRect(0, 0, L.w, L.h);
+            drawBackground(L);
+            drawWavefronts(L, t);
+            drawBarrier(L, t);
+        }
+
+        function resize() {
+            const parent = canvas.parentElement;
+            canvas.width = Math.max(640, parent.clientWidth - 28);
+            canvas.height = 360;
+            draw();
+        }
+
+        lambdaSlider.addEventListener('input', () => { updateReadouts(); draw(); });
+        gapSlider.addEventListener('input', () => { updateReadouts(); draw(); });
+
+        document.getElementById('lang-toggle').addEventListener('click', () => {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            updateLanguageUI();
+            draw();
+        });
+        window.addEventListener('message', (ev) => {
+            if (ev.data?.type !== 's3phy:lang') return;
+            currentLang = hubLangToLocal(ev.data.lang);
+            updateLanguageUI();
+            draw();
+        });
+        window.addEventListener('resize', resize);
+
+        function animate() {
+            phase += WAVE_SPEED;
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        updateLanguageUI();
+        resize();
+        animate();
+    </script>
+</body>
+</html>

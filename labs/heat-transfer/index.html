@@ -10,8 +10,73 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Chart.js for real-time graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../shared/s3phy-tokens.css">
-    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+/* S3_Phy shared design tokens — single source for Hub + iframe labs */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap");
+
+:root {
+  /* Layout */
+  --s3-content-max: min(1600px, calc(100dvw - var(--s3-vp-pad) * 2));
+  --s3-bp-sm: 768px;
+  --s3-bp-md: 1024px;
+  --s3-bp-ws: 1100px;
+  --s3-safe-top: env(safe-area-inset-top, 0px);
+  --s3-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --s3-tool-min-h: clamp(480px, calc(100dvh - var(--s3-nav-offset, 96px) - 48px - var(--s3-safe-bottom)), 1600px);
+  --s3-nav-offset: calc(var(--s3-vp-pad) + var(--s3-safe-top) + 72px + 12px);
+  --s3-panel-pad: 18px;
+  --s3-radius: 14px;
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+
+  /* Typography */
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --s3-font-display: "Montserrat", "Inter", system-ui, sans-serif;
+  --s3-font-size-base: 16px;
+  --s3-font-size-sm: 0.875rem;
+  --s3-font-size-h2: 1.15rem;
+  --s3-font-size-h1: 1.5rem;
+  --s3-line-height: 1.5;
+  --s3-font-min: 15px;
+
+  /* Hub light theme */
+  --s3-bg: #f8f9fa;
+  --s3-surface: #ffffff;
+  --s3-surface2: #f1f3f5;
+  --s3-border: #e8eaed;
+  --s3-text: #1a1c2c;
+  --s3-muted: #6b7280;
+  --s3-accent: #2563eb;
+  --s3-accent-soft: #dbeafe;
+  --s3-navy: #1a1c2c;
+
+  /* Lab embed dark chrome */
+  --s3-lab-bg: #f8fafc;
+  --s3-lab-surface: #ffffff;
+  --s3-lab-border: #cbd5e1;
+  --s3-lab-text: #0f172a;
+  --s3-lab-muted: #475569;
+  --s3-lab-accent: #2563eb;
+  --s3-lab-success: #10b981;
+  --s3-lab-cyan: #0284c7;
+
+  /* Breakpoints (for reference in media queries) */
+  --s3-bp-sm: 768px;
+  --s3-bp-md: 1024px;
+  --s3-bp-ws: 1100px;
+  --s3-float-panel-w: min(380px, calc(100% - 24px));
+}
+
+</style>
+    <script>
+(function () {
+  'use strict';
+  var params = new URLSearchParams(location.search);
+  if (params.get('embed') === '1' || params.get('embed') === 'true') {
+    document.documentElement.classList.add('s3phy-embed');
+  }
+})();
+
+</script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
@@ -24,7 +89,7 @@
             --tab-convection: #0ea5e9;
             --tab-radiation: #f43f5e;
             --tab-applications: #10b981;
-            --glass-bg: rgba(30, 41, 59, 0.72);
+            --glass-bg: rgba(255, 255, 255, 0.82);
             --tab-accent: var(--tab-conduction);
             --tab-accent-glow: rgba(99, 102, 241, 0.4);
         }
@@ -40,8 +105,8 @@
 
         body {
             font-family: 'Plus Jakarta Sans', var(--s3-font, sans-serif);
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #f8fafc;
+            color: #0f172a;
             overflow-x: hidden;
         }
 
@@ -53,13 +118,13 @@
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
         }
 
         .glass-panel-light {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.02);
+            border: 1px solid rgba(15, 23, 42, 0.05);
         }
 
         .live-value {
@@ -69,9 +134,9 @@
         }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         .tab-active {
             background: linear-gradient(135deg, color-mix(in srgb, var(--tab-accent) 85%, #000) 0%, var(--tab-accent) 100%);
@@ -127,31 +192,40 @@
         /* Card Zoom & Expansion System for Applications */
         .app-card-zoomed {
             position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            width: 90vw !important;
-            max-width: 950px !important;
-            height: 82vh !important;
-            max-height: 680px !important;
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
+            width: 100vw !important;
+            max-width: none !important;
+            height: 100vh !important;
+            max-height: none !important;
             z-index: 50 !important;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75) !important;
-            background: rgba(15, 23, 42, 0.96) !important;
-            border: 2px solid var(--tab-applications) !important;
-            border-radius: 1.5rem !important;
-            padding: 2rem !important;
-            backdrop-filter: blur(24px) !important;
-            -webkit-backdrop-filter: blur(24px) !important;
+            box-shadow: none !important;
+            background: #f8fafc !important; /* Premium clean light background */
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 2.5rem !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            overflow-y: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
         }
         
         .app-card-zoomed .h-40,
-        .app-card-zoomed .h-48 {
-            height: 40vh !important;
-            max-height: 380px !important;
-            min-height: 260px !important;
+        .app-card-zoomed .h-48,
+        .app-card-zoomed .lg\:h-\[320px\] {
+            height: 52vh !important;
+            max-height: 520px !important;
+            min-height: 320px !important;
             flex-grow: 1 !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Hide controls when NOT enlarged (before enlarging) */
+        #card-flask:not(.app-card-zoomed) #flask-controls-container,
+        #card-flask:not(.app-card-zoomed) .glass-panel-light {
+            display: none !important;
         }
 
         body.card-is-zoomed {
@@ -310,6 +384,175 @@
             max-width: none;
             width: 100%;
         }
+
+        /* ==========================================
+           Bright White Theme Overrides (Global)
+           ========================================== */
+        .flask-select-overlay {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            border: 1px solid #cbd5e1 !important;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08) !important;
+        }
+        .flask-select-overlay select {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        #dull-black-block {
+            background-color: #1a1c2c !important; /* Original dark theme s3-navy */
+            border-color: #3d4254 !important;
+        }
+        #dull-black-block span.text-slate-400,
+        #dull-black-block span.text-slate-500 {
+            color: #9ca3af !important; /* Original dark theme muted grey for legibility on black */
+        }
+        #ir-heater:not(.border-rose-500) {
+            background-color: #1a1c2c !important; /* Keep heater physically black when inactive */
+            border-color: #3d4254 !important;
+        }
+
+        /* Vacuum Flask White HUD & Control Panels (Clean Light Theme Styling) */
+        #flask-presets-box, #flask-hud-box {
+            background-color: #ffffff !important; /* Premium clean white background */
+            border-color: #cbd5e1 !important;      /* Subtle light grey border */
+            box-shadow: 0 4px 15px -3px rgba(15, 23, 42, 0.05) !important;
+        }
+        #flask-pour-panel {
+            background-color: #f1f5f9 !important; /* Soft nested background column */
+            border-color: #cbd5e1 !important;
+        }
+        #flask-pour-temp-slider {
+            background-color: #cbd5e1 !important; /* Clean light slate slider track */
+        }
+        #flask-presets-box span.text-slate-400,
+        #flask-hud-box span.text-slate-400,
+        #flask-pour-panel span.text-slate-400 {
+            color: #475569 !important; /* High contrast dark grey labels */
+        }
+        #flask-presets-box span.text-slate-500,
+        #flask-hud-box span.text-slate-500,
+        #flask-pour-panel span.text-slate-500 {
+            color: #64748b !important; /* Clear, secondary text */
+        }
+        #flask-pour-temp-lbl {
+            font-size: 11px !important;
+            letter-spacing: 0.5px !important;
+            font-weight: 800 !important;
+        }
+        #flask-hud-temp {
+            font-size: 18px !important; /* Enlarge temperature size */
+            font-weight: 900 !important;
+            white-space: nowrap !important; /* Guard against degree symbol wrapping to next line! */
+        }
+
+        /* Vibrant deep-contrast text color overrides inside white HUD panels */
+        #flask-hud-box .text-rose-400, #flask-pour-panel .text-rose-400 {
+            color: #be123c !important; /* Premium deep rose-700 */
+        }
+        #flask-hud-box .text-amber-400, #flask-pour-panel .text-amber-400 {
+            color: #b45309 !important; /* Premium deep amber-700 */
+        }
+        #flask-hud-box .text-sky-400, #flask-pour-panel .text-sky-400 {
+            color: #0369a1 !important; /* Premium deep sky-700 */
+        }
+        #flask-hud-box .text-slate-300, #flask-pour-panel .text-slate-300 {
+            color: #1e293b !important; /* Rich deep slate-800 */
+        }
+        #flask-hud-box .text-slate-400 {
+            color: #475569 !important; /* Clear slate-600 for empty state */
+        }
+        
+        #flask-hud-rate.text-red-400 {
+            color: #be123c !important; /* Rich deep red-700 */
+        }
+        #flask-hud-rate.text-emerald-400 {
+            color: #15803d !important; /* Rich deep emerald-700 */
+        }
+        #flask-hud-rate.text-slate-300 {
+            color: #334155 !important; /* Deep slate-700 */
+        }
+
+        .bg-slate-950, canvas.bg-slate-950, .canvas-container {
+            background-color: #ffffff !important;
+        }
+        .bg-slate-950\/40 {
+            background-color: rgba(255, 255, 255, 0.5) !important;
+        }
+        .bg-slate-950\/85 {
+            background-color: rgba(255, 255, 255, 0.85) !important;
+        }
+        .bg-slate-950\/90 {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+        }
+        .bg-slate-900, .bg-slate-900\/95, .bg-slate-900\/60, .bg-slate-900\/80 {
+            background-color: #f1f5f9 !important;
+        }
+        .border-slate-800, .border-slate-800\/80, .border-slate-850, .border-slate-700 {
+            border-color: #cbd5e1 !important;
+        }
+        .text-slate-100, .text-slate-200, .text-slate-300, h1.text-white, h2.text-white, h3.text-white,
+        .glass-panel-light .text-white, .sidebar-concept .text-white {
+            color: #0f172a !important;
+        }
+        .text-slate-400 {
+            color: #475569 !important;
+        }
+        .text-slate-500 {
+            color: #64748b !important;
+        }
+        /* Buttons that shouldn't be dark */
+        .bg-slate-800 {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        .bg-slate-800:hover {
+            background-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        /* Language switcher adjustments */
+        .lang-btn {
+            color: #475569 !important;
+        }
+        .lang-btn:hover {
+            color: #0f172a !important;
+            background-color: #cbd5e1 !important;
+        }
+        .lang-active {
+            background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%) !important;
+            color: #0f172a !important;
+            box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.1) !important;
+        }
+        /* Tab switcher adjustments */
+        .tab-btn {
+            color: #475569 !important;
+        }
+        .tab-btn:hover {
+            color: #0f172a !important;
+        }
+        /* Convection scenario button overrides */
+        .conv-scen-btn {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #334155 !important;
+        }
+        .conv-scen-btn:hover {
+            border-color: #cbd5e1 !important;
+            background-color: #f8fafc !important;
+        }
+        .conv-scen-btn.text-white {
+            border-color: #4f46e5 !important;
+            background-color: rgba(79, 70, 229, 0.08) !important;
+            color: #4f46e5 !important;
+            font-weight: 700 !important;
+        }
+        .conv-scen-btn.text-white i, .conv-scen-btn.text-white svg {
+            color: #4f46e5 !important;
+        }
+        /* Glow settings */
+        #glow-left {
+            opacity: 0.25 !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col transition-all duration-300" data-active-tab="conduction">
@@ -466,11 +709,11 @@
                     <div class="grid grid-cols-2 gap-2 mt-4">
                         <div class="glass-panel-light p-2.5 rounded-xl border border-slate-800">
                             <span class="text-[9px] text-indigo-400 font-bold uppercase block" data-i18n="conduction.lattice">Atomic Lattice</span>
-                            <span class="text-xs text-white font-semibold block mt-0.5" id="cond-amp-stat">Heavy Vibration</span>
+                            <span class="text-xs text-slate-100 font-semibold block mt-0.5" id="cond-amp-stat">Heavy Vibration</span>
                         </div>
                         <div class="glass-panel-light p-2.5 rounded-xl border border-slate-800">
                             <span class="text-[9px] text-indigo-400 font-bold uppercase block" data-i18n="conduction.freeElectron">Free Electrons e⁻</span>
-                            <span class="text-xs text-white font-semibold block mt-0.5" id="cond-elec-stat">80 e⁻ Drifting</span>
+                            <span class="text-xs text-slate-100 font-semibold block mt-0.5" id="cond-elec-stat">80 e⁻ Drifting</span>
                         </div>
                     </div>
                 </div>
@@ -593,7 +836,7 @@
                         <div class="flex justify-between items-center h-full relative">
                             
                             <!-- Dull Black Block -->
-                            <div class="w-28 h-28 bg-slate-900 rounded-2xl border border-slate-850 flex flex-col justify-between p-3 text-center text-white relative z-10 shadow-lg">
+                            <div id="dull-black-block" class="w-28 h-28 bg-slate-900 rounded-2xl border border-slate-850 flex flex-col justify-between p-3 text-center text-white relative z-10 shadow-lg">
                                 <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase" data-i18n="radiation.dullBlack">Dull Black</span>
                                 <div class="text-2xl font-black text-red-500" id="temp-black">20.0 C</div>
                                 <span class="text-[9px] text-slate-400" id="rate-black">Room Temp</span>
@@ -684,7 +927,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Card 1: Interactive Wax & Pins Laboratory Experiment -->
             <div id="card-wax" class="glass-panel rounded-2xl p-5 flex flex-col justify-between transition-all duration-300">
-                <div>
+                <div class="flex flex-col flex-grow">
                     <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
                         <h4 class="font-bold text-sm text-slate-200 flex items-center gap-2">
                             <span class="p-1 bg-indigo-500/10 text-indigo-400 rounded"><i data-lucide="zap" class="w-4 h-4"></i></span>
@@ -763,7 +1006,7 @@
 
             <!-- Card 2: Vacuum Flask Interactive Component Diagram -->
             <div id="card-flask" class="glass-panel rounded-2xl p-5 flex flex-col justify-between transition-all duration-300">
-                <div>
+                <div class="flex flex-col flex-grow">
                     <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
                         <h4 class="font-bold text-sm text-slate-200 flex items-center gap-2">
                             <span class="p-1 bg-rose-500/10 text-rose-400 rounded"><i data-lucide="sun" class="w-4 h-4"></i></span>
@@ -773,58 +1016,144 @@
                             <i data-lucide="maximize-2" class="w-3.5 h-3.5" id="zoom-icon-card-flask"></i>
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-400 leading-relaxed mb-4" data-i18n="applications.flaskDesc">
-                        Click hotspots to see how conduction, convection & radiation are reduced.
+                    <p class="text-xs md:text-[13px] text-slate-400 leading-relaxed mb-4" data-i18n="applications.flaskDesc">
+                        Configure the components below directly on the spots to see how they block conduction, convection, and radiation.
                     </p>
 
-                    <div class="grid grid-cols-1 gap-4 items-center">
-                        <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-800 flex justify-center h-48 relative overflow-hidden">
-                            <div class="relative h-full aspect-square">
-                                <!-- Overlay canvas for heat blockage physics animation -->
-                                <canvas id="flaskCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
-                                <svg id="flask-svg" viewBox="0 0 300 300" class="w-full h-full svg-annotation relative z-0">
-                                <!-- Outer Wall -->
-                                <path d="M 110 40 L 190 40 L 190 260 C 190 280, 180 290, 150 290 C 120 290, 110 280, 110 260 Z" fill="#334155" stroke="#475569" stroke-width="2"/>
-                                <!-- Inner Wall -->
-                                <path d="M 120 60 L 180 60 L 180 250 C 180 265, 170 275, 150 275 C 130 275, 120 265, 120 250 Z" fill="#991b1b" stroke="#f87171" stroke-width="1.5"/>
-                                <!-- Silvery Coating -->
-                                <path d="M 122 62 L 178 62 L 178 248 C 178 262, 168 272, 150 272 C 132 272, 122 262, 122 248 Z" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="2 2"/>
-                                <!-- Hot liquid inside -->
-                                <path d="M 125 90 L 175 90 L 175 245 C 175 255, 165 265, 150 265 C 135 265, 125 255, 125 245 Z" fill="#fee2e2" opacity="0.6"/>
-                                <!-- Stopper -->
-                                <rect x="130" y="25" width="40" height="25" rx="4" fill="#ea580c" stroke="#d97706" stroke-width="2" class="cursor-pointer hover:opacity-80" onclick="showFlaskDetail('stopper')"/>
+                    <!-- Large Unified Interactive Board -->
+                    <div class="bg-slate-900/40 rounded-xl p-4 border border-slate-800 h-80 lg:h-[320px] xl:h-[340px] flex justify-center items-center relative overflow-hidden">
+                        <!-- Center-aligned relative canvas wrapper that scales with the box -->
+                        <div class="relative h-full aspect-square max-h-full">
+                            <!-- Overlay canvas for heat blockage physics animation -->
+                            <canvas id="flaskCanvas" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
+                            <svg id="flask-svg" viewBox="0 0 300 300" class="w-full h-full svg-annotation relative z-0">
+                                <!-- 1. Outer Casing (Grey Casing with a stopper-matching cutout) -->
+                                <path id="flask-svg-casing" d="M 90 282 L 90 75 C 90 38, 125 22, 125 22 C 122 36, 128 38, 128 38 C 134 40, 134 46, 134 56 L 166 56 C 166 46, 166 40, 172 38 C 172 38, 178 36, 175 22 C 175 22, 210 38, 210 75 L 210 282 C 210 291, 202 295, 194 295 L 106 295 C 98 295, 90 291, 90 282 Z" fill="#cbd5e1" stroke="#94a3b8" stroke-width="2"/>
                                 
-                                <!-- Vacuum Layer node -->
-                                <line x1="110" y1="150" x2="115" y2="150" stroke="#94a3b8" stroke-width="1.5"/>
-                                <line x1="55" y1="150" x2="110" y2="150" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2"/>
-                                <circle id="node-vacuum" cx="115" cy="150" r="4" fill="#38bdf8" class="cursor-pointer flask-node" onclick="showFlaskDetail('vacuum')"/>
+                                <!-- 2. Support Base Cork Block (Bottom) -->
+                                <rect x="138" y="278" width="24" height="16" rx="1.5" fill="#ebd39c" stroke="#c6a371" stroke-width="1" class="flask-svg-support-cork cursor-pointer hover:opacity-95 transition-all" onclick="showFlaskDetail('support')"/>
+
+                                <!-- 3. Double-Wall Silvered Glass Flask (Interspace Fill Overlay based on Medium State) -->
+                                <path id="flask-svg-interspace" d="M 128 40 L 172 40 C 172 56, 196 68, 196 85 L 196 260 C 196 272, 175 278, 150 278 C 125 278, 104 272, 104 260 L 104 85 C 104 68, 128 56, 128 40 Z M 134 44 L 166 44 C 166 58, 186 70, 186 85 L 186 256 C 186 266, 170 270, 150 270 C 130 270, 114 266, 114 256 L 114 85 C 114 70, 134 58, 134 44 Z" fill="#0f172a" fill-rule="evenodd" opacity="0.95"/>
                                 
-                                <!-- Silvery Coating node -->
-                                <line x1="178" y1="180" x2="183" y2="180" stroke="#94a3b8" stroke-width="1.5"/>
-                                <line x1="183" y1="180" x2="245" y2="180" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2"/>
-                                <circle id="node-silvery" cx="178" cy="180" r="4" fill="#a855f7" class="cursor-pointer flask-node" onclick="showFlaskDetail('silvery')"/>
+                                <!-- 4. Glass Outlines (Provides highly-polished, three-dimensional look to the flask) -->
+                                <path d="M 128 40 L 172 40 C 172 56, 196 68, 196 85 L 196 260 C 196 272, 175 278, 150 278 C 125 278, 104 272, 104 260 L 104 85 C 104 68, 128 56, 128 40 Z" fill="none" stroke="#bae6fd" stroke-width="1.5"/>
+                                <path d="M 134 44 L 166 44 C 166 58, 186 70, 186 85 L 186 256 C 186 266, 170 270, 150 270 C 130 270, 114 266, 114 256 L 114 85 C 114 70, 134 58, 134 44 Z" fill="none" stroke="#bae6fd" stroke-width="1.5"/>
                                 
-                                <!-- Support node -->
-                                <line x1="150" y1="280" x2="245" y2="280" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2"/>
-                                <circle id="node-support" cx="150" cy="280" r="4" fill="#eab308" class="cursor-pointer flask-node" onclick="showFlaskDetail('support')"/>
+                                <!-- 5. Silvery Coating (Inside walls) -->
+                                <path id="flask-svg-coating" d="M 131 42 L 169 42 C 169 57, 191 69, 191 85 L 191 258 C 191 269, 172 274, 150 274 C 128 274, 109 269, 109 258 L 109 85 C 109 69, 131 57, 131 42 Z" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-linecap="round"/>
                                 
-                                <!-- Stopper node -->
-                                <line x1="150" y1="37" x2="245" y2="37" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 2"/>
-                                <circle id="node-stopper" cx="150" cy="37" r="4" fill="#ea580c" class="cursor-pointer flask-node" onclick="showFlaskDetail('stopper')"/>
+                                <!-- 6. Sky Blue Liquid (Dynamic opacity based on empty/pour status) -->
+                                <path id="flask-svg-liquid" d="M 115 90 L 185 90 L 185 254 C 185 264, 170 268, 150 268 C 130 268, 115 264, 115 254 Z" fill="#38bdf8" opacity="0"/>
                                 
-                                <!-- Diagram Interaction Labels -->
-                                <text id="flask-lbl-vacuum" x="50" y="153" font-size="8.5" font-weight="extrabold" fill="#38bdf8" class="cursor-pointer" text-anchor="end" onclick="showFlaskDetail('vacuum')" data-i18n="applications.flaskVacuum">VACUUM</text>
-                                <text id="flask-lbl-silvery" x="250" y="183" font-size="8.5" font-weight="extrabold" fill="#a855f7" class="cursor-pointer" text-anchor="start" onclick="showFlaskDetail('silvery')" data-i18n="applications.flaskSilvery">SILVERY</text>
-                                <text id="flask-lbl-support" x="250" y="283" font-size="8.5" font-weight="extrabold" fill="#eab308" class="cursor-pointer" text-anchor="start" onclick="showFlaskDetail('support')" data-i18n="applications.flaskSupport">SUPPORT</text>
-                                <text id="flask-lbl-stopper" x="250" y="40" font-size="8.5" font-weight="extrabold" fill="#ea580c" class="cursor-pointer" text-anchor="start" onclick="showFlaskDetail('stopper')" data-i18n="applications.flaskStopper">STOPPER</text>
-                                </svg>
+                                <!-- 7. Curved Plastic Stopper (Plugs snugly into mouth lip) -->
+                                <path id="flask-svg-stopper" d="M 125 22 L 175 22 C 175 22, 178 36, 172 38 C 166 40, 166 46, 166 56 C 166 56, 134 56, 134 56 C 134 46, 134 40, 128 38 C 122 36, 125 22, 125 22 Z" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1.5" class="cursor-pointer hover:opacity-95 transition-colors" onclick="showFlaskDetail('stopper')"/>
+                                
+                                <!-- Pointer line markers & Hotspots -->
+                                <!-- Vacuum Layer pointer line (points left) -->
+                                <line x1="102" y1="100" x2="115" y2="100" stroke="#475569" stroke-width="1.5" stroke-dasharray="2 2"/>
+                                <circle id="node-vacuum" cx="115" cy="100" r="4.5" fill="#38bdf8" class="cursor-pointer flask-node" onclick="showFlaskDetail('vacuum')"/>
+                                
+                                <!-- Silvery Coating pointer line (points right) -->
+                                <line x1="178" y1="180" x2="198" y2="180" stroke="#475569" stroke-width="1.5" stroke-dasharray="2 2"/>
+                                <circle id="node-silvery" cx="178" cy="180" r="4.5" fill="#a855f7" class="cursor-pointer flask-node" onclick="showFlaskDetail('silvery')"/>
+                                
+                                <!-- Support pointer line (points right) -->
+                                <line x1="150" y1="280" x2="198" y2="280" stroke="#475569" stroke-width="1.5" stroke-dasharray="2 2"/>
+                                <circle id="node-support" cx="150" cy="280" r="4.5" fill="#eab308" class="cursor-pointer flask-node" onclick="showFlaskDetail('support')"/>
+                                
+                                <!-- Stopper pointer line (points right) -->
+                                <line x1="150" y1="36" x2="198" y2="36" stroke="#475569" stroke-width="1.5" stroke-dasharray="2 2"/>
+                                <circle id="node-stopper" cx="150" cy="36" r="4.5" fill="#ea580c" class="cursor-pointer flask-node" onclick="showFlaskDetail('stopper')"/>
+                            </svg>
+
+                            <!-- Absolutely Positioned Choice Dropdowns Next to Diagram Spots -->
+                            <!-- A. Stopper Type (Top Right) -->
+                            <div class="flask-select-overlay absolute top-[5%] left-[66%] z-20 flex flex-col gap-0.5 bg-slate-950/95 border border-slate-800/80 rounded-xl p-1.5 shadow-xl backdrop-blur-sm w-[90px] xs:w-[110px] md:w-[125px] text-[8px] md:text-xs">
+                                <span class="text-[8px] font-black text-rose-500 uppercase tracking-wider">A. Stopper</span>
+                                <select id="flask-opt-stopper" onchange="updateFlaskConfiguration()" class="w-full px-1.5 py-0.5 bg-slate-900 border border-slate-700 text-slate-300 rounded-md font-bold text-[8px] md:text-[10px] focus:outline-none focus:ring-1 focus:ring-rose-500 cursor-pointer">
+                                    <option value="cork" selected>Plastic/Cork</option>
+                                    <option value="open">Open (Convection!)</option>
+                                </select>
+                            </div>
+
+                            <!-- B. Double-Wall Medium (Middle Left) -->
+                            <div class="flask-select-overlay absolute top-[27%] right-[66%] left-auto z-20 flex flex-col gap-0.5 bg-slate-950/95 border border-slate-800/80 rounded-xl p-1.5 shadow-xl backdrop-blur-sm w-[90px] xs:w-[110px] md:w-[125px] text-[8px] md:text-xs">
+                                <span class="text-[8px] font-black text-sky-500 uppercase tracking-wider">B. Wall Medium</span>
+                                <select id="flask-opt-medium" onchange="updateFlaskConfiguration()" class="w-full px-1.5 py-0.5 bg-slate-900 border border-slate-700 text-slate-300 rounded-md font-bold text-[8px] md:text-[10px] focus:outline-none focus:ring-1 focus:ring-sky-500 cursor-pointer">
+                                    <option value="vacuum" selected>Vacuum Gap</option>
+                                    <option value="solid">Solid Copper</option>
+                                </select>
+                            </div>
+
+                            <!-- C. Wall Surface Coating (Middle Right) -->
+                            <div class="flask-select-overlay absolute top-[54%] left-[66%] z-20 flex flex-col gap-0.5 bg-slate-950/95 border border-slate-800/80 rounded-xl p-1.5 shadow-xl backdrop-blur-sm w-[90px] xs:w-[110px] md:w-[125px] text-[8px] md:text-xs">
+                                <span class="text-[8px] font-black text-purple-500 uppercase tracking-wider">C. Wall Coating</span>
+                                <select id="flask-opt-coating" onchange="updateFlaskConfiguration()" class="w-full px-1.5 py-0.5 bg-slate-900 border border-slate-700 text-slate-300 rounded-md font-bold text-[8px] md:text-[10px] focus:outline-none focus:ring-1 focus:ring-purple-500 cursor-pointer">
+                                    <option value="silver" selected>Shiny Silver</option>
+                                    <option value="black">Dull Black</option>
+                                </select>
+                            </div>
+
+                            <!-- D. Support Base (Bottom Right) -->
+                            <div class="flask-select-overlay absolute top-[82%] left-[66%] z-20 flex flex-col gap-0.5 bg-slate-950/95 border border-slate-800/80 rounded-xl p-1.5 shadow-xl backdrop-blur-sm w-[90px] xs:w-[110px] md:w-[125px] text-[8px] md:text-xs">
+                                <span class="text-[8px] font-black text-amber-500 uppercase tracking-wider">D. Support Base</span>
+                                <select id="flask-opt-support" onchange="updateFlaskConfiguration()" class="w-full px-1.5 py-0.5 bg-slate-900 border border-slate-700 text-slate-300 rounded-md font-bold text-[8px] md:text-[10px] focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer">
+                                    <option value="rubber" selected>Rubber/Cork</option>
+                                    <option value="metal">Metal Support</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Action bar under the visualizer -->
+                    <div id="flask-controls-container" class="mt-4 flex flex-col gap-3">
+                        <!-- Preset Buttons -->
+                        <div id="flask-presets-box" class="bg-slate-900/30 p-3 rounded-xl border border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-3 w-full">
+                            <div class="flex flex-col text-left w-full sm:w-auto">
+                                <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">Design Presets</span>
+                                <span class="text-[10px] text-slate-500">Test thermal configurations</span>
+                            </div>
+                            <div class="flex gap-2 w-full sm:w-auto flex-shrink-0">
+                                <button onclick="setFlaskPreset('ideal')" class="px-3 py-1.5 bg-emerald-600/10 border border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-600/20 text-emerald-600 text-[10px] font-bold rounded-lg transition-all">
+                                    🛡️ Ideal Flask
+                                </button>
+                                <button onclick="setFlaskPreset('poor')" class="px-3 py-1.5 bg-rose-600/10 border border-rose-500/30 hover:border-rose-500 hover:bg-rose-600/20 text-rose-600 text-[10px] font-bold rounded-lg transition-all">
+                                    ⚠️ Cheap Flask
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Live HUD and Re-boil action -->
+                        <div id="flask-hud-box" class="bg-slate-900/30 p-3 rounded-xl border border-slate-800 flex flex-col gap-3.5 items-stretch w-full">
+                            <div class="flex gap-4 justify-between items-center w-full bg-slate-950/20 px-2.5 py-1.5 rounded-lg border border-slate-800/40">
+                                <div class="flex flex-col text-left">
+                                    <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Liquid Temp</span>
+                                    <span id="flask-hud-temp" class="text-base font-bold text-slate-400">Empty</span>
+                                </div>
+                                <div class="flex flex-col text-left border-l border-slate-800/60 pl-4 flex-1">
+                                    <span class="text-[9px] font-black uppercase tracking-wider text-slate-400">Heat Loss Rate</span>
+                                    <span id="flask-hud-rate" class="text-[11px] font-bold text-slate-400">--</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Add Water Control Panel -->
+                            <div id="flask-pour-panel" class="flex items-center justify-between gap-3 w-full bg-slate-900/40 border border-slate-800 p-1.5 rounded-lg">
+                                <div class="flex flex-col text-left flex-shrink-0">
+                                    <span class="text-[8px] font-black uppercase tracking-wider text-slate-400">Pour Temp</span>
+                                    <span id="flask-pour-temp-lbl" class="text-[10px] font-extrabold text-rose-400">100°C</span>
+                                </div>
+                                <input type="range" id="flask-pour-temp-slider" min="5" max="100" step="5" value="100" oninput="const lbl = document.getElementById('flask-pour-temp-lbl'); lbl.innerText = this.value + '°C'; if(this.value < 25) { lbl.className = 'text-[10px] font-extrabold text-sky-400'; } else if(this.value <= 40) { lbl.className = 'text-[10px] font-extrabold text-slate-300'; } else { lbl.className = 'text-[10px] font-extrabold text-rose-400'; }" class="flex-1 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer mx-2">
+                                <button onclick="addFlaskWater()" class="flex-shrink-0 px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-[10px] font-bold transition-all shadow-md shadow-blue-600/10 flex items-center gap-1">
+                                    <i data-lucide="droplet" class="w-3.5 h-3.5"></i> Add Water
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Info Display Panel -->
-                <div class="glass-panel-light rounded-xl p-4 border border-slate-800 flex flex-col justify-center min-h-[8rem]">
+                <div class="glass-panel-light rounded-xl p-4 border border-slate-800 flex flex-col justify-center min-h-[5.5rem] lg:min-h-[6rem] mt-4">
                     <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-1.5" id="flask-detail-title" data-i18n="applications.flaskBlueprint">Vacuum Flask Blueprint</h4>
                     <p class="text-[11px] text-slate-300 leading-relaxed" id="flask-detail-desc" data-i18n="applications.flaskBlueprintDesc">
                         Click on the highlighted labels (Stopper, Vacuum, Silvery Wall, Support) to analyze their mitigation principles.
@@ -834,7 +1163,7 @@
 
             <!-- Card 3: Greenhouse Effect Simulation -->
             <div id="card-greenhouse" class="glass-panel rounded-2xl p-5 flex flex-col justify-between transition-all duration-300">
-                <div>
+                <div class="flex flex-col flex-grow">
                     <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-3">
                         <h4 class="font-bold text-sm text-slate-200 flex items-center gap-2">
                             <span class="p-1 bg-emerald-500/10 text-emerald-400 rounded"><i data-lucide="sun" class="w-4 h-4"></i></span>
@@ -861,7 +1190,7 @@
                             <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 160">
                                 <path d="M 120 140 L 120 60 L 220 30 L 320 60 L 320 140" fill="none" stroke="#38bdf8" stroke-width="2.5" opacity="0.8"/>
                                 <path d="M 120 60 L 320 60" fill="none" stroke="#38bdf8" stroke-width="1.2" opacity="0.4"/>
-                                <text id="gh-glass-roof-label" x="170" y="50" fill="#38bdf8" font-size="8" font-weight="black" opacity="0.8" data-i18n="applications.glassRoof">GLASS ROOF</text>
+                                <text id="gh-glass-roof-label" x="220" y="50" text-anchor="middle" fill="#38bdf8" font-size="8" font-weight="black" opacity="0.8" data-i18n="applications.glassRoof">GLASS ROOF</text>
                             </svg>
                             <!-- Ground -->
                             <div class="absolute bottom-0 left-0 right-0 h-3.5 bg-emerald-800/20 border-t border-emerald-600/50 rounded-b"></div>
@@ -870,11 +1199,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="pt-4 border-t border-slate-800 mt-4 flex flex-wrap gap-3 text-[10px] text-slate-400 leading-relaxed">
-                    <span class="flex items-center gap-1"><span class="w-3 h-0.5 bg-amber-400"></span><span data-i18n="applications.shortWave">Short-wave (Sun)</span></span>
-                    <span class="flex items-center gap-1"><span class="w-3 h-0.5 bg-red-500"></span><span data-i18n="applications.longWave">Long-wave IR (trapped & re-emitted)</span></span>
+                <div>
+                    <div class="pt-4 border-t border-slate-800 mt-4 flex flex-wrap gap-3 text-[10px] text-slate-400 leading-relaxed">
+                        <span class="flex items-center gap-1"><span class="w-3 h-0.5 bg-amber-400"></span><span data-i18n="applications.shortWave">Short-wave (Sun)</span></span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-0.5 bg-red-500"></span><span data-i18n="applications.longWave">Long-wave IR (trapped & re-emitted)</span></span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-2"><strong>HKDSE:</strong> <span data-i18n="applications.greenhouseHkdse">Glass transparent to short-wave, opaque to long-wave IR.</span></p>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-2"><strong>HKDSE:</strong> <span data-i18n="applications.greenhouseHkdse">Glass transparent to short-wave, opaque to long-wave IR.</span></p>
             </div>
             </div>
         </section>
@@ -1468,6 +1799,23 @@
             }, 16);
         }
 
+        // Listen to fullscreen changes to sync UI state
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            const fsElement = document.fullscreenElement || 
+                              document.webkitFullscreenElement || 
+                              document.mozFullScreenElement || 
+                              document.msFullscreenElement;
+            if (!fsElement) {
+                // We exited fullscreen. Close any zoomed cards.
+                closeAllZoomedCards();
+            }
+        }
+
         function toggleCardZoom(cardId) {
             const card = document.getElementById(cardId);
             const backdrop = document.getElementById('app-card-backdrop');
@@ -1476,16 +1824,19 @@
             const isZoomed = card.classList.contains('app-card-zoomed');
 
             if (isZoomed) {
-                // Zoom out
-                card.classList.remove('app-card-zoomed');
-                backdrop.classList.add('hidden');
-                document.body.classList.remove('card-is-zoomed');
-                
-                // Update icon
-                const icon = document.getElementById('zoom-icon-' + cardId);
-                if (icon) {
-                    icon.setAttribute('data-lucide', 'maximize-2');
+                // Zoom out / Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
                 }
+                
+                // Fallback in case fullscreen wasn't active or failed
+                closeAllZoomedCards();
             } else {
                 // Close any other zoomed card first
                 closeAllZoomedCards();
@@ -1499,6 +1850,17 @@
                 const icon = document.getElementById('zoom-icon-' + cardId);
                 if (icon) {
                     icon.setAttribute('data-lucide', 'minimize-2');
+                }
+
+                // Try to enter native browser fullscreen if supported
+                if (card.requestFullscreen) {
+                    card.requestFullscreen().catch(() => {});
+                } else if (card.webkitRequestFullscreen) {
+                    card.webkitRequestFullscreen();
+                } else if (card.mozRequestFullScreen) {
+                    card.mozRequestFullScreen();
+                } else if (card.msRequestFullscreen) {
+                    card.msRequestFullscreen();
                 }
             }
 
@@ -2023,7 +2385,7 @@
                                 color: '#94a3b8',
                                 font: { size: 10, weight: 'bold' }
                             },
-                            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                            grid: { color: 'rgba(15, 23, 42, 0.05)' },
                             ticks: { color: '#64748b', font: { size: 9 } }
                         },
                         y: {
@@ -2035,7 +2397,7 @@
                             },
                             min: 15,
                             max: 150,
-                            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+                            grid: { color: 'rgba(15, 23, 42, 0.05)' },
                             ticks: { color: '#64748b', font: { size: 9 } }
                         }
                     },
@@ -2642,7 +3004,7 @@
                 convCtx.save();
                 convCtx.strokeStyle = color;
                 convCtx.globalAlpha = alpha + pulse * 0.12;
-                convCtx.lineWidth = 2;
+                convCtx.lineWidth = 3; // Slightly thicker lines for premium contrast on light background
                 convCtx.setLineDash([6, 8]);
                 convCtx.lineDashOffset = dashOffset;
                 convCtx.beginPath();
@@ -2675,7 +3037,7 @@
             const htAngle = Math.atan2(ht.y - 25 - cy, htCx - cx);
             const halfLoop = Math.PI * 0.92 * sign;
 
-            traceEllipseArc(acAngle, halfLoop, 'rgb(56, 189, 248)', 0.42, roomAC_Active);
+            traceEllipseArc(acAngle, halfLoop, 'rgb(29, 78, 216)', 0.65, roomAC_Active); // Rich dark blue with higher base opacity
             traceEllipseArc(htAngle, halfLoop, 'rgb(239, 68, 68)', 0.48, roomHeater_Active);
         }
 
@@ -2770,8 +3132,8 @@
             } else if (convScenario === 'breeze') {
                 const dir = breezeTime === 'day' ? -1 : 1;
                 const offset = (Date.now() / 40) % 30;
-                convCtx.strokeStyle = `rgba(148, 163, 184, ${0.4 + pulse * 0.2})`;
-                convCtx.lineWidth = 1.5;
+                convCtx.strokeStyle = `rgba(51, 65, 85, ${0.75 + pulse * 0.15})`; // Darker grey Slate-700 for high visibility
+                convCtx.lineWidth = 2.0; // Slightly thicker
                 for (let i = 0; i < 4; i++) {
                     const y = rect.height - 55 - i * 22;
                     const x1 = cx + dir * (40 + offset + i * 8);
@@ -2785,7 +3147,7 @@
                     convCtx.lineTo(x2 + dir * 8, y - 4);
                     convCtx.lineTo(x2 + dir * 8, y + 4);
                     convCtx.closePath();
-                    convCtx.fillStyle = 'rgba(148, 163, 184, 0.6)';
+                    convCtx.fillStyle = 'rgba(51, 65, 85, 0.9)'; // Darker grey arrowhead fill
                     convCtx.fill();
                 }
             }
@@ -2805,7 +3167,7 @@
             const h = 400; // Fixed scale-independent virtual height
 
             // Clear the actual canvas with subtle motion blur trail
-            convCtx.fillStyle = 'rgba(15, 23, 42, 0.22)';
+            convCtx.fillStyle = 'rgba(255, 255, 255, 0.22)';
             convCtx.fillRect(0, 0, rect.width, rect.height);
 
             // Calculate scale and offset to center virtual canvas (800x400) uniformly inside the actual canvas
@@ -2956,10 +3318,10 @@
                     convCtx.fillStyle = acGrad;
                     convCtx.fillRect(acRect.x, acRect.y, acRect.w, acRect.h);
 
-                    // Flow lines blowing down
+                    // Flow lines blowing down (Vibrant dark blue for supreme contrast on light background)
                     let ventOffset = (Date.now() / 15) % 30;
-                    convCtx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
-                    convCtx.lineWidth = 1.5;
+                    convCtx.strokeStyle = 'rgba(29, 78, 216, 0.85)'; // Dark Blue
+                    convCtx.lineWidth = 2.0;
                     convCtx.setLineDash([4, 4]);
                     convCtx.beginPath();
                     convCtx.moveTo(acRect.x + 10, acRect.y + acRect.h);
@@ -2999,9 +3361,9 @@
                 }
 
                 // Air density visual panel with dynamic thermostat
-                convCtx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+                convCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
                 convCtx.fillRect(10, 10, 185, 48);
-                convCtx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+                convCtx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
                 convCtx.lineWidth = 1;
                 convCtx.strokeRect(10, 10, 185, 48);
 
@@ -3015,12 +3377,12 @@
                 convCtx.font = 'bold 9px monospace';
                 convCtx.fillText(`🌡️ ${t('convection.thermostat', { temp: roomTemp.toFixed(1) })}`, 15, 21);
 
-                convCtx.fillStyle = '#38bdf8';
+                convCtx.fillStyle = '#0284c7';
                 convCtx.font = '8px monospace';
                 convCtx.fillText(t('convection.acColdAir'), 15, 31);
                 convCtx.fillStyle = '#f97316';
                 convCtx.fillText(t('convection.heaterHotAir'), 15, 41);
-                convCtx.fillStyle = '#94a3b8';
+                convCtx.fillStyle = '#475569';
                 convCtx.fillText(t('convection.buoyancy'), 15, 51);
 
                 // Run particles
@@ -3247,7 +3609,7 @@
                     const r = 5;
 
                     // Draw semi-transparent card background
-                    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
                     ctx.strokeStyle = strokeColor;
                     ctx.lineWidth = 1.5;
 
@@ -3267,7 +3629,7 @@
 
                     // Draw text
                     ctx.save();
-                    ctx.fillStyle = '#ffffff';
+                    ctx.fillStyle = '#0f172a';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(text, x, y + 0.5);
@@ -3319,30 +3681,31 @@
                 }
 
                 // Breeze densities and wind status HUD
-                convCtx.fillStyle = 'rgba(15, 23, 42, 0.8)';
-                convCtx.fillRect(10, 10, 195, 38);
-                convCtx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                convCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+                convCtx.fillRect(10, 10, 245, 45); // Expanded width to 245 and height to 45 for perfect word fitting
+                convCtx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
                 convCtx.lineWidth = 1;
-                convCtx.strokeRect(10, 10, 195, 38);
+                convCtx.strokeRect(10, 10, 245, 45);
 
-                // Reset text alignment states to avoid leaks
+                // Reset text alignment states to avoid leaks and set font explicitly
                 convCtx.textAlign = 'left';
                 convCtx.textBaseline = 'alphabetic';
+                convCtx.font = 'bold 8.5px monospace'; // Explicitly set font for perfect box fitting
 
                 if (breezeTime === 'day') {
                     convCtx.fillStyle = '#f97316';
-                    convCtx.fillText(t('convection.landHeatedFast'), 15, 21);
-                    convCtx.fillStyle = '#38bdf8';
-                    convCtx.fillText(t('convection.seaCooler'), 15, 31);
+                    convCtx.fillText(t('convection.landHeatedFast'), 15, 22);
+                    convCtx.fillStyle = '#0284c7';
+                    convCtx.fillText(t('convection.seaCooler'), 15, 33);
                     convCtx.fillStyle = '#10b981';
-                    convCtx.fillText(t('convection.seaBreeze'), 15, 41);
+                    convCtx.fillText(t('convection.seaBreeze'), 15, 44);
                 } else {
-                    convCtx.fillStyle = '#38bdf8';
-                    convCtx.fillText(t('convection.landCoolsFast'), 15, 21);
+                    convCtx.fillStyle = '#0284c7';
+                    convCtx.fillText(t('convection.landCoolsFast'), 15, 22);
                     convCtx.fillStyle = '#ea580c';
-                    convCtx.fillText(t('convection.seaRetainsHeat'), 15, 31);
-                    convCtx.fillStyle = '#a855f7';
-                    convCtx.fillText(t('convection.landBreeze'), 15, 41);
+                    convCtx.fillText(t('convection.seaRetainsHeat'), 15, 33);
+                    convCtx.fillStyle = '#7e22ce';
+                    convCtx.fillText(t('convection.landBreeze'), 15, 44);
                 }
 
                 // Run particles
@@ -3669,16 +4032,16 @@
 
             svg.innerHTML = `<g>
                 <!-- Background box and label for Heat Absorption (Left) -->
-                <rect x="${leftX - 52}" y="${cy - 30}" width="104" height="20" rx="5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(239, 68, 68, 0.45)" stroke-width="1.2"/>
+                <rect x="${leftX - 52}" y="${cy - 30}" width="104" height="20" rx="5" fill="rgba(255, 255, 255, 0.95)" stroke="rgba(239, 68, 68, 0.45)" stroke-width="1.2"/>
                 <text x="${leftX}" y="${cy - 20}" text-anchor="middle" dominant-baseline="central" fill="#f43f5e" font-size="9" font-weight="900" letter-spacing="0.5">${t('radiation.absorbLabel')}</text>
 
                 <!-- Background box and label for IR Wave Reflection (Right) -->
-                <rect x="${rightX - 52}" y="${cy - 30}" width="104" height="20" rx="5" fill="rgba(15, 23, 42, 0.85)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.2"/>
-                <text x="${rightX}" y="${cy - 20}" text-anchor="middle" dominant-baseline="central" fill="#38bdf8" font-size="9" font-weight="900" letter-spacing="0.5">${t('radiation.reflectLabel')}</text>
+                <rect x="${rightX - 52}" y="${cy - 30}" width="104" height="20" rx="5" fill="rgba(255, 255, 255, 0.95)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.2"/>
+                <text x="${rightX}" y="${cy - 20}" text-anchor="middle" dominant-baseline="central" fill="#0284c7" font-size="9" font-weight="900" letter-spacing="0.5">${t('radiation.reflectLabel')}</text>
 
                 <!-- Premium Header Badge -->
-                <rect x="${cx - 60}" y="10" width="120" height="18" rx="4" fill="rgba(15, 23, 42, 0.8)" stroke="rgba(148, 163, 184, 0.15)" stroke-width="1"/>
-                <text x="${cx}" y="19" text-anchor="middle" dominant-baseline="central" fill="#94a3b8" font-size="8.5" font-weight="800" letter-spacing="0.5">${t('radiation.irWaves')}</text>
+                <rect x="${cx - 60}" y="10" width="120" height="18" rx="4" fill="rgba(255, 255, 255, 0.9)" stroke="rgba(15, 23, 42, 0.15)" stroke-width="1"/>
+                <text x="${cx}" y="19" text-anchor="middle" dominant-baseline="central" fill="#475569" font-size="8.5" font-weight="800" letter-spacing="0.5">${t('radiation.irWaves')}</text>
             </g>`;
         }
 
@@ -3850,19 +4213,19 @@
                     scales: {
                         x: {
                             title: { display: true, text: t('charts.radTime'), color: '#64748b', font: { size: 9, weight: 'bold' } },
-                            grid: { color: 'rgba(255, 255, 255, 0.02)' },
+                            grid: { color: 'rgba(15, 23, 42, 0.05)' },
                             ticks: { color: '#475569', font: { size: 9 } }
                         },
                         y: {
                             title: { display: true, text: t('charts.radTemp'), color: '#64748b', font: { size: 9, weight: 'bold' } },
                             min: 15,
                             max: 50,
-                            grid: { color: 'rgba(255, 255, 255, 0.02)' },
+                            grid: { color: 'rgba(15, 23, 42, 0.05)' },
                             ticks: { color: '#475569', font: { size: 9 } }
                         }
                     },
                     plugins: {
-                        legend: { labels: { font: { size: 9 }, color: '#94a3b8' } }
+                        legend: { labels: { font: { size: 9 }, color: '#475569' } }
                     }
                 }
             });
@@ -3918,10 +4281,165 @@
             radChartTime = 0;
         }
 
+        // --- INTERACTIVE VACUUM FLASK SANDBOX STATE & PHYSICS ---
+        let flaskLiquidTemp = 100.0; // Starting hot water temperature
+        let flaskHasWater = false; // Whether water has been poured inside
+        let flaskHeatLossRate = 0.05; // computed °C/s
+        let flaskConfig = {
+            stopper: 'cork',
+            medium: 'vacuum',
+            coating: 'silver',
+            support: 'rubber'
+        };
+        let flaskSteamParticles = []; // rising steam particles when open
+        let lastFlaskPreset = 'ideal';
+
+        function setFlaskPreset(preset) {
+            lastFlaskPreset = preset;
+            const stopperSel = document.getElementById('flask-opt-stopper');
+            const mediumSel = document.getElementById('flask-opt-medium');
+            const coatingSel = document.getElementById('flask-opt-coating');
+            const supportSel = document.getElementById('flask-opt-support');
+
+            if (preset === 'ideal') {
+                flaskConfig = { stopper: 'cork', medium: 'vacuum', coating: 'silver', support: 'rubber' };
+            } else if (preset === 'average') {
+                flaskConfig = { stopper: 'cork', medium: 'vacuum', coating: 'black', support: 'rubber' };
+            } else if (preset === 'poor') {
+                flaskConfig = { stopper: 'open', medium: 'solid', coating: 'black', support: 'metal' };
+            }
+
+            if (stopperSel) stopperSel.value = flaskConfig.stopper;
+            if (mediumSel) mediumSel.value = flaskConfig.medium;
+            if (coatingSel) coatingSel.value = flaskConfig.coating;
+            if (supportSel) supportSel.value = flaskConfig.support;
+
+            updateFlaskConfiguration();
+        }
+
+        function addFlaskWater() {
+            const slider = document.getElementById('flask-pour-temp-slider');
+            const pourTemp = slider ? parseFloat(slider.value) : 80.0;
+            flaskLiquidTemp = pourTemp;
+            flaskHasWater = true; // Mark as poured
+            
+            // Spawn some burst steam particles if water is hot and lid is open
+            if (flaskConfig.stopper === 'open' && flaskLiquidTemp > 50) {
+                const burstCount = Math.floor((flaskLiquidTemp - 40) / 3);
+                for (let i = 0; i < burstCount; i++) {
+                    flaskSteamParticles.push({
+                        x: 130 + Math.random() * 40,
+                        y: 35 + Math.random() * 10,
+                        vx: -0.5 + Math.random() * 1.0,
+                        vy: -1.0 - Math.random() * 1.5,
+                        life: 1.0,
+                        size: 2.0 + Math.random() * 4.0
+                    });
+                }
+            }
+        }
+
+        function updateFlaskConfiguration() {
+            const stopperVal = document.getElementById('flask-opt-stopper')?.value || 'cork';
+            const mediumVal = document.getElementById('flask-opt-medium')?.value || 'vacuum';
+            const coatingVal = document.getElementById('flask-opt-coating')?.value || 'silver';
+            const supportVal = document.getElementById('flask-opt-support')?.value || 'rubber';
+
+            flaskConfig.stopper = stopperVal;
+            flaskConfig.medium = mediumVal;
+            flaskConfig.coating = coatingVal;
+            flaskConfig.support = supportVal;
+
+            // Sync SVG Visualizer Styles
+            const svgInterspace = document.getElementById('flask-svg-interspace');
+            const svgCoating = document.getElementById('flask-svg-coating');
+            const svgStopper = document.getElementById('flask-svg-stopper');
+
+            // 1. Interspace Fill color based on vacuum/air/solid
+            if (svgInterspace) {
+                if (flaskConfig.medium === 'vacuum') {
+                    svgInterspace.setAttribute('fill', '#0f172a'); // Near empty space
+                    svgInterspace.setAttribute('opacity', '0.95');
+                } else if (flaskConfig.medium === 'air') {
+                    svgInterspace.setAttribute('fill', '#38bdf8'); // Air blue tint
+                    svgInterspace.setAttribute('opacity', '0.2');
+                } else {
+                    svgInterspace.setAttribute('fill', '#ea580c'); // Solid copper
+                    svgInterspace.setAttribute('opacity', '0.5');
+                }
+            }
+
+            // 2. Coating reflective/absorptive style
+            if (svgCoating) {
+                if (flaskConfig.coating === 'silver') {
+                    svgCoating.setAttribute('stroke', '#e2e8f0');
+                    svgCoating.setAttribute('stroke-dasharray', 'none');
+                    svgCoating.setAttribute('stroke-width', '2.5');
+                } else {
+                    svgCoating.setAttribute('stroke', '#0f172a'); // Normal solid black/charcoal line
+                    svgCoating.setAttribute('stroke-dasharray', 'none');
+                    svgCoating.setAttribute('stroke-width', '2.5');
+                }
+            }
+
+            // 3. Stopper style (Clean grey plastic stopper matching the reference image)
+            if (svgStopper) {
+                if (flaskConfig.stopper === 'cork') {
+                    svgStopper.setAttribute('fill', '#f1f5f9'); // Off-white/grey plastic stopper cap
+                    svgStopper.setAttribute('stroke', '#cbd5e1');
+                    svgStopper.setAttribute('opacity', '1');
+                } else {
+                    svgStopper.setAttribute('fill', 'transparent'); // Open lid
+                    svgStopper.setAttribute('opacity', '0');
+                }
+            }
+
+            // 4. Dynamic Support Cork Blocks Color
+            document.querySelectorAll('.flask-svg-support-cork').forEach(cork => {
+                if (flaskConfig.support === 'rubber') {
+                    cork.setAttribute('fill', '#ebd39c');   // Warm cork beige
+                    cork.setAttribute('stroke', '#c6a371'); // Soft wood border
+                } else {
+                    cork.setAttribute('fill', '#cbd5e1');   // Metallic steel silver
+                    cork.setAttribute('stroke', '#64748b'); // Steel metal border
+                }
+            });
+
+            // Compute explanatory blueprints descriptions
+            const title = document.getElementById('flask-detail-title');
+            const desc = document.getElementById('flask-detail-desc');
+            if (title && desc) {
+                title.innerText = 'Interactive Sandbox Evaluation';
+                let exp = 'Current heat loss pathways: ';
+                let paths = [];
+                if (flaskConfig.stopper === 'open') {
+                    paths.push('Severe convection steam escaping out of open lid');
+                } else if (flaskConfig.stopper === 'metal') {
+                    paths.push('Conduction leaking rapidly through the conductive metal lid');
+                }
+                if (flaskConfig.medium === 'solid') {
+                    paths.push('Massive conductive heat flow directly bridging across solid copper walls');
+                } else if (flaskConfig.medium === 'air') {
+                    paths.push('Convection loops circulating energy across double-walled air gap');
+                }
+                if (flaskConfig.coating === 'black') {
+                    paths.push('High emissivity dull black walls readily radiating infrared wave packets');
+                }
+                if (flaskConfig.support === 'metal') {
+                    paths.push('Conductive loss flowing down directly through rigid metallic support bases');
+                }
+
+                if (paths.length === 0) {
+                    desc.innerText = "Excellent insulation! All heat transfer pathways (conduction, convection, and radiation) are successfully blocked. The water's temperature stays stable.";
+                } else {
+                    desc.innerText = 'Thermal insulation compromised. ' + paths.join(', ') + '. Adjust configurations to improve thermal preservation efficiency!';
+                }
+            }
+        }
+
         // --- VACUUM FLASK DETAIL ---
         function showFlaskDetail(part) {
             flaskActivePart = part;
-            lastFlaskPart = part;
             const title = document.getElementById('flask-detail-title');
             const desc = document.getElementById('flask-detail-desc');
 
@@ -3961,6 +4479,9 @@
 
             flaskActivePart = null;
             flaskTimer = 0;
+            flaskLiquidTemp = 100.0; // Ready for default pouring
+            flaskHasWater = false; // Starts completely empty!
+            setFlaskPreset('ideal'); // Default preset configuration
             if (flaskAnimationId) cancelAnimationFrame(flaskAnimationId);
             animateFlask();
         }
@@ -3970,6 +4491,138 @@
 
             flaskTimer += 0.016;
 
+            // Update SVG liquid path visibility & color depending on water presence
+            const svgLiquid = document.getElementById('flask-svg-liquid');
+            
+            if (!flaskHasWater) {
+                if (svgLiquid) svgLiquid.setAttribute('opacity', '0');
+
+                // Update HUD elements to empty state
+                const tempHUD = document.getElementById('flask-hud-temp');
+                const rateHUD = document.getElementById('flask-hud-rate');
+                if (tempHUD) {
+                    tempHUD.innerText = "Empty";
+                    tempHUD.className = "text-base font-bold text-slate-400";
+                }
+                if (rateHUD) {
+                    rateHUD.innerText = "--";
+                    rateHUD.className = "text-[11px] font-bold text-slate-400";
+                }
+
+                // Clear the canvas but keep rendering hotspots click effects
+                const rect = flaskCanvas.getBoundingClientRect();
+                flaskCtx.clearRect(0, 0, rect.width, rect.height);
+                flaskCtx.save();
+                flaskCtx.scale(rect.width / 300, rect.height / 300);
+
+                // Hotspot Highlight Click Circles
+                if (flaskActivePart === 'stopper') {
+                    flaskCtx.strokeStyle = 'rgba(234, 88, 12, 0.4)';
+                    flaskCtx.lineWidth = 1.5;
+                    flaskCtx.setLineDash([3, 3]);
+                    flaskCtx.beginPath();
+                    flaskCtx.arc(150, 36, 18, 0, Math.PI * 2);
+                    flaskCtx.stroke();
+                } else if (flaskActivePart === 'vacuum') {
+                    flaskCtx.strokeStyle = 'rgba(2, 132, 199, 0.4)';
+                    flaskCtx.lineWidth = 1.5;
+                    flaskCtx.setLineDash([3, 3]);
+                    flaskCtx.beginPath();
+                    flaskCtx.arc(115, 100, 18, 0, Math.PI * 2);
+                    flaskCtx.stroke();
+                } else if (flaskActivePart === 'silvery') {
+                    flaskCtx.strokeStyle = 'rgba(126, 34, 206, 0.4)';
+                    flaskCtx.lineWidth = 1.5;
+                    flaskCtx.setLineDash([3, 3]);
+                    flaskCtx.beginPath();
+                    flaskCtx.arc(178, 180, 18, 0, Math.PI * 2);
+                    flaskCtx.stroke();
+                } else if (flaskActivePart === 'support') {
+                    flaskCtx.strokeStyle = 'rgba(180, 83, 9, 0.4)';
+                    flaskCtx.lineWidth = 1.5;
+                    flaskCtx.setLineDash([3, 3]);
+                    flaskCtx.beginPath();
+                    flaskCtx.arc(150, 280, 18, 0, Math.PI * 2);
+                    flaskCtx.stroke();
+                }
+
+                flaskCtx.restore();
+                flaskAnimationId = requestAnimationFrame(animateFlask);
+                return;
+            }
+
+            // --- Real-time Cooling/Warming Physics Logic (Ambient is 25.0°C) ---
+            const ambientTemp = 25.0;
+            let deltaT = flaskLiquidTemp - ambientTemp; // Positive if hot, Negative if cold
+            
+            // 1. Stopper loss coefficient
+            let lossStopper = 0.0008; // default cork
+            if (flaskConfig.stopper === 'open') lossStopper = 0.018; // active convection steam/air exchange
+
+            // 2. Interspace Medium loss coefficient
+            let lossMedium = 0.0003; // vacuum
+            if (flaskConfig.medium === 'solid') lossMedium = 0.015; // copper metal
+
+            // 3. Coating loss coefficient (radiation emission)
+            let lossCoating = 0.0005; // silver reflects IR
+            if (flaskConfig.coating === 'black') lossCoating = 0.0075;
+
+            // 4. Base support loss coefficient (bottom conduction)
+            let lossSupport = 0.0004; // rubber support
+            if (flaskConfig.support === 'metal') lossSupport = 0.0035;
+
+            // Sum total heat exchange rate coefficient
+            let heatExchangeCoeff = lossStopper + lossMedium + lossCoating + lossSupport;
+            flaskHeatLossRate = heatExchangeCoeff * deltaT; // Positive is cooling, Negative is warming
+            
+            // Apply gradual dissipation/absorption
+            flaskLiquidTemp = flaskLiquidTemp - flaskHeatLossRate * 0.016 * 10; // scale speed for feedback realism
+
+            // Clamp temperature boundaries to prevent overshoot
+            if (deltaT > 0 && flaskLiquidTemp < ambientTemp) flaskLiquidTemp = ambientTemp;
+            if (deltaT < 0 && flaskLiquidTemp > ambientTemp) flaskLiquidTemp = ambientTemp;
+
+            // Update SVG liquid color dynamically (gorgeous sky blue)
+            if (svgLiquid) {
+                svgLiquid.setAttribute('opacity', '0.75');
+                if (flaskLiquidTemp > 25.0) {
+                    svgLiquid.setAttribute('fill', '#0ea5e9'); // Vibrant sky blue
+                } else {
+                    svgLiquid.setAttribute('fill', '#38bdf8'); // Lighter sky blue
+                }
+            }
+
+            // Update HUD elements
+            const tempHUD = document.getElementById('flask-hud-temp');
+            const rateHUD = document.getElementById('flask-hud-rate');
+            if (tempHUD) {
+                tempHUD.innerText = flaskLiquidTemp.toFixed(1) + " °C";
+                // Adjust text color based on temperature (hot red -> stable slate -> cold blue)
+                if (flaskLiquidTemp > 60) {
+                    tempHUD.className = "text-base font-black text-rose-400 animate-pulse";
+                } else if (flaskLiquidTemp > 30) {
+                    tempHUD.className = "text-base font-black text-amber-400";
+                } else if (flaskLiquidTemp < 24.8) {
+                    tempHUD.className = "text-base font-black text-sky-400";
+                } else {
+                    tempHUD.className = "text-base font-black text-slate-300"; // Stable at Room Temp
+                }
+            }
+            if (rateHUD) {
+                const absRate = Math.abs(flaskHeatLossRate);
+                const isWarming = flaskHeatLossRate < 0;
+                rateHUD.innerText = (isWarming ? "Warming: +" : "Cooling: -") + absRate.toFixed(3) + " °C/s";
+                
+                if (absRate < 0.005) {
+                    rateHUD.innerText = "Stable";
+                    rateHUD.className = "text-[11px] font-bold text-slate-300";
+                } else if (absRate > 0.1) {
+                    rateHUD.className = "text-[11px] font-black text-red-400";
+                } else {
+                    rateHUD.className = "text-[11px] font-bold text-emerald-400";
+                }
+            }
+
             const rect = flaskCanvas.getBoundingClientRect();
             flaskCtx.clearRect(0, 0, rect.width, rect.height);
 
@@ -3977,110 +4630,273 @@
             flaskCtx.save();
             flaskCtx.scale(rect.width / 300, rect.height / 300);
 
-            // Pulsing core thermal glow representing hot liquid
-            let liquidPulse = 0.35 + 0.15 * Math.sin(flaskTimer * 4.5);
-            flaskCtx.fillStyle = `rgba(239, 68, 68, ${liquidPulse})`;
+            // --- Visual Representation: Pulsing core thermal glow representing hot or cold liquid ---
+            let dT_ambient = flaskLiquidTemp - 25.0;
+            let liquidIntensity = Math.abs(dT_ambient) / 75.0; // 0 to 1 scale
+            let liquidPulse = (0.2 + 0.1 * Math.sin(flaskTimer * 4.5)) * liquidIntensity;
+            
+            if (dT_ambient >= 0) {
+                flaskCtx.fillStyle = `rgba(239, 68, 68, ${liquidPulse})`; // Warm red
+            } else {
+                flaskCtx.fillStyle = `rgba(59, 130, 246, ${liquidPulse})`; // Chilled blue
+            }
+            
             flaskCtx.beginPath();
-            flaskCtx.arc(150, 160, 15, 0, Math.PI * 2);
+            flaskCtx.moveTo(115, 90);
+            flaskCtx.lineTo(185, 90);
+            flaskCtx.lineTo(185, 254);
+            flaskCtx.quadraticCurveTo(185, 268, 150, 268);
+            flaskCtx.quadraticCurveTo(115, 268, 115, 254);
+            flaskCtx.closePath();
             flaskCtx.fill();
 
-            if (flaskActivePart === 'stopper') {
-                // Stopper Convection current loops hitting the seal and curling down
-                flaskCtx.strokeStyle = 'rgba(14, 165, 233, 0.6)';
-                flaskCtx.lineWidth = 1.5;
-                flaskCtx.setLineDash([4, 3]);
-                
-                // Left cycle
-                flaskCtx.beginPath();
-                flaskCtx.ellipse(138, 75, 8, 12, 0, 0, Math.PI * 2);
-                flaskCtx.stroke();
-                
-                // Right cycle
-                flaskCtx.beginPath();
-                flaskCtx.ellipse(162, 75, 8, 12, 0, 0, Math.PI * 2);
-                flaskCtx.stroke();
-                flaskCtx.setLineDash([]);
-
-                // Visual block lines
-                let blockY = 50 + Math.sin(flaskTimer * 12) * 3.5;
-                flaskCtx.strokeStyle = '#ef4444';
-                flaskCtx.lineWidth = 1.8;
-                flaskCtx.beginPath();
-                flaskCtx.moveTo(135, blockY + 12);
-                flaskCtx.lineTo(150, blockY);
-                flaskCtx.lineTo(165, blockY + 12);
-                flaskCtx.stroke();
-
-                flaskCtx.fillStyle = '#ea580c';
-                flaskCtx.font = 'bold 8px sans-serif';
-                flaskCtx.fillText(t('applications.flaskConvBlocked'), 110, 16);
-            } else if (flaskActivePart === 'vacuum') {
-                // Vacuum blockage: heat conduction wave dying out in the vacuum gap (x = 110 to 120)
-                flaskCtx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
-                flaskCtx.lineWidth = 1.2;
-                let waveY = 100 + (flaskTimer * 60) % 90;
-
-                // Fading arcs representing heat propagating but dying immediately
-                flaskCtx.beginPath();
-                flaskCtx.arc(121, waveY, 5, -Math.PI / 2, Math.PI / 2);
-                flaskCtx.stroke();
-
-                // Draw a beautiful glowing vacuum gap belt overlay
-                flaskCtx.fillStyle = 'rgba(56, 189, 248, 0.08)';
-                flaskCtx.fillRect(111, 100, 8, 100);
-
-                flaskCtx.fillStyle = '#38bdf8';
-                flaskCtx.font = 'bold 8px sans-serif';
-                flaskCtx.fillText(t('applications.flaskVacuumGap'), 60, 135);
-            } else if (flaskActivePart === 'silvery') {
-                // Silvery Wall: radiating IR wave from center bounces specularly off silver boundary
-                let t = (flaskTimer * 1.5) % 1;
-                let waveX_L = 140 - t * 18;
-                let waveX_R = 160 + t * 18;
-
-                flaskCtx.strokeStyle = 'rgba(239, 68, 68, 0.55)';
-                flaskCtx.lineWidth = 1.5;
-                flaskCtx.beginPath();
-                flaskCtx.moveTo(waveX_L, 180);
-                flaskCtx.lineTo(waveX_L - 4, 180);
-                flaskCtx.moveTo(waveX_R, 180);
-                flaskCtx.lineTo(waveX_R + 4, 180);
-                flaskCtx.stroke();
-
-                if (t > 0.8) {
-                    let bounceBack = (t - 0.8) * 5 * 12; // bounce inward
-                    flaskCtx.strokeStyle = 'rgba(168, 85, 247, 0.85)';
-                    flaskCtx.lineWidth = 1.5;
-                    flaskCtx.beginPath();
-                    flaskCtx.moveTo(122 + bounceBack, 180 - 15);
-                    flaskCtx.lineTo(132 + bounceBack, 180 - 5);
-                    flaskCtx.moveTo(178 - bounceBack, 180 + 15);
-                    flaskCtx.lineTo(168 - bounceBack, 180 + 5);
-                    flaskCtx.stroke();
+            // --- 1. RENDER STEAM PARTICLES (If Open Stopper & Liquid is hot, i.e., > 35°C) ---
+            if (flaskConfig.stopper === 'open' && flaskLiquidTemp > 35.0) {
+                // Spawn new steam particles over time
+                if (Math.random() < 0.25) {
+                    flaskSteamParticles.push({
+                        x: 140 + Math.random() * 20,
+                        y: 35,
+                        vx: -0.4 + Math.random() * 0.8,
+                        vy: -0.6 - Math.random() * 1.2,
+                        life: 1.0,
+                        size: 1.5 + Math.random() * 3.5
+                    });
                 }
 
-                flaskCtx.fillStyle = '#a855f7';
-                flaskCtx.font = 'bold 8px sans-serif';
-                flaskCtx.fillText(t('applications.flaskIrReflected'), 165, 160);
-            } else if (flaskActivePart === 'support') {
-                // Conduction blockage at rubber support
-                let pulse = 0.5 + 0.5 * Math.sin(flaskTimer * 8);
-                flaskCtx.fillStyle = `rgba(239, 68, 68, ${pulse * 0.7})`;
-                flaskCtx.beginPath();
-                flaskCtx.arc(150, 274, 4, 0, Math.PI * 2);
-                flaskCtx.fill();
+                // Render and update steam particles
+                flaskSteamParticles.forEach((p, idx) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life -= 0.015;
 
-                // Faded cool line traveling down showing massive thermal resistance
-                flaskCtx.strokeStyle = '#3b82f6';
-                flaskCtx.lineWidth = 2.5;
+                    flaskCtx.save();
+                    flaskCtx.globalAlpha = p.life * 0.5 * liquidIntensity;
+                    flaskCtx.fillStyle = '#e2e8f0';
+                    flaskCtx.beginPath();
+                    flaskCtx.arc(p.x, p.y, p.size * (1.5 - p.life), 0, Math.PI * 2);
+                    flaskCtx.fill();
+                    flaskCtx.restore();
+
+                    if (p.life <= 0) {
+                        flaskSteamParticles.splice(idx, 1);
+                    }
+                });
+            }
+
+            // --- 2. RENDER MEDIUM HEAT CONDUCTION / CONVECTION OVERLAYS ---
+            if (flaskConfig.medium === 'solid' && Math.abs(dT_ambient) > 1.0) {
+                // Solid copper bridge: intense conduction waves (Red if cooling down, Blue if heating up)
+                flaskCtx.save();
+                if (dT_ambient > 0) {
+                    flaskCtx.strokeStyle = `rgba(239, 68, 68, ${0.4 * liquidIntensity})`;
+                    flaskCtx.lineDashOffset = -flaskTimer * 20; // Flow OUT
+                } else {
+                    flaskCtx.strokeStyle = `rgba(59, 130, 246, ${0.4 * liquidIntensity})`;
+                    flaskCtx.lineDashOffset = flaskTimer * 20; // Flow IN
+                }
+                flaskCtx.lineWidth = 2;
+                flaskCtx.setLineDash([4, 6]);
+                
                 flaskCtx.beginPath();
-                flaskCtx.moveTo(150, 276);
-                flaskCtx.lineTo(150, 290);
+                // Left conductive lines bridging from inner to outer wall
+                flaskCtx.moveTo(120, 100); flaskCtx.lineTo(110, 100);
+                flaskCtx.moveTo(120, 140); flaskCtx.lineTo(110, 140);
+                flaskCtx.moveTo(120, 180); flaskCtx.lineTo(110, 180);
+                flaskCtx.moveTo(120, 220); flaskCtx.lineTo(110, 220);
+                // Right conductive lines
+                flaskCtx.moveTo(180, 100); flaskCtx.lineTo(190, 100);
+                flaskCtx.moveTo(180, 140); flaskCtx.lineTo(190, 140);
+                flaskCtx.moveTo(180, 180); flaskCtx.lineTo(190, 180);
+                flaskCtx.moveTo(180, 220); flaskCtx.lineTo(190, 220);
                 flaskCtx.stroke();
+                flaskCtx.restore();
+            }
 
-                flaskCtx.fillStyle = '#eab308';
-                flaskCtx.font = 'bold 8px sans-serif';
-                flaskCtx.fillText(t('applications.flaskCondBlocked'), 98, 298);
+            // --- 3. RENDER INFRARED RADIATION WAVES (Based on Coating) ---
+            if (Math.abs(dT_ambient) > 1.0) {
+                let waveIntensity = flaskConfig.coating === 'black' ? 0.95 : 0.4; // Boosted base intensity
+                
+                // Helper to draw a fading sinusoidal wavy line inside the flask
+                const drawInternalWavyRay = (startX, startY, length, isLeft, baseIntensity, isSilverReflected) => {
+                    flaskCtx.save();
+                    let direction = isLeft ? -1 : 1;
+                    let segments = 20;
+                    let tOffset = (flaskTimer * 2.2) % 1; // Faster propagation for more vigor!
+                    
+                    flaskCtx.lineWidth = 2.4; // Thicker lines for high visibility
+                    flaskCtx.beginPath();
+                    
+                    for (let i = 0; i <= segments; i++) {
+                        let fraction = i / segments;
+                        let x = startX + fraction * length * direction;
+                        // Sine wave phase shifting
+                        let phase = -tOffset * Math.PI * 2 + fraction * Math.PI * 3.5;
+                        let y = startY + Math.sin(phase) * 4.5;
+                        
+                        let alpha = baseIntensity * liquidIntensity;
+                        if (isSilverReflected) {
+                            // Reflected wave fades out as it goes back to center
+                            alpha *= (1 - fraction) * 0.85;
+                        }
+                        
+                        if (i === 0) {
+                            flaskCtx.moveTo(x, y);
+                        } else {
+                            if (isSilverReflected) {
+                                flaskCtx.strokeStyle = `rgba(14, 165, 233, ${alpha})`; // Sky blue reflected wave
+                            } else if (dT_ambient > 0) {
+                                flaskCtx.strokeStyle = `rgba(168, 85, 247, ${alpha})`; // Purple outgoing wave
+                            } else {
+                                flaskCtx.strokeStyle = `rgba(56, 189, 248, ${alpha})`; // Blue incoming wave
+                            }
+                            flaskCtx.lineTo(x, y);
+                            flaskCtx.stroke();
+                            flaskCtx.beginPath();
+                            flaskCtx.moveTo(x, y);
+                        }
+                    }
+                    flaskCtx.restore();
+                };
+
+                // Draw internal rays at three heights
+                const rayHeights = [115, 160, 205];
+                rayHeights.forEach(height => {
+                    // Left outgoing wave
+                    drawInternalWavyRay(150, height, 36, true, waveIntensity, false);
+                    // Right outgoing wave
+                    drawInternalWavyRay(150, height, 36, false, waveIntensity, false);
+
+                    if (flaskConfig.coating === 'silver') {
+                        // Silver reflects! Draw reflected waves going back to center
+                        drawInternalWavyRay(114, height, 36, false, waveIntensity * 0.9, true);
+                        drawInternalWavyRay(186, height, 36, true, waveIntensity * 0.9, true);
+                    } else if (flaskConfig.coating === 'black') {
+                        // Black passes through! Draw waves bridging from inner wall to outer casing
+                        drawInternalWavyRay(114, height, 24, true, waveIntensity * 0.85, false);
+                        drawInternalWavyRay(186, height, 24, false, waveIntensity * 0.85, false);
+                    }
+                });
+            }
+
+            // --- 3.5. RENDER EXTERNAL INFRARED EMISSION TO ENVIRONMENT (If Liquid is Hot) ---
+            if (dT_ambient > 1.0) {
+                // Determine how many rays and how intense they are based on selections
+                let extRayCount = 0;
+                let extRayIntensity = 0;
+                
+                if (flaskConfig.coating === 'black' && flaskConfig.medium === 'solid') {
+                    extRayCount = 3;
+                    extRayIntensity = 0.95;
+                } else if (flaskConfig.medium === 'solid') {
+                    extRayCount = 2;
+                    extRayIntensity = 0.6;
+                } else if (flaskConfig.coating === 'black') {
+                    extRayCount = 3; // Boosted to 3 rays for black coating to make it super vigorous!
+                    extRayIntensity = 0.85;
+                }
+
+                if (extRayCount > 0) {
+                    // Helper to draw a fading sinusoidal wavy line
+                    const drawExternalWavyRay = (startX, startY, length, isLeft, baseIntensity) => {
+                        flaskCtx.save();
+                        let direction = isLeft ? -1 : 1;
+                        let segments = 22;
+                        let tOffset = (flaskTimer * 2.2) % 1; // Faster propagation for more vigor!
+                        
+                        flaskCtx.lineWidth = 2.4; // Thicker lines for high visibility
+                        flaskCtx.beginPath();
+                        
+                        for (let i = 0; i <= segments; i++) {
+                            let fraction = i / segments;
+                            let x = startX + fraction * length * direction;
+                            // Sine wave phase shifting left or right
+                            let phase = -tOffset * Math.PI * 2 + fraction * Math.PI * 3.5;
+                            // Wave amplitude decays outwards
+                            let y = startY + Math.sin(phase) * 5.0 * (1 - fraction * 0.3); // Increased amplitude
+                            
+                            // Fade out opacity as it goes further into the environment
+                            let alpha = baseIntensity * (1 - fraction * 0.7) * liquidIntensity;
+                            
+                            if (i === 0) {
+                                flaskCtx.moveTo(x, y);
+                            } else {
+                                flaskCtx.strokeStyle = `rgba(239, 68, 68, ${alpha})`; // Vibrant thermal red IR
+                                flaskCtx.lineTo(x, y);
+                                flaskCtx.stroke();
+                                flaskCtx.beginPath();
+                                flaskCtx.moveTo(x, y);
+                            }
+                        }
+                        flaskCtx.restore();
+                    };
+
+                    // Draw the rays based on count (starting from the outer casing walls x=90 and x=210)
+                    // Ray 1: always middle
+                    drawExternalWavyRay(90, 160, 55, true, extRayIntensity);
+                    drawExternalWavyRay(210, 160, 55, false, extRayIntensity);
+
+                    if (extRayCount >= 2) {
+                        // Ray 2: upper
+                        drawExternalWavyRay(90, 115, 55, true, extRayIntensity * 0.85);
+                        drawExternalWavyRay(210, 115, 55, false, extRayIntensity * 0.85);
+                    }
+                    if (extRayCount >= 3) {
+                        // Ray 3: lower
+                        drawExternalWavyRay(90, 205, 55, true, extRayIntensity * 0.85);
+                        drawExternalWavyRay(210, 205, 55, false, extRayIntensity * 0.85);
+                    }
+                }
+            }
+
+            // --- 4. RENDER CONDUCTIONS THROUGH BASE ---
+            if (Math.abs(dT_ambient) > 1.0) {
+                // Base Support heat conduction leak down or leak up
+                if (flaskConfig.support === 'metal') {
+                    flaskCtx.save();
+                    if (dT_ambient > 0) {
+                        flaskCtx.strokeStyle = `rgba(239, 68, 68, ${0.65 * liquidIntensity})`; // heat leaking down
+                    } else {
+                        flaskCtx.strokeStyle = `rgba(59, 130, 246, ${0.65 * liquidIntensity})`; // heat leaking up
+                    }
+                    flaskCtx.lineWidth = 2.5;
+                    flaskCtx.beginPath();
+                    flaskCtx.moveTo(150, 270);
+                    flaskCtx.lineTo(150, 294);
+                    flaskCtx.stroke();
+                    flaskCtx.restore();
+                }
+            }
+
+            // --- 5. RENDER MANUAL BLUEPRINT HOTSPOTS CLICK EFFECTS ---
+            if (flaskActivePart === 'stopper') {
+                flaskCtx.strokeStyle = 'rgba(234, 88, 12, 0.4)';
+                flaskCtx.lineWidth = 1.5;
+                flaskCtx.setLineDash([3, 3]);
+                flaskCtx.beginPath();
+                flaskCtx.arc(150, 36, 18, 0, Math.PI * 2);
+                flaskCtx.stroke();
+            } else if (flaskActivePart === 'vacuum') {
+                flaskCtx.strokeStyle = 'rgba(2, 132, 199, 0.4)';
+                flaskCtx.lineWidth = 1.5;
+                flaskCtx.setLineDash([3, 3]);
+                flaskCtx.beginPath();
+                flaskCtx.arc(115, 100, 18, 0, Math.PI * 2);
+                flaskCtx.stroke();
+            } else if (flaskActivePart === 'silvery') {
+                flaskCtx.strokeStyle = 'rgba(126, 34, 206, 0.4)';
+                flaskCtx.lineWidth = 1.5;
+                flaskCtx.setLineDash([3, 3]);
+                flaskCtx.beginPath();
+                flaskCtx.arc(178, 180, 18, 0, Math.PI * 2);
+                flaskCtx.stroke();
+            } else if (flaskActivePart === 'support') {
+                flaskCtx.strokeStyle = 'rgba(180, 83, 9, 0.4)';
+                flaskCtx.lineWidth = 1.5;
+                flaskCtx.setLineDash([3, 3]);
+                flaskCtx.beginPath();
+                flaskCtx.arc(150, 280, 18, 0, Math.PI * 2);
+                flaskCtx.stroke();
             }
 
             flaskCtx.restore();
@@ -4545,8 +5361,8 @@
 
             ghCtx.save();
             let rx = 160, ry = 95, rw = 120, rh = 28, radius = 4;
-            ghCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-            ghCtx.strokeStyle = ghTemp > 20.3 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(56, 189, 248, 0.25)';
+            ghCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+            ghCtx.strokeStyle = ghTemp > 20.3 ? 'rgba(239, 68, 68, 0.45)' : 'rgba(15, 23, 42, 0.15)';
             ghCtx.lineWidth = 1;
             ghCtx.beginPath();
             ghCtx.moveTo(rx + radius, ry);
@@ -4563,7 +5379,7 @@
             ghCtx.stroke();
 
             // Render Text Inside
-            ghCtx.fillStyle = '#94a3b8';
+            ghCtx.fillStyle = '#475569';
             ghCtx.font = 'bold 5.5px sans-serif';
             ghCtx.textAlign = 'center';
             ghCtx.fillText(t('applications.insideTemp'), rx + rw/2, ry + 10);

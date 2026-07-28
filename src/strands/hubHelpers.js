@@ -16,6 +16,31 @@ export function cleanupLabInstance(inst) {
   }
 }
 
+/**
+ * Restore the last interactive lab for a strand after refresh.
+ * @param {string} storageKey
+ * @param {string[]} allowedIds
+ * @param {string} fallback
+ */
+export function loadToolId(storageKey, allowedIds, fallback) {
+  try {
+    const stored = sessionStorage.getItem(storageKey);
+    if (stored && allowedIds.includes(stored)) return stored;
+  } catch {
+    /* ignore */
+  }
+  return fallback;
+}
+
+/** @param {string} storageKey @param {string} toolId */
+export function saveToolId(storageKey, toolId) {
+  try {
+    sessionStorage.setItem(storageKey, toolId);
+  } catch {
+    /* ignore */
+  }
+}
+
 export async function assetExists(folder, name) {
   if (!name) return false;
   const url = `${import.meta.env.BASE_URL}${folder}/${name}`;

@@ -1,5 +1,5 @@
-import { initRefractionLab } from './app.js?v=20260719_exact_inputs_v5';
-import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20260719_exact_inputs_v5';
+import { initRefractionLab } from './app.js?v=20260721_micro_split_v20';
+import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20260721_micro_split_v20';
 
 const root = document.getElementById('app');
 

@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Wave Interference Explorer</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        html.s3phy-embed .logo { display: none; }
+        html.s3phy-embed .lang-btn { display: none; }
+        html.s3phy-embed body { padding: 12px; }
+        :root {
+            --bg: #ffffff;
+            --panel: #f8f9fa;
+            --text: #2c3e50;
+            --border: #e9ecef;
+            --wave1: #e03131; 
+            --wave2: #1971c2; 
+            --superposition: #862e9c; 
+            --accent: #1971c2;
+            --btn-bg: #e9ecef;
+            --btn-text: #495057;
+            --btn-hover: #dee2e6;
+            --active-bg: #1971c2;
+            --active-text: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .logo { max-width: 200px; height: auto; margin-bottom: 10px; }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; max-width: 900px; margin-bottom: 5px; }
+        .header-text { flex: 1; }
+        h2 { margin: 0 0 5px 0; color: var(--superposition); font-weight: 700; }
+        p { margin: 0 0 20px 0; font-size: 1rem; color: #6c757d; }
+        .lang-btn { background: var(--btn-bg); color: var(--btn-text); border: 1px solid var(--border); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; flex-shrink: 0; margin-left: 15px; }
+        .lang-btn:hover { background: var(--btn-hover); color: #000; }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .controls {
+            background: var(--panel);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .control-group { display: flex; align-items: center; gap: 15px; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        button {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        button:hover { background: var(--btn-hover); color: #000; }
+        button:active { transform: translateY(1px); }
+
+        /* Specific style for preset buttons to show active state */
+        .preset-btn.active {
+            background: var(--active-bg);
+            color: var(--active-text);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            border-color: var(--active-bg);
+        }
+
+        .toggle-container {
+            display: flex;
+            background: var(--btn-bg);
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--border);
+        }
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: var(--btn-text);
+            font-size: 0.8rem;
+        }
+        .toggle-btn.active {
+            background: var(--active-bg);
+            color: var(--active-text);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .readout {
+            font-family: 'Consolas', monospace;
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            min-width: 140px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        #playback-controls { display: none; gap: 10px; }
+        #playback-controls.visible { display: flex; }
+        .play-btn { background: #2f9e44; color: white; }
+        .play-btn:hover { background: #2b8a3e; }
+        .reset-btn { background: #e03131; color: white; }
+        .reset-btn:hover { background: #c92a2a; }
+
+        .slider-container { display: flex; flex-direction: column; gap: 4px; }
+        .slider-label { font-size: 0.75rem; color: #868e96; font-weight: 600; text-transform: uppercase; }
+        input[type=range] { cursor: pointer; accent-color: var(--superposition); width: 120px; }
+
+        .canvas-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .canvas-label {
+            position: absolute;
+            top: 20px; left: 25px;
+            font-weight: 700; font-size: 0.95rem; color: #495057;
+            pointer-events: none;
+            background: rgba(255,255,255,0.8);
+            padding: 2px 8px; border-radius: 4px;
+        }
+        canvas {
+            width: 100%;
+            background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            cursor: crosshair;
+            border: 1px solid var(--border);
+        }
+        #graphCanvas { height: 160px; background: #fff; }
+        #bounceCanvas { height: 200px; background: #fff; }
+        .graphs-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
+        }
+        .graphs-row .canvas-card {
+            flex: 1 1 280px;
+            min-width: 0;
+        }
+        .graphs-row .canvas-card.bounce-card {
+            flex: 0 1 220px;
+            max-width: 260px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-top">
+        <div class="header-text">
+            <h2 id="page-title">Spatial Wave Interference</h2>
+            <p id="page-desc">Visualize how path difference and propagation affect superposition.</p>
+        </div>
+        <button class="lang-btn" id="lang-toggle">🌐 English</button>
+    </div>
+
+    <div class="container">
+        
+        <div class="controls">
+            <!-- Row 1 -->
+            <div class="row">
+                <div class="control-group">
+                    <div class="slider-container">
+                        <span class="slider-label" id="label-mode">Mode</span>
+                        <div class="toggle-container">
+                            <button id="mode-steady" class="toggle-btn active" onclick="setMode('steady')">Steady State</button>
+                            <button id="mode-pulse" class="toggle-btn" onclick="setMode('pulse')">Transient</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="playback-controls">
+                    <button class="reset-btn" id="resetBtn" onclick="resetPulse()">⏮ Reset</button>
+                    <button class="play-btn" onclick="togglePlay()" id="playBtn">▶ Play</button>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-container">
+                        <span class="slider-label" id="label-phase">Source Phase</span>
+                        <div class="toggle-container">
+                            <button id="btn-in" class="toggle-btn active" onclick="setPhase(0)">In-Phase</button>
+                            <button id="btn-anti" class="toggle-btn" onclick="setPhase(Math.PI)">Anti-Phase</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid #e9ecef;">
+
+            <!-- Row 2 -->
+            <div class="row">
+                <div class="control-group">
+                    <div class="btn-group">
+                        <button class="preset-btn" onclick="snapTo(0, this)">0 λ</button>
+                        <button class="preset-btn" onclick="snapTo(0.5, this)">0.5 λ</button>
+                        <button class="preset-btn" onclick="snapTo(1, this)">1.0 λ</button>
+                        <button class="preset-btn" onclick="snapTo(1.5, this)">1.5 λ</button>
+                        <button class="preset-btn" onclick="snapTo(2, this)">2.0 λ</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-container">
+                        <span class="slider-label" id="label-speed">Anim Speed</span>
+                        <input type="range" id="speedSlider" min="0" max="3.0" step="0.1" value="1.0">
+                    </div>
+                    <div class="readout" id="path-readout">Δx = 0.00 λ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D View -->
+        <div class="canvas-card">
+            <div class="canvas-label" id="label-spatial">Spatial View (Top-Down Perspective)</div>
+            <canvas id="mainCanvas" height="400"></canvas>
+            <div id="drag-hint" style="text-align:center; font-size:0.85rem; color:#868e96; margin-top:10px; font-weight:500;">
+                Drag the <span style="color:#fcc419; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">● Yellow Target</span> to change path difference
+            </div>
+        </div>
+
+        <!-- Graphs: displacement–time + target bounce -->
+        <div class="graphs-row">
+            <div class="canvas-card">
+                <div class="canvas-label" id="label-graph">Superposition at Target (Displacement vs Time)</div>
+                <canvas id="graphCanvas"></canvas>
+            </div>
+            <div class="canvas-card bounce-card">
+                <div class="canvas-label" id="label-bounce">Target bouncing (side view)</div>
+                <canvas id="bounceCanvas"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const dict = {
+            zh: {
+                title: '空間波干涉',
+                desc: '觀察路徑差同傳播點樣影響疊加。',
+                mode: '模式',
+                steady: '穩態',
+                transient: '瞬態',
+                sourcePhase: '波源相位',
+                inPhase: '同相',
+                antiPhase: '反相',
+                reset: '⏮ 重設',
+                play: '▶ 播放',
+                pause: '⏸ 暫停',
+                animSpeed: '動畫速度',
+                spatialView: '空間視圖（俯視）',
+                dragHint: '拖曳<span style="color:#fcc419; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">● 黃色目標</span>改變路徑差',
+                superposition: '目標處疊加（位移對時間）',
+                bounceView: '目標上下振動（側視）',
+                equilibrium: '平衡位置',
+                target: '目標',
+                now: '而家',
+                langBtn: '🌐 English'
+            },
+            en: {
+                title: 'Spatial Wave Interference',
+                desc: 'Visualize how path difference and propagation affect superposition.',
+                mode: 'Mode',
+                steady: 'Steady State',
+                transient: 'Transient',
+                sourcePhase: 'Source Phase',
+                inPhase: 'In-Phase',
+                antiPhase: 'Anti-Phase',
+                reset: '⏮ Reset',
+                play: '▶ Play',
+                pause: '⏸ Pause',
+                animSpeed: 'Anim Speed',
+                spatialView: 'Spatial View (Top-Down Perspective)',
+                dragHint: 'Drag the <span style="color:#fcc419; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">● Yellow Target</span> to change path difference',
+                superposition: 'Superposition at Target (Displacement vs Time)',
+                bounceView: 'Target bouncing (side view)',
+                equilibrium: 'Equilibrium',
+                target: 'Target',
+                now: 'Now',
+                langBtn: '🌐 中文'
+            }
+        };
+
+        function hubLangToLocal(lang) {
+            if (lang === 'en') return 'en';
+            return 'zh';
+        }
+
+        const params = new URLSearchParams(location.search);
+        let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+        const btnLang = document.getElementById('lang-toggle');
+
+        function updateLanguageUI() {
+            const t = dict[currentLang];
+            document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+            document.title = t.title;
+            btnLang.innerText = t.langBtn;
+            document.getElementById('page-title').innerText = t.title;
+            document.getElementById('page-desc').innerText = t.desc;
+            document.getElementById('label-mode').innerText = t.mode;
+            document.getElementById('mode-steady').innerText = t.steady;
+            document.getElementById('mode-pulse').innerText = t.transient;
+            document.getElementById('label-phase').innerText = t.sourcePhase;
+            document.getElementById('btn-in').innerText = t.inPhase;
+            document.getElementById('btn-anti').innerText = t.antiPhase;
+            document.getElementById('resetBtn').innerText = t.reset;
+            document.getElementById('label-speed').innerText = t.animSpeed;
+            document.getElementById('label-spatial').innerText = t.spatialView;
+            document.getElementById('drag-hint').innerHTML = t.dragHint;
+            document.getElementById('label-graph').innerText = t.superposition;
+            document.getElementById('label-bounce').innerText = t.bounceView;
+            playBtn.innerText = isPlaying ? t.pause : t.play;
+            drawMain();
+            drawGraph();
+            drawBounce();
+        }
+
+        btnLang.addEventListener('click', () => {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            updateLanguageUI();
+        });
+
+        window.addEventListener('message', (ev) => {
+            if (ev.data?.type !== 's3phy:lang') return;
+            currentLang = hubLangToLocal(ev.data.lang);
+            updateLanguageUI();
+        });
+
+        // --- Setup ---
+        const mainCanvas = document.getElementById('mainCanvas');
+        const mainCtx = mainCanvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const graphCtx = graphCanvas.getContext('2d');
+        const bounceCanvas = document.getElementById('bounceCanvas');
+        const bounceCtx = bounceCanvas.getContext('2d');
+        const readout = document.getElementById('path-readout');
+        const speedSlider = document.getElementById('speedSlider');
+        const btnIn = document.getElementById('btn-in');
+        const btnAnti = document.getElementById('btn-anti');
+        const playbackControls = document.getElementById('playback-controls');
+        const playBtn = document.getElementById('playBtn');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+
+        function resize() {
+            mainCanvas.width = mainCanvas.parentElement.clientWidth - 32;
+            graphCanvas.width = graphCanvas.parentElement.clientWidth - 32;
+            graphCanvas.height = 160;
+            bounceCanvas.width = bounceCanvas.parentElement.clientWidth - 32;
+            bounceCanvas.height = 200;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // --- Physics Constants ---
+        const wavelength = 50; 
+        const k = (2 * Math.PI) / wavelength;
+        const amplitude = 15;
+        const wavePhysicsSpeed = 2.0; 
+        const omega = k * wavePhysicsSpeed; 
+
+        // State
+        let simTime = 0; 
+        let isPlaying = true;
+        let speedMultiplier = 1.0; 
+        let timeAccumulator = 0;
+        const FIXED_TIME_STEP = 0.5; 
+        
+        let phaseOffset = 0; 
+        let mode = 'steady'; 
+        
+        // Sources: S1 (Top), S2 (Bottom)
+        // Center of sources is (100, 200)
+        const s1 = { x: 100, y: 80 };
+        const s2 = { x: 100, y: 320 };
+        const target = { x: 600, y: 120 };
+
+        const historyMax = 300;
+        let history = new Array(historyMax).fill(0);
+        let currentDisp = 0;
+        let isDragging = false;
+
+        // --- Event Listeners ---
+        speedSlider.addEventListener('input', (e) => {
+            speedMultiplier = parseFloat(e.target.value);
+        });
+        
+        mainCanvas.addEventListener('mousedown', (e) => {
+            const rect = mainCanvas.getBoundingClientRect();
+            const dist = Math.hypot((e.clientX - rect.left) - target.x, (e.clientY - rect.top) - target.y);
+            if(dist < 30) {
+                isDragging = true;
+                // Clear preset active states on manual drag
+                presetBtns.forEach(b => b.classList.remove('active'));
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if(isDragging) {
+                const rect = mainCanvas.getBoundingClientRect();
+                target.x = Math.max(150, Math.min(rect.width - 20, e.clientX - rect.left));
+                target.y = Math.max(20, Math.min(rect.height - 20, e.clientY - rect.top));
+            }
+        });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+
+        // --- Logic Control ---
+        function setPhase(p) {
+            phaseOffset = p;
+            btnIn.classList.toggle('active', p === 0);
+            btnAnti.classList.toggle('active', p !== 0);
+        }
+
+        function setMode(m) {
+            mode = m;
+            document.getElementById('mode-steady').classList.toggle('active', m === 'steady');
+            document.getElementById('mode-pulse').classList.toggle('active', m === 'pulse');
+            
+            if (m === 'pulse') {
+                playbackControls.classList.add('visible');
+                resetPulse();
+            } else {
+                playbackControls.classList.remove('visible');
+                isPlaying = true;
+            }
+        }
+
+        // Expose functions to window so inline onclick handlers work
+        window.setPhase = setPhase;
+        window.setMode = setMode;
+        window.togglePlay = togglePlay;
+        window.resetPulse = resetPulse;
+        window.snapTo = snapTo;
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            playBtn.innerText = isPlaying ? dict[currentLang].pause : dict[currentLang].play;
+        }
+
+        function resetPulse() {
+            simTime = 0;
+            isPlaying = true;
+            playBtn.innerText = dict[currentLang].pause;
+            history.fill(0);
+        }
+
+        // --- Precise Snap To Logic ---
+        function snapTo(n, btnElement) {
+            // UI Update
+            presetBtns.forEach(b => b.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+
+            const pathDiff = n * wavelength;
+            
+            // We want to find a point (x, y) where |d2 - d1| = pathDiff.
+            // This is a hyperbola with foci S1, S2.
+            // S1=(100, 80), S2=(100, 320). Center=(100, 200).
+            // Vertical distance between foci = 240. c = 120.
+            
+            // Equation relative to center (0,0): y^2/a^2 - x^2/b^2 = 1
+            // 2a = pathDiff => a = pathDiff / 2
+            // b^2 = c^2 - a^2
+            
+            // We fix X to a nice visible position, say x=500 (relative x = 400).
+            const xTarget = 500;
+            const dx = xTarget - 100; // Relative X from center
+
+            if (n === 0) {
+                // Perpendicular bisector
+                target.x = xTarget;
+                target.y = 200;
+            } else {
+                const a = pathDiff / 2;
+                const c = 120; // (320 - 80) / 2
+                
+                // Safety check
+                if (a >= c) { console.error("Impossible path difference"); return; }
+                
+                const b2 = c*c - a*a;
+                
+                // Solve for y (relative): y = a * Math.sqrt(1 + (dx*dx)/b2)
+                const dy = a * Math.sqrt(1 + (dx*dx)/b2);
+                
+                // We want d2 > d1 (bottom source further than top source)
+                // So target should be closer to top source (S1, y=80).
+                // In canvas coords, top is smaller Y.
+                // Center is 200. We subtract dy.
+                target.x = xTarget;
+                target.y = 200 - dy;
+            }
+            
+            // Force immediate update to reflect exact value
+            update(true); 
+            drawMain();
+        }
+
+        function getWaveAt(dist, t, phaseShift) {
+            const phase = k * dist - omega * t + phaseShift;
+            const displacement = amplitude * Math.sin(phase);
+            if (mode === 'pulse') {
+                const frontDist = wavePhysicsSpeed * t;
+                if (dist > frontDist) return 0;
+            }
+            return displacement;
+        }
+
+        function update(force = false) {
+            // Always calc distances for readout
+            const d1 = Math.hypot(target.x - s1.x, target.y - s1.y);
+            const d2 = Math.hypot(target.x - s2.x, target.y - s2.y);
+            const pathDiff = Math.abs(d2 - d1);
+            const lambdaCount = pathDiff / wavelength;
+            
+            // Use toFixed(2) but ensure it snaps visually for presets
+            readout.innerText = `Δx = ${lambdaCount.toFixed(2)} λ`;
+
+            if (isPlaying || force) {
+                if (!force) timeAccumulator += speedMultiplier;
+                
+                // If forced (e.g. snap), we just want to update current state without advancing time
+                // but we still need to calculate superposition for the graph's current point
+                
+                const steps = force ? 1 : Math.floor(timeAccumulator);
+                
+                for(let i=0; i<steps; i++) {
+                    if(!force) {
+                        simTime += FIXED_TIME_STEP;
+                        timeAccumulator -= 1.0;
+                    }
+
+                    const y1 = getWaveAt(d1, simTime, 0);
+                    const y2 = getWaveAt(d2, simTime, phaseOffset);
+                    let superPos = y1 + y2;
+
+                    if (mode === 'pulse') {
+                        const frontDist = wavePhysicsSpeed * simTime;
+                        if (d1 > frontDist && d2 > frontDist) superPos = 0;
+                    }
+
+                    currentDisp = superPos;
+                    if(!force) {
+                        history.push(superPos);
+                        history.shift();
+                    }
+                }
+            }
+        }
+
+        // --- Drawing ---
+        function drawGrid(ctx, w, h) {
+            ctx.strokeStyle = 'rgba(0,0,0,0.05)'; ctx.lineWidth = 1;
+            for(let x=0; x<w; x+=20) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
+            for(let y=0; y<h; y+=20) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+        }
+
+        function drawSineLine(ctx, x1, y1, x2, y2, color, phaseShift) {
+            const dist = Math.hypot(x2 - x1, y2 - y1);
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            ctx.save();
+            ctx.translate(x1, y1);
+            ctx.rotate(angle);
+            
+            ctx.beginPath(); ctx.strokeStyle = color; ctx.globalAlpha = 0.1; ctx.lineWidth = 1;
+            ctx.moveTo(0,0); ctx.lineTo(dist, 0); ctx.stroke(); ctx.globalAlpha = 1.0;
+
+            ctx.beginPath(); ctx.lineWidth = 2.5;
+            let drawLimit = dist;
+            if (mode === 'pulse') {
+                const frontDist = wavePhysicsSpeed * simTime;
+                drawLimit = Math.min(dist, frontDist);
+            }
+            for (let x = 0; x <= drawLimit; x+=2) {
+                const y = getWaveAt(x, simTime, phaseShift);
+                ctx.lineTo(x, -y); 
+            }
+            if (mode === 'pulse' && drawLimit < dist) ctx.lineTo(drawLimit, 0);
+            ctx.stroke();
+            
+            if (mode === 'pulse' && drawLimit < dist) {
+                ctx.fillStyle = color; ctx.beginPath(); ctx.arc(drawLimit, 0, 3, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function drawMain() {
+            const w = mainCanvas.width; const h = mainCanvas.height;
+            mainCtx.clearRect(0, 0, w, h); drawGrid(mainCtx, w, h);
+
+            mainCtx.fillStyle = '#e03131'; mainCtx.beginPath(); mainCtx.arc(s1.x, s1.y, 6, 0, Math.PI*2); mainCtx.fill();
+            mainCtx.font = "bold 12px Arial"; mainCtx.fillText("S1", s1.x - 20, s1.y - 5);
+
+            mainCtx.fillStyle = '#1971c2'; mainCtx.beginPath(); mainCtx.arc(s2.x, s2.y, 6, 0, Math.PI*2); mainCtx.fill();
+            mainCtx.fillText("S2", s2.x - 20, s2.y - 5);
+
+            drawSineLine(mainCtx, s1.x, s1.y, target.x, target.y, '#e03131', 0);
+            drawSineLine(mainCtx, s2.x, s2.y, target.x, target.y, '#1971c2', phaseOffset);
+
+            mainCtx.shadowBlur = 10; mainCtx.shadowColor = "rgba(0,0,0,0.2)";
+            mainCtx.fillStyle = '#fcc419'; mainCtx.beginPath(); mainCtx.arc(target.x, target.y, 12, 0, Math.PI*2); mainCtx.fill();
+            mainCtx.shadowBlur = 0; mainCtx.fillStyle = '#495057'; mainCtx.fillText(dict[currentLang].target, target.x + 15, target.y + 5);
+        }
+
+        function drawGraph() {
+            const w = graphCanvas.width; const h = graphCanvas.height; const cy = h / 2;
+            graphCtx.clearRect(0, 0, w, h);
+            
+            graphCtx.strokeStyle = '#dee2e6'; graphCtx.setLineDash([5, 5]);
+            graphCtx.beginPath(); graphCtx.moveTo(0, cy); graphCtx.lineTo(w, cy); graphCtx.stroke(); graphCtx.setLineDash([]);
+
+            const nowX = w - 50;
+            graphCtx.strokeStyle = '#868e96'; graphCtx.lineWidth = 2; graphCtx.setLineDash([2, 2]);
+            graphCtx.beginPath(); graphCtx.moveTo(nowX, 0); graphCtx.lineTo(nowX, h); graphCtx.stroke(); graphCtx.setLineDash([]);
+            
+            graphCtx.fillStyle = '#868e96'; graphCtx.font = "bold 10px Arial"; graphCtx.fillText(dict[currentLang].now, nowX + 5, 20);
+
+            graphCtx.beginPath(); graphCtx.strokeStyle = '#862e9c'; graphCtx.lineWidth = 3;
+            const step = nowX / historyMax;
+            for (let i = 0; i < history.length; i++) {
+                const val = history[i]; const x = i * step; const y = cy - val; 
+                if (i===0) graphCtx.moveTo(x, y); else graphCtx.lineTo(x, y);
+            }
+            graphCtx.stroke();
+        }
+
+        function drawBounce() {
+            const w = bounceCanvas.width;
+            const h = bounceCanvas.height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const t = dict[currentLang];
+            const maxAmp = amplitude * 2;
+            const scale = Math.min((h / 2 - 28) / maxAmp, 2.2);
+
+            bounceCtx.clearRect(0, 0, w, h);
+
+            // Vertical guide
+            bounceCtx.strokeStyle = '#dee2e6';
+            bounceCtx.lineWidth = 1;
+            bounceCtx.beginPath();
+            bounceCtx.moveTo(cx, 16);
+            bounceCtx.lineTo(cx, h - 16);
+            bounceCtx.stroke();
+
+            // Equilibrium
+            bounceCtx.strokeStyle = '#adb5bd';
+            bounceCtx.setLineDash([5, 5]);
+            bounceCtx.beginPath();
+            bounceCtx.moveTo(24, cy);
+            bounceCtx.lineTo(w - 24, cy);
+            bounceCtx.stroke();
+            bounceCtx.setLineDash([]);
+
+            bounceCtx.fillStyle = '#868e96';
+            bounceCtx.font = 'bold 10px Segoe UI, Arial';
+            bounceCtx.textAlign = 'left';
+            bounceCtx.fillText(t.equilibrium, 28, cy - 6);
+
+            // Amplitude ticks (±2A)
+            bounceCtx.strokeStyle = 'rgba(134, 46, 156, 0.25)';
+            bounceCtx.setLineDash([3, 4]);
+            for (const sign of [-1, 1]) {
+                const y = cy - sign * maxAmp * scale;
+                bounceCtx.beginPath();
+                bounceCtx.moveTo(cx - 28, y);
+                bounceCtx.lineTo(cx + 28, y);
+                bounceCtx.stroke();
+            }
+            bounceCtx.setLineDash([]);
+
+            // Motion trail from recent history
+            const trailN = 40;
+            for (let i = 0; i < trailN; i++) {
+                const idx = history.length - trailN + i;
+                if (idx < 0) continue;
+                const val = history[idx];
+                const alpha = (i + 1) / trailN * 0.35;
+                const y = cy - val * scale;
+                bounceCtx.fillStyle = `rgba(252, 196, 25, ${alpha})`;
+                bounceCtx.beginPath();
+                bounceCtx.arc(cx, y, 4 + i * 0.08, 0, Math.PI * 2);
+                bounceCtx.fill();
+            }
+
+            // Target ball
+            const ballY = cy - currentDisp * scale;
+            bounceCtx.shadowBlur = 12;
+            bounceCtx.shadowColor = 'rgba(252, 196, 25, 0.55)';
+            bounceCtx.fillStyle = '#fcc419';
+            bounceCtx.beginPath();
+            bounceCtx.arc(cx, ballY, 14, 0, Math.PI * 2);
+            bounceCtx.fill();
+            bounceCtx.shadowBlur = 0;
+
+            bounceCtx.strokeStyle = '#e67700';
+            bounceCtx.lineWidth = 2;
+            bounceCtx.stroke();
+
+            // Displacement stem
+            bounceCtx.strokeStyle = 'rgba(134, 46, 156, 0.55)';
+            bounceCtx.lineWidth = 2;
+            bounceCtx.beginPath();
+            bounceCtx.moveTo(cx, cy);
+            bounceCtx.lineTo(cx, ballY);
+            bounceCtx.stroke();
+
+            bounceCtx.fillStyle = '#495057';
+            bounceCtx.font = 'bold 11px Segoe UI, Arial';
+            bounceCtx.textAlign = 'center';
+            bounceCtx.fillText(t.target, cx, Math.min(h - 8, Math.max(14, ballY + 28)));
+        }
+
+        function animate() {
+            update();
+            drawMain();
+            drawGraph();
+            drawBounce();
+            requestAnimationFrame(animate);
+        }
+        updateLanguageUI();
+        animate();
+
+    </script>
+</body>
+</html>

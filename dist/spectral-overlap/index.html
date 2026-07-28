@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectral Overlap: Full Equations</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        html.s3phy-embed, html.s3phy-embed body {
+            height: 100%;
+            overflow: hidden;
+        }
+        html.s3phy-embed .lang-btn { display: none; }
+
+        :root {
+            --bg: #f8f9fa;
+            --panel: #ffffff;
+            --accent: #0284c7;
+            --red: #dc2626;
+            --violet: #7c3aed;
+            --text: #2c3e50;
+            --text-muted: #6b7280;
+            --border: #e8eaed;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* MAIN LAYOUT */
+        .container {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        /* CANVAS */
+        #sim-container {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+            overflow: hidden;
+        }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* CONTROLS (Top Right) */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+        }
+        .controls-header h2 {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        .lang-btn {
+            background: #e9ecef;
+            color: #495057;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+        .lang-btn:hover { color: #1a1c2c; border-color: #ced4da; background: #dee2e6; }
+
+        .control-group {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .group-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 18px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ced4da;
+            transition: .4s;
+            border-radius: 20px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px; width: 12px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        /* Range Slider */
+        .range-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .range-label { font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+        
+        input[type=range] {
+            width: 100%;
+            accent-color: var(--accent);
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            appearance: none;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px; width: 14px;
+            border-radius: 50%;
+            background: #fff;
+            margin-top: -5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* BOTTOM MATH PANEL */
+        .math-panel {
+            height: 160px;
+            background: #ffffff;
+            border-top: 1px solid var(--border);
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            gap: 10px;
+        }
+
+        .math-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+
+        .equation-box {
+            background: #f8f9fa;
+            padding: 8px 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.85rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            min-width: 160px;
+        }
+
+        .highlight-red { color: var(--red); font-weight: bold; }
+        .highlight-violet { color: var(--violet); font-weight: bold; }
+        .highlight-n { color: var(--accent); }
+        
+        .math-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+            display: inline-block;
+        }
+
+        .arrow { font-size: 1.2rem; color: #adb5bd; padding: 0 5px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="sim-container">
+        <canvas id="simCanvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <div class="controls-header">
+            <h2 id="controls-title">Spectrum Controls</h2>
+            <button class="lang-btn" id="lang-toggle">🌐 English</button>
+        </div>
+        
+        <!-- Order 2 Control -->
+        <div class="control-group" style="border-left: 3px solid var(--red);">
+            <div class="group-header">
+                <span class="group-title" id="group-n">n<sup>th</sup> Order (n=2)</span>
+                <label class="switch">
+                    <input type="checkbox" id="check-n" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="range-container">
+                <div class="range-label">
+                    <span id="label-trans-n">Transparency</span>
+                    <span id="val-n">80%</span>
+                </div>
+                <input type="range" id="slider-n" min="0" max="100" value="80">
+            </div>
+        </div>
+
+        <!-- Order 3 Control -->
+        <div class="control-group" style="border-left: 3px solid var(--violet);">
+            <div class="group-header">
+                <span class="group-title" id="group-n1">(n+1)<sup>th</sup> Order (n=3)</span>
+                <label class="switch">
+                    <input type="checkbox" id="check-n1" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="range-container">
+                <div class="range-label">
+                    <span id="label-trans-n1">Transparency</span>
+                    <span id="val-n1">80%</span>
+                </div>
+                <input type="range" id="slider-n1" min="0" max="100" value="80">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="math-panel">
+    
+    <!-- 1. Text Explanation -->
+    <div class="math-column" style="max-width: 120px; margin-right: 5px;">
+        <div class="math-title" id="overlap-title">Overlap Condition</div>
+        <div id="overlap-desc" style="font-size: 0.75rem; color: var(--text-muted);">
+            Red end of <span class="highlight-n">n</span> > Violet start of <span class="highlight-n">n+1</span>
+        </div>
+    </div>
+
+    <!-- 2. Definitions (New) -->
+    <div class="equation-box" style="border-color: #e8eaed;">
+        <div style="margin-bottom: 6px;">
+            d sin(<span class="highlight-red">θ<sub>red</sub></span>) = n <span class="highlight-red">λ<sub>red</sub></span>
+        </div>
+        <div>
+            d sin(<span class="highlight-violet">θ<sub>violet</sub></span>) = (n+1) <span class="highlight-violet">λ<sub>violet</sub></span>
+        </div>
+    </div>
+
+    <div class="arrow">&rArr;</div>
+
+    <!-- 3. Inequality -->
+    <div class="equation-box">
+        <div style="margin-bottom: 6px;">
+            <span class="highlight-red">θ<sub>red</sub></span> > <span class="highlight-violet">θ<sub>violet</sub></span>
+        </div>
+        <div style="border-top: 1px solid #e8eaed; padding-top: 6px;">
+            d sin(<span class="highlight-red">θ<sub>red</sub></span>) > d sin(<span class="highlight-violet">θ<sub>violet</sub></span>)
+        </div>
+    </div>
+
+    <div class="arrow">&rArr;</div>
+
+    <!-- 4. Substitution -->
+    <div class="equation-box">
+        <div id="substitute-label" style="color:var(--text-muted); font-size:0.75rem; margin-bottom:4px;">Substitute:</div>
+        <div>n <span class="highlight-red">λ<sub>red</sub></span> > (n+1) <span class="highlight-violet">λ<sub>violet</sub></span></div>
+    </div>
+
+    <div class="arrow">&rArr;</div>
+
+    <!-- 5. Result -->
+    <div class="math-column" style="border-left: 1px solid var(--border); padding-left: 15px;">
+        <div class="math-title" id="limit-title">Limit (λ ≈ 700/400)</div>
+        <div>7n > 4(n+1)</div>
+        <div style="color:var(--accent); font-weight:bold; margin-top:4px;">n > 1.33</div>
+    </div>
+
+</div>
+
+<script>
+    const dict = {
+        zh: {
+            docTitle: '光譜重疊：完整方程式',
+            controlsTitle: '光譜控制',
+            groupN: '第 n 級 (n=2)',
+            groupN1: '第 n+1 級 (n=3)',
+            transparency: '透明度',
+            overlapTitle: '重疊條件',
+            overlapDesc: '<span class="highlight-n">n</span> 級紅端 > <span class="highlight-n">n+1</span> 級紫端',
+            substitute: '代入：',
+            limitTitle: '極限（λ ≈ 700/400）',
+            nOrderMax: 'n 級最大',
+            n1OrderMax: 'n+1 級最大',
+            langBtn: '🌐 English'
+        },
+        en: {
+            docTitle: 'Spectral Overlap: Full Equations',
+            controlsTitle: 'Spectrum Controls',
+            groupN: 'n<sup>th</sup> Order (n=2)',
+            groupN1: '(n+1)<sup>th</sup> Order (n=3)',
+            transparency: 'Transparency',
+            overlapTitle: 'Overlap Condition',
+            overlapDesc: 'Red end of <span class="highlight-n">n</span> > Violet start of <span class="highlight-n">n+1</span>',
+            substitute: 'Substitute:',
+            limitTitle: 'Limit (λ ≈ 700/400)',
+            nOrderMax: 'n Order Max.',
+            n1OrderMax: 'n+1 Order Max.',
+            langBtn: '🌐 中文'
+        }
+    };
+
+    function hubLangToLocal(lang) {
+        if (lang === 'en') return 'en';
+        return 'zh';
+    }
+
+    const params = new URLSearchParams(location.search);
+    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+    const btnLang = document.getElementById('lang-toggle');
+
+    function updateLanguageUI() {
+        document.title = dict[currentLang].docTitle;
+        const t = dict[currentLang];
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+        btnLang.innerText = t.langBtn;
+        document.getElementById('controls-title').innerText = t.controlsTitle;
+        document.getElementById('group-n').innerHTML = t.groupN;
+        document.getElementById('group-n1').innerHTML = t.groupN1;
+        document.getElementById('label-trans-n').innerText = t.transparency;
+        document.getElementById('label-trans-n1').innerText = t.transparency;
+        document.getElementById('overlap-title').innerText = t.overlapTitle;
+        document.getElementById('overlap-desc').innerHTML = t.overlapDesc;
+        document.getElementById('substitute-label').innerText = t.substitute;
+        document.getElementById('limit-title').innerText = t.limitTitle;
+        draw();
+    }
+
+    btnLang.addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        updateLanguageUI();
+    });
+
+    window.addEventListener('message', (ev) => {
+        if (ev.data?.type !== 's3phy:lang') return;
+        currentLang = hubLangToLocal(ev.data.lang);
+        updateLanguageUI();
+    });
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // --- CONFIGURATION ---
+    const config = {
+        d: 2800, 
+        lambdaV: 400, 
+        lambdaR: 700, 
+        nOrder: { visible: true, opacity: 0.8 }, 
+        n1Order: { visible: true, opacity: 0.8 } 
+    };
+
+    // --- STATE ---
+    let width, height;
+    let origin = { x: 0, y: 0 };
+
+    // --- INITIALIZATION ---
+    function init() {
+        resize();
+        window.addEventListener('resize', resize);
+        
+        // n Order Controls
+        document.getElementById('check-n').addEventListener('change', (e) => {
+            config.nOrder.visible = e.target.checked;
+            draw();
+        });
+        document.getElementById('slider-n').addEventListener('input', (e) => {
+            config.nOrder.opacity = e.target.value / 100;
+            document.getElementById('val-n').innerText = e.target.value + "%";
+            draw();
+        });
+
+        // n+1 Order Controls
+        document.getElementById('check-n1').addEventListener('change', (e) => {
+            config.n1Order.visible = e.target.checked;
+            draw();
+        });
+        document.getElementById('slider-n1').addEventListener('input', (e) => {
+            config.n1Order.opacity = e.target.value / 100;
+            document.getElementById('val-n1').innerText = e.target.value + "%";
+            draw();
+        });
+
+        updateLanguageUI();
+    }
+
+    function resize() {
+        width = canvas.width = document.getElementById('sim-container').clientWidth;
+        height = canvas.height = document.getElementById('sim-container').clientHeight;
+        origin = { x: 50, y: height / 2 }; 
+        draw();
+    }
+
+    // --- PHYSICS HELPERS ---
+    function getAngle(n, lambda) {
+        const val = (n * lambda) / config.d;
+        if (val > 1) return null; 
+        return Math.asin(val);
+    }
+
+    function wavelengthToColor(wavelength, opacity) {
+        let r, g, b;
+        if (wavelength >= 380 && wavelength < 440) {
+            r = -(wavelength - 440) / (440 - 380); g = 0.0; b = 1.0;
+        } else if (wavelength >= 440 && wavelength < 490) {
+            r = 0.0; g = (wavelength - 440) / (490 - 440); b = 1.0;
+        } else if (wavelength >= 490 && wavelength < 510) {
+            r = 0.0; g = 1.0; b = -(wavelength - 510) / (510 - 490);
+        } else if (wavelength >= 510 && wavelength < 580) {
+            r = (wavelength - 510) / (580 - 510); g = 1.0; b = 0.0;
+        } else if (wavelength >= 580 && wavelength < 645) {
+            r = 1.0; g = -(wavelength - 645) / (645 - 580); b = 0.0;
+        } else if (wavelength >= 645 && wavelength < 781) {
+            r = 1.0; g = 0.0; b = 0.0;
+        } else {
+            return `rgba(0,0,0,0)`;
+        }
+        return `rgba(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)}, ${opacity})`;
+    }
+
+    // --- DRAWING ---
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Light canvas background with subtle grid
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+        bgGrad.addColorStop(0, '#ffffff');
+        bgGrad.addColorStop(1, '#f8f9fa');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
+        ctx.strokeStyle = 'rgba(0,0,0,0.04)';
+        ctx.lineWidth = 1;
+        for (let gx = 0; gx < width; gx += 40) {
+            ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, height); ctx.stroke();
+        }
+        for (let gy = 0; gy < height; gy += 40) {
+            ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(width, gy); ctx.stroke();
+        }
+
+        // 1. Draw Grating & Source
+        drawSetup();
+
+        // 2. Draw Spectra
+        ctx.globalCompositeOperation = 'source-over';
+
+        if (config.nOrder.visible) {
+            drawOrder(2, config.nOrder.opacity, dict[currentLang].nOrderMax);
+        }
+        if (config.n1Order.visible) {
+            drawOrder(3, config.n1Order.opacity, dict[currentLang].n1OrderMax);
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+
+        // 3. Draw Indicators
+        if (config.nOrder.visible) {
+            drawAngleLine(2, config.lambdaR, 10 * (Math.PI/180), "θ(red)", "#dc2626", 180);
+        }
+        if (config.n1Order.visible) {
+            drawAngleLine(3, config.lambdaV, 5 * (Math.PI/180), "θ(violet)", "#7c3aed", 100);
+        }
+    }
+
+    function drawSetup() {
+        // Grating Line
+        ctx.strokeStyle = "#495057";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(origin.x, 0);
+        ctx.lineTo(origin.x, height);
+        ctx.stroke();
+
+        // Dashes
+        ctx.strokeStyle = "#adb5bd";
+        ctx.lineWidth = 1;
+        for(let y=0; y<height; y+=10) {
+            ctx.beginPath(); ctx.moveTo(origin.x - 5, y); ctx.lineTo(origin.x + 5, y); ctx.stroke();
+        }
+
+        // Source Light
+        ctx.strokeStyle = "#2c3e50";
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(0, origin.y); ctx.lineTo(origin.x, origin.y); ctx.stroke();
+
+        // Central Axis
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.12)";
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath(); ctx.moveTo(origin.x, origin.y); ctx.lineTo(width, origin.y); ctx.stroke();
+        ctx.setLineDash([]);
+    }
+
+    function drawOrder(n, opacity, label) {
+        const radius = width * 1.5; 
+        const step = 1; 
+        
+        for (let lambda = config.lambdaV; lambda <= config.lambdaR; lambda += step) {
+            const angle = getAngle(n, lambda);
+            if (angle === null) continue;
+
+            const color = wavelengthToColor(lambda, opacity);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2.5; 
+
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(origin.x + Math.cos(angle) * radius, origin.y - Math.sin(angle) * radius);
+            ctx.stroke();
+        }
+
+        // Draw Label text near the middle of the spectrum
+        const midAngle = getAngle(n, 550);
+        if (midAngle) {
+            const labelR = 300 + (n-2)*150;
+            const lx = origin.x + Math.cos(midAngle) * labelR;
+            const ly = origin.y - Math.sin(midAngle) * labelR;
+            
+            ctx.save();
+            ctx.translate(lx, ly);
+            ctx.rotate(-midAngle);
+            ctx.fillStyle = `rgba(44, 62, 80, ${opacity > 0.3 ? opacity : 0.3})`;
+            ctx.font = "bold 14px Inter";
+            ctx.fillText(label, 0, 0);
+            ctx.restore();
+        }
+    }
+
+    function drawAngleLine(n, lambda, labelAngleOverride, text, color, arcRadius) {
+        const angle = getAngle(n, lambda);
+        if (angle === null) return;
+
+        const r = width * 0.9; 
+        const x = origin.x + Math.cos(angle) * r;
+        const y = origin.y - Math.sin(angle) * r;
+
+        // Dashed Line to the spectrum edge
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(origin.x, origin.y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Angle Arc (from 0 to angle)
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(origin.x, origin.y, arcRadius, 0, -angle, true);
+        ctx.stroke();
+
+        // Label Position
+        const labelAngle = -labelAngleOverride; 
+        const labelDist = arcRadius;
+        const labelX = origin.x + Math.cos(labelAngle) * labelDist;
+        const labelY = origin.y + Math.sin(labelAngle) * labelDist;
+        
+        // Label Background (Small Pill)
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(labelX, labelY, 18, 0, Math.PI*2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Label Text
+        ctx.fillStyle = color;
+        ctx.font = "bold 14px JetBrains Mono";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(text, labelX, labelY);
+    }
+
+    init();
+
+</script>
+</body>
+</html>
+

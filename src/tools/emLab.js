@@ -6,5 +6,6 @@ export function createEmLab(t) {
     slug: 'em-spectrum',
     titleKey: 'tools.em.title',
     className: 'tool-em-spectrum',
+    extraParams: () => '&v=20260722_em_light_v1',
   });
 }

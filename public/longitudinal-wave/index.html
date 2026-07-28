@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>縱波物理</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        html.s3phy-embed body { padding: 12px; }
+        html.s3phy-embed .lang-btn { display: none; }
+        * { box-sizing: border-box; }
+        :root {
+            --bg: #f8f9fa;
+            --panel: #ffffff;
+            --text: #2c3e50;
+            --text-muted: #6b7280;
+            --border: #e8eaed;
+            --btn-bg: #e9ecef;
+            --btn-text: #495057;
+            --btn-hover: #dee2e6;
+            --active-bg: #0284c7;
+            --accent: #0284c7;
+        }
+        body {
+            font-family: 'Segoe UI', 'Noto Sans TC', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--panel);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            max-width: 980px;
+            width: 100%;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        h2 {
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            color: var(--text);
+            margin: 0;
+        }
+        .lang-btn {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .lang-btn:hover { color: #1a1c2c; border-color: #ced4da; background: var(--btn-hover); }
+
+        .wave-banner {
+            background: #eef6fc;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            margin: 8px 0;
+            padding: 6px 12px;
+            text-align: center;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .banner-arrow {
+            width: 40px;
+            height: 28px;
+            flex-shrink: 0;
+            animation: waveFlow 1.5s infinite ease-in-out;
+            transition: transform 0.25s ease;
+        }
+        .banner-arrow path {
+            stroke-width: 4;
+        }
+        .banner-arrow.dir-right { transform: scaleX(-1); }
+        @keyframes waveFlow {
+            0% { transform: translateX(4px); }
+            50% { transform: translateX(-4px); }
+            100% { transform: translateX(4px); }
+        }
+        .banner-arrow.dir-right {
+            animation-name: waveFlowRight;
+        }
+        @keyframes waveFlowRight {
+            0% { transform: scaleX(-1) translateX(4px); }
+            50% { transform: scaleX(-1) translateX(-4px); }
+            100% { transform: scaleX(-1) translateX(4px); }
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            margin-bottom: 8px;
+        }
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+        }
+        .btn-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        button.ctrl {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-weight: 700;
+            cursor: pointer;
+            background: var(--btn-bg);
+            color: var(--btn-text);
+            font-size: 11px;
+            line-height: 1.3;
+        }
+        button.ctrl:hover { background: var(--btn-hover); color: #1a1c2c; }
+        button.ctrl.primary { background: var(--active-bg); color: #fff; border-color: var(--active-bg); }
+        button.ctrl.primary:hover { background: #0369a1; }
+
+        .toggle-container {
+            display: flex;
+            background: var(--btn-bg);
+            border-radius: 6px;
+            padding: 2px;
+            border: 1px solid var(--border);
+        }
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--btn-text);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1.3;
+        }
+        .toggle-btn.active {
+            background: var(--active-bg);
+            color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 100px;
+            flex: 1;
+            max-width: 200px;
+        }
+        .slider-group label {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            line-height: 1.2;
+        }
+        .slider-group input[type=range] {
+            width: 100%;
+            height: 16px;
+            accent-color: #4db8ff;
+            cursor: pointer;
+        }
+        .dir-group {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+        .dir-group > span {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin: 0 0 8px;
+            text-align: center;
+        }
+
+        .canvas-wrap {
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            touch-action: none;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: grab;
+        }
+        canvas:active { cursor: grabbing; }
+
+        .particle-info {
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            font-size: 14px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text);
+        }
+        .particle-info strong { color: #1a1c2c; }
+
+        .conclusion-box {
+            margin-top: 18px;
+            padding: 18px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-left: 5px solid #10b981;
+            border-radius: 4px;
+        }
+        .conclusion-title {
+            color: #059669;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            font-size: 1.1em;
+        }
+        .conclusion-text { line-height: 1.6; color: var(--text); }
+        .highlight-same { color: #0284c7; font-weight: bold; }
+        .highlight-opp { color: #dc2626; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-row">
+        <h2 id="page-title">縱波物理</h2>
+        <button class="lang-btn" id="lang-toggle" type="button">🌐 English</button>
+    </div>
+
+    <div class="wave-banner">
+        <svg class="banner-arrow" id="banner-arrow" viewBox="0 0 40 30" aria-hidden="true">
+            <path d="M35,15 L5,15 L15,5 M5,15 L15,25" fill="none" stroke="#2c3e50" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span id="label-banner">波傳播方向（向左）</span>
+    </div>
+
+    <div class="controls">
+        <div class="controls-row">
+            <div class="btn-row">
+                <button class="ctrl primary" id="btn-play" type="button">⏸ 暫停</button>
+                <button class="ctrl" id="btn-center-cr" type="button">密／疏部置中</button>
+                <button class="ctrl" id="btn-reset" type="button">↺ 重設</button>
+            </div>
+            <div class="dir-group">
+                <span id="label-direction">傳播方向</span>
+                <div class="toggle-container">
+                    <button type="button" class="toggle-btn active" id="btn-dir-left">← 向左</button>
+                    <button type="button" class="toggle-btn" id="btn-dir-right">→ 向右</button>
+                </div>
+            </div>
+        </div>
+        <div class="controls-row">
+            <div class="slider-group">
+                <label><span id="label-wavelength">波長 λ</span><span id="wavelength-val">8 間距</span></label>
+                <input type="range" id="wavelength-slider" min="4" max="10" value="8" step="1">
+            </div>
+            <div class="slider-group">
+                <label><span id="label-phase">相位 / 時間</span><span id="phase-val">0.00 λ</span></label>
+                <input type="range" id="phase-slider" min="0" max="1000" value="0" step="1">
+            </div>
+            <div class="slider-group" style="max-width:140px;">
+                <label><span id="label-speed">波速</span><span id="speed-val">1.0×</span></label>
+                <input type="range" id="speed-slider" min="0.2" max="2.5" value="1" step="0.1">
+            </div>
+        </div>
+    </div>
+
+    <p class="hint" id="label-hint">拖曳畫面或滑桿改變相位；撳粒子可睇位移同速度方向。</p>
+
+    <div class="canvas-wrap">
+        <canvas id="simCanvas" width="950" height="420"></canvas>
+    </div>
+
+    <div class="particle-info" id="particle-info"></div>
+
+    <div class="conclusion-box">
+        <span class="conclusion-title" id="label-conclusion-title">結論</span>
+        <div class="conclusion-text" id="label-conclusion-body"></div>
+    </div>
+</div>
+
+<script>
+    const dict = {
+        zh: {
+            docTitle: '縱波物理',
+            pageTitle: '縱波物理',
+            bannerLeft: '波傳播方向（向左）',
+            bannerRight: '波傳播方向（向右）',
+            play: '▶ 播放',
+            pause: '⏸ 暫停',
+            reset: '↺ 重設',
+            centerCR: '密／疏部置中',
+            phase: '相位 / 時間',
+            speed: '波速',
+            wavelength: '波長 λ',
+            wavelengthVal: (n) => `${n} 間距`,
+            wavelengthMark: 'λ',
+            direction: '傳播方向',
+            dirLeft: '← 向左',
+            dirRight: '→ 向右',
+            hint: '拖曳畫面或滑桿改變相位；撳「密／疏部置中」可令密部與疏部中心對稱出現於畫面中央。撳粒子可睇位移同速度方向。',
+            equilibrium: '平衡位置（等距）',
+            compression: '密部',
+            highDensity: '高密度',
+            rarefaction: '疏部',
+            lowDensity: '低密度',
+            centreCompression: '密部中心',
+            centreRarefaction: '疏部中心',
+            amplitude: '振幅',
+            amplitudePoint: '振幅點',
+            amplitudeA: '振幅 A',
+            vZero: '(v = 0)',
+            selectHint: '撳下方粒子睇詳情',
+            info: (id, disp, velDir) => `粒子 <strong>${id}</strong>：位移 ${disp}　｜　速度方向：<strong>${velDir}</strong>`,
+            velWith: (dir) => dir < 0 ? '← 向左（同波傳播）' : '→ 向右（同波傳播）',
+            velAgainst: (dir) => dir < 0 ? '← 向左（反波傳播）' : '→ 向右（反波傳播）',
+            velZero: '靜止（振幅點）',
+            conclusionTitle: '結論',
+            conclusionHtml: () => `位於兩個相鄰振幅點之間嘅粒子有以下行為：
+                <ul>
+                    <li>密部中心附近嘅粒子，運動方向同<span class="highlight-same">波傳播方向相同</span>。</li>
+                    <li>疏部中心附近嘅粒子，運動方向同<span class="highlight-opp">波傳播方向相反</span>。</li>
+                </ul>`,
+            langBtn: '🌐 English'
+        },
+        en: {
+            docTitle: 'Longitudinal Wave Physics',
+            pageTitle: 'Longitudinal Wave Physics',
+            bannerLeft: 'WAVE TRAVELING DIRECTION (LEFT)',
+            bannerRight: 'WAVE TRAVELING DIRECTION (RIGHT)',
+            play: '▶ Play',
+            pause: '⏸ Pause',
+            reset: '↺ Reset',
+            centerCR: 'Centre C & R',
+            phase: 'Phase / Time',
+            speed: 'Wave speed',
+            wavelength: 'Wavelength λ',
+            wavelengthVal: (n) => `${n} spacings`,
+            wavelengthMark: 'λ',
+            direction: 'Travel direction',
+            dirLeft: '← Left',
+            dirRight: '→ Right',
+            hint: 'Drag the canvas or slider to change phase; click “Centre C & R” to place compression and rarefaction centres symmetrically in the middle. Click a particle for details.',
+            equilibrium: 'Equilibrium positions (uniform spacing)',
+            compression: 'Compression',
+            highDensity: 'High Density',
+            rarefaction: 'Rarefaction',
+            lowDensity: 'Low Density',
+            centreCompression: 'Centre of compression',
+            centreRarefaction: 'Centre of rarefaction',
+            amplitude: 'AMPLITUDE',
+            amplitudePoint: 'Amplitude point',
+            amplitudeA: 'Amplitude A',
+            vZero: '(v = 0)',
+            selectHint: 'Click a particle below for details',
+            info: (id, disp, velDir) => `Particle <strong>${id}</strong>: displacement ${disp}  |  velocity: <strong>${velDir}</strong>`,
+            velWith: (dir) => dir < 0 ? '← Left (with wave)' : '→ Right (with wave)',
+            velAgainst: (dir) => dir < 0 ? '← Left (against wave)' : '→ Right (against wave)',
+            velZero: 'At rest (amplitude point)',
+            conclusionTitle: 'Conclusion',
+            conclusionHtml: () => `Particles located between two adjacent amplitude points behave as follows:
+                <ul>
+                    <li>Near the centre of a <strong>Compression</strong>, particles move in the <span class="highlight-same">same direction</span> as the wave.</li>
+                    <li>Near the centre of a <strong>Rarefaction</strong>, particles move in the <span class="highlight-opp">opposite direction</span> to the wave.</li>
+                </ul>`,
+            langBtn: '🌐 中文'
+        }
+    };
+
+    function hubLangToLocal(lang) {
+        return lang === 'en' ? 'en' : 'zh';
+    }
+
+    const params = new URLSearchParams(location.search);
+    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+    function t() { return dict[currentLang]; }
+
+    const IDS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    const EQ_X0 = 100;
+    const SPACING = 80;
+    const AMP = 40;
+    const DEFAULT_SPACINGS = 8;
+    const OMEGA = 1.2; // rad/s visual
+    const Y_EQ = 60;
+    const Y_PART = 200;
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const FALLBACK_W = 950;
+    const FALLBACK_H = 420;
+    /** Logical (CSS-pixel) drawing size — backing store is scaled by devicePixelRatio. */
+    let cssW = FALLBACK_W;
+    let cssH = FALLBACK_H;
+
+    /**
+     * Match canvas backing-store pixels to CSS size × devicePixelRatio for sharp text/lines.
+     * Drawing code uses CSS-pixel coordinates (cssW / cssH).
+     */
+    function fitHiDpiCanvas() {
+        const parentW = canvas.parentElement?.clientWidth || 0;
+        cssW = Math.max(320, Math.floor(parentW || FALLBACK_W));
+        cssH = Math.max(
+            Math.round(FALLBACK_H * 0.9),
+            Math.round(cssW * (FALLBACK_H / FALLBACK_W))
+        );
+        const dpr = Math.min(window.devicePixelRatio || 1, 3);
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(cssH * dpr);
+        canvas.style.width = `${cssW}px`;
+        canvas.style.height = `${cssH}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.imageSmoothingEnabled = true;
+        if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+    }
+    const phaseSlider = document.getElementById('phase-slider');
+    const speedSlider = document.getElementById('speed-slider');
+    const wavelengthSlider = document.getElementById('wavelength-slider');
+    const btnPlay = document.getElementById('btn-play');
+    const btnReset = document.getElementById('btn-reset');
+    const btnCenterCR = document.getElementById('btn-center-cr');
+    const btnLang = document.getElementById('lang-toggle');
+    const btnDirLeft = document.getElementById('btn-dir-left');
+    const btnDirRight = document.getElementById('btn-dir-right');
+    const bannerArrow = document.getElementById('banner-arrow');
+    const phaseVal = document.getElementById('phase-val');
+    const speedVal = document.getElementById('speed-val');
+    const wavelengthVal = document.getElementById('wavelength-val');
+    const particleInfo = document.getElementById('particle-info');
+
+    let lambdaSpacings = DEFAULT_SPACINGS;
+    let LAMBDA = lambdaSpacings * SPACING;
+    let K = (2 * Math.PI) / LAMBDA;
+    // travelDir: -1 = left (default), +1 = right
+    let travelDir = -1;
+    let phase = 0; // ωt in radians
+    let isPlaying = true;
+    let speed = 1;
+    let selected = 1;
+    let lastTs = 0;
+    let dragging = false;
+    let dragStartX = 0;
+    let dragStartPhase = 0;
+
+    function setLambdaFromSpacings(n) {
+        lambdaSpacings = n;
+        LAMBDA = lambdaSpacings * SPACING;
+        K = (2 * Math.PI) / LAMBDA;
+    }
+
+    function eqX(i) {
+        return EQ_X0 + i * SPACING;
+    }
+
+    // Wave argument: left → kx+φ, right → kx−φ
+    function waveArg(x, ph) {
+        return K * x + travelDir * ph;
+    }
+
+    // ξ = A sin(kx ± φ)
+    function displacement(i, ph) {
+        return AMP * Math.sin(waveArg(eqX(i), ph));
+    }
+
+    function velocitySign(i, ph) {
+        // left:  v =  A ω cos(kx+φ) → sign = cos
+        // right: v = −A ω cos(kx−φ) → sign = −cos
+        const c = Math.cos(waveArg(eqX(i), ph));
+        if (Math.abs(c) < 0.08) return 0;
+        const signed = travelDir < 0 ? c : -c;
+        return signed > 0 ? 1 : -1; // +1 = right, -1 = left
+    }
+
+    function particleX(i, ph) {
+        return eqX(i) + displacement(i, ph);
+    }
+
+    // Density proxy: −∂ξ/∂x = −A k cos(kx±φ); compression when > 0
+    function densityMetric(x, ph) {
+        return -AMP * K * Math.cos(waveArg(x, ph));
+    }
+
+    function phaseCosAbs(i, ph) {
+        return Math.abs(Math.cos(waveArg(eqX(i), ph)));
+    }
+
+    function updateDirectionUI() {
+        const tr = t();
+        btnDirLeft.classList.toggle('active', travelDir < 0);
+        btnDirRight.classList.toggle('active', travelDir > 0);
+        btnDirLeft.innerText = tr.dirLeft;
+        btnDirRight.innerText = tr.dirRight;
+        bannerArrow.classList.toggle('dir-right', travelDir > 0);
+        document.getElementById('label-banner').innerText =
+            travelDir < 0 ? tr.bannerLeft : tr.bannerRight;
+    }
+
+    function updateLanguageUI() {
+        const tr = t();
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+        document.title = tr.docTitle;
+        btnLang.innerText = tr.langBtn;
+        document.getElementById('page-title').innerText = tr.pageTitle;
+        document.getElementById('label-phase').innerText = tr.phase;
+        document.getElementById('label-speed').innerText = tr.speed;
+        document.getElementById('label-wavelength').innerText = tr.wavelength;
+        document.getElementById('label-direction').innerText = tr.direction;
+        document.getElementById('label-hint').innerText = tr.hint;
+        document.getElementById('label-conclusion-title').innerText = tr.conclusionTitle;
+        document.getElementById('label-conclusion-body').innerHTML = tr.conclusionHtml();
+        btnReset.innerText = tr.reset;
+        btnCenterCR.innerText = tr.centerCR;
+        btnPlay.innerText = isPlaying ? tr.pause : tr.play;
+        wavelengthVal.innerText = tr.wavelengthVal(lambdaSpacings);
+        updateDirectionUI();
+        updateParticleInfo();
+        draw();
+    }
+
+    function syncPhaseSlider() {
+        const frac = ((phase / (2 * Math.PI)) % 1 + 1) % 1;
+        phaseSlider.value = Math.round(frac * 1000);
+        phaseVal.innerText = `${(frac).toFixed(2)} λ`;
+    }
+
+    function updateParticleInfo() {
+        const tr = t();
+        if (selected == null) {
+            particleInfo.innerHTML = tr.selectHint;
+            return;
+        }
+        const disp = displacement(selected, phase);
+        const vs = velocitySign(selected, phase);
+        let velDir = tr.velZero;
+        if (vs !== 0) {
+            const withWave = vs === travelDir;
+            velDir = withWave ? tr.velWith(vs) : tr.velAgainst(vs);
+        }
+        const dispStr = `${disp >= 0 ? '+' : ''}${disp.toFixed(1)} px`;
+        particleInfo.innerHTML = tr.info(IDS[selected], dispStr, velDir);
+    }
+
+    function drawCentreMarker(xCenter, color, title) {
+        // Vertical centre line
+        ctx.strokeStyle = color.replace('1)', '0.85)');
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(xCenter, 140);
+        ctx.lineTo(xCenter, 340);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Centre dot
+        ctx.beginPath();
+        ctx.arc(xCenter, Y_PART, 5, 0, Math.PI * 2);
+        ctx.fillStyle = color.replace('1)', '1)');
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = color.replace('1)', '1)');
+        ctx.font = 'bold 13px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(title, xCenter, 358);
+    }
+
+    // Compression: cos(kx±φ) = −1 → kx±φ = π + 2πn
+    // Rarefaction: cos(kx±φ) = +1 → kx±φ = 0 + 2πn
+    function centreMods(ph) {
+        // waveArg = Kx + travelDir*φ
+        // compression: Kx + travelDir*φ = π → x = (π − travelDir*φ)/K
+        const xComp = ((Math.PI - travelDir * ph) / K + 10 * LAMBDA) % LAMBDA;
+        const xRare = ((0 - travelDir * ph) / K + 10 * LAMBDA) % LAMBDA;
+        return { xComp, xRare };
+    }
+
+    function particleMidX() {
+        return (eqX(0) + eqX(IDS.length - 1)) / 2;
+    }
+
+    /** λ-periodic copy of xMod nearest to target (absolute canvas x). */
+    function nearestLambdaCopy(xMod, target) {
+        const base = ((xMod % LAMBDA) + LAMBDA) % LAMBDA;
+        return base + Math.round((target - base) / LAMBDA) * LAMBDA;
+    }
+
+    /**
+     * Absolute C/R centres for drawing: pick the λ-copies closest to the
+     * particle-row middle so the pair straddles mid (separation λ/2).
+     */
+    function absoluteCentres(ph) {
+        const { xComp, xRare } = centreMods(ph);
+        const mid = particleMidX();
+        return {
+            xc: nearestLambdaCopy(xComp, mid),
+            xr: nearestLambdaCopy(xRare, mid),
+        };
+    }
+
+    /** Snap phase so compression & rarefaction centres straddle the particle-row middle. */
+    function centerCompressionRarefaction() {
+        const mid = particleMidX();
+        // Separation between C and R is λ/2; place them at mid ± λ/4
+        const xComp = mid - LAMBDA / 4;
+        // Kx + travelDir·φ = π  →  φ = travelDir · (π − Kx)
+        phase = travelDir * (Math.PI - K * xComp);
+        phase = ((phase % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+
+        // Select the particle nearest the (absolute) compression centre
+        const { xc } = absoluteCentres(phase);
+        let bestI = 0;
+        let bestD = Infinity;
+        for (let i = 0; i < IDS.length; i++) {
+            const d = Math.abs(eqX(i) - xc);
+            if (d < bestD) {
+                bestD = d;
+                bestI = i;
+            }
+        }
+        selected = bestI;
+
+        isPlaying = false;
+        btnPlay.innerText = t().play;
+        lastTs = 0;
+        syncPhaseSlider();
+        updateParticleInfo();
+        draw();
+    }
+
+    function placeZone(xMod) {
+        // Fallback single-zone placement (kept for any legacy call sites)
+        return nearestLambdaCopy(xMod, particleMidX());
+    }
+
+    function drawWavelengthIndicator(x1, x2, label) {
+        const W = cssW;
+        // Prefer a fully visible λ span; otherwise shift into view
+        let a = x1;
+        let b = x2;
+        if (b - a < 50) return;
+        if (a < 50) {
+            const shift = Math.ceil((50 - a) / LAMBDA) * LAMBDA;
+            a += shift;
+            b += shift;
+        }
+        if (b > W - 30) {
+            const shift = Math.ceil((b - (W - 30)) / LAMBDA) * LAMBDA;
+            a -= shift;
+            b -= shift;
+        }
+        if (a < 40 || b > W - 20 || b - a < 50) return;
+
+        const y = 112;
+        ctx.strokeStyle = '#6366f1';
+        ctx.fillStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([]);
+
+        // Horizontal bar
+        ctx.beginPath();
+        ctx.moveTo(a, y);
+        ctx.lineTo(b, y);
+        ctx.stroke();
+
+        // End ticks
+        const tick = 8;
+        ctx.beginPath();
+        ctx.moveTo(a, y - tick);
+        ctx.lineTo(a, y + tick);
+        ctx.moveTo(b, y - tick);
+        ctx.lineTo(b, y + tick);
+        ctx.stroke();
+
+        // Arrowheads
+        const ah = 7;
+        ctx.beginPath();
+        ctx.moveTo(a, y);
+        ctx.lineTo(a + ah, y - 5);
+        ctx.lineTo(a + ah, y + 5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(b, y);
+        ctx.lineTo(b - ah, y - 5);
+        ctx.lineTo(b - ah, y + 5);
+        ctx.closePath();
+        ctx.fill();
+
+        // Label
+        ctx.font = 'bold 14px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        const mid = (a + b) / 2;
+        const padX = 10;
+        const tw = ctx.measureText(label).width;
+        ctx.fillStyle = 'rgba(248,249,250,0.92)';
+        ctx.fillRect(mid - tw / 2 - padX, y - 22, tw + padX * 2, 18);
+        ctx.fillStyle = '#4338ca';
+        ctx.fillText(label, mid, y - 6);
+        ctx.textBaseline = 'alphabetic';
+    }
+
+    function draw() {
+        const tr = t();
+        const W = cssW;
+        const H = cssH;
+        ctx.clearRect(0, 0, W, H);
+
+        // Light canvas background
+        const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+        bgGrad.addColorStop(0, '#ffffff');
+        bgGrad.addColorStop(1, '#f8f9fa');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, W, H);
+
+        // Subtle grid
+        ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < W; x += 40) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+        }
+        for (let y = 0; y < H; y += 40) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+        }
+
+        const { xc, xr } = absoluteCentres(phase);
+
+        drawCentreMarker(xc, 'rgba(2,132,199,1)', tr.centreCompression);
+        drawCentreMarker(xr, 'rgba(220,38,38,1)', tr.centreRarefaction);
+        // Extra copies one λ away when they still fall on the canvas
+        const xc2 = xc + LAMBDA;
+        const xr2 = xr + LAMBDA;
+        const xc0 = xc - LAMBDA;
+        const xr0 = xr - LAMBDA;
+        if (xc2 > 40 && xc2 < cssW - 40) drawCentreMarker(xc2, 'rgba(2,132,199,1)', tr.centreCompression);
+        if (xr2 > 40 && xr2 < cssW - 40) drawCentreMarker(xr2, 'rgba(220,38,38,1)', tr.centreRarefaction);
+        if (xc0 > 40 && xc0 < cssW - 40) drawCentreMarker(xc0, 'rgba(2,132,199,1)', tr.centreCompression);
+        if (xr0 > 40 && xr0 < cssW - 40) drawCentreMarker(xr0, 'rgba(220,38,38,1)', tr.centreRarefaction);
+
+        // Wavelength span between consecutive compression centres
+        drawWavelengthIndicator(xc, xc + LAMBDA, tr.wavelengthMark);
+
+        // Equilibrium label
+        ctx.fillStyle = '#6b7280';
+        ctx.font = '12px Segoe UI, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`--- ${tr.equilibrium} ---`, W / 2, 28);
+
+        // Guide lines + top dots
+        for (let i = 0; i < IDS.length; i++) {
+            const x = eqX(i);
+            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(x, Y_EQ);
+            ctx.lineTo(x, 250);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#6b7280';
+            ctx.beginPath();
+            ctx.arc(x, Y_EQ, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.font = 'bold 13px Segoe UI, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(IDS[i], x, Y_EQ - 12);
+        }
+
+        // Particles
+        for (let i = 0; i < IDS.length; i++) {
+            const x = particleX(i, phase);
+            const dens = densityMetric(eqX(i), phase);
+            const vs = velocitySign(i, phase);
+            const atAmp = phaseCosAbs(i, phase) < 0.12;
+            const isSel = selected === i;
+
+            let fill = dens > 0.02 ? '#0284c7' : dens < -0.02 ? '#dc2626' : '#94a3b8';
+            if (atAmp) fill = '#ca8a04';
+
+            const r = atAmp ? 11 : (isSel ? 11 : 9);
+            ctx.beginPath();
+            ctx.arc(x, Y_PART, r, 0, Math.PI * 2);
+            ctx.fillStyle = fill;
+            ctx.fill();
+            if (atAmp || isSel) {
+                ctx.strokeStyle = isSel ? '#1a1c2c' : '#ffffff';
+                ctx.lineWidth = isSel ? 2.5 : 2;
+                ctx.stroke();
+            }
+
+            ctx.fillStyle = atAmp ? '#92400e' : '#2c3e50';
+            ctx.font = 'bold 15px Segoe UI, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(IDS[i], x, Y_PART + 35);
+
+            if (atAmp || vs === 0) {
+                ctx.fillStyle = '#92400e';
+                ctx.font = '12px Segoe UI, sans-serif';
+                ctx.fillText(tr.vZero, x, Y_PART + 62);
+            } else {
+                const len = 28 + phaseCosAbs(i, phase) * 12;
+                const x2 = vs < 0 ? x - len : x + len;
+                ctx.strokeStyle = fill;
+                ctx.fillStyle = fill;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, Y_PART + 58);
+                ctx.lineTo(x2, Y_PART + 58);
+                ctx.stroke();
+                const dir = vs < 0 ? -1 : 1;
+                ctx.beginPath();
+                ctx.moveTo(x2, Y_PART + 58);
+                ctx.lineTo(x2 - dir * 8, Y_PART + 52);
+                ctx.lineTo(x2 - dir * 8, Y_PART + 64);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+    }
+
+    function canvasPoint(ev) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = cssW / rect.width;
+        const scaleY = cssH / rect.height;
+        const clientX = ev.touches ? ev.touches[0].clientX : ev.clientX;
+        const clientY = ev.touches ? ev.touches[0].clientY : ev.clientY;
+        return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+        };
+    }
+
+    function hitParticle(pt) {
+        for (let i = 0; i < IDS.length; i++) {
+            const x = particleX(i, phase);
+            const dx = pt.x - x;
+            const dy = pt.y - Y_PART;
+            if (dx * dx + dy * dy < 22 * 22) return i;
+        }
+        return null;
+    }
+
+    function onPointerDown(ev) {
+        const pt = canvasPoint(ev);
+        const hit = hitParticle(pt);
+        if (hit != null) {
+            selected = hit;
+            updateParticleInfo();
+            draw();
+            return;
+        }
+        dragging = true;
+        dragStartX = pt.x;
+        dragStartPhase = phase;
+        if (ev.cancelable) ev.preventDefault();
+    }
+
+    function onPointerMove(ev) {
+        if (!dragging) return;
+        const pt = canvasPoint(ev);
+        const dx = pt.x - dragStartX;
+        // Drag so pattern follows travel: advance phase proportional to drag / λ
+        // Left-going: drag right advances φ (pattern moves left)
+        // Right-going: drag right advances φ (pattern moves right) — same φ advance
+        phase = dragStartPhase + (dx / LAMBDA) * 2 * Math.PI * (travelDir < 0 ? 1 : -1);
+        syncPhaseSlider();
+        updateParticleInfo();
+        draw();
+        if (ev.cancelable) ev.preventDefault();
+    }
+
+    function onPointerUp() {
+        dragging = false;
+    }
+
+    canvas.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+    canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+
+    phaseSlider.addEventListener('input', () => {
+        phase = (parseInt(phaseSlider.value, 10) / 1000) * 2 * Math.PI;
+        phaseVal.innerText = `${(phaseSlider.value / 1000).toFixed(2)} λ`;
+        updateParticleInfo();
+        draw();
+    });
+
+    speedSlider.addEventListener('input', () => {
+        speed = parseFloat(speedSlider.value);
+        speedVal.innerText = `${speed.toFixed(1)}×`;
+    });
+
+    wavelengthSlider.addEventListener('input', () => {
+        setLambdaFromSpacings(parseInt(wavelengthSlider.value, 10));
+        wavelengthVal.innerText = t().wavelengthVal(lambdaSpacings);
+        updateParticleInfo();
+        draw();
+    });
+
+    function setTravelDir(dir) {
+        travelDir = dir;
+        updateDirectionUI();
+        updateParticleInfo();
+        draw();
+    }
+
+    btnDirLeft.addEventListener('click', () => setTravelDir(-1));
+    btnDirRight.addEventListener('click', () => setTravelDir(1));
+    btnCenterCR.addEventListener('click', () => centerCompressionRarefaction());
+
+    btnPlay.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        btnPlay.innerText = isPlaying ? t().pause : t().play;
+        lastTs = 0;
+    });
+
+    btnReset.addEventListener('click', () => {
+        phase = 0;
+        selected = 1;
+        speed = 1;
+        travelDir = -1;
+        setLambdaFromSpacings(DEFAULT_SPACINGS);
+        wavelengthSlider.value = String(DEFAULT_SPACINGS);
+        speedSlider.value = '1';
+        speedVal.innerText = '1.0×';
+        wavelengthVal.innerText = t().wavelengthVal(lambdaSpacings);
+        syncPhaseSlider();
+        updateDirectionUI();
+        updateParticleInfo();
+        draw();
+    });
+
+    btnLang.addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        updateLanguageUI();
+    });
+
+    window.addEventListener('message', (ev) => {
+        if (ev.data?.type !== 's3phy:lang') return;
+        currentLang = hubLangToLocal(ev.data.lang);
+        updateLanguageUI();
+    });
+
+    function tick(ts) {
+        if (isPlaying) {
+            if (!lastTs) lastTs = ts;
+            const dt = Math.min(0.05, (ts - lastTs) / 1000);
+            lastTs = ts;
+            phase += OMEGA * speed * dt;
+            syncPhaseSlider();
+            updateParticleInfo();
+            draw();
+        } else {
+            lastTs = 0;
+        }
+        requestAnimationFrame(tick);
+    }
+
+    updateLanguageUI();
+    syncPhaseSlider();
+    speedVal.innerText = '1.0×';
+    fitHiDpiCanvas();
+    draw();
+    let resizeTimer = 0;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            fitHiDpiCanvas();
+            draw();
+        }, 120);
+    });
+    requestAnimationFrame(tick);
+</script>
+
+</body>
+</html>

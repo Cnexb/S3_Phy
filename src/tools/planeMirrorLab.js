@@ -6,6 +6,6 @@ export function createPlaneMirrorLab(t) {
     slug: 'plane-mirror-lab',
     titleKey: 'tools.planeMirror.title',
     className: 'tool-plane-mirror-lab',
-    extraParams: () => '&v=20260714',
+    extraParams: () => '&v=20260722_plane_mirror_light_v1',
   });
 }

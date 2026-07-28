@@ -1,5 +1,5 @@
 import { t, getLang } from '../i18n.js';
-import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards } from './hubHelpers.js';
+import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
@@ -58,6 +58,7 @@ const TOOL_ORDER = [
   'liquid', 'resistance', 'thermistor',
   'specificHeat', 'thermalMixing', 'changeOfState', 'heatTransfer'
 ];
+const TOOL_STORAGE_KEY = 's3phy.heat.tool';
 
 const TOOL_LOADERS = {
   faultyCalibration: () => import('../tools/thermometerLab.js').then((m) => m.createFaultyScaleCalibrationLab),
@@ -86,7 +87,7 @@ function toolLabel(id) {
 
 export function mountHeatHub(root) {
   let section = sessionStorage.getItem('s3phy.heat.section') || 'topics';
-  let toolId = 'liquid';
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'liquid');
 
   let shell = null;
   let el = { main: null };
@@ -185,6 +186,7 @@ export function mountHeatHub(root) {
         getActiveToolId: () => toolId,
         onSelectTool: (id) => {
           toolId = id;
+          saveToolId(TOOL_STORAGE_KEY, toolId);
         },
         mountTool: (stage) => {
           void mountActiveTool(stage);
@@ -249,7 +251,9 @@ export function mountHeatHub(root) {
       } else {
         toolId = 'liquid';
       }
+      saveToolId(TOOL_STORAGE_KEY, toolId);
       section = 'tools';
+      sessionStorage.setItem('s3phy.heat.section', 'tools');
       shell.updateSection(section);
       renderMain();
       return;

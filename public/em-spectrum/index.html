@@ -9,13 +9,13 @@
   <script src="../shared/s3phy-embed-init.js"></script>
   <style>
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --border: #30363d;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --accent: #58a6ff;
-      --warn: #d29922;
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text: #1a1c2c;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --warn: #ca8a04;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -84,7 +84,7 @@
     .lang-toggle button:hover { color: var(--text); }
     .lang-toggle button.active {
       background: var(--accent);
-      color: #0d1117;
+      color: #ffffff;
       font-weight: 600;
     }
     .card {
@@ -125,7 +125,7 @@
       gap: 0.5rem 1rem;
       margin-top: 0.75rem;
       font-size: 0.9rem;
-      color: #e6edf3;
+      color: #1a1c2c;
     }
     .band-legend button {
       background: none;
@@ -251,7 +251,7 @@
       display: block;
       aspect-ratio: 4 / 3;
       object-fit: cover;
-      background: #0d1117;
+      background: #f8f9fa;
       pointer-events: none;
     }
     .band-app-lightbox {
@@ -295,7 +295,7 @@
       height: auto;
       object-fit: contain;
       border-radius: 6px;
-      background: #0d1117;
+      background: #f8f9fa;
     }
     .band-app-lightbox-caption {
       margin: 0.65rem 0.25rem 0;
@@ -362,7 +362,8 @@
       color: var(--warn);
       margin-top: 0.5rem;
       padding: 0.5rem 0.75rem;
-      background: #2d2408;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
       border-radius: 6px;
     }
     .lab-intro { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; }
@@ -1449,9 +1450,9 @@
       '<text x="'+barX((visBarLeft+visBarRight)/2)+'" y="'+visLabelY+'" text-anchor="middle" fill="#111" font-size="13" font-weight="bold" font-family="Segoe UI,sans-serif" letter-spacing="1.2">'+i18n('svgVisibleSpectrum')+'</text>' +
       '<text x="'+barX(visBarLeft)+'" y="'+visNmY+'" fill="#111" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif">'+i18n('svgNm700')+'</text>' +
       '<text x="'+barX(visBarRight)+'" y="'+visNmY+'" text-anchor="end" fill="#111" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif">'+i18n('svgNm400')+'</text>' +
-      '<line id="mainCursor" x1="460" y1="50" x2="460" y2="74" stroke="#222" stroke-width="2"/><circle id="mainCursorDot" cx="460" cy="62" r="6" fill="#58a6ff" stroke="#fff" stroke-width="2"/>' +
+      '<line id="mainCursor" x1="460" y1="50" x2="460" y2="74" stroke="#222" stroke-width="2"/><circle id="mainCursorDot" cx="460" cy="62" r="6" fill="#2563eb" stroke="#fff" stroke-width="2"/>' +
       '<line id="visCursor" x1="460" y1="'+visBarY+'" x2="460" y2="'+(visBarY+visBarH)+'" stroke="#222" stroke-width="2" opacity="0"/>' +
-      '<circle id="visCursorDot" cx="460" cy="'+visMidY+'" r="6" fill="#58a6ff" stroke="#fff" stroke-width="2" opacity="0"/></svg>';
+      '<circle id="visCursorDot" cx="460" cy="'+visMidY+'" r="6" fill="#2563eb" stroke="#fff" stroke-width="2" opacity="0"/></svg>';
       svg = diagram.querySelector('svg');
       mainCursor = document.getElementById('mainCursor');
       mainCursorDot = document.getElementById('mainCursorDot');
@@ -1610,7 +1611,7 @@
         ctx.lineTo(w, y);
       }
       ctx.stroke();
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '12px sans-serif';
       const peakY = h - 8;
       ctx.textAlign = 'left';
@@ -2053,7 +2054,7 @@
 
       const arrowHead = Math.max(10, camera.fitScale * 0.038);
       const arrowOpts = { width: axisW, head: arrowHead };
-      labDraw3DArrow(ctx, origin, kEnd, '#58a6ff', arrowOpts);
+      labDraw3DArrow(ctx, origin, kEnd, '#2563eb', arrowOpts);
       labDraw3DArrow(ctx, origin, eEnd, waveCol, arrowOpts);
       labDraw3DArrow(ctx, origin, bEnd, '#d29922', arrowOpts);
 
@@ -2087,16 +2088,16 @@
       ctx.fillText(i18n('canvasEy'), eEnd.px + 8, eEnd.py - 6);
       ctx.fillStyle = '#d29922';
       ctx.fillText(i18n('canvasBz'), bEnd.px + 8, bEnd.py + fontSize);
-      ctx.fillStyle = '#58a6ff';
+      ctx.fillStyle = '#2563eb';
       ctx.font = fontSize + 'px sans-serif';
       ctx.fillText(i18n('canvasKx'), kEnd.px + 8, kEnd.py + 4);
 
       const noteSize = Math.max(10, fontSize * 0.85);
       ctx.font = noteSize + 'px sans-serif';
-      ctx.fillStyle = 'rgba(13, 17, 23, 0.82)';
+      ctx.fillStyle = 'rgba(248, 249, 250, 0.92)';
       const noteY = h - noteSize * 3.5 - 10;
       ctx.fillRect(8, noteY - 4, Math.min(w - 16, 520), noteSize * 3.5 + 12);
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.fillText(i18n('canvasTransPhase'), 14, noteY + noteSize);
       ctx.fillText(i18n('canvasTransDrag'), 14, noteY + noteSize * 2.1);
       ctx.fillText(i18n('canvasTransSliders'), 14, noteY + noteSize * 3.2);
@@ -2119,12 +2120,12 @@
 
         ctx.fillStyle = m.color;
         ctx.fillRect(x0 + 2, 28, colW - 4, h - 50);
-        ctx.fillStyle = '#e6edf3';
+        ctx.fillStyle = '#1a1c2c';
         ctx.font = '600 12px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(getMediaName(m.id), (x0 + x1) / 2, 48);
         ctx.font = '11px sans-serif';
-        ctx.fillStyle = '#8b949e';
+        ctx.fillStyle = '#6b7280';
         ctx.fillText('n = ' + m.n + ' | v = ' + (vMed / 1e6).toFixed(2) + '×10⁶ m/s', (x0 + x1) / 2, 64);
         ctx.fillText('\u03BB = ' + formatLambda(lambdaN), (x0 + x1) / 2, 78);
 
@@ -2144,7 +2145,7 @@
         ctx.stroke();
 
         if (i < LAB_MEDIA.length - 1) {
-          ctx.strokeStyle = '#30363d';
+          ctx.strokeStyle = '#e8eaed';
           ctx.lineWidth = 2;
           ctx.beginPath();
           ctx.moveTo(x1, 28);
@@ -2153,7 +2154,7 @@
         }
       });
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '11px sans-serif';
       ctx.fillText(i18n('canvasMediaFooter', { freq: formatFreq(f) }), 12, h - 8);
     }
@@ -2261,9 +2262,9 @@
       const len = Math.min(w, h) * 0.38;
       const angNormal = Math.PI;
 
-      ctx.fillStyle = '#30363d';
+      ctx.fillStyle = '#e8eaed';
       ctx.fillRect(bx - 4, 20, 8, h - 40);
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '11px sans-serif';
       ctx.fillText(i18n('canvasBoundary'), bx + 10, 32);
 
@@ -2275,7 +2276,7 @@
       ctx.lineTo(bx - len, by);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '10px sans-serif';
       ctx.fillText(i18n('canvasNormal'), bx - len + 4, by + 12);
 
@@ -2308,7 +2309,7 @@
         ctx.stroke();
       }
 
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '12px sans-serif';
       ctx.fillText(i18n('canvasReflectLaw'), 12, h - 10);
     }
@@ -2364,11 +2365,11 @@
       ctx.fillStyle = '#3d2c4a';
       ctx.fillRect(0, by, w, h - by);
       ctx.globalAlpha = 1;
-      ctx.fillStyle = '#e6edf3';
+      ctx.fillStyle = '#1a1c2c';
       ctx.font = '11px sans-serif';
       ctx.fillText('n\u2081 = ' + n1, 12, 24);
       ctx.fillText('n\u2082 = ' + n2, 12, h - 12);
-      ctx.strokeStyle = '#e6edf3';
+      ctx.strokeStyle = '#1a1c2c';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(0, by);
@@ -2386,7 +2387,7 @@
       ctx.lineTo(bx, by + len);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '10px sans-serif';
       ctx.fillText(i18n('canvasNormal'), bx + 6, by - len + 14);
 
@@ -2459,7 +2460,7 @@
     }
 
     function labDrawBeerLambertLabel(ctx, x, y, exitPct) {
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       const baseFont = '12px sans-serif';
       const superFont = '8px sans-serif';
       const base = 'I = I\u2080 e';
@@ -2476,7 +2477,7 @@
 
     function labDrawSlitBarrier(ctx, w, h, slitX, cy, slitHalfPx, mode, sepPx) {
       const barW = 10;
-      ctx.fillStyle = '#21262d';
+      ctx.fillStyle = '#f1f3f5';
       ctx.fillRect(0, 0, slitX - barW / 2, h);
       ctx.fillRect(slitX + barW / 2, 0, w - slitX - barW / 2, h);
       if (mode === 'double') {
@@ -2570,13 +2571,13 @@
       }
       ctx.globalAlpha = 1;
 
-      ctx.strokeStyle = '#8b949e';
+      ctx.strokeStyle = '#6b7280';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(screenX, 18);
       ctx.lineTo(screenX, h - 18);
       ctx.stroke();
-      ctx.fillStyle = '#e6edf3';
+      ctx.fillStyle = '#1a1c2c';
       ctx.font = '11px sans-serif';
       ctx.fillText(i18n('canvasScreen'), screenX - 22, 14);
 
@@ -2599,7 +2600,7 @@
       }
       ctx.drawImage(labDiffractionScreenCache.canvas, screenX + 2, y0);
 
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.font = '12px sans-serif';
       const modeLabel = mode === 'double' ? i18n('canvasDiffDouble') : i18n('canvasDiffSingle');
       ctx.fillText(i18n('canvasDiffFooter', {
@@ -2684,7 +2685,7 @@
       const s1yDisp = h * 0.5 - halfSepDisp;
       const s2yDisp = h * 0.5 + halfSepDisp;
 
-      ctx.fillStyle = '#21262d';
+      ctx.fillStyle = '#f1f3f5';
       ctx.fillRect(barrierXDisp - 5, 0, 10, s1yDisp - 6);
       ctx.fillRect(barrierXDisp - 5, s1yDisp + 6, 10, s2yDisp - s1yDisp - 12);
       ctx.fillRect(barrierXDisp - 5, s2yDisp + 6, 10, h - (s2yDisp + 6));
@@ -2696,13 +2697,13 @@
       ctx.beginPath();
       ctx.arc(barrierXDisp, s2yDisp, 5, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#e6edf3';
+      ctx.fillStyle = '#1a1c2c';
       ctx.font = '11px sans-serif';
       ctx.textAlign = 'right';
       ctx.fillText('S\u2081', barrierXDisp - 10, s1yDisp + 4);
       ctx.fillText('S\u2082', barrierXDisp - 10, s2yDisp + 4);
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#8b949e';
+      ctx.fillStyle = '#6b7280';
       ctx.fillText('d = ' + dRatio.toFixed(1) + '\u03BB | \u0394\u03C6 = k(r\u2082\u2212r\u2081) + \u03C6 | I \u221D |E\u2081+E\u2082|\u00B2', 10, h - 8);
     }
 
@@ -2726,18 +2727,18 @@
         ctx.globalAlpha = 0.35 + (1 - cumulative) * 0.35;
         ctx.fillRect(x0, 40, layerW - 4, h - 70);
         ctx.globalAlpha = 1;
-        ctx.fillStyle = '#e6edf3';
+        ctx.fillStyle = '#1a1c2c';
         ctx.font = '11px sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(getPenLayerName(preset, i), x0 + layerW / 2 - 2, h - 38);
-        ctx.fillStyle = '#58a6ff';
+        ctx.fillStyle = '#2563eb';
         ctx.font = '600 11px sans-serif';
         const label = i === 0 ? '100%' : 'T = ' + pen.layerTx[i] + '%';
         ctx.fillText(label, x0 + layerW / 2 - 2, h - 22);
       }
       ctx.textAlign = 'left';
 
-      ctx.strokeStyle = '#58a6ff';
+      ctx.strokeStyle = '#2563eb';
       ctx.lineWidth = 2;
       ctx.beginPath();
       for (let x = 10; x < w - 20; x++) {

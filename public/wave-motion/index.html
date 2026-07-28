@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>波相分析</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        html.s3phy-embed .logo { display: none; }
+        html.s3phy-embed .lang-btn { display: none; }
+        html.s3phy-embed body { padding: 8px; }
+        html.s3phy-embed .page-header-text h1 { font-size: 1.15rem; margin-bottom: 2px; }
+        html.s3phy-embed .page-header-text p { font-size: 0.78rem; margin-bottom: 6px; }
+        * { box-sizing: border-box; }
+
+        :root {
+            --primary: #c026d3;
+            --ghost: #bdc3c7;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --accent: #2980b9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 12px;
+        }
+
+        .logo { width: 120px; height: auto; margin-bottom: 4px; }
+        h1 { margin-bottom: 2px; margin-top: 0; text-align: center; }
+        p { margin-top: 0; color: #7f8c8d; text-align: center; margin-bottom: 8px; }
+
+        .container {
+            width: 98%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 8px 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .card.graph-card {
+            padding: 8px 10px 10px;
+        }
+
+        .card-header {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--dark);
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 13px;
+        }
+
+        canvas {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 100%;
+            touch-action: none;
+            display: block;
+        }
+        #waveCanvas { cursor: grab; min-height: 300px; }
+        #waveCanvas:active { cursor: grabbing; }
+        #graphCanvas { min-height: 400px; }
+
+        .graph-inline-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 8px;
+            padding: 8px 10px;
+            background: #f8f9fa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .graph-inline-controls .graph-ctrl-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #7f8c8d;
+            margin: 0 0 4px;
+            text-align: center;
+        }
+        .graph-inline-controls .highlight-row {
+            justify-content: center;
+        }
+        .card.graph-card.dt-graph-card {
+            padding-bottom: 12px;
+        }
+
+        input[type=range] {
+            width: 100%;
+            height: 28px;
+            margin: 2px 0;
+            cursor: pointer;
+            accent-color: var(--primary);
+            touch-action: none;
+        }
+
+        .param-card input[type=range] {
+            position: relative;
+            z-index: 2;
+        }
+
+        .controls-area {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #f8f9fa;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        .controls-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .controls-toolbar-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0;
+        }
+        .controls-toggle-btn {
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #475569;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .controls-toggle-btn:hover {
+            border-color: #94a3b8;
+            background: #f1f5f9;
+        }
+        .controls-body {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .controls-area.controls-hidden {
+            padding: 6px 10px;
+        }
+        .controls-area.controls-hidden .controls-body {
+            display: none;
+        }
+        .controls-area > label,
+        .controls-body > label {
+            font-size: 11px;
+            margin-bottom: 0;
+        }
+        .controls-area input[type=number] {
+            user-select: text;
+        }
+
+        .page-header { width: 98%; max-width: 1100px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .page-header-text { flex: 1; text-align: center; }
+
+        .particle-selector-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .p-btn {
+            border: 1.5px solid transparent;
+            background: white;
+            padding: 3px 8px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .p-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+        .p-btn.active { border-color: var(--dark); background: #e9ecef; }
+        .color-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .slider-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 140px;
+            gap: 2px;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+        }
+        @media (max-width: 900px) {
+            .param-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 520px) {
+            .param-grid { grid-template-columns: 1fr; }
+        }
+
+        .param-card.freq-card {
+            border-color: #93c5fd;
+            background: #eff6ff;
+        }
+        .param-card.speed-card {
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+
+        .param-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .param-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+        .param-header label { margin: 0; color: #64748b; font-size: 11px; }
+        .param-header input[type=number] {
+            width: 64px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            padding: 2px 6px;
+            font-weight: 700;
+            font-size: 12px;
+            color: var(--dark);
+            text-align: right;
+        }
+
+        .derived-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+        }
+        .derived-badge {
+            background: #eef2ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .derived-badge.speed {
+            background: #f3e8ff;
+            color: #6b21a8;
+            border-color: #e9d5ff;
+        }
+
+        .progress-badge {
+            background: var(--dark);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 64px;
+            text-align: center;
+        }
+
+        .play-btn {
+            border: none;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .play-btn:hover { filter: brightness(1.05); }
+
+        label { font-size: 11px; font-weight: bold; margin-bottom: 2px; color: #7f8c8d; }
+        .page-header-text h1 { font-size: 1.35rem; }
+        .page-header-text p { font-size: 0.85rem; margin-bottom: 10px; }
+        .lang-btn { background: #f8f9fa; color: #7f8c8d; border: 1px solid #e0e0e0; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; flex-shrink: 0; margin-top: 4px; }
+        .lang-btn:hover { color: var(--dark); border-color: #bdc3c7; background: #ecf0f1; }
+
+        .highlight-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            align-items: center;
+        }
+        .highlight-row > span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #7f8c8d;
+            margin-right: 2px;
+        }
+        .hl-btn {
+            border: 1.5px solid #e5e7eb;
+            background: white;
+            padding: 3px 9px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 11px;
+            color: #475569;
+            transition: all 0.15s;
+        }
+        .hl-btn:hover { border-color: #94a3b8; }
+        .hl-btn.active.off { border-color: #64748b; background: #f1f5f9; color: #334155; }
+        .hl-btn.active.in { border-color: #10b981; background: #ecfdf5; color: #047857; }
+        .hl-btn.active.anti { border-color: #e11d48; background: #fff1f2; color: #be123c; }
+        .hl-btn.active.out { border-color: #7c3aed; background: #f5f3ff; color: #6d28d9; }
+        .hl-btn.active.right { border-color: #0f766e; background: #ccfbf1; color: #0f766e; }
+        .hl-btn.active.left { border-color: #0369a1; background: #e0f2fe; color: #0369a1; }
+
+        .travel-card {
+            background: white;
+            border: 1px solid #99f6e4;
+            border-radius: 8px;
+            padding: 8px 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .travel-card-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #0f766e;
+            margin: 0;
+        }
+        .travel-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .travel-btns .hl-btn {
+            min-width: 96px;
+            padding: 6px 14px;
+            font-size: 12px;
+        }
+
+        .controls-compact-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/176719383/sfgv3HH8yBECOBJy.png?Expires=1767077373&Signature=abqh80kgShCXtZgdHgjCuYgy7FUKd2dD6QSKdzcz1djb4Y4CJ-PBbbcUpZLxCVDu2JGY5usZfpXMgyJc3pAjTOpt2VkV2MlAVv0e6dMs668D1wUC8jyqaDzzzOnBX6V8eaYPtJphD0B8LU7CKBfdPgAIl2pwN8QsIdCVDPNDbTk3fOXXHV8fOvfrN4HjpfqcHaTfDLYsNvDhh82MTxCmMlbAG3JvZSxAO0mwnAHxILJb-9-KhYXYeqUL70BybeRmr9BnJfIt8jqkIhhkv38QqIdCi0YF1h2~TjQG9W6zOtN6Nu1wqkrZzwoPd6ttmXDan6gHZfSYmZ~vf6PgR1LWSw__&Key-Pair-Id=K3USGZIKWMDCSX" class="logo" alt="Unit Education Logo">
+
+    <div class="page-header">
+        <div class="page-header-text">
+            <h1 id="page-title">🌊 波相分析</h1>
+            <p id="page-subtitle">橫波：粒子分別位於波峰、波谷與平衡位置。</p>
+        </div>
+        <button class="lang-btn" id="lang-toggle" type="button">🌐 English</button>
+    </div>
+
+    <div class="container">
+
+        <div class="controls-area" id="controls-area">
+            <div class="controls-toolbar">
+                <p class="controls-toolbar-title" id="controls-title">控制面板</p>
+                <button type="button" class="controls-toggle-btn" id="btn-toggle-controls" aria-expanded="true">隱藏面板</button>
+            </div>
+            <div class="controls-body" id="controls-body">
+            <div class="travel-card">
+                <p class="travel-card-label" id="label-travel">波傳播方向</p>
+                <div class="travel-btns">
+                    <button type="button" class="hl-btn" id="dir-left" data-dir="-1">← 向左</button>
+                    <button type="button" class="hl-btn active right" id="dir-right" data-dir="1">向右 →</button>
+                </div>
+            </div>
+
+            <div class="param-grid">
+                <div class="param-card">
+                    <div class="param-header">
+                        <label id="label-lambda">波長 λ</label>
+                        <input type="number" id="lambda-input" min="0.5" max="4" step="0.01" value="1.50">
+                    </div>
+                    <input type="range" id="lambda-slider" min="0.5" max="4" step="0.01" value="1.5">
+                </div>
+                <div class="param-card">
+                    <div class="param-header">
+                        <label id="label-period">週期 T</label>
+                        <input type="number" id="period-input" min="0.5" max="8" step="0.01" value="2.50">
+                    </div>
+                    <input type="range" id="period-slider" min="0.5" max="8" step="0.01" value="2.5">
+                </div>
+                <div class="param-card freq-card">
+                    <div class="param-header">
+                        <label id="label-freq">頻率 f = 1/T</label>
+                        <input type="number" id="freq-input" min="0.13" max="2" step="0.01" value="0.40">
+                    </div>
+                    <input type="range" id="freq-slider" min="0.13" max="2" step="0.01" value="0.40">
+                </div>
+                <div class="param-card speed-card">
+                    <div class="param-header">
+                        <label id="label-speed">波速 v = fλ</label>
+                        <input type="number" id="speed-input" min="0.06" max="8" step="0.01" value="0.60">
+                    </div>
+                    <input type="range" id="speed-slider" min="0.06" max="8" step="0.01" value="0.60">
+                </div>
+            </div>
+
+            <div class="derived-row">
+                <div class="derived-badge speed" id="speed-badge">v = fλ = 0.60</div>
+            </div>
+
+            <div class="slider-row">
+                <button class="play-btn" id="btn-play" type="button">▶ 播放</button>
+                <div class="slider-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label id="label-time-shift" style="margin:0;">相位／時間（左右拖動）</label>
+                    </div>
+                    <input type="range" id="time-slider" min="-400" max="400" value="0" step="1">
+                </div>
+                <div class="progress-badge" id="progress-text">0.00 λ</div>
+            </div>
+            </div>
+        </div>
+
+        <div class="card graph-card">
+            <div class="card-header">
+                <span id="label-wave-profile">🌊 波形圖（y 對 x）</span>
+                <span id="label-click-dots" style="font-size:12px; color:#999">點選圓點以選擇粒子</span>
+            </div>
+            <canvas id="waveCanvas" width="1000" height="360"></canvas>
+        </div>
+
+        <div class="card graph-card dt-graph-card">
+            <div class="card-header">
+                <span id="graph-title">📉 位移–時間圖</span>
+                <span id="label-center-line" style="font-size:12px; color:#999">中線 = t(0)</span>
+            </div>
+            <div class="graph-inline-controls">
+                <div>
+                    <p class="graph-ctrl-label" id="label-select-particle">選擇要繪製圖像的粒子：</p>
+                    <div class="particle-selector-container" id="p-buttons"></div>
+                </div>
+                <div class="highlight-row">
+                    <span id="label-highlight">標示相位關係：</span>
+                    <button type="button" class="hl-btn active off" id="hl-off" data-mode="off">關閉</button>
+                    <button type="button" class="hl-btn" id="hl-in" data-mode="in">同相</button>
+                    <button type="button" class="hl-btn" id="hl-anti" data-mode="anti">反相</button>
+                    <button type="button" class="hl-btn" id="hl-out" data-mode="out">不同相</button>
+                </div>
+            </div>
+            <canvas id="graphCanvas" width="1000" height="420"></canvas>
+        </div>
+
+    </div>
+
+    <script>
+        const dict = {
+            zh: {
+                pageTitle: '🌊 波相分析',
+                docTitle: '波相分析',
+                subtitle: '橫波：粒子分別位於波峰、波谷與平衡位置。',
+                selectParticle: '選擇要繪製圖像的粒子：',
+                timeShift: '相位／時間（左右拖動）',
+                waveProfile: '🌊 波形圖（y 對 x）',
+                clickDots: '點選圓點以選擇粒子',
+                graphTitle: '📉 位移–時間圖',
+                graphTitleFor: (id) => `📉 粒子 ${id} 的位移–時間圖`,
+                centerLine: '中線 = t(0)',
+                displacementY: '位移 (y)',
+                timeT: '時間 (t) →',
+                tZero: 't = 0',
+                now: '現時',
+                particleLabels: { crest: '波峰', eq: '平衡點', trough: '波谷' },
+                transverse: '橫波',
+                crest: '波峰',
+                trough: '波谷',
+                equilibrium: '平衡位置',
+                amplitude: '振幅 A',
+                oneLambda: '一個波長 λ',
+                labelLambda: '波長 λ',
+                labelPeriod: '週期 T',
+                labelFreq: '頻率 f = 1/T',
+                labelSpeed: '波速 v = fλ',
+                freqBadge: (f) => `f = ${f} Hz`,
+                speedBadge: (v) => `v = fλ = ${v}`,
+                play: '▶ 播放',
+                pause: '⏸ 暫停',
+                travelLabel: '波傳播方向',
+                travelRight: '向右 →',
+                travelLeft: '← 向左',
+                travelHint: '切換波傳播方向',
+                travelDirCanvas: '傳播方向',
+                highlightLabel: '標示相位關係：',
+                highlightOff: '關閉',
+                highlightInPhase: '同相',
+                highlightAntiPhase: '反相',
+                highlightOutOfPhase: '不同相',
+                inPhaseTag: '同相',
+                antiPhaseTag: '反相',
+                outOfPhaseTag: '不同相',
+                refTag: '參考',
+                controlsTitle: '控制面板',
+                hidePanel: '隱藏面板',
+                showPanel: '顯示面板',
+                langBtn: '🌐 English'
+            },
+            en: {
+                pageTitle: '🌊 Wave Phase Analysis',
+                docTitle: 'Wave Phase Analysis',
+                subtitle: 'Transverse wave: particles at crests, troughs, and equilibrium.',
+                selectParticle: 'Select Particle to Graph:',
+                timeShift: 'Phase / Time (Drag Left/Right)',
+                waveProfile: '🌊 Wave Profile (y vs x)',
+                clickDots: 'Click dots to select',
+                graphTitle: '📉 Displacement-Time Graph',
+                graphTitleFor: (id) => `📉 Displacement-Time Graph for Particle ${id}`,
+                centerLine: 'Center Line = t(0)',
+                displacementY: 'Displacement (y)',
+                timeT: 'Time (t) →',
+                tZero: 't = 0',
+                now: 'Now',
+                particleLabels: { crest: 'Crest', eq: 'Eq', trough: 'Trough' },
+                transverse: 'Transverse Wave',
+                crest: 'Crest',
+                trough: 'Trough',
+                equilibrium: 'Equilibrium',
+                amplitude: 'Amplitude A',
+                oneLambda: 'One wavelength λ',
+                labelLambda: 'Wavelength λ',
+                labelPeriod: 'Period T',
+                labelFreq: 'Frequency f = 1/T',
+                labelSpeed: 'Speed v = fλ',
+                freqBadge: (f) => `f = ${f} Hz`,
+                speedBadge: (v) => `v = fλ = ${v}`,
+                play: '▶ Play',
+                pause: '⏸ Pause',
+                travelLabel: 'Wave travel direction',
+                travelRight: 'Right →',
+                travelLeft: '← Left',
+                travelHint: 'Switch travel direction',
+                travelDirCanvas: 'Travel direction',
+                highlightLabel: 'Highlight phase relation:',
+                highlightOff: 'Off',
+                highlightInPhase: 'In-phase',
+                highlightAntiPhase: 'Antiphase',
+                highlightOutOfPhase: 'Out of phase',
+                inPhaseTag: 'In-phase',
+                antiPhaseTag: 'Antiphase',
+                outOfPhaseTag: 'Out of phase',
+                refTag: 'Ref',
+                controlsTitle: 'Controls',
+                hidePanel: 'Hide panel',
+                showPanel: 'Show panel',
+                langBtn: '🌐 中文'
+            }
+        };
+
+        function hubLangToLocal(lang) {
+            return lang === 'en' ? 'en' : 'zh';
+        }
+
+        const params = new URLSearchParams(location.search);
+        let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+        function t() { return dict[currentLang]; }
+
+        const waveCanvas = document.getElementById('waveCanvas');
+        const waveCtx = waveCanvas.getContext('2d');
+        const graphCanvas = document.getElementById('graphCanvas');
+        const graphCtx = graphCanvas.getContext('2d');
+
+        const slider = document.getElementById('time-slider');
+        const lambdaSlider = document.getElementById('lambda-slider');
+        const periodSlider = document.getElementById('period-slider');
+        const freqSlider = document.getElementById('freq-slider');
+        const speedSlider = document.getElementById('speed-slider');
+        const lambdaInput = document.getElementById('lambda-input');
+        const periodInput = document.getElementById('period-input');
+        const freqInput = document.getElementById('freq-input');
+        const speedInput = document.getElementById('speed-input');
+        const graphTitle = document.getElementById('graph-title');
+        const progressText = document.getElementById('progress-text');
+        const pBtnContainer = document.getElementById('p-buttons');
+        const btnLang = document.getElementById('lang-toggle');
+        const btnPlay = document.getElementById('btn-play');
+        const controlsArea = document.getElementById('controls-area');
+        const btnToggleControls = document.getElementById('btn-toggle-controls');
+
+        // Logical (CSS-pixel) drawing size — backing store is scaled by devicePixelRatio
+        let waveW = 1000;
+        let waveH = 360;
+        let graphW = 1000;
+        let graphH = 420;
+        let amplitude = 78;
+        let waveCenterY = 180;
+        let graphCenterY = 210;
+        let tOrigin = 500;
+        const PX_PER_UNIT = 220; // preferred canvas px per unit of λ (may shrink to fit A–H)
+        const ORIGIN_X = 48;
+        const PARTICLE_RIGHT_PAD = 36;
+        const PERIOD_MIN = 0.5;
+        const PERIOD_MAX = 8;
+        const FREQ_MIN = 1 / PERIOD_MAX; // 0.125
+        const FREQ_MAX = 1 / PERIOD_MIN; // 2
+        /** Visual playback scale — keeps motion easy to follow while v = fλ ratios stay correct. */
+        const PLAY_RATE = 0.35;
+        const FONT = 'Segoe UI, "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif';
+
+        /**
+         * Match canvas backing-store pixels to CSS size × devicePixelRatio for sharp text/lines.
+         * Drawing code uses CSS-pixel coordinates (waveW/waveH, graphW/graphH).
+         */
+        function fitHiDpiCanvas(canvas, ctx, fallbackW, fallbackH) {
+            const parentW = canvas.parentElement?.clientWidth || 0;
+            const cssW = Math.max(280, Math.floor(parentW || fallbackW));
+            const cssH = Math.max(
+                Math.round(fallbackH * 0.9),
+                Math.round(cssW * (fallbackH / fallbackW))
+            );
+            const dpr = Math.min(window.devicePixelRatio || 1, 3);
+            canvas.width = Math.round(cssW * dpr);
+            canvas.height = Math.round(cssH * dpr);
+            canvas.style.width = `${cssW}px`;
+            canvas.style.height = `${cssH}px`;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.imageSmoothingEnabled = true;
+            if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+            return { w: cssW, h: cssH };
+        }
+
+        function resizeCanvases() {
+            const prevL = wavelengthPx();
+            const phaseFrac = prevL > 0 ? phasePx / prevL : 0;
+
+            const wave = fitHiDpiCanvas(waveCanvas, waveCtx, 1000, 360);
+            waveW = wave.w;
+            waveH = wave.h;
+            waveCenterY = Math.round(waveH / 2);
+            amplitude = Math.round(waveH * (78 / 360));
+
+            const graph = fitHiDpiCanvas(graphCanvas, graphCtx, 1000, 420);
+            graphW = graph.w;
+            graphH = graph.h;
+            graphCenterY = Math.round(graphH / 2);
+            tOrigin = Math.round(graphW / 2);
+
+            phasePx = phaseFrac * wavelengthPx();
+            syncPhaseSlider();
+            initControls();
+            update();
+        }
+
+        // Physical parameters
+        let lambda = 1.5;
+        let period = 2.5;
+        let phasePx = 0; // phase scrub in canvas pixels
+        let travelDir = 1; // 1 = right, -1 = left
+        let selectedPIndex = 0;
+        let highlightMode = 'off'; // 'off' | 'in' | 'anti' | 'out'
+        let isPlaying = false;
+        let lastTs = 0;
+        let controlsHidden = sessionStorage.getItem('wave-motion:controlsHidden') === '1';
+
+        const PARTICLE_SPEC = [
+            { id: 'A', frac: 0.25, color: '#e74c3c', labelKey: 'crest' },
+            { id: 'B', frac: 0.50, color: '#e67e22', labelKey: 'eq' },
+            { id: 'C', frac: 0.75, color: '#f1c40f', labelKey: 'trough' },
+            { id: 'D', frac: 1.00, color: '#2ecc71', labelKey: 'eq' },
+            { id: 'E', frac: 1.25, color: '#1abc9c', labelKey: 'crest' },
+            { id: 'F', frac: 1.50, color: '#3498db', labelKey: 'eq' },
+            { id: 'G', frac: 1.75, color: '#9b59b6', labelKey: 'trough' },
+            { id: 'H', frac: 2.00, color: '#34495e', labelKey: 'eq' }
+        ];
+        const PARTICLE_MAX_FRAC = PARTICLE_SPEC[PARTICLE_SPEC.length - 1].frac;
+
+        /** Pixel length of one λ — scales with λ, but never so large that A–H leave the canvas. */
+        function wavelengthPx() {
+            const preferred = Math.max(80, lambda * PX_PER_UNIT);
+            const fit = (waveW - ORIGIN_X - PARTICLE_RIGHT_PAD) / PARTICLE_MAX_FRAC;
+            return Math.max(50, Math.min(preferred, fit));
+        }
+
+        function freq() {
+            return 1 / period;
+        }
+
+        function speed() {
+            return freq() * lambda;
+        }
+
+        function shiftPx() {
+            return travelDir * phasePx;
+        }
+
+        function wrapFeatureX(x, L) {
+            let xx = x;
+            const minX = ORIGIN_X - 0.05 * L;
+            const maxX = waveW - 24;
+            while (xx < minX) xx += L;
+            while (xx > maxX) xx -= L;
+            return xx;
+        }
+
+        /**
+         * Role only when the particle is actually at that point (not en route).
+         * @returns {'crest'|'trough'|'eq'|null}
+         */
+        function particleRoleKey(p, shift, L) {
+            const s = Math.sin((2 * Math.PI / L) * (p.x - ORIGIN_X - shift));
+            const atCrest = 0.92;   // sin ≈ 1
+            const atTrough = -0.92; // sin ≈ -1
+            const atEq = 0.12;      // |sin| ≈ 0
+            if (s >= atCrest) return 'crest';
+            if (s <= atTrough) return 'trough';
+            if (Math.abs(s) <= atEq) return 'eq';
+            return null;
+        }
+
+        function particles() {
+            const L = wavelengthPx();
+            return PARTICLE_SPEC.map((p) => ({
+                ...p,
+                x: ORIGIN_X + p.frac * L
+            }));
+        }
+
+        /** @returns {'in'|'anti'|'out'} */
+        function phaseRelation(fracA, fracB) {
+            const diff = Math.abs(fracA - fracB);
+            const nearestHalf = Math.round(diff * 2) / 2;
+            if (Math.abs(diff - nearestHalf) > 0.05) return 'out'; // neither integer nor half-integer λ
+            const twice = Math.round(nearestHalf * 2);
+            if (twice % 2 === 0) return 'in';   // integer λ
+            return 'anti';                       // half-integer λ
+        }
+
+        function highlightStyle(mode) {
+            if (mode === 'in') {
+                return { stroke: '#10b981', soft: 'rgba(16,185,129,0.75)', text: '#047857', tagKey: 'inPhaseTag' };
+            }
+            if (mode === 'anti') {
+                return { stroke: '#e11d48', soft: 'rgba(225,29,72,0.75)', text: '#be123c', tagKey: 'antiPhaseTag' };
+            }
+            return { stroke: '#7c3aed', soft: 'rgba(124,58,237,0.75)', text: '#6d28d9', tagKey: 'outOfPhaseTag' };
+        }
+
+        function clamp(v, min, max) {
+            return Math.min(max, Math.max(min, v));
+        }
+
+        function syncParamInputs() {
+            const f = freq();
+            const v = speed();
+            const vMin = lambda / PERIOD_MAX;
+            const vMax = lambda / PERIOD_MIN;
+            speedSlider.min = String(vMin.toFixed(2));
+            speedSlider.max = String(vMax.toFixed(2));
+            speedInput.min = String(vMin.toFixed(2));
+            speedInput.max = String(vMax.toFixed(2));
+            freqSlider.min = String(FREQ_MIN.toFixed(2));
+            freqSlider.max = String(FREQ_MAX.toFixed(2));
+            freqInput.min = String(FREQ_MIN.toFixed(2));
+            freqInput.max = String(FREQ_MAX.toFixed(2));
+            periodSlider.min = String(PERIOD_MIN);
+            periodSlider.max = String(PERIOD_MAX);
+            periodInput.min = String(PERIOD_MIN);
+            periodInput.max = String(PERIOD_MAX);
+
+            lambdaSlider.value = String(lambda);
+            periodSlider.value = String(period);
+            freqSlider.value = String(f);
+            speedSlider.value = String(v);
+            lambdaInput.value = lambda.toFixed(2);
+            periodInput.value = period.toFixed(2);
+            freqInput.value = f.toFixed(2);
+            speedInput.value = v.toFixed(2);
+            document.getElementById('speed-badge').innerText = t().speedBadge(v.toFixed(2));
+        }
+
+        function syncControlsVisibility() {
+            controlsArea.classList.toggle('controls-hidden', controlsHidden);
+            btnToggleControls.setAttribute('aria-expanded', controlsHidden ? 'false' : 'true');
+            btnToggleControls.innerText = controlsHidden ? t().showPanel : t().hidePanel;
+            sessionStorage.setItem('wave-motion:controlsHidden', controlsHidden ? '1' : '0');
+        }
+
+        function updateGraphTitle() {
+            const p = particles()[selectedPIndex];
+            graphTitle.innerText = t().graphTitleFor(p.id);
+            graphTitle.style.color = p.color;
+        }
+
+        function updateLanguageUI() {
+            const tr = t();
+            document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+            document.title = tr.docTitle;
+            btnLang.innerText = tr.langBtn;
+            document.getElementById('page-title').innerText = tr.pageTitle;
+            document.getElementById('page-subtitle').innerText = tr.subtitle;
+            document.getElementById('label-select-particle').innerText = tr.selectParticle;
+            document.getElementById('controls-title').innerText = tr.controlsTitle;
+            document.getElementById('label-time-shift').innerText = tr.timeShift;
+            document.getElementById('label-wave-profile').innerText = tr.waveProfile;
+            document.getElementById('label-click-dots').innerText = tr.clickDots;
+            document.getElementById('label-center-line').innerText = tr.centerLine;
+            document.getElementById('label-lambda').innerText = tr.labelLambda;
+            document.getElementById('label-period').innerText = tr.labelPeriod;
+            document.getElementById('label-freq').innerText = tr.labelFreq;
+            document.getElementById('label-speed').innerText = tr.labelSpeed;
+            document.getElementById('label-highlight').innerText = tr.highlightLabel;
+            document.getElementById('hl-off').innerText = tr.highlightOff;
+            document.getElementById('hl-in').innerText = tr.highlightInPhase;
+            document.getElementById('hl-anti').innerText = tr.highlightAntiPhase;
+            document.getElementById('hl-out').innerText = tr.highlightOutOfPhase;
+            document.getElementById('label-travel').innerText = tr.travelLabel;
+            document.getElementById('dir-right').innerText = tr.travelRight;
+            document.getElementById('dir-left').innerText = tr.travelLeft;
+            btnPlay.innerText = isPlaying ? tr.pause : tr.play;
+            syncHighlightButtons();
+            syncTravelButtons();
+            syncControlsVisibility();
+            updateGraphTitle();
+            syncParamInputs();
+            update();
+        }
+
+        btnToggleControls.addEventListener('click', () => {
+            controlsHidden = !controlsHidden;
+            syncControlsVisibility();
+        });
+
+        btnLang.addEventListener('click', () => {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            updateLanguageUI();
+        });
+
+        window.addEventListener('message', (ev) => {
+            if (ev.data?.type !== 's3phy:lang') return;
+            currentLang = hubLangToLocal(ev.data.lang);
+            updateLanguageUI();
+        });
+
+        function initControls() {
+            pBtnContainer.innerHTML = '';
+            particles().forEach((p, idx) => {
+                const btn = document.createElement('div');
+                btn.className = `p-btn ${idx === selectedPIndex ? 'active' : ''}`;
+                btn.innerHTML = `<div class="color-dot" style="background:${p.color}"></div> ${p.id}`;
+                btn.onclick = () => selectParticle(idx);
+                pBtnContainer.appendChild(btn);
+            });
+        }
+
+        function selectParticle(index) {
+            selectedPIndex = index;
+            document.querySelectorAll('.p-btn').forEach((b, i) => {
+                b.classList.toggle('active', i === index);
+            });
+            updateGraphTitle();
+            update();
+        }
+
+        function syncHighlightButtons() {
+            document.querySelectorAll('.hl-btn[data-mode]').forEach((btn) => {
+                const mode = btn.getAttribute('data-mode');
+                btn.classList.toggle('active', mode === highlightMode);
+                btn.classList.toggle('off', mode === 'off' && highlightMode === 'off');
+                btn.classList.toggle('in', mode === 'in' && highlightMode === 'in');
+                btn.classList.toggle('anti', mode === 'anti' && highlightMode === 'anti');
+                btn.classList.toggle('out', mode === 'out' && highlightMode === 'out');
+            });
+        }
+
+        function setHighlightMode(mode) {
+            highlightMode = mode;
+            syncHighlightButtons();
+            update();
+        }
+
+        document.getElementById('hl-off').addEventListener('click', () => setHighlightMode('off'));
+        document.getElementById('hl-in').addEventListener('click', () => setHighlightMode('in'));
+        document.getElementById('hl-anti').addEventListener('click', () => setHighlightMode('anti'));
+        document.getElementById('hl-out').addEventListener('click', () => setHighlightMode('out'));
+
+        function syncTravelButtons() {
+            const isRight = travelDir === 1;
+            const isLeft = travelDir === -1;
+            const dirRight = document.getElementById('dir-right');
+            const dirLeft = document.getElementById('dir-left');
+            dirRight.classList.toggle('active', isRight);
+            dirRight.classList.toggle('right', isRight);
+            dirLeft.classList.toggle('active', isLeft);
+            dirLeft.classList.toggle('left', isLeft);
+        }
+
+        function setTravelDir(dir) {
+            travelDir = dir === -1 ? -1 : 1;
+            syncTravelButtons();
+            update();
+        }
+
+        document.getElementById('dir-right').addEventListener('click', () => setTravelDir(1));
+        document.getElementById('dir-left').addEventListener('click', () => setTravelDir(-1));
+
+        function setLambda(val, fromInput) {
+            const prevL = wavelengthPx();
+            const phaseFrac = phasePx / prevL;
+            lambda = clamp(Number(val), 0.5, 4);
+            // Keep period fixed when λ changes → v = λ/T updates via v = fλ
+            phasePx = phaseFrac * wavelengthPx();
+            syncPhaseSlider();
+            if (!fromInput) lambdaInput.value = lambda.toFixed(2);
+            syncParamInputs();
+            initControls();
+            update();
+        }
+
+        function setPeriod(val, fromInput) {
+            period = clamp(Number(val), PERIOD_MIN, PERIOD_MAX);
+            if (!fromInput) periodInput.value = period.toFixed(2);
+            syncParamInputs();
+            update();
+        }
+
+        /** Set frequency f; keep λ fixed and update T = 1/f so that f = 1/T and v = fλ hold. */
+        function setFreq(val, fromInput) {
+            const f = clamp(Number(val), FREQ_MIN, FREQ_MAX);
+            period = clamp(1 / f, PERIOD_MIN, PERIOD_MAX);
+            if (!fromInput) freqInput.value = f.toFixed(2);
+            syncParamInputs();
+            update();
+        }
+
+        /** Set wave speed v; keep λ fixed and update T = λ/v so that v = fλ holds. */
+        function setSpeed(val, fromInput) {
+            const vMin = lambda / PERIOD_MAX;
+            const vMax = lambda / PERIOD_MIN;
+            const v = clamp(Number(val), vMin, vMax);
+            period = clamp(lambda / v, PERIOD_MIN, PERIOD_MAX);
+            if (!fromInput) speedInput.value = v.toFixed(2);
+            syncParamInputs();
+            update();
+        }
+
+        function syncPhaseSlider() {
+            const L = wavelengthPx();
+            const maxPhase = 1.5 * L;
+            slider.min = String(-Math.round(maxPhase));
+            slider.max = String(Math.round(maxPhase));
+            phasePx = clamp(phasePx, -maxPhase, maxPhase);
+            slider.value = String(Math.round(phasePx));
+        }
+
+        lambdaSlider.addEventListener('input', (e) => setLambda(e.target.value, false));
+        periodSlider.addEventListener('input', (e) => setPeriod(e.target.value, false));
+        freqSlider.addEventListener('input', (e) => setFreq(e.target.value, false));
+        speedSlider.addEventListener('input', (e) => setSpeed(e.target.value, false));
+        lambdaInput.addEventListener('change', (e) => setLambda(e.target.value, true));
+        periodInput.addEventListener('change', (e) => setPeriod(e.target.value, true));
+        freqInput.addEventListener('change', (e) => setFreq(e.target.value, true));
+        speedInput.addEventListener('change', (e) => setSpeed(e.target.value, true));
+
+        slider.addEventListener('input', (e) => {
+            phasePx = parseFloat(e.target.value);
+            update();
+        });
+
+        btnPlay.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            btnPlay.innerText = isPlaying ? t().pause : t().play;
+            lastTs = 0;
+        });
+
+        let isDragging = false;
+        let startX = 0;
+        let startPhase = 0;
+
+        function endWaveDrag() {
+            isDragging = false;
+        }
+
+        // Keep slider drags from being treated as wave-canvas phase drags
+        [lambdaSlider, periodSlider, freqSlider, speedSlider, slider, lambdaInput, periodInput, freqInput, speedInput]
+            .forEach((el) => {
+                el.addEventListener('pointerdown', (e) => {
+                    endWaveDrag();
+                    e.stopPropagation();
+                });
+            });
+
+        waveCanvas.addEventListener('pointerdown', (e) => {
+            if (e.button !== 0) return;
+            isDragging = true;
+            startX = e.clientX;
+            startPhase = phasePx;
+            try { waveCanvas.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+            const rect = waveCanvas.getBoundingClientRect();
+            const scaleX = waveW / rect.width;
+            const mouseX = (e.clientX - rect.left) * scaleX;
+            particles().forEach((p, idx) => {
+                if (Math.abs(mouseX - p.x) < 20) selectParticle(idx);
+            });
+        });
+        waveCanvas.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            if (e.buttons !== undefined && e.buttons !== 1) {
+                endWaveDrag();
+                return;
+            }
+            const rect = waveCanvas.getBoundingClientRect();
+            const scaleX = waveW / rect.width;
+            const dx = (e.clientX - startX) * scaleX;
+            phasePx = startPhase + dx;
+            syncPhaseSlider();
+            update();
+        });
+        waveCanvas.addEventListener('pointerup', endWaveDrag);
+        waveCanvas.addEventListener('pointercancel', endWaveDrag);
+        window.addEventListener('blur', endWaveDrag);
+
+        function drawDoubleArrowV(ctx, x, y1, y2, label) {
+            const top = Math.min(y1, y2);
+            const bot = Math.max(y1, y2);
+            ctx.strokeStyle = '#e67e22';
+            ctx.fillStyle = '#e67e22';
+            ctx.lineWidth = 2;
+
+            // Vertical span: equilibrium ↔ crest (amplitude A)
+            ctx.beginPath();
+            ctx.moveTo(x, top);
+            ctx.lineTo(x, bot);
+            ctx.stroke();
+
+            // Outward arrowheads (top points up, bottom points down)
+            ctx.beginPath();
+            ctx.moveTo(x, top);
+            ctx.lineTo(x - 5, top + 8);
+            ctx.lineTo(x + 5, top + 8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(x, bot);
+            ctx.lineTo(x - 5, bot - 8);
+            ctx.lineTo(x + 5, bot - 8);
+            ctx.closePath();
+            ctx.fill();
+
+            // End ticks on equilibrium / crest
+            ctx.beginPath();
+            ctx.moveTo(x - 7, top);
+            ctx.lineTo(x + 7, top);
+            ctx.moveTo(x - 7, bot);
+            ctx.lineTo(x + 7, bot);
+            ctx.stroke();
+
+            ctx.font = 'bold 12px ' + FONT;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, x + 10, (top + bot) / 2);
+            ctx.textBaseline = 'alphabetic';
+        }
+
+        /** Prefer the on-screen crest/trough nearest the canvas centre (stable while travelling). */
+        function pickFeatureX(baseFrac, L, shift) {
+            const mid = waveW / 2;
+            let best = null;
+            let bestDist = Infinity;
+            const nMin = Math.floor((-ORIGIN_X - shift) / L) - 1;
+            const nMax = Math.ceil((waveW - ORIGIN_X - shift) / L) + 1;
+            for (let n = nMin; n <= nMax; n++) {
+                const x = ORIGIN_X + (baseFrac + n) * L + shift;
+                if (x < 36 || x > waveW - 50) continue;
+                const d = Math.abs(x - mid);
+                if (d < bestDist) {
+                    bestDist = d;
+                    best = x;
+                }
+            }
+            return best;
+        }
+
+        /** Quiet travel-direction badge — updates with ←/→ control, no animated arrows. */
+        function drawTravelDirectionIndicator(ctx, tr, dir, _shift, startX) {
+            const goingRight = dir === 1;
+            const label = `${tr.travelDirCanvas} ${goingRight ? '→' : '←'}`;
+            ctx.font = 'bold 12px ' + FONT;
+            const w = ctx.measureText(label).width + 16;
+            const y = 10;
+            ctx.fillStyle = goingRight ? 'rgba(15,118,110,0.9)' : 'rgba(3,105,161,0.9)';
+            ctx.beginPath();
+            ctx.roundRect(startX, y, w, 22, 6);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(label, startX + 8, y + 11);
+            ctx.textBaseline = 'alphabetic';
+        }
+
+        function drawLambdaBracket(ctx, x1, x2, y, label) {
+            const left = Math.min(x1, x2);
+            const right = Math.max(x1, x2);
+            const tick = 10; // half-length of vertical end caps (centered on the bar)
+            const aw = 8;
+            const ah = 5;
+
+            ctx.strokeStyle = '#2980b9';
+            ctx.fillStyle = '#2980b9';
+            ctx.lineWidth = 2;
+
+            // Vertical end caps centered on the horizontal bar, then the bar itself
+            ctx.beginPath();
+            ctx.moveTo(left, y - tick);
+            ctx.lineTo(left, y + tick);
+            ctx.moveTo(right, y - tick);
+            ctx.lineTo(right, y + tick);
+            ctx.moveTo(left, y);
+            ctx.lineTo(right, y);
+            ctx.stroke();
+
+            // Outward arrowheads, vertically centered on the bar (same centre as the blue ticks)
+            // Left end ←
+            ctx.beginPath();
+            ctx.moveTo(left, y);
+            ctx.lineTo(left + aw, y - ah);
+            ctx.lineTo(left + aw, y + ah);
+            ctx.closePath();
+            ctx.fill();
+            // Right end →
+            ctx.beginPath();
+            ctx.moveTo(right, y);
+            ctx.lineTo(right - aw, y - ah);
+            ctx.lineTo(right - aw, y + ah);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.font = 'bold 12px ' + FONT;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText(label, (left + right) / 2, y + tick + 4);
+            ctx.textBaseline = 'alphabetic';
+        }
+
+        function drawWaveProfile() {
+            const tr = t();
+            const L = wavelengthPx();
+            const k = (2 * Math.PI) / L;
+            const plist = particles();
+
+            waveCtx.clearRect(0, 0, waveW, waveH);
+
+            // Transverse badge
+            waveCtx.font = 'bold 13px ' + FONT;
+            waveCtx.textAlign = 'left';
+            const badge = tr.transverse;
+            const tw = waveCtx.measureText(badge).width + 16;
+            waveCtx.fillStyle = '#c026d3';
+            waveCtx.beginPath();
+            waveCtx.roundRect(12, 10, tw, 24, 6);
+            waveCtx.fill();
+            waveCtx.fillStyle = '#fff';
+            waveCtx.fillText(badge, 20, 27);
+
+            const shift = shiftPx();
+
+            // Equilibrium line
+            waveCtx.beginPath();
+            waveCtx.strokeStyle = '#cbd5e1';
+            waveCtx.setLineDash([6, 4]);
+            waveCtx.moveTo(0, waveCenterY);
+            waveCtx.lineTo(waveW, waveCenterY);
+            waveCtx.stroke();
+            waveCtx.setLineDash([]);
+            waveCtx.fillStyle = '#64748b';
+            waveCtx.font = 'bold 12px ' + FONT;
+            waveCtx.textAlign = 'right';
+            waveCtx.fillText(tr.equilibrium, waveW - 10, waveCenterY - 8);
+
+            // Travel-direction indicator (updates with ←/→ control; chevrons scroll with the wave)
+            drawTravelDirectionIndicator(waveCtx, tr, travelDir, shift, 12 + tw + 10);
+
+            // Ghost wave (t=0) reference only — no crest/trough labels
+            waveCtx.beginPath();
+            waveCtx.strokeStyle = '#bdc3c7';
+            waveCtx.lineWidth = 2;
+            waveCtx.setLineDash([5, 5]);
+            for (let x = 0; x < waveW; x++) {
+                const y = waveCenterY - amplitude * Math.sin(k * (x - ORIGIN_X));
+                if (x === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            }
+            waveCtx.stroke();
+            waveCtx.setLineDash([]);
+
+            // Active travelling wave (brighter so it stands out from ghost)
+            waveCtx.beginPath();
+            waveCtx.strokeStyle = '#e879f9';
+            waveCtx.lineWidth = 4;
+            waveCtx.shadowColor = 'rgba(232, 121, 249, 0.55)';
+            waveCtx.shadowBlur = 8;
+            for (let x = 0; x < waveW; x++) {
+                const y = waveCenterY - amplitude * Math.sin(k * (x - ORIGIN_X - shift));
+                if (x === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            }
+            waveCtx.stroke();
+            waveCtx.shadowBlur = 0;
+
+            // Crest / trough labels — draw every on-screen extremum so markers
+            // travel continuously with the wave (no wrap jump that looks reversed)
+            waveCtx.font = 'bold 12px ' + FONT;
+            waveCtx.textAlign = 'center';
+            const nMin = Math.floor((-ORIGIN_X - shift) / L) - 1;
+            const nMax = Math.ceil((waveW - ORIGIN_X - shift) / L) + 1;
+            for (let n = nMin; n <= nMax; n++) {
+                const cX = ORIGIN_X + (0.25 + n) * L + shift;
+                const tX = ORIGIN_X + (0.75 + n) * L + shift;
+                if (cX >= 8 && cX <= waveW - 8) {
+                    waveCtx.fillStyle = '#c0392b';
+                    waveCtx.fillText(tr.crest, cX, waveCenterY - amplitude - 14);
+                    waveCtx.beginPath();
+                    waveCtx.arc(cX, waveCenterY - amplitude, 4, 0, Math.PI * 2);
+                    waveCtx.fill();
+                }
+                if (tX >= 8 && tX <= waveW - 8) {
+                    waveCtx.fillStyle = '#2980b9';
+                    waveCtx.fillText(tr.trough, tX, waveCenterY + amplitude + 18);
+                    waveCtx.beginPath();
+                    waveCtx.arc(tX, waveCenterY + amplitude, 4, 0, Math.PI * 2);
+                    waveCtx.fill();
+                }
+            }
+
+            // Amplitude arrows: eq ↔ crest (upper) and eq ↔ trough (lower)
+            const crestX = pickFeatureX(0.25, L, shift);
+            const troughX = pickFeatureX(0.75, L, shift);
+            const crestY = waveCenterY - amplitude;
+            const troughY = waveCenterY + amplitude;
+            if (crestX != null) {
+                const ampArrowX = clamp(crestX + 26, 28, waveW - 70);
+                drawDoubleArrowV(waveCtx, ampArrowX, waveCenterY, crestY, tr.amplitude);
+
+                // One-λ bracket between neighbouring crests (keep fully on-screen)
+                let bracketLeft = crestX;
+                let bracketRight = crestX + L;
+                if (bracketRight > waveW - 16) {
+                    bracketRight = crestX;
+                    bracketLeft = crestX - L;
+                }
+                if (bracketLeft >= 16 && bracketRight <= waveW - 16 && bracketRight - bracketLeft > 40) {
+                    const bracketY = Math.min(waveH - 22, waveCenterY + amplitude + 42);
+                    drawLambdaBracket(waveCtx, bracketLeft, bracketRight, bracketY, tr.oneLambda);
+                }
+            }
+            if (troughX != null) {
+                const ampArrowXLow = clamp(troughX + 26, 28, waveW - 70);
+                drawDoubleArrowV(waveCtx, ampArrowXLow, waveCenterY, troughY, tr.amplitude);
+            }
+
+            // Particles (+ phase-relation highlighting)
+            const ref = plist[selectedPIndex];
+            const refY = waveCenterY - amplitude * Math.sin(k * (ref.x - ORIGIN_X - shift));
+            const hl = highlightMode !== 'off' ? highlightStyle(highlightMode) : null;
+
+            // Dashed connectors first (under dots)
+            if (hl) {
+                plist.forEach((p, index) => {
+                    if (index === selectedPIndex) return;
+                    const rel = phaseRelation(ref.frac, p.frac);
+                    if (rel !== highlightMode) return;
+                    const y = waveCenterY - amplitude * Math.sin(k * (p.x - ORIGIN_X - shift));
+                    waveCtx.beginPath();
+                    waveCtx.setLineDash([6, 4]);
+                    waveCtx.strokeStyle = hl.soft;
+                    waveCtx.lineWidth = 2;
+                    waveCtx.moveTo(ref.x, refY);
+                    waveCtx.lineTo(p.x, y);
+                    waveCtx.stroke();
+                    waveCtx.setLineDash([]);
+                });
+            }
+
+            plist.forEach((p, index) => {
+                const y = waveCenterY - amplitude * Math.sin(k * (p.x - ORIGIN_X - shift));
+                const isSelected = index === selectedPIndex;
+                const rel = phaseRelation(ref.frac, p.frac);
+                const isPartner = highlightMode !== 'off' && !isSelected && rel === highlightMode;
+                const isDimmed = highlightMode !== 'off' && !isSelected && !isPartner;
+
+                if (isPartner) {
+                    waveCtx.beginPath();
+                    waveCtx.shadowColor = hl.stroke;
+                    waveCtx.shadowBlur = 16;
+                    waveCtx.strokeStyle = hl.stroke;
+                    waveCtx.lineWidth = 4;
+                    waveCtx.arc(p.x, y, 16, 0, Math.PI * 2);
+                    waveCtx.stroke();
+                    waveCtx.shadowBlur = 0;
+                }
+
+                if (isSelected && highlightMode !== 'off') {
+                    waveCtx.beginPath();
+                    waveCtx.strokeStyle = '#f59e0b';
+                    waveCtx.lineWidth = 4;
+                    waveCtx.shadowColor = '#f59e0b';
+                    waveCtx.shadowBlur = 12;
+                    waveCtx.arc(p.x, y, 15, 0, Math.PI * 2);
+                    waveCtx.stroke();
+                    waveCtx.shadowBlur = 0;
+                }
+
+                waveCtx.globalAlpha = isDimmed ? 0.28 : 1;
+                waveCtx.beginPath();
+                waveCtx.fillStyle = p.color;
+                const radius = isSelected ? 12 : (isPartner ? 11 : 7);
+                waveCtx.arc(p.x, y, radius, 0, Math.PI * 2);
+                waveCtx.fill();
+
+                if (isSelected) {
+                    waveCtx.lineWidth = 3;
+                    waveCtx.strokeStyle = 'rgba(0,0,0,0.45)';
+                    waveCtx.stroke();
+                    const roleKey = particleRoleKey(p, shift, L);
+                    waveCtx.fillStyle = '#111';
+                    waveCtx.font = 'bold 13px ' + FONT;
+                    waveCtx.textAlign = 'center';
+                    const tag = highlightMode !== 'off' ? ` · ${tr.refTag}` : '';
+                    const label = roleKey
+                        ? `${p.id} (${tr.particleLabels[roleKey]}${tag})`
+                        : (highlightMode !== 'off' ? `${p.id} (${tr.refTag})` : p.id);
+                    const labelY = roleKey === 'trough' ? y + 22 : y - 22;
+                    waveCtx.fillText(label, p.x, labelY);
+                } else if (isPartner) {
+                    const roleKey = particleRoleKey(p, shift, L);
+                    waveCtx.fillStyle = hl.text;
+                    waveCtx.font = 'bold 12px ' + FONT;
+                    waveCtx.textAlign = 'center';
+                    const tag = tr[hl.tagKey];
+                    const label = roleKey
+                        ? `${p.id} (${tr.particleLabels[roleKey]}) · ${tag}`
+                        : `${p.id} · ${tag}`;
+                    const labelY = roleKey === 'trough' ? y + 20 : y - 22;
+                    waveCtx.fillText(label, p.x, labelY);
+                } else {
+                    waveCtx.fillStyle = 'rgba(0,0,0,0.45)';
+                    waveCtx.font = '10px ' + FONT;
+                    waveCtx.textAlign = 'center';
+                    waveCtx.fillText(p.id, p.x, y - 12);
+                }
+                waveCtx.globalAlpha = 1;
+            });
+        }
+
+        function drawDisplacementTimeGraph() {
+            const tr = t();
+            const L = wavelengthPx();
+            const k = (2 * Math.PI) / L;
+            const p = particles()[selectedPIndex];
+            // Map: phasePx of one wavelength <=> one period on the time axis
+            // pixel on graph: t_val relative to origin; physical time = (t_val / L) * T
+            const markerX = tOrigin + phasePx;
+
+            graphCtx.clearRect(0, 0, graphW, graphH);
+
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = '#ccc';
+            graphCtx.moveTo(0, graphCenterY);
+            graphCtx.lineTo(graphW, graphCenterY);
+            graphCtx.stroke();
+
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = '#95a5a6';
+            graphCtx.lineWidth = 2;
+            graphCtx.moveTo(tOrigin, 10);
+            graphCtx.lineTo(tOrigin, graphH - 10);
+            graphCtx.stroke();
+
+            // Period markers
+            graphCtx.strokeStyle = '#e2e8f0';
+            graphCtx.lineWidth = 1;
+            graphCtx.setLineDash([3, 3]);
+            for (let n = -3; n <= 3; n++) {
+                if (n === 0) continue;
+                const x = tOrigin + n * L;
+                if (x < 0 || x > graphW) continue;
+                graphCtx.beginPath();
+                graphCtx.moveTo(x, 15);
+                graphCtx.lineTo(x, graphH - 15);
+                graphCtx.stroke();
+                graphCtx.fillStyle = '#94a3b8';
+                graphCtx.font = '11px ' + FONT;
+                graphCtx.textAlign = 'center';
+                graphCtx.fillText(`${n > 0 ? '+' : ''}${n}T`, x, graphH - 6);
+            }
+            graphCtx.setLineDash([]);
+
+            graphCtx.fillStyle = '#7f8c8d';
+            graphCtx.font = '12px ' + FONT;
+            graphCtx.textAlign = 'left';
+            graphCtx.fillText(tr.displacementY, 10, 20);
+            graphCtx.fillText(tr.timeT, graphW - 70, graphCenterY + 20);
+            graphCtx.fillText(tr.tZero, tOrigin + 5, graphH - 15);
+
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = p.color;
+            graphCtx.lineWidth = 2;
+            graphCtx.globalAlpha = 0.2;
+            for (let px = 0; px < graphW; px++) {
+                const tVal = px - tOrigin;
+                const y = graphCenterY - amplitude * Math.sin(k * (p.x - ORIGIN_X - travelDir * tVal));
+                if (px === 0) graphCtx.moveTo(px, y);
+                else graphCtx.lineTo(px, y);
+            }
+            graphCtx.stroke();
+            graphCtx.globalAlpha = 1;
+
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = p.color;
+            graphCtx.lineWidth = 3;
+            const startDraw = Math.min(tOrigin, markerX);
+            const endDraw = Math.max(tOrigin, markerX);
+            for (let px = startDraw; px <= endDraw; px++) {
+                const tVal = px - tOrigin;
+                const y = graphCenterY - amplitude * Math.sin(k * (p.x - ORIGIN_X - travelDir * tVal));
+                if (px === startDraw) graphCtx.moveTo(px, y);
+                else graphCtx.lineTo(px, y);
+            }
+            graphCtx.stroke();
+
+            const currentY = graphCenterY - amplitude * Math.sin(k * (p.x - ORIGIN_X - shiftPx()));
+            graphCtx.beginPath();
+            graphCtx.strokeStyle = '#333';
+            graphCtx.setLineDash([4, 4]);
+            graphCtx.moveTo(markerX, 20);
+            graphCtx.lineTo(markerX, graphH - 20);
+            graphCtx.stroke();
+            graphCtx.setLineDash([]);
+
+            graphCtx.beginPath();
+            graphCtx.fillStyle = p.color;
+            graphCtx.arc(markerX, currentY, 8, 0, Math.PI * 2);
+            graphCtx.fill();
+            graphCtx.fillStyle = '#333';
+            graphCtx.font = 'bold 12px ' + FONT;
+            graphCtx.fillText(tr.now, markerX + 10, currentY);
+        }
+
+        function update() {
+            const L = wavelengthPx();
+            const waves = (phasePx / L).toFixed(2);
+            progressText.innerText = `${waves} λ`;
+            drawWaveProfile();
+            drawDisplacementTimeGraph();
+        }
+
+        function tick(ts) {
+            if (isPlaying) {
+                if (!lastTs) lastTs = ts;
+                const dt = Math.min(0.05, (ts - lastTs) / 1000);
+                lastTs = ts;
+                // Advance phase: in one period T, wave moves one wavelength (scaled by PLAY_RATE for visibility)
+                // Equivalent: d(phase)/dt = PLAY_RATE * (L / T)
+                phasePx += (wavelengthPx() / period) * PLAY_RATE * dt;
+                // Wrap softly within slider range
+                const maxPhase = parseFloat(slider.max);
+                const minPhase = parseFloat(slider.min);
+                if (phasePx > maxPhase) phasePx = minPhase;
+                slider.value = String(Math.round(phasePx));
+                update();
+            } else {
+                lastTs = 0;
+            }
+            requestAnimationFrame(tick);
+        }
+
+        // Init
+        resizeCanvases();
+        selectParticle(0);
+        updateLanguageUI();
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resizeCanvases, 120);
+        });
+        requestAnimationFrame(tick);
+    </script>
+</body>
+</html>

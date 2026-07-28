@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聲波折射：聲影區</title>
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <style>
+        html.s3phy-embed, html.s3phy-embed body { height: 100%; }
+        html.s3phy-embed body { padding: 12px; overflow: auto; }
+        html.s3phy-embed .sim-logo { display: none; }
+        html.s3phy-embed .lang-btn { display: none; }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* --- Main Simulation --- */
+        .sim-container {
+            position: relative;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .canvas-box {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #eef1f5;
+            display: flex; 
+            justify-content: center;
+        }
+
+        canvas { display: block; width: 100%; max-width: 800px; }
+
+        /* --- LOGO STYLE --- */
+        .sim-logo {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 100px;
+            height: auto;
+            z-index: 30;
+            filter: drop-shadow(0 1px 2px rgba(255,255,255,0.8));
+        }
+
+        /* --- Explanation Diagram --- */
+        .diagram-container {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .diagram-box {
+            position: relative;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .diagram-text {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        h3 { margin-top: 0; color: #1c7ed6; transition: color 0.3s; }
+        
+        /* UI Elements */
+        .label {
+            position: absolute;
+            font-weight: bold;
+            color: #495057;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+            pointer-events: none;
+            font-size: 14px;
+        }
+
+        /* TIR Marker (Night) */
+        .tir-marker {
+            position: absolute;
+            width: 0; height: 0;
+            display: none;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .tir-dot {
+            position: absolute;
+            width: 18px; height: 18px;
+            background: #e03131;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .tir-label {
+            position: absolute;
+            bottom: 14px; left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #c92a2a;
+            border-bottom: 3px solid #e03131;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        /* Shadow Zone Marker (Day) */
+        .shadow-zone-label {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: none; /* Toggled by JS */
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(4px);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(224, 49, 49, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(224, 49, 49, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(224, 49, 49, 0); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #e9ecef;
+            color: #495057;
+            transition: 0.2s;
+        }
+        button.active { background: #228be6; color: white; }
+        button.replay { background: #1098ad; color: white; }
+        
+        .day-text h3 { color: #e67e22; }
+
+        .header-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 5px;
+        }
+        .lang-btn {
+            background: #e9ecef;
+            color: #495057;
+            border: 1px solid #dee2e6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .lang-btn:hover { background: #dee2e6; color: #212529; }
+
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <!-- 1. MAIN SIMULATION -->
+    <div class="sim-container">
+        <div class="header-row">
+            <button class="lang-btn" id="lang-toggle">🌐 English</button>
+        </div>
+        <div class="canvas-box">
+            <!-- LOGO -->
+            <img src="https://d41chssnpqdne.cloudfront.net/user_upload_by_module/chat_bot/files/176719383/gmz0hrxeu3IahMoI.png?Expires=1768107214&Signature=sxAyHnUVfmA1k~641AdOimr7TOsYSJmY-Qd4Oer8H8~cP1zSyzM9WSpYVWRRVvHE2VAyMhBFZVLTyPnhsILFgSblbnIy2RBxnrCnbfF94nSFjNJXmqd84-bc~BPwA-c9kYqfwAcAT18n08gdaMGo1ZFX~l1EnNRSXGUIOuT0YVPRgxRdOqp5n18PzSzLDsNXR-LHlCaaOpJwN4189hMwFO9RK4HVV7ttPR5IkM4D3P5ZkgrhwwONZf-KyFSj8TTrogQdXBU57OHfYsys909ufQP0egR40O4iddp9ivrJHDbmqecRlyKLud8X8lm0RKiu6yCj9wo52Kx1SjUYu5Y2Kg__&Key-Pair-Id=K3USGZIKWMDCSX" 
+                 class="sim-logo" alt="Unit Education Logo">
+
+            <canvas id="simCanvas" width="800" height="350"></canvas>
+            
+            <div id="lbl-top" class="label" style="top: 15px; right: 15px;">🔥 暖空氣（快）</div>
+            <div id="lbl-bot" class="label" style="bottom: 15px; right: 15px;">❄️ 冷地面（慢）</div>
+            <div id="lbl-source" class="label" style="bottom: 45px; left: 15px;">🔊 聲源</div>
+
+            <!-- Night: TIR Marker -->
+            <div id="tir-container" class="tir-marker">
+                <div class="tir-label" id="tir-label">↩️ 全內反射</div>
+                <div class="tir-dot"></div>
+            </div>
+
+            <!-- Day: Shadow Zone Label (UPDATED TEXT) -->
+            <div id="shadow-label" class="shadow-zone-label"></div>
+        </div>
+
+        <div class="controls">
+            <button id="btn-night" class="active" onclick="setMode('night')">🌙 夜間（逆溫）</button>
+            <button id="btn-day" onclick="setMode('day')">☀️ 炎熱日間</button>
+            <button id="btn-replay" class="replay" onclick="reset()">🔄 重播</button>
+        </div>
+    </div>
+
+    <!-- 2. EXPLANATION DIAGRAM -->
+    <div id="explain-box" class="diagram-container">
+        <div class="diagram-box">
+            <canvas id="diagramCanvas" width="320" height="240"></canvas>
+        </div>
+        <div class="diagram-text">
+            <h3 id="exp-title">為何向下偏折？</h3>
+            <p id="exp-desc">
+                聲波由 <strong>慢</strong>（冷）介質進入 <strong>快</strong>（暖）介質。速度加快，偏折方向 <strong>遠離</strong> 法線。
+            </p>
+            <ul id="exp-list" style="padding-left: 20px; line-height: 1.8;">
+                <!-- Content injected by JS -->
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const dict = {
+        zh: {
+            langBtn: '🌐 English',
+            btnNight: '🌙 夜間（逆溫）',
+            btnDay: '☀️ 炎熱日間',
+            btnReplay: '🔄 重播',
+            lblWarmFast: '🔥 暖空氣（快）',
+            lblColdSlow: '❄️ 冷地面（慢）',
+            lblCoolSlow: '❄️ 冷空氣（慢）',
+            lblHotFast: '🔥 熱地面（快）',
+            lblSource: '🔊 聲源',
+            tirLabel: '↩️ 全內反射',
+            shadowZone: '🔉 聲影區（聲音極弱）',
+            expTitleNight: '為何向下偏折？',
+            expDescNight: '聲波由 <strong>慢</strong>（冷）介質進入 <strong>快</strong>（暖）介質。速度加快，偏折方向 <strong>遠離</strong> 法線。',
+            expListNight: `
+                <li><strong>規則：</strong>θ<sub>2</sub>（折射角）> θ<sub>1</sub>（入射角）。</li>
+                <li>當 θ<sub>2</sub> 達 90° 時，發生 <strong>全內反射</strong>。</li>
+                <li>結果：聲波被困在近地面區域。</li>
+            `,
+            expTitleDay: '為何向上偏折？',
+            expDescDay: '聲波由 <strong>快</strong>（熱地面）介質進入 <strong>慢</strong>（冷空氣）介質。速度減慢，偏折方向 <strong>趨向</strong> 法線。',
+            expListDay: `
+                <li><strong>規則：</strong>θ<sub>2</sub>（折射角）< θ<sub>1</sub>（入射角）。</li>
+                <li>波前變得更陡，聲波向上逃逸至天空。</li>
+                <li>結果：形成 <strong>聲影區</strong>，該處聲音極弱。</li>
+            `,
+            fastMediumWarm: '快介質（暖）',
+            slowMediumCold: '慢介質（冷）',
+            slowMediumCool: '慢介質（冷）',
+            fastMediumHot: '快介質（熱）',
+            normal: '法線'
+        },
+        en: {
+            langBtn: '🌐 中文',
+            btnNight: '🌙 Night (Inversion)',
+            btnDay: '☀️ Hot Day',
+            btnReplay: '🔄 Replay',
+            lblWarmFast: '🔥 Warm Air (Fast)',
+            lblColdSlow: '❄️ Cold Ground (Slow)',
+            lblCoolSlow: '❄️ Cool Air (Slow)',
+            lblHotFast: '🔥 Hot Ground (Fast)',
+            lblSource: '🔊 Source',
+            tirLabel: '↩️ Total Internal Reflection',
+            shadowZone: '🔉 Shadow Zone (Very Soft Sound)',
+            expTitleNight: 'Why does it bend down?',
+            expDescNight: 'Sound moves from <strong>Slow</strong> (Cold) to <strong>Fast</strong> (Warm). It speeds up and turns <strong>AWAY</strong> from the normal.',
+            expListNight: `
+                <li><strong>Rule:</strong> θ<sub>2</sub> (Refracted) > θ<sub>1</sub> (Incident).</li>
+                <li>When θ<sub>2</sub> hits 90°, <strong>Total Internal Reflection</strong> occurs.</li>
+                <li>Result: Sound is trapped near the ground.</li>
+            `,
+            expTitleDay: 'Why does it bend up?',
+            expDescDay: 'Sound moves from <strong>Fast</strong> (Hot Ground) to <strong>Slow</strong> (Cool Air). It slows down and turns <strong>TOWARDS</strong> the normal.',
+            expListDay: `
+                <li><strong>Rule:</strong> θ<sub>2</sub> (Refracted) < θ<sub>1</sub> (Incident).</li>
+                <li>The wave becomes steeper and escapes to the sky.</li>
+                <li>Result: A <strong>Shadow Zone</strong> is formed where sound is very soft.</li>
+            `,
+            fastMediumWarm: 'FAST Medium (Warm)',
+            slowMediumCold: 'SLOW Medium (Cold)',
+            slowMediumCool: 'SLOW Medium (Cool)',
+            fastMediumHot: 'FAST Medium (Hot)',
+            normal: 'Normal'
+        }
+    };
+
+    function hubLangToLocal(lang) {
+        if (lang === 'en') return 'en';
+        return 'zh';
+    }
+
+    const params = new URLSearchParams(location.search);
+    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+
+    /* =========================================
+       PART 1: MAIN SIMULATION
+       ========================================= */
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // UI Elements
+    const tirContainer = document.getElementById('tir-container');
+    const shadowLabel = document.getElementById('shadow-label');
+    const lblTop = document.getElementById('lbl-top');
+    const lblBot = document.getElementById('lbl-bot');
+    const lblSource = document.getElementById('lbl-source');
+    const tirLabelEl = document.getElementById('tir-label');
+    const btnLang = document.getElementById('lang-toggle');
+    
+    const explainBox = document.getElementById('explain-box');
+    const expTitle = document.getElementById('exp-title');
+    const expDesc = document.getElementById('exp-desc');
+    const expList = document.getElementById('exp-list');
+
+    let mode = 'night';
+    let animId;
+    let ray = {};
+    let path = [];
+    let phase = 0;
+
+    const CONFIG = {
+        startX: 50, startY: 310,
+        startAngle: -30, 
+        speedBase: 3, bendFactor: 0.6
+    };
+
+    function updateCanvasLabels() {
+        const t = dict[currentLang];
+        lblSource.innerText = t.lblSource;
+        tirLabelEl.innerText = t.tirLabel;
+        shadowLabel.innerText = t.shadowZone;
+        if (mode === 'night') {
+            lblTop.innerText = t.lblWarmFast;
+            lblBot.innerText = t.lblColdSlow;
+        } else {
+            lblTop.innerText = t.lblCoolSlow;
+            lblBot.innerText = t.lblHotFast;
+        }
+    }
+
+    function updateExplanation() {
+        const t = dict[currentLang];
+        if (mode === 'night') {
+            explainBox.classList.remove('day-text');
+            expTitle.innerText = t.expTitleNight;
+            expDesc.innerHTML = t.expDescNight;
+            expList.innerHTML = t.expListNight;
+            shadowLabel.style.display = 'none';
+        } else {
+            explainBox.classList.add('day-text');
+            expTitle.innerText = t.expTitleDay;
+            expDesc.innerHTML = t.expDescDay;
+            expList.innerHTML = t.expListDay;
+            shadowLabel.style.display = 'flex';
+        }
+        updateCanvasLabels();
+        drawDiagram();
+    }
+
+    function updateLanguageUI() {
+        const t = dict[currentLang];
+        document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
+        document.title = currentLang === 'zh' ? '聲波折射：聲影區' : 'Sound Refraction: Shadow Zone';
+        btnLang.innerText = t.langBtn;
+        document.getElementById('btn-night').innerText = t.btnNight;
+        document.getElementById('btn-day').innerText = t.btnDay;
+        document.getElementById('btn-replay').innerText = t.btnReplay;
+        updateExplanation();
+        draw();
+    }
+
+    btnLang.addEventListener('click', () => {
+        currentLang = currentLang === 'zh' ? 'en' : 'zh';
+        updateLanguageUI();
+    });
+
+    window.addEventListener('message', (ev) => {
+        if (ev.data?.type !== 's3phy:lang') return;
+        currentLang = hubLangToLocal(ev.data.lang);
+        updateLanguageUI();
+    });
+
+    function setMode(m) {
+        mode = m;
+        document.getElementById('btn-night').className = mode === 'night' ? 'active' : '';
+        document.getElementById('btn-day').className = mode === 'day' ? 'active' : '';
+        
+        updateExplanation(); 
+        reset();
+    }
+
+    function init() {
+        ray = {
+            x: CONFIG.startX, y: CONFIG.startY,
+            angle: CONFIG.startAngle * (Math.PI / 180), active: true
+        };
+        path = [{x: ray.x, y: ray.y}];
+        phase = 0;
+        tirContainer.style.display = 'none';
+
+        if (mode === 'night') {
+            canvas.style.background = "linear-gradient(to top, #d0ebff 0%, #ffc9c9 100%)";
+        } else {
+            canvas.style.background = "linear-gradient(to top, #ffc9c9 0%, #d0ebff 100%)";
+        }
+        updateCanvasLabels();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBg();
+    }
+
+    function drawBg() {
+        // 1. Draw Mediums
+        ctx.fillStyle = mode === 'night' ? '#868e96' : '#e67e22';
+        ctx.fillRect(0, CONFIG.startY, canvas.width, 40);
+        
+        // 2. Draw Source
+        ctx.beginPath(); ctx.arc(CONFIG.startX, CONFIG.startY, 6, 0, Math.PI*2);
+        ctx.fillStyle = '#212529'; ctx.fill();
+
+        // 3. Draw Shadow Zone Visual (Day Mode Only)
+        if (mode === 'day') {
+            const shadowX = 200; // Start shadow after some distance
+            const shadowW = canvas.width - shadowX;
+            const shadowH = 150; // Height of shadow zone
+            
+            // Gradient for shadow
+            const grad = ctx.createLinearGradient(shadowX, CONFIG.startY, shadowX, CONFIG.startY - shadowH);
+            grad.addColorStop(0, 'rgba(0,0,0,0.2)');
+            grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+            ctx.fillStyle = grad;
+            ctx.fillRect(shadowX, CONFIG.startY - shadowH, shadowW, shadowH);
+        }
+    }
+
+    function update() {
+        if (!ray.active) return;
+        
+        let hRatio = (CONFIG.startY - ray.y) / 300;
+        
+        if (mode === 'night') {
+            ray.angle += (CONFIG.bendFactor * (hRatio + 0.05)) * (Math.PI / 180);
+            var speed = CONFIG.speedBase + (hRatio * 3);
+        } else {
+            ray.angle -= (CONFIG.bendFactor * 0.8) * (Math.PI / 180);
+            var speed = CONFIG.speedBase + 3 - (hRatio * 2);
+        }
+
+        ray.x += Math.cos(ray.angle) * speed;
+        ray.y += Math.sin(ray.angle) * speed;
+        path.push({x: ray.x, y: ray.y});
+
+        if (mode === 'night' && phase === 0 && ray.angle >= 0) {
+            phase = 1;
+            tirContainer.style.left = ray.x + 'px';
+            tirContainer.style.top = ray.y + 'px';
+            tirContainer.style.display = 'block';
+        }
+
+        if (ray.x > canvas.width || ray.y > CONFIG.startY || ray.y < 0) ray.active = false;
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBg();
+        if (path.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(path[0].x, path[0].y);
+            for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
+            ctx.strokeStyle = '#1c7ed6'; ctx.lineWidth = 4; ctx.stroke();
+        }
+    }
+
+    function loop() {
+        update(); draw();
+        if (ray.active) animId = requestAnimationFrame(loop);
+    }
+    function reset() { cancelAnimationFrame(animId); init(); loop(); }
+
+
+    /* =========================================
+       PART 2: DYNAMIC DIAGRAM DRAWING
+       ========================================= */
+    function drawDiagram() {
+        const dCanvas = document.getElementById('diagramCanvas');
+        const dCtx = dCanvas.getContext('2d');
+        const W = dCanvas.width;
+        const H = dCanvas.height;
+        const cx = W / 2;
+        const cy = H / 2;
+
+        dCtx.clearRect(0,0,W,H);
+
+        const t = dict[currentLang];
+
+        // 1. Backgrounds & Labels
+        if (mode === 'night') {
+            dCtx.fillStyle = "#ffe3e3"; dCtx.fillRect(0, 0, W, cy);
+            dCtx.fillStyle = "#e7f5ff"; dCtx.fillRect(0, cy, W, cy);
+            
+            dCtx.font = "bold 13px Arial";
+            dCtx.fillStyle = "#c92a2a"; dCtx.fillText(t.fastMediumWarm, 10, 20);
+            dCtx.fillStyle = "#1864ab"; dCtx.fillText(t.slowMediumCold, 10, H - 10);
+        } else {
+            dCtx.fillStyle = "#e7f5ff"; dCtx.fillRect(0, 0, W, cy);
+            dCtx.fillStyle = "#ffe3e3"; dCtx.fillRect(0, cy, W, cy);
+
+            dCtx.font = "bold 13px Arial";
+            dCtx.fillStyle = "#1864ab"; dCtx.fillText(t.slowMediumCool, 10, 20);
+            dCtx.fillStyle = "#c92a2a"; dCtx.fillText(t.fastMediumHot, 10, H - 10);
+        }
+
+        // 2. Normal Line
+        dCtx.beginPath();
+        dCtx.setLineDash([5, 5]);
+        dCtx.moveTo(cx, 20); dCtx.lineTo(cx, H - 20);
+        dCtx.strokeStyle = "#666"; dCtx.stroke(); dCtx.setLineDash([]);
+        dCtx.fillStyle = "#666"; dCtx.fillText(t.normal, cx + 5, 35);
+
+        // 3. Rays & Angles
+        const len = 90;
+        dCtx.lineWidth = 3; dCtx.lineCap = "round";
+
+        if (mode === 'night') {
+            const a1 = 30 * (Math.PI/180);
+            const x1 = cx - len * Math.sin(a1);
+            const y1 = cy + len * Math.cos(a1);
+            
+            const a2 = 60 * (Math.PI/180);
+            const x2 = cx + len * Math.sin(a2);
+            const y2 = cy - len * Math.cos(a2);
+
+            drawRay(dCtx, x1, y1, cx, cy, "#1c7ed6");
+            drawRay(dCtx, cx, cy, x2, y2, "#e03131");
+            
+            drawArc(dCtx, cx, cy, 35, Math.PI/2, Math.PI/2 + a1, "θ₁", "#1c7ed6", -15, 50);
+            drawArc(dCtx, cx, cy, 35, -Math.PI/2, -Math.PI/2 + a2, "θ₂", "#e03131", 15, -40);
+
+        } else {
+            const a1 = 50 * (Math.PI/180);
+            const x1 = cx - len * Math.sin(a1);
+            const y1 = cy + len * Math.cos(a1);
+
+            const a2 = 25 * (Math.PI/180);
+            const x2 = cx + len * Math.sin(a2);
+            const y2 = cy - len * Math.cos(a2);
+
+            drawRay(dCtx, x1, y1, cx, cy, "#e03131");
+            drawRay(dCtx, cx, cy, x2, y2, "#1c7ed6");
+
+            drawArc(dCtx, cx, cy, 35, Math.PI/2, Math.PI/2 + a1, "θ₁", "#e03131", -10, 50);
+            drawArc(dCtx, cx, cy, 35, -Math.PI/2, -Math.PI/2 + a2, "θ₂", "#1c7ed6", 10, -45);
+        }
+    }
+
+    function drawRay(ctx, x1, y1, x2, y2, color) {
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+        ctx.strokeStyle = color; ctx.stroke();
+    }
+
+    function drawArc(ctx, cx, cy, r, sAngle, eAngle, label, color, lx, ly) {
+        ctx.beginPath(); ctx.arc(cx, cy, r, sAngle, eAngle);
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = color; ctx.font = "bold 14px Arial";
+        ctx.fillText(label, cx + lx, cy + ly);
+    }
+
+    window.onload = () => {
+        updateLanguageUI();
+        init();
+        loop();
+    };
+
+</script>
+</body>
+</html>
