@@ -50,5 +50,5 @@
   --s3-bp-sm: 768px;
   --s3-bp-md: 1024px;
   --s3-bp-ws: 1100px;
-  --s3-float-panel-w: min(380px, calc(100% - 24px));
+  --s3-float-panel-w: min(440px, calc(100% - 24px));
 }
