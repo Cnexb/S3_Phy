@@ -228,7 +228,8 @@ html.s3phy-embed .reflab-head-main {
   left: 50%;
   bottom: 12px;
   transform: translateX(-50%);
-  width: min(740px, calc(100% - 28px));
+  width: max-content;
+  max-width: calc(100% - 28px);
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -375,7 +376,7 @@ html.s3phy-embed .reflab-head-main {
 }
 
 .reflab-formula {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   text-align: left;
   font-weight: 700;
   font-size: 0.78rem;
@@ -470,7 +471,6 @@ html.s3phy-embed .reflab-head-main {
   flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
-  margin-left: auto;
   flex-shrink: 0;
 }
 .reflab-sr {
