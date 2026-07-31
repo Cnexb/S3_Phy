@@ -294,16 +294,21 @@ html.s3phy-embed .reflab-head-main {
 }
 
 .reflab-num-input {
-  width: 52px;
+  width: 68px;
   flex-shrink: 0;
+  box-sizing: border-box;
   background: #ffffff;
   border: 1px solid var(--reflab-border);
   color: #1a1c2c;
   border-radius: 6px;
-  padding: 2px 4px;
+  padding: 2px 6px;
   font-size: 0.75rem;
   text-align: center;
   font-weight: bold;
+}
+.reflab-num-input::-webkit-outer-spin-button,
+.reflab-num-input::-webkit-inner-spin-button {
+  margin: 0;
 }
 
 .reflab-readout--compact {
