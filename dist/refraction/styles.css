@@ -228,9 +228,9 @@ html.s3phy-embed .reflab-head-main {
   left: 50%;
   bottom: 12px;
   transform: translateX(-50%);
-  width: min(520px, calc(100% - 28px));
+  width: min(740px, calc(100% - 28px));
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px 12px;
   padding: 8px 12px;
@@ -375,7 +375,7 @@ html.s3phy-embed .reflab-head-main {
 }
 
 .reflab-formula {
-  flex: 1 1 280px;
+  flex: 1 1 auto;
   text-align: left;
   font-weight: 700;
   font-size: 0.78rem;
@@ -409,9 +409,10 @@ html.s3phy-embed .reflab-head-main {
 }
 .reflab-formula-body--row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 4px 6px;
+  white-space: nowrap;
 }
 .reflab-formula-body--tir {
   color: #b91c1c;
@@ -466,10 +467,11 @@ html.s3phy-embed .reflab-head-main {
 
 .reflab-hud-meta {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
   margin-left: auto;
+  flex-shrink: 0;
 }
 .reflab-sr {
   display: flex;
