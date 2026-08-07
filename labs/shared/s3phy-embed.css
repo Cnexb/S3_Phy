@@ -227,8 +227,8 @@ html.s3phy-embed .app-root {
   html.s3phy-embed .control-panel {
     position: absolute !important;
     z-index: 50 !important;
-    width: 240px !important;
-    max-width: 240px !important;
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
   }
 }
 
@@ -297,7 +297,9 @@ html.s3phy-embed .app-root {
 
 .lab-controls-actions {
   flex-direction: row;
+  flex-wrap: nowrap;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .lab-controls-actions button {
@@ -305,9 +307,13 @@ html.s3phy-embed .app-root {
   justify-content: center;
 }
 
+.lab-controls-actions button:not(.flex-1) {
+  flex-shrink: 0;
+}
+
 .lab-controls-actions button.flex-1 {
   white-space: nowrap;
-  min-width: 0;
+  min-width: max-content;
 }
 
 .lab-controls-drag-handle {
@@ -568,11 +574,11 @@ html.s3phy-embed select {
     flex: 1 1 auto !important;
   }
   
-  /* Compact parameters/controls */
+  /* Compact parameters/controls — keep panel wide enough for action buttons */
   html.s3phy-embed .lab-controls.lab-controls-float,
   html.s3phy-embed .control-panel {
-    width: 220px !important;
-    max-width: 220px !important;
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
     padding: 0.5rem !important;
   }
   html.s3phy-embed .lab-controls-body {

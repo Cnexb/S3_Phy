@@ -1,5 +1,5 @@
-import { initRefractionLab } from './app.js?v=20260721_micro_split_v20';
-import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20260721_micro_split_v20';
+import { initRefractionLab } from './app.js?v=20260731_num_input_v1';
+import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20260731_num_input_v1';
 
 const root = document.getElementById('app');
 
@@ -26,11 +26,11 @@ function applyLang(lang) {
 initLangFromUrl();
 applyLang(getLang());
 
-document.querySelectorAll('.lang-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    const lang = btn.getAttribute('data-set-lang');
-    if (lang) applyLang(lang);
-  });
+document.addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.lang-btn');
+  if (!btn || !btn.hasAttribute('data-set-lang')) return;
+  const lang = btn.getAttribute('data-set-lang');
+  if (lang) applyLang(lang);
 });
 
 window.addEventListener('message', (ev) => {

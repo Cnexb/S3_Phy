@@ -1401,8 +1401,8 @@ html.s3phy-embed .canvas-container {
 
 /* Side control column: narrower */
 html.s3phy-embed .control-panel {
-    width: var(--s3-float-panel-w, min(360px, calc(100% - 24px)));
-    max-width: var(--s3-float-panel-w, min(360px, calc(100% - 24px)));
+    width: var(--s3-float-panel-w, min(440px, calc(100% - 24px)));
+    max-width: var(--s3-float-panel-w, min(440px, calc(100% - 24px)));
     max-height: min(68vh, calc(100% - 24px));
 }
 
