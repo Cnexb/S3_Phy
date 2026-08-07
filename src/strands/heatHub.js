@@ -54,8 +54,7 @@ const HEAT_SUMMARY_ROWS = HEAT_TOPICS.map((r) => {
 });
 
 const TOOL_ORDER = [
-  'faultyCalibration',
-  'liquid', 'resistance', 'thermistor',
+  'liquid', 'resistance', 'thermistor', 'faultyCalibration',
   'specificHeat', 'thermalMixing', 'changeOfState', 'heatTransfer'
 ];
 const TOOL_STORAGE_KEY = 's3phy.heat.tool';
@@ -86,7 +85,7 @@ function toolLabel(id) {
 }
 
 export function mountHeatHub(root) {
-  let section = sessionStorage.getItem('s3phy.heat.section') || 'topics';
+  let section = sessionStorage.getItem('s3phy.heat.section') || 'tools';
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'liquid');
 
   let shell = null;

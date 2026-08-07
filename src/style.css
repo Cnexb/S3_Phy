@@ -1178,6 +1178,46 @@ button.brand-logo-wrap:hover .brand-logo-img {
   font-size: 1.05rem;
 }
 
+/* Fullscreen — liquid design lab: full-width viz, controls under the picture */
+.tool-stage:fullscreen .tl-wrap--design-simple .tl-dash--design-simple,
+.tool-stage.tool-stage--overlay-fullscreen .tl-wrap--design-simple .tl-dash--design-simple,
+#app.is-lab-fullscreen .tl-wrap--design-simple .tl-dash--design-simple {
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+}
+
+.tool-stage:fullscreen .tl-wrap--design-simple .tl-viz-phys--large,
+.tool-stage.tool-stage--overlay-fullscreen .tl-wrap--design-simple .tl-viz-phys--large,
+#app.is-lab-fullscreen .tl-wrap--design-simple .tl-viz-phys--large {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  width: 100%;
+}
+
+.tool-stage:fullscreen .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys,
+.tool-stage.tool-stage--overlay-fullscreen .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys,
+#app.is-lab-fullscreen .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys {
+  max-height: none;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+
+.tool-stage:fullscreen .tl-wrap--design-simple .tl-design-simple-side,
+.tool-stage.tool-stage--overlay-fullscreen .tl-wrap--design-simple .tl-design-simple-side,
+#app.is-lab-fullscreen .tl-wrap--design-simple .tl-design-simple-side {
+  flex: 0 0 auto;
+  max-width: none;
+  width: 100%;
+  max-height: min(34vh, 320px);
+  overflow-y: auto;
+}
+
 .tool-stage > * {
   min-height: var(--tool-viewport-min-h);
 }

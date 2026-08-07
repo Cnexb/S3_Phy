@@ -23,7 +23,7 @@ function initFloatingControlsPanel(options) {
 
   if (!container || !panel || !toggleBtn) return null;
 
-  let collapsed = sessionStorage.getItem(storageKey) !== 'false';
+  let collapsed = sessionStorage.getItem(storageKey) === 'true';
   let pos = (() => {
     try {
       const raw = localStorage.getItem(storageKey + ':pos');
@@ -166,9 +166,146 @@ export function createThermometerLab(t, options = {}) {
     subtitle = t('tools.thermometerLab.thermistor.subtitle') || t('tools.thermometerLab.subtitle');
   }
 
+  const isLiquidDesign = defaultType === 'liquid';
+
   const wrap = document.createElement('div');
-  wrap.className = 'tl-wrap';
-  wrap.innerHTML = `
+  wrap.className = 'tl-wrap' + (isLiquidDesign ? ' tl-wrap--design-simple' : '');
+  wrap.innerHTML = isLiquidDesign ? `
+    <div class="tl-head">
+      <h2 class="tl-title">${title}</h2>
+      <div class="tl-sub">${subtitle}</div>
+    </div>
+    <div class="tl-part-tabs" id="tl-part-tabs" role="tablist">
+      <button type="button" class="tl-part-tab active" data-part="bulb" role="tab" aria-selected="true">
+        <span class="tl-part-dot tl-part-dot--bulb"></span>
+        ${t('tools.thermometerLab.design.tabBulb')}
+      </button>
+      <button type="button" class="tl-part-tab" data-part="bore" role="tab" aria-selected="false">
+        <span class="tl-part-dot tl-part-dot--bore"></span>
+        ${t('tools.thermometerLab.design.tabBore')}
+      </button>
+      <button type="button" class="tl-part-tab" data-part="wall" role="tab" aria-selected="false">
+        <span class="tl-part-dot tl-part-dot--wall"></span>
+        ${t('tools.thermometerLab.design.tabWall')}
+      </button>
+    </div>
+    <div class="tl-dash tl-dash--design-simple">
+      <div class="tl-viz-phys tl-viz-phys--large">
+        <canvas class="tl-canvas-phys" id="tl-thermometerCanvas" width="720" height="720"></canvas>
+      </div>
+
+      <aside class="tl-design-simple-side">
+        <div class="tl-focus-card" id="tl-focus-card" data-focus="bulb">
+          <div class="tl-focus-badge" id="tl-focus-badge">${t('tools.thermometerLab.design.tabBulb')}</div>
+          <p class="tl-focus-explain" id="tl-focus-explain"></p>
+          <div class="tl-focus-effect" id="tl-focus-effect">
+            <span class="tl-focus-effect-k" id="tl-focus-effect-k"></span>
+            <b class="tl-focus-effect-v" id="tl-focus-effect-v"></b>
+          </div>
+          <div class="tl-design-grid tl-design-grid--mini">
+            <div class="tl-design-stat" data-stat="sensitivity">
+              <span class="tl-design-k">${t('tools.thermometerLab.design.sensitivity')}</span>
+              <b class="tl-design-v" id="tl-val-sensitivity">0.100 cm/°C</b>
+            </div>
+            <div class="tl-design-stat" data-stat="range">
+              <span class="tl-design-k">${t('tools.thermometerLab.design.range')}</span>
+              <b class="tl-design-v" id="tl-val-range">400 °C</b>
+            </div>
+            <div class="tl-design-stat" data-stat="response">
+              <span class="tl-design-k">${t('tools.thermometerLab.design.response')}</span>
+              <b class="tl-design-v" id="tl-val-response-time">0.65 s</b>
+            </div>
+          </div>
+          <p class="tl-design-cue" id="tl-design-cue"></p>
+
+          <div class="tl-focus-control" data-control="bulb">
+            <div class="tl-lr">
+              <span>${t('tools.thermometerLab.design.bulbShort')}</span>
+              <input type="number" id="tl-input-bulb-vol" class="tl-param-num" min="10" max="1000" step="10" value="200">
+            </div>
+            <input type="range" id="tl-slider-bulb-vol" min="10" max="1000" step="10" value="200">
+            <div class="tl-reset-row">
+              <p class="tl-hint">${t('tools.thermometerLab.design.bulbHint')}</p>
+              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bulb">${t('tools.thermometerLab.design.resetPart')}</button>
+            </div>
+          </div>
+          <div class="tl-focus-control" data-control="bore" hidden>
+            <div class="tl-lr">
+              <span>${t('tools.thermometerLab.design.boreShort')}</span>
+              <input type="number" id="tl-input-capillary-bore" class="tl-param-num" min="0.05" max="2.0" step="0.05" value="0.3">
+            </div>
+            <input type="range" id="tl-slider-capillary-bore" min="0.05" max="2.0" step="0.05" value="0.3">
+            <div class="tl-reset-row">
+              <p class="tl-hint">${t('tools.thermometerLab.design.boreHint')}</p>
+              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bore">${t('tools.thermometerLab.design.resetPart')}</button>
+            </div>
+          </div>
+          <div class="tl-focus-control" data-control="wall" hidden>
+            <div class="tl-lr">
+              <span>${t('tools.thermometerLab.design.wallShort')}</span>
+              <input type="number" id="tl-input-wall-thick" class="tl-param-num" min="0.05" max="3.0" step="0.05" value="0.5">
+            </div>
+            <input type="range" id="tl-slider-wall-thick" min="0.05" max="3.0" step="0.05" value="0.5">
+            <div class="tl-reset-row">
+              <p class="tl-hint">${t('tools.thermometerLab.design.wallHint')}</p>
+              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-wall">${t('tools.thermometerLab.design.resetPart')}</button>
+            </div>
+          </div>
+          <button type="button" class="tl-btn tl-reset-all-btn" id="tl-btn-reset-design">${t('tools.thermometerLab.design.resetAll')}</button>
+        </div>
+
+        <div class="tl-bath-bar tl-bath-bar--simple">
+          <div class="tl-beaker-overlay">
+            <span>${t('tools.thermometerLab.design.bath')}: <b id="tl-bath-state">Water</b></span>
+            <span><b class="tl-temp-badge" id="tl-bath-temp-display">25.0°C</b></span>
+          </div>
+          <div class="tl-lr">
+            <span>T<sub>bath</sub></span>
+            <span class="tl-badge tl-lr-value tl-val-bath-temp" id="tl-val-bath-temp">25.0 °C</span>
+          </div>
+          <input type="range" id="tl-bath-temp-slider" min="0" max="400" step="0.5" value="25.0">
+          <div class="tl-btn-group">
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice" type="button">0°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room" type="button">25°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam" type="button">100°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil" type="button">150°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-hot" type="button">400°C</button>
+          </div>
+          <div class="tl-cg" style="margin-top:6px">
+            <span class="tl-section-label">${t('tools.thermometerLab.design.liquid')}</span>
+            <div class="tl-seg" role="group">
+              <button type="button" class="tl-seg-btn active-mercury" id="tl-card-mercury">Hg</button>
+              <button type="button" class="tl-seg-btn" id="tl-card-alcohol">Alcohol</button>
+            </div>
+          </div>
+          <div class="tl-warning-banner" id="tl-alcohol-boiling-warning">
+            ${t('tools.thermometerLab.design.alcoholWarn')}
+          </div>
+        </div>
+      </aside>
+
+      <div class="tl-design-simple-hidden" hidden aria-hidden="true">
+        <canvas id="tl-graphCanvas" width="2" height="2"></canvas>
+        <button id="tl-btn-toggle-labels" type="button"><span id="tl-lbl-toggle-labels"></span></button>
+        <div id="tl-design-panel"></div>
+        <span id="tl-live-liquid-lt"></span>
+        <span id="tl-live-liquid-t-sub"></span>
+        <span id="tl-display-liquid-l100"></span>
+        <input type="number" id="tl-input-liquid-l0" value="3.0">
+        <input type="range" id="tl-slider-liquid-l0" min="0.5" max="15" step="0.1" value="3.0">
+        <div id="tl-svg-formula-liquid"></div>
+        <div id="tl-svg-formula-liquid-sub"></div>
+        <div id="tl-svg-formula-t-to-l"></div>
+        <div id="tl-live-liquid" class="tl-live-tab active"></div>
+        <div id="tl-live-resistance" class="tl-live-tab"></div>
+        <div id="tl-live-thermistor" class="tl-live-tab"></div>
+        <div id="tl-tab-liquid" class="tl-tab-content active"></div>
+        <div id="tl-tab-resistance" class="tl-tab-content"></div>
+        <div id="tl-tab-thermistor" class="tl-tab-content"></div>
+        <div class="tl-controls" id="tl-controls-panel"></div>
+      </div>
+    </div>
+  ` : `
     <div class="tl-head">
       <h2 class="tl-title">${title}</h2>
       <div class="tl-sub">${subtitle}</div>
@@ -215,18 +352,17 @@ export function createThermometerLab(t, options = {}) {
       <div class="tl-live-calculations">
         <div class="tl-live-tab active" id="tl-live-liquid">
           <div class="tl-controls-steps">
-            <div class="tl-info-label" style="margin-top:0;color:var(--tl-cyan)">Live calibration formula (Dual-Directional Realtime Calculations)</div>
+            <div class="tl-info-label" style="margin-top:0;color:var(--tl-cyan)">Live calibration formula</div>
             <div class="tl-worked-solution tl-dual-direction">
               <div class="tl-direction-col">
-                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">Direction A: Length to Temperature (L<sub>T</sub> &rarr; T)</div>
-                <div class="tl-info-label tl-slope-label">Slope Equation:</div>
+                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">L<sub>T</sub> → T</div>
                 <div id="tl-svg-formula-liquid" class="tl-math-formula" style="min-height:55px; margin:4px 0"></div>
-                <p>Substitute current reading <b class="tl-live-value" id="tl-live-liquid-lt">5.50 cm</b>:</p>
+                <p><b class="tl-live-value" id="tl-live-liquid-lt">5.50 cm</b></p>
                 <div id="tl-svg-formula-liquid-sub" class="tl-math-formula" style="min-height:90px; margin:4px 0"></div>
               </div>
               <div class="tl-direction-col">
-                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">Direction B: Temperature to Length (T &rarr; L<sub>T</sub>)</div>
-                <p>Substitute current bath temperature <b class="tl-live-value" id="tl-live-liquid-t-sub">25.0°C</b>:</p>
+                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">T → L<sub>T</sub></div>
+                <p><b class="tl-live-value" id="tl-live-liquid-t-sub">25.0°C</b></p>
                 <div id="tl-svg-formula-t-to-l" class="tl-math-formula" style="min-height:100px; margin:4px 0"></div>
               </div>
             </div>
@@ -234,18 +370,17 @@ export function createThermometerLab(t, options = {}) {
         </div>
         <div class="tl-live-tab" id="tl-live-resistance">
           <div class="tl-controls-steps">
-            <div class="tl-info-label" style="margin-top:0;color:var(--tl-cyan)">Live calibration formula (Dual-Directional Realtime Calculations)</div>
+            <div class="tl-info-label" style="margin-top:0;color:var(--tl-cyan)">Live calibration formula</div>
             <div class="tl-worked-solution tl-dual-direction">
               <div class="tl-direction-col">
-                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">Direction A: Resistance to Temperature (R<sub>T</sub> &rarr; T)</div>
-                <div class="tl-info-label tl-slope-label">Slope Equation:</div>
+                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">R<sub>T</sub> → T</div>
                 <div id="tl-svg-formula-resistance" class="tl-math-formula" style="min-height:55px; margin:4px 0"></div>
-                <p>Substitute current resistance <b class="tl-live-value" id="tl-live-resistance-rt">5.30 Ω</b>:</p>
+                <p><b class="tl-live-value" id="tl-live-resistance-rt">5.30 Ω</b></p>
                 <div id="tl-svg-formula-resistance-sub" class="tl-math-formula" style="min-height:90px; margin:4px 0"></div>
               </div>
               <div class="tl-direction-col">
-                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">Direction B: Temperature to Resistance (T &rarr; R<sub>T</sub>)</div>
-                <p>Substitute current bath temperature <b class="tl-live-value" id="tl-live-resistance-t-sub">25.0°C</b>:</p>
+                <div class="tl-info-label tl-live-direction" style="color:var(--tl-cyan)">T → R<sub>T</sub></div>
+                <p><b class="tl-live-value" id="tl-live-resistance-t-sub">25.0°C</b></p>
                 <div id="tl-svg-formula-t-to-r" class="tl-math-formula" style="min-height:100px; margin:4px 0"></div>
               </div>
             </div>
@@ -256,152 +391,82 @@ export function createThermometerLab(t, options = {}) {
             <div class="tl-info-label" style="margin-top:0;color:var(--tl-green)">${t('tools.thermometerLab.thermistor.liveBetaLabel')}</div>
             <div class="tl-worked-solution" style="background-color:rgba(16,185,129,0.05);border-left-color:var(--tl-green)">
               <div id="tl-svg-formula-thermistor" class="tl-math-formula"></div>
-              <p>Substitute current resistance <b class="tl-live-value" id="tl-live-thermistor-rt">10.00 kΩ</b>:</p>
+              <p><b class="tl-live-value" id="tl-live-thermistor-rt">10.00 kΩ</b></p>
               <div id="tl-svg-formula-thermistor-sub" class="tl-math-formula"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- FLOATING CONTROLS & SOLVERS -->
-      <div class="tl-controls controls-collapsed">
+      <!-- FLOATING CONTROLS -->
+      <div class="tl-controls" id="tl-controls-panel">
         <div class="tl-controls-float-bar">
           <button type="button" class="tl-controls-drag-handle" id="tl-controls-drag" aria-label="${t('tools.floatingControls.dragHint')}" title="${t('tools.floatingControls.dragHint')}">⋮⋮</button>
-          <button type="button" class="tl-controls-toggle" id="tl-controls-toggle" aria-expanded="false">
+          <button type="button" class="tl-controls-toggle" id="tl-controls-toggle" aria-expanded="true">
             <span data-float-chevron>▾</span>
             <span>${t('tools.thermometerLab.paramSettings')}</span>
           </button>
         </div>
         <div class="tl-controls-body">
-
-        <!-- TAB 1: LIQUID-IN-GLASS -->
-        <div class="tl-tab-content active" id="tl-tab-liquid">
-          <details class="tl-details">
-            <summary>${t('tools.thermometerLab.paramSettings')}</summary>
-            <div class="tl-details-body">
-              <div class="tl-cg">
-                <span class="tl-section-label">Thermometric liquid</span>
-                <div class="tl-seg" role="group" aria-label="Thermometric liquid">
-                  <button type="button" class="tl-seg-btn active-mercury" id="tl-card-mercury" title="Mercury — boils at 356.7°C; suitable for high temperatures">
-                    <span class="tl-dot mercury"></span> Hg
-                  </button>
-                  <button type="button" class="tl-seg-btn" id="tl-card-alcohol" title="Alcohol — boils at 78.4°C; vaporizes at high temperatures">
-                    <span class="tl-dot alcohol"></span> Alcohol
-                  </button>
-                </div>
-              </div>
-              <div class="tl-warning-banner" id="tl-alcohol-boiling-warning">
-                <strong>CRITICAL PHYSICS ALERT!</strong> Alcohol boils at 78.4°C. Dipping it into this temperature vaporizes the liquid, creating extreme pressure and breaking the thermometer. This is why alcohol <b>cannot</b> be used to measure hot oil (150°C)!
-              </div>
-              <div class="tl-param-grid">
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Bulb Volume (V<sub>b</sub>) [mm³]</span>
-                    <input type="number" id="tl-input-bulb-vol" class="tl-param-num" min="10" max="1000" step="10" value="200">
-                  </div>
-                  <input type="range" id="tl-slider-bulb-vol" min="10" max="1000" step="10" value="200">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Wall Thickness (w) [mm]</span>
-                    <input type="number" id="tl-input-wall-thick" class="tl-param-num" min="0.05" max="3.0" step="0.05" value="0.5">
-                  </div>
-                  <input type="range" id="tl-slider-wall-thick" min="0.05" max="3.0" step="0.05" value="0.5">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Capillary Bore Diameter (d) [mm]</span>
-                    <input type="number" id="tl-input-capillary-bore" class="tl-param-num" min="0.05" max="2.0" step="0.05" value="0.3">
-                  </div>
-                  <input type="range" id="tl-slider-capillary-bore" min="0.05" max="2.0" step="0.05" value="0.3">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Ice Point Column Length (L<sub>0</sub>) [cm]</span>
-                    <input type="number" id="tl-input-liquid-l0" class="tl-param-num" min="0.5" max="15.0" step="0.1" value="3.0">
-                  </div>
-                  <input type="range" id="tl-slider-liquid-l0" min="0.5" max="15.0" step="0.1" value="3.0">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Steam Point Column Length (L<sub>100</sub>) [cm]</span>
-                    <input type="number" id="tl-input-liquid-l100" class="tl-param-num" min="5.0" max="30.0" step="0.1" value="13.0">
-                  </div>
-                  <input type="range" id="tl-slider-liquid-l100" min="5.0" max="30.0" step="0.1" value="13.0">
-                </div>
-              </div>
-              <div class="tl-info-card tl-info-card--compact">
-                τ = <b id="tl-val-response-time">0.65 s</b> · larger V<sub>b</sub> → slower equilibration
-              </div>
-            </div>
-          </details>
-        </div>
-
-        <!-- TAB 2: PLATINUM RESISTANCE -->
+        <div class="tl-tab-content active" id="tl-tab-liquid"></div>
         <div class="tl-tab-content" id="tl-tab-resistance">
-          <details class="tl-details">
+          <details class="tl-details" open>
             <summary>${t('tools.thermometerLab.paramSettings')}</summary>
             <div class="tl-details-body">
               <div class="tl-probe-specs">
                 <div class="tl-spec-tile">
-                  <span class="tl-tile-label">Ice Point Resistance (R<sub>0</sub>)</span>
+                  <span class="tl-tile-label">R<sub>0</sub></span>
                   <span class="tl-tile-val" id="tl-spec-resistance-r0">5.0 Ω</span>
                 </div>
                 <div class="tl-spec-tile">
-                  <span class="tl-tile-label">Steam Point Resistance (R<sub>100</sub>)</span>
+                  <span class="tl-tile-label">R<sub>100</sub></span>
                   <span class="tl-tile-val" id="tl-spec-resistance-r100">6.2 Ω</span>
                 </div>
               </div>
               <div class="tl-param-grid">
                 <div class="tl-cg">
                   <div class="tl-lr">
-                    <span>Ice Point Resistance (R<sub>0</sub>) [Ω]</span>
+                    <span>R<sub>0</sub> [Ω]</span>
                     <input type="number" id="tl-input-resistance-r0" class="tl-param-num" min="0.5" max="20.0" step="0.1" value="5.0">
                   </div>
                   <input type="range" id="tl-slider-resistance-r0" min="0.5" max="20.0" step="0.1" value="5.0">
                 </div>
                 <div class="tl-cg">
                   <div class="tl-lr">
-                    <span>Steam Point Resistance (R<sub>100</sub>) [Ω]</span>
+                    <span>R<sub>100</sub> [Ω]</span>
                     <input type="number" id="tl-input-resistance-r100" class="tl-param-num" min="2.0" max="30.0" step="0.1" value="6.2">
                   </div>
                   <input type="range" id="tl-slider-resistance-r100" min="2.0" max="30.0" step="0.1" value="6.2">
                 </div>
               </div>
-              <div class="tl-info-card" style="border-color:rgba(245,158,11,0.3)">
-                <div class="tl-info-label" style="color:#f59e0b">Fundamental Assumption</div>
-                <p>To calculate temperature using linear calibration, it is <b>fundamentally assumed that electrical resistance varies linearly with temperature</b>.</p>
-              </div>
             </div>
           </details>
         </div>
-
-        <!-- TAB 3: THERMISTOR -->
         <div class="tl-tab-content" id="tl-tab-thermistor">
-          <details class="tl-details">
+          <details class="tl-details" open>
             <summary>${t('tools.thermometerLab.paramSettings')}</summary>
             <div class="tl-details-body">
               <div class="tl-probe-specs">
                 <div class="tl-spec-tile">
-                  <span class="tl-tile-label">Resistance at 25°C (R<sub>25</sub>)</span>
+                  <span class="tl-tile-label">R<sub>25</sub></span>
                   <span class="tl-tile-val" id="tl-spec-thermistor-r25">10.0 kΩ</span>
                 </div>
                 <div class="tl-spec-tile">
-                  <span class="tl-tile-label">Beta Parameter (β)</span>
+                  <span class="tl-tile-label">β</span>
                   <span class="tl-tile-val" id="tl-spec-thermistor-beta">3500 K</span>
                 </div>
               </div>
               <div class="tl-param-grid">
                 <div class="tl-cg">
                   <div class="tl-lr">
-                    <span>Resistance at 25°C (R<sub>25</sub>) [kΩ]</span>
+                    <span>R<sub>25</sub> [kΩ]</span>
                     <input type="number" id="tl-input-thermistor-r25" class="tl-param-num" min="0.5" max="50.0" step="0.1" value="10.0">
                   </div>
                   <input type="range" id="tl-slider-thermistor-r25" min="0.5" max="50.0" step="0.1" value="10.0">
                 </div>
                 <div class="tl-cg">
                   <div class="tl-lr">
-                    <span>Beta Parameter (β) [K]</span>
+                    <span>β [K]</span>
                     <input type="number" id="tl-input-thermistor-beta" class="tl-param-num" min="1000" max="8000" step="50" value="3500">
                   </div>
                   <input type="range" id="tl-slider-thermistor-beta" min="1000" max="8000" step="50" value="3500">
@@ -410,7 +475,6 @@ export function createThermometerLab(t, options = {}) {
             </div>
           </details>
         </div>
-
         </div>
       </div>
     </div>
@@ -443,7 +507,25 @@ export function createThermometerLab(t, options = {}) {
     currentThermistorR: 10.0,
 
     lastTimestamp: 0,
-    showLabels: true
+    showLabels: true,
+    lastDesignChange: null, // 'bulb' | 'bore' | 'wall' | null
+    focusPart: isLiquidDesign ? 'bulb' : null, // 'bulb' | 'bore' | 'wall'
+  };
+
+  // Teaching model (design lab):
+  // - Fixed stem scale: 0 °C → 400 °C
+  // - Capillary bore → sensitivity S only (S ∝ 1/d²); at S_ref, liquid tracks the scale
+  // - Bulb volume → usable range only (larger V_b → smaller range, capped at 400 °C)
+  // - Glass wall → response time τ
+  const DESIGN = {
+    V_ref: 200,
+    d_ref: 0.3,
+    w_ref: 0.5,
+    S_ref: 0.10, // cm/°C at reference bore — calibrates liquid to the 0–400 scale
+    stemRiseCm: 18,
+    scaleMinC: 0,
+    scaleMaxC: 400,
+    rangeMinC: 50, // smallest usable range when bulb is very large
   };
 
   const TL_SVG = { xs: 11, sm: 14, md: 17, lg: 18, sub: 10 };
@@ -458,6 +540,7 @@ export function createThermometerLab(t, options = {}) {
   }
 
   function bindParamPair(slider, input, { min, max, step, decimals, onUpdate }) {
+    if (!slider || !input) return;
     function applyValue(raw) {
       const parsed = Number.isFinite(raw) ? raw : min;
       const v = clampSnapParam(parsed, min, max, step);
@@ -471,23 +554,33 @@ export function createThermometerLab(t, options = {}) {
     input.addEventListener('blur', () => applyValue(parseFloat(input.value)));
   }
 
-  const PHYS_WIDTH = 460;
-  const PHYS_HEIGHT = 340;
+  // Design mode scene — portrait content; layout puts controls under the viz so width is usable
+  const DESIGN_SCENE_W = 400;
+  const DESIGN_SCENE_H = 600;
+  const PHYS_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : 460;
+  const PHYS_HEIGHT = isLiquidDesign ? DESIGN_SCENE_H : 340;
   const LABEL_MARGIN = 8;
   const LABEL_LEFT = 10;
-  const PHYS_SCENE_OFFSET_X = 40;
-  const PHYS_SCENE_OFFSET_Y = 44;
-  const SCENE_WIDTH = PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
-  const BEAKER_W = 130;
+  const PHYS_SCENE_OFFSET_X = isLiquidDesign ? 0 : 40;
+  const PHYS_SCENE_OFFSET_Y = isLiquidDesign ? 0 : 44;
+  let activeSceneW = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
+  const SCENE_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
+  const BEAKER_W = isLiquidDesign ? 320 : 130;
   const GRAPH_WIDTH = 640;
   const GRAPH_HEIGHT = 420;
 
   function getPhysLayout() {
+    const sceneW = isLiquidDesign ? activeSceneW : SCENE_WIDTH;
     if (state.thermometerType === 'liquid') {
-      const beakerX = SCENE_WIDTH / 2 - BEAKER_W / 2;
-      return { beakerX, beakerW: BEAKER_W, thermometerX: SCENE_WIDTH / 2 };
+      const beakerW = isLiquidDesign ? Math.min(BEAKER_W * 1.15, sceneW * 0.7) : BEAKER_W;
+      return {
+        beakerX: sceneW / 2 - beakerW / 2,
+        beakerW,
+        thermometerX: sceneW / 2,
+        sceneW,
+      };
     }
-    return { beakerX: 55, beakerW: BEAKER_W, thermometerX: 120 };
+    return { beakerX: 55, beakerW: BEAKER_W, thermometerX: 120, sceneW };
   }
 
   function getGraphLayout() {
@@ -625,6 +718,111 @@ export function createThermometerLab(t, options = {}) {
     return state.liquidL0 + ((state.liquidL100 - state.liquidL0) / 100) * t;
   }
 
+  function getDesignSensitivity() {
+    const d = Math.max(0.05, state.capillaryBore);
+    // Alcohol expands more than mercury → slightly higher sensitivity
+    const liquidFactor = state.liquidType === 'alcohol' ? 1.35 : 1.0;
+    // Design lab: sensitivity depends on capillary bore only (not bulb volume)
+    return DESIGN.S_ref * Math.pow(DESIGN.d_ref / d, 2) * liquidFactor;
+  }
+
+  function getDesignRangeC() {
+    const V = Math.max(10, state.bulbVolume);
+    // Larger bulb → smaller usable range; always within the fixed 0–400 °C scale
+    const raw = DESIGN.scaleMaxC * (DESIGN.V_ref / V);
+    return Math.min(DESIGN.scaleMaxC, Math.max(DESIGN.rangeMinC, raw));
+  }
+
+  function applyDesignToLengths() {
+    const S = getDesignSensitivity();
+    state.liquidL100 = Math.round((state.liquidL0 + S * 100) * 10) / 10;
+    const l100El = wrap.querySelector('#tl-display-liquid-l100');
+    if (l100El) l100El.textContent = state.liquidL100.toFixed(1);
+  }
+
+  function getDesignCue() {
+    const key = state.lastDesignChange || state.focusPart;
+    if (key === 'bore') {
+      return state.capillaryBore < DESIGN.d_ref
+        ? t('tools.thermometerLab.design.cueNarrowBore')
+        : t('tools.thermometerLab.design.cueWideBore');
+    }
+    if (key === 'bulb') {
+      return state.bulbVolume > DESIGN.V_ref
+        ? t('tools.thermometerLab.design.cueLargeBulb')
+        : t('tools.thermometerLab.design.cueSmallBulb');
+    }
+    if (key === 'wall') {
+      return state.wallThickness < DESIGN.w_ref
+        ? t('tools.thermometerLab.design.cueThinWall')
+        : t('tools.thermometerLab.design.cueThickWall');
+    }
+    return t('tools.thermometerLab.design.cueDefault');
+  }
+
+  function setFocusPart(part) {
+    if (!isLiquidDesign) return;
+    state.focusPart = part;
+    state.lastDesignChange = part;
+    wrap.querySelectorAll('.tl-part-tab').forEach((btn) => {
+      const on = btn.dataset.part === part;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    wrap.querySelectorAll('.tl-focus-control').forEach((el) => {
+      el.hidden = el.dataset.control !== part;
+    });
+    const card = wrap.querySelector('#tl-focus-card');
+    if (card) card.dataset.focus = part;
+    wrap.querySelectorAll('.tl-design-stat').forEach((el) => {
+      const key = el.dataset.stat;
+      const highlight =
+        (part === 'bulb' && key === 'range') ||
+        (part === 'bore' && key === 'sensitivity') ||
+        (part === 'wall' && key === 'response');
+      el.classList.toggle('is-focus', highlight);
+    });
+    const badge = wrap.querySelector('#tl-focus-badge');
+    const explain = wrap.querySelector('#tl-focus-explain');
+    const effectK = wrap.querySelector('#tl-focus-effect-k');
+    if (badge) {
+      badge.textContent =
+        part === 'bulb' ? t('tools.thermometerLab.design.tabBulb')
+          : part === 'bore' ? t('tools.thermometerLab.design.tabBore')
+            : t('tools.thermometerLab.design.tabWall');
+    }
+    if (explain) {
+      explain.textContent =
+        part === 'bulb' ? t('tools.thermometerLab.design.explainBulb')
+          : part === 'bore' ? t('tools.thermometerLab.design.explainBore')
+            : t('tools.thermometerLab.design.explainWall');
+    }
+    if (effectK) {
+      effectK.textContent =
+        part === 'wall' ? t('tools.thermometerLab.design.response')
+          : part === 'bore' ? t('tools.thermometerLab.design.sensitivity')
+            : t('tools.thermometerLab.design.range');
+    }
+    updateWhyFocusEffect();
+    updateHTMLDisplays(getResponseTimeConstant());
+    drawVisuals();
+  }
+
+  function updateWhyFocusEffect() {
+    const effectV = wrap.querySelector('#tl-focus-effect-v');
+    if (!effectV || !isLiquidDesign) return;
+    const S = getDesignSensitivity();
+    const rangeC = getDesignRangeC();
+    const tau = getResponseTimeConstant();
+    if (state.focusPart === 'wall') {
+      effectV.textContent = `${tau.toFixed(2)} s`;
+    } else if (state.focusPart === 'bore') {
+      effectV.textContent = `${S.toFixed(3)} cm/°C`;
+    } else {
+      effectV.textContent = `≈ ${rangeC.toFixed(0)} °C`;
+    }
+  }
+
   function getResistanceBounds() {
     const rAt0 = state.resistanceR0;
     const rAt100 = state.resistanceR100;
@@ -682,15 +880,34 @@ export function createThermometerLab(t, options = {}) {
   const graphCanvas = wrap.querySelector('#tl-graphCanvas');
   const graphCtx = graphCanvas.getContext('2d');
 
-  // DPI setup
+  // DPI setup (design mode re-syncs on each draw to match container / fullscreen)
   const dpr = window.devicePixelRatio || 1;
   physCanvas.width = PHYS_WIDTH * dpr;
   physCanvas.height = PHYS_HEIGHT * dpr;
-  physCtx.scale(dpr, dpr);
+  if (!isLiquidDesign) {
+    physCtx.scale(dpr, dpr);
+  } else {
+    physCanvas.style.width = '100%';
+    physCanvas.style.height = '100%';
+  }
 
   graphCanvas.width = GRAPH_WIDTH * dpr;
   graphCanvas.height = GRAPH_HEIGHT * dpr;
   graphCtx.scale(dpr, dpr);
+
+  function syncDesignCanvasSize() {
+    const host = physCanvas.parentElement;
+    const cssW = Math.max(280, Math.floor(host?.clientWidth || DESIGN_SCENE_W));
+    const cssH = Math.max(280, Math.floor(host?.clientHeight || DESIGN_SCENE_H));
+    const ratio = window.devicePixelRatio || 1;
+    const bw = Math.max(1, Math.floor(cssW * ratio));
+    const bh = Math.max(1, Math.floor(cssH * ratio));
+    if (physCanvas.width !== bw || physCanvas.height !== bh) {
+      physCanvas.width = bw;
+      physCanvas.height = bh;
+    }
+    return { cssW, cssH, ratio };
+  }
 
   // Particles
   function initParticles() {
@@ -754,11 +971,12 @@ export function createThermometerLab(t, options = {}) {
     if (state.thermometerType === 'resistance' || state.thermometerType === 'thermistor') {
       return 0.35;
     }
+    // HKDSE: thinner glass wall → faster heat transfer → smaller τ (faster response)
     const conductivityFactor = state.liquidType === 'mercury' ? 1.0 : 8.0;
-    const thicknessFactor = 0.2 + state.wallThickness * 1.5;
-    const volumeFactor = 0.4 + state.bulbVolume * 0.003;
-    const capillaryFactor = 1.35 - state.capillaryBore * 0.45;
-    return Math.max(0.1, thicknessFactor * volumeFactor * capillaryFactor * conductivityFactor * 0.15);
+    const thicknessFactor = 0.15 + state.wallThickness * 1.8;
+    const volumeFactor = 0.55 + state.bulbVolume * 0.0025;
+    const capillaryFactor = 1.15 - state.capillaryBore * 0.25;
+    return Math.max(0.08, thicknessFactor * volumeFactor * capillaryFactor * conductivityFactor * 0.14);
   }
 
   function updateParticles(dt) {
@@ -811,10 +1029,10 @@ export function createThermometerLab(t, options = {}) {
 
   function drawBeaker(ctx, layout) {
     const bx = layout.beakerX;
-    const by = 180;
+    const by = isLiquidDesign ? 455 : 180;
     const bw = layout.beakerW;
-    const bh = 100;
-    const waterY = 190;
+    const bh = isLiquidDesign ? 175 : 100;
+    const waterY = isLiquidDesign ? 475 : 190;
 
     let r = 59, g = 130, b = 246;
     if (state.bathTemp < 25) {
@@ -1043,27 +1261,93 @@ export function createThermometerLab(t, options = {}) {
     });
   }
 
+  function drawFocusCallout(ctx, x0, y0, x1, y1, label, color, align = 'left', sceneW = activeSceneW) {
+    ctx.save();
+    ctx.font = 'bold 12px "Noto Sans TC", Arial, sans-serif';
+    const padX = 8;
+    const tw = ctx.measureText(label).width;
+    const boxW = tw + padX * 2;
+    const boxH = 24;
+    let bx = align === 'right' ? x1 - boxW : x1;
+    bx = Math.max(6, Math.min(bx, sceneW - boxW - 6));
+    const by = y1 - boxH / 2;
+    const lineEndX = align === 'right' ? bx + boxW : bx;
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(lineEndX, y1);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.arc(x0, y0, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(bx, by, boxW, boxH, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, bx + padX, by + boxH / 2);
+    ctx.restore();
+  }
+
   function drawLiquidThermometer(ctx, layout) {
     const x = layout.thermometerX;
-    const stemTop = 20;
-    const bulbRadius = getBulbVisualRadius();
-    const bulbCenterY = 250 + Math.max(0, bulbRadius - BULB_RADIUS_REF) * 0.35;
+    const sceneW = layout.sceneW || activeSceneW || SCENE_WIDTH;
+    // Design mode: tall stem + oversized bulb for classroom / TV visibility
+    const stemTop = isLiquidDesign ? 14 : 20;
+    const bulbScale = isLiquidDesign ? 4.4 : 1;
+    const bulbRadius = getBulbVisualRadius() * bulbScale;
+    const bulbCenterY = isLiquidDesign
+      ? 520 + Math.max(0, bulbRadius - BULB_RADIUS_REF * bulbScale) * 0.15
+      : 250 + Math.max(0, bulbRadius - BULB_RADIUS_REF) * 0.35;
     const stemBottom = bulbCenterY - bulbRadius - 1;
-    const glassWidth = 10 + state.wallThickness * 8;
+    const glassWidth = isLiquidDesign
+      ? 34 + state.wallThickness * 18
+      : 10 + state.wallThickness * 8;
     const leftX = x - glassWidth / 2;
     const rightX = x + glassWidth / 2;
+    const focus = isLiquidDesign ? state.focusPart : null;
+    const dim = (part) => (focus && focus !== part ? 0.28 : 1);
 
-    // Glass Stem Shading (3D effect)
+    // Soft colorful bath backdrop when in design mode
+    if (isLiquidDesign) {
+      const bg = ctx.createLinearGradient(0, 0, sceneW, DESIGN_SCENE_H);
+      bg.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      bg.addColorStop(0.5, 'rgba(251, 191, 36, 0.1)');
+      bg.addColorStop(1, 'rgba(248, 113, 113, 0.12)');
+      ctx.fillStyle = bg;
+      ctx.fillRect(-8, -8, sceneW + 16, DESIGN_SCENE_H + 16);
+    }
+
+    // Glass stem
+    ctx.save();
+    ctx.globalAlpha = dim('wall') * (focus === 'bore' ? 0.55 : 1);
     const glassGrad = ctx.createLinearGradient(leftX, stemTop, rightX, stemTop);
-    glassGrad.addColorStop(0, 'rgba(226, 232, 240, 0.9)');
-    glassGrad.addColorStop(0.2, 'rgba(255, 255, 255, 0.98)');
-    glassGrad.addColorStop(0.5, 'rgba(248, 250, 252, 0.35)');
-    glassGrad.addColorStop(0.8, 'rgba(255, 255, 255, 0.98)');
-    glassGrad.addColorStop(1, 'rgba(186, 200, 219, 0.95)');
-
+    if (focus === 'wall') {
+      glassGrad.addColorStop(0, 'rgba(125, 211, 252, 0.95)');
+      glassGrad.addColorStop(0.25, 'rgba(255, 255, 255, 1)');
+      glassGrad.addColorStop(0.5, 'rgba(186, 230, 253, 0.55)');
+      glassGrad.addColorStop(0.75, 'rgba(255, 255, 255, 1)');
+      glassGrad.addColorStop(1, 'rgba(56, 189, 248, 0.9)');
+    } else {
+      glassGrad.addColorStop(0, 'rgba(186, 230, 253, 0.95)');
+      glassGrad.addColorStop(0.2, 'rgba(255, 255, 255, 0.98)');
+      glassGrad.addColorStop(0.5, 'rgba(224, 242, 254, 0.45)');
+      glassGrad.addColorStop(0.8, 'rgba(255, 255, 255, 0.98)');
+      glassGrad.addColorStop(1, 'rgba(125, 211, 252, 0.95)');
+    }
     ctx.fillStyle = glassGrad;
-    ctx.strokeStyle = 'rgba(203, 213, 225, 0.85)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = focus === 'wall' ? '#0284c7' : '#38bdf8';
+    ctx.lineWidth = focus === 'wall' ? 2.5 + state.wallThickness * 0.8 : 1.2 + state.wallThickness * 0.5;
     ctx.beginPath();
     ctx.moveTo(leftX, stemBottom);
     ctx.lineTo(leftX, stemTop + 5);
@@ -1073,90 +1357,235 @@ export function createThermometerLab(t, options = {}) {
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
+    ctx.restore();
 
-    // Bulb Glass Shell
-    const bulbGrad = ctx.createRadialGradient(
-      x - bulbRadius*0.2, bulbCenterY - bulbRadius*0.2, bulbRadius*0.1,
-      x, bulbCenterY, bulbRadius
-    );
-    bulbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-    bulbGrad.addColorStop(1, 'rgba(203, 213, 225, 0.45)');
-    ctx.fillStyle = bulbGrad;
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 0.8 + state.wallThickness * 0.6;
+    // Capillary bore channel first (drawn under liquid); exaggerated for TV visibility
+    const boreWidth = isLiquidDesign
+      ? Math.max(10, Math.min(glassWidth * 0.62, 10 + state.capillaryBore * 22))
+      : Math.min(glassWidth * 0.72, 0.8 + state.capillaryBore * 4.5);
+    ctx.save();
+    ctx.globalAlpha = dim('bore');
+    if (focus === 'bore') {
+      ctx.strokeStyle = '#a855f7';
+      ctx.lineWidth = isLiquidDesign ? 5 : 4;
+      ctx.strokeRect(x - boreWidth / 2 - 3, stemTop + 6, boreWidth + 6, stemBottom - stemTop - 6);
+    }
+    // Empty bore: pale so red liquid pops
+    ctx.fillStyle = isLiquidDesign ? '#fee2e2' : (focus === 'bore' ? '#3b0764' : '#1e1b4b');
+    ctx.fillRect(x - boreWidth / 2, stemTop + 8, boreWidth, stemBottom - stemTop - 8);
+    ctx.restore();
+
+    // Design mode always uses vivid red liquid so the column is obvious on a large screen
+    const isMercury = state.liquidType === 'mercury';
+    const color = isLiquidDesign ? '#dc2626' : (isMercury ? '#94a3b8' : '#ef4444');
+    const colorHi = isLiquidDesign ? '#f87171' : '#ffffff';
+    const colorDeep = isLiquidDesign ? '#991b1b' : (isMercury ? '#64748b' : '#b91c1c');
+
+    const S = getDesignSensitivity();
+    const rangeC = getDesignRangeC();
+    const zeroY = isLiquidDesign ? 420 : 210;
+    const maxCY = isLiquidDesign ? 30 : 40;
+    const stemPx = zeroY - maxCY;
+    let currentY;
+    let atTop;
+    let scalePixelsPerC;
+
+    if (isLiquidDesign) {
+      // Fixed engraved scale 0–400 °C along the stem
+      scalePixelsPerC = stemPx / (DESIGN.scaleMaxC - DESIGN.scaleMinC);
+      // At S_ref the liquid matches the scale; higher S rises faster (hits top sooner)
+      const liquidPixelsPerC = scalePixelsPerC * (S / DESIGN.S_ref);
+      const cappedT = Math.min(
+        Math.max(state.thermometerTemp, DESIGN.scaleMinC),
+        rangeC,
+        DESIGN.scaleMaxC
+      );
+      const risePx = Math.max(0, (cappedT - DESIGN.scaleMinC) * liquidPixelsPerC);
+      currentY = Math.max(maxCY, zeroY - risePx);
+      atTop =
+        state.thermometerTemp > rangeC + 0.5 ||
+        state.thermometerTemp > DESIGN.scaleMaxC + 0.5 ||
+        risePx >= stemPx - 0.5;
+    } else {
+      const pixelsPerCm = stemPx / DESIGN.stemRiseCm;
+      const pixelsPerC = pixelsPerCm * S;
+      scalePixelsPerC = pixelsPerC;
+      const displayT = Math.min(state.thermometerTemp, rangeC);
+      currentY = zeroY - displayT * pixelsPerC;
+      atTop = state.thermometerTemp > rangeC + 0.5;
+    }
+
+    // Liquid column — bright red highlight
+    ctx.save();
+    ctx.globalAlpha = dim('bore') * 0.98 + 0.02;
+    if (isLiquidDesign) {
+      ctx.shadowColor = 'rgba(220, 38, 38, 0.65)';
+      ctx.shadowBlur = 14;
+    }
+    const colGrad = ctx.createLinearGradient(x - boreWidth / 2, currentY, x + boreWidth / 2, currentY);
+    colGrad.addColorStop(0, colorDeep);
+    colGrad.addColorStop(0.35, color);
+    colGrad.addColorStop(0.55, colorHi);
+    colGrad.addColorStop(1, colorDeep);
+    ctx.fillStyle = colGrad;
+    ctx.fillRect(x - boreWidth / 2, currentY, boreWidth, stemBottom - currentY);
+    ctx.shadowBlur = 0;
     ctx.beginPath();
-    ctx.arc(x, bulbCenterY, bulbRadius + 0.5 + state.wallThickness * 0.5, 0, Math.PI * 2);
+    ctx.ellipse(x, currentY, boreWidth / 2, isLiquidDesign ? 4.5 : 1.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    if (isLiquidDesign) {
+      ctx.fillStyle = 'rgba(254, 202, 202, 0.85)';
+      ctx.fillRect(x - boreWidth * 0.18, currentY + 2, boreWidth * 0.28, Math.max(0, stemBottom - currentY - 4));
+    } else {
+      ctx.fillStyle = '#ffffff';
+      ctx.globalAlpha *= 0.7;
+      ctx.fillRect(x - boreWidth / 6, currentY, boreWidth / 3, stemBottom - currentY);
+    }
+    ctx.restore();
+
+    // Bulb glass shell (drawn after stem so outline stays crisp)
+    ctx.save();
+    ctx.globalAlpha = dim('bulb') * (focus === 'wall' ? 0.7 : 1);
+    const wallExtra = (isLiquidDesign ? 2.2 : 0.5) + state.wallThickness * (isLiquidDesign ? 1.2 : 0.5);
+    const bulbOuter = bulbRadius + wallExtra;
+    const bulbGrad = ctx.createRadialGradient(
+      x - bulbRadius * 0.25, bulbCenterY - bulbRadius * 0.25, bulbRadius * 0.08,
+      x, bulbCenterY, bulbOuter
+    );
+    if (focus === 'bulb') {
+      bulbGrad.addColorStop(0, '#fff7ed');
+      bulbGrad.addColorStop(0.45, '#fdba74');
+      bulbGrad.addColorStop(1, '#ea580c');
+    } else if (focus === 'wall') {
+      bulbGrad.addColorStop(0, 'rgba(224, 242, 254, 0.55)');
+      bulbGrad.addColorStop(0.55, 'rgba(125, 211, 252, 0.45)');
+      bulbGrad.addColorStop(1, 'rgba(2, 132, 199, 0.75)');
+    } else if (isLiquidDesign) {
+      // Mostly clear glass so the red liquid inside dominates
+      bulbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
+      bulbGrad.addColorStop(0.55, 'rgba(254, 226, 226, 0.35)');
+      bulbGrad.addColorStop(1, 'rgba(252, 165, 165, 0.55)');
+    } else {
+      bulbGrad.addColorStop(0, '#fffbeb');
+      bulbGrad.addColorStop(0.5, '#fcd34d');
+      bulbGrad.addColorStop(1, '#f59e0b');
+    }
+    ctx.fillStyle = bulbGrad;
+    ctx.strokeStyle = focus === 'bulb' ? '#c2410c' : (focus === 'wall' ? '#0369a1' : (isLiquidDesign ? '#f87171' : '#d97706'));
+    ctx.lineWidth = focus === 'wall' ? 2.8 + state.wallThickness : (focus === 'bulb' ? 4 : (isLiquidDesign ? 3 : 1.5));
+    ctx.beginPath();
+    ctx.arc(x, bulbCenterY, bulbOuter, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
+    ctx.restore();
 
-    // Capillary Bore (Dark inner channel)
-    const boreWidth = Math.min(glassWidth * 0.72, 0.8 + state.capillaryBore * 4.5);
-    ctx.fillStyle = '#0a0a0c';
-    ctx.fillRect(x - boreWidth / 2, stemTop + 8, boreWidth, stemBottom - stemTop - 8);
-
-    const isMercury = state.liquidType === 'mercury';
-    const color = isMercury ? '#d1d5db' : '#ff3b30';
-    const reflectionColor = '#ffffff';
-
-    const zeroY = 210;
-    const maxC = 220;
-    const maxCY = 40;
-    const pixelsPerC = (zeroY - maxCY) / maxC;
-    const currentY = zeroY - Math.min(maxC, state.thermometerTemp) * pixelsPerC;
-
-    // Draw Liquid column inside capillary
-    ctx.fillStyle = color;
-    ctx.fillRect(x - boreWidth/2, currentY, boreWidth, stemBottom - currentY);
-    
-    // Draw liquid meniscus (curved top)
-    ctx.beginPath();
-    ctx.ellipse(x, currentY, boreWidth/2, 1.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Liquid reflection highlight
-    ctx.fillStyle = reflectionColor;
-    ctx.fillRect(x - boreWidth/6, currentY, boreWidth/3, stemBottom - currentY);
-
-    // Liquid in Bulb
-    const bulbCoreRadius = bulbRadius * 0.9;
+    // Liquid in bulb — vivid red fill
+    ctx.save();
+    ctx.globalAlpha = dim('bulb');
+    const bulbCoreRadius = bulbRadius * (isLiquidDesign ? 0.9 : 0.88);
     const liquidBulbGrad = ctx.createRadialGradient(
-      x - bulbCoreRadius*0.2, bulbCenterY - bulbCoreRadius*0.2, bulbCoreRadius*0.1,
+      x - bulbCoreRadius * 0.25, bulbCenterY - bulbCoreRadius * 0.3, bulbCoreRadius * 0.08,
       x, bulbCenterY, bulbCoreRadius
     );
-    if (isMercury) {
-      liquidBulbGrad.addColorStop(0, '#ffffff');
-      liquidBulbGrad.addColorStop(0.3, '#e4e4e7');
-      liquidBulbGrad.addColorStop(0.8, '#a1a1aa');
-      liquidBulbGrad.addColorStop(1, '#52525b');
+    if (isLiquidDesign || !isMercury) {
+      liquidBulbGrad.addColorStop(0, '#fecaca');
+      liquidBulbGrad.addColorStop(0.35, '#ef4444');
+      liquidBulbGrad.addColorStop(0.7, '#dc2626');
+      liquidBulbGrad.addColorStop(1, '#7f1d1d');
     } else {
       liquidBulbGrad.addColorStop(0, '#ffffff');
-      liquidBulbGrad.addColorStop(0.25, '#ff4d4d');
-      liquidBulbGrad.addColorStop(0.75, '#ff0000');
-      liquidBulbGrad.addColorStop(1, '#990000');
+      liquidBulbGrad.addColorStop(0.35, '#cbd5e1');
+      liquidBulbGrad.addColorStop(1, '#64748b');
+    }
+    if (isLiquidDesign) {
+      ctx.shadowColor = 'rgba(220, 38, 38, 0.55)';
+      ctx.shadowBlur = 18;
     }
     ctx.fillStyle = liquidBulbGrad;
     ctx.beginPath();
     ctx.arc(x, bulbCenterY, bulbCoreRadius, 0, Math.PI * 2);
     ctx.fill();
+    ctx.shadowBlur = 0;
+    if (isLiquidDesign) {
+      ctx.fillStyle = 'rgba(254, 226, 226, 0.55)';
+      ctx.beginPath();
+      ctx.ellipse(x - bulbCoreRadius * 0.28, bulbCenterY - bulbCoreRadius * 0.32, bulbCoreRadius * 0.28, bulbCoreRadius * 0.18, -0.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
 
     // Scale markings
-    ctx.strokeStyle = 'rgba(161, 161, 170, 0.6)';
-    ctx.lineWidth = 0.5;
-    ctx.font = '6.5px Arial';
-    ctx.fillStyle = '#a1a1aa';
+    ctx.save();
+    ctx.globalAlpha = focus ? 0.55 : 0.9;
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = isLiquidDesign ? 1.4 : 0.6;
+    ctx.font = isLiquidDesign ? 'bold 13px Arial' : 'bold 7px Arial';
+    ctx.fillStyle = '#334155';
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
-    for (let tVal = 0; tVal <= 200; tVal += 50) {
-      const yTick = zeroY - tVal * pixelsPerC;
-      ctx.beginPath();
-      ctx.moveTo(leftX, yTick);
-      ctx.lineTo(leftX + 4, yTick);
-      ctx.stroke();
-      ctx.fillText(`${tVal}°C`, leftX - 22, yTick + 2.5);
+    const tickLen = isLiquidDesign ? 12 : 5;
+    if (isLiquidDesign) {
+      const tickStep = 50;
+      for (let tVal = DESIGN.scaleMinC; tVal <= DESIGN.scaleMaxC + 0.01; tVal += tickStep) {
+        const yTick = zeroY - (tVal - DESIGN.scaleMinC) * scalePixelsPerC;
+        if (yTick < maxCY - 2) break;
+        ctx.beginPath();
+        ctx.moveTo(leftX, yTick);
+        ctx.lineTo(leftX + tickLen, yTick);
+        ctx.stroke();
+        ctx.fillText(`${tVal}°`, leftX - 8, yTick);
+      }
+    } else {
+      const tickStep = rangeC > 250 ? 50 : rangeC > 120 ? 25 : 10;
+      const maxTick = Math.min(400, Math.ceil(rangeC / tickStep) * tickStep);
+      for (let tVal = 0; tVal <= maxTick; tVal += tickStep) {
+        const yTick = zeroY - tVal * scalePixelsPerC;
+        if (yTick < maxCY - 2) break;
+        ctx.beginPath();
+        ctx.moveTo(leftX, yTick);
+        ctx.lineTo(leftX + tickLen, yTick);
+        ctx.stroke();
+        ctx.fillText(`${tVal}°`, leftX - 18, yTick);
+      }
+    }
+    ctx.restore();
+
+    if (atTop) {
+      ctx.fillStyle = '#dc2626';
+      ctx.font = isLiquidDesign
+        ? 'bold 14px "Noto Sans TC", Arial, sans-serif'
+        : 'bold 10px "Noto Sans TC", Arial, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(t('tools.thermometerLab.design.outOfRange'), rightX + 8, maxCY + 10);
     }
 
-    // Structure Labels
-    if (state.showLabels) {
+    // Focus indicators / callouts
+    if (isLiquidDesign) {
+      const labelColRight = Math.min(sceneW - 12, x + Math.max(glassWidth / 2, bulbOuter) + 36);
+      if (focus === 'bulb') {
+        drawFocusCallout(ctx, x + bulbOuter * 0.75, bulbCenterY, labelColRight, bulbCenterY, t('tools.thermometerLab.design.tabBulb'), '#ea580c', 'left', sceneW);
+        ctx.strokeStyle = 'rgba(234, 88, 12, 0.55)';
+        ctx.lineWidth = 4;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.arc(x, bulbCenterY, bulbOuter + 8, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (focus === 'bore') {
+        drawFocusCallout(ctx, x + boreWidth / 2 + 6, (stemTop + stemBottom) / 2, labelColRight, (stemTop + stemBottom) / 2 - 10, t('tools.thermometerLab.design.tabBore'), '#9333ea', 'left', sceneW);
+      } else if (focus === 'wall') {
+        drawFocusCallout(ctx, leftX, stemTop + 90, leftX - 12, stemTop + 90, t('tools.thermometerLab.design.tabWall'), '#0284c7', 'right', sceneW);
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 2;
+        const midY = stemTop + 130;
+        ctx.beginPath();
+        ctx.moveTo(leftX - 2, midY - 14);
+        ctx.lineTo(leftX - 2, midY + 14);
+        ctx.moveTo(leftX + (glassWidth - boreWidth) / 4, midY);
+        ctx.lineTo(leftX - 2, midY);
+        ctx.stroke();
+      }
+    } else if (state.showLabels) {
       const labelColRight = layout.beakerX + layout.beakerW + 12;
       const labelColLeftEnd = leftX - 28;
       drawLabelLine(ctx, leftX + 1, stemTop + 60, labelColLeftEnd, stemTop + 60, t('tools.thermometerLab.labels.thinWall'), 'right');
@@ -1598,6 +2027,25 @@ export function createThermometerLab(t, options = {}) {
   }
 
   function drawVisuals() {
+    if (isLiquidDesign) {
+      const { cssW, cssH, ratio } = syncDesignCanvasSize();
+      physCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      physCtx.clearRect(0, 0, cssW, cssH);
+      const pad = 8;
+      const availW = Math.max(1, cssW - pad * 2);
+      const availH = Math.max(1, cssH - pad * 2);
+      activeSceneW = DESIGN_SCENE_W;
+      // Contain: keep the whole thermometer visible (no crop / over-zoom)
+      const fit = Math.min(availW / DESIGN_SCENE_W, availH / DESIGN_SCENE_H);
+      const ox = (cssW - DESIGN_SCENE_W * fit) / 2;
+      const oy = (cssH - DESIGN_SCENE_H * fit) / 2;
+      physCtx.setTransform(ratio * fit, 0, 0, ratio * fit, ratio * ox, ratio * oy);
+      const physLayout = getPhysLayout();
+      drawBeaker(physCtx, physLayout);
+      drawLiquidThermometer(physCtx, physLayout);
+      return;
+    }
+
     physCtx.clearRect(0, 0, PHYS_WIDTH, PHYS_HEIGHT);
     graphCtx.clearRect(0, 0, GRAPH_WIDTH, GRAPH_HEIGHT);
 
@@ -1827,15 +2275,29 @@ export function createThermometerLab(t, options = {}) {
     const stateEl = wrap.querySelector('#tl-bath-state');
     if (state.bathTemp <= 0) {
       stateEl.textContent = 'Melting Ice Bath';
-    } else if (state.bathTemp >= 100) {
-      stateEl.textContent = 'Boiling Water/Steam';
     } else if (state.bathTemp === 150) {
       stateEl.textContent = 'Hot Cooking Oil';
+    } else if (state.bathTemp >= 400) {
+      stateEl.textContent = 'Very Hot Bath';
+    } else if (state.bathTemp >= 100) {
+      stateEl.textContent = 'Boiling Water/Steam';
     } else {
       stateEl.textContent = 'Liquid Water';
     }
 
     wrap.querySelector('#tl-val-response-time').textContent = tau.toFixed(2) + ' s';
+
+    if (state.thermometerType === 'liquid') {
+      const S = getDesignSensitivity();
+      const rangeC = getDesignRangeC();
+      const sensEl = wrap.querySelector('#tl-val-sensitivity');
+      const rangeEl = wrap.querySelector('#tl-val-range');
+      const cueEl = wrap.querySelector('#tl-design-cue');
+      if (sensEl) sensEl.textContent = `${S.toFixed(3)} cm/°C`;
+      if (rangeEl) rangeEl.textContent = `≈ ${rangeC.toFixed(0)} °C`;
+      if (cueEl) cueEl.textContent = getDesignCue();
+      updateWhyFocusEffect();
+    }
 
     const warnBanner = wrap.querySelector('#tl-alcohol-boiling-warning');
     if (state.thermometerType === 'liquid' && state.liquidType === 'alcohol' && state.bathTemp >= 78) {
@@ -2022,9 +2484,12 @@ export function createThermometerLab(t, options = {}) {
   }
 
   function setupPreset(btnId, temp) {
-    wrap.querySelector('#' + btnId).addEventListener('click', () => {
+    const btn = wrap.querySelector('#' + btnId);
+    if (!btn) return;
+    btn.addEventListener('click', () => {
       state.bathTemp = temp;
-      wrap.querySelector('#tl-bath-temp-slider').value = temp;
+      const slider = wrap.querySelector('#tl-bath-temp-slider');
+      if (slider) slider.value = String(temp);
       updateCalculations();
     });
   }
@@ -2053,12 +2518,20 @@ export function createThermometerLab(t, options = {}) {
 
     // Structure labels toggle button
     const toggleLabelsBtn = wrap.querySelector('#tl-btn-toggle-labels');
-    toggleLabelsBtn.addEventListener('click', () => {
-      state.showLabels = !state.showLabels;
-      wrap.querySelector('#tl-lbl-toggle-labels').textContent = state.showLabels 
-        ? t('tools.thermometerLab.labels.hide') 
-        : t('tools.thermometerLab.labels.show');
-    });
+    if (toggleLabelsBtn && !isLiquidDesign) {
+      toggleLabelsBtn.addEventListener('click', () => {
+        state.showLabels = !state.showLabels;
+        wrap.querySelector('#tl-lbl-toggle-labels').textContent = state.showLabels
+          ? t('tools.thermometerLab.labels.hide')
+          : t('tools.thermometerLab.labels.show');
+      });
+    }
+
+    if (isLiquidDesign) {
+      wrap.querySelectorAll('.tl-part-tab').forEach((btn) => {
+        btn.addEventListener('click', () => setFocusPart(btn.dataset.part));
+      });
+    }
 
     const tempSlider = wrap.querySelector('#tl-bath-temp-slider');
     tempSlider.addEventListener('input', (e) => {
@@ -2070,11 +2543,13 @@ export function createThermometerLab(t, options = {}) {
     setupPreset('tl-btn-preset-room', 25.0);
     setupPreset('tl-btn-preset-steam', 100.0);
     setupPreset('tl-btn-preset-oil', 150.0);
+    setupPreset('tl-btn-preset-hot', 400.0);
 
     wrap.querySelector('#tl-card-mercury').addEventListener('click', () => {
       state.liquidType = 'mercury';
       wrap.querySelector('#tl-card-mercury').className = 'tl-seg-btn active-mercury';
       wrap.querySelector('#tl-card-alcohol').className = 'tl-seg-btn';
+      applyDesignToLengths();
       updateCalculations();
     });
 
@@ -2082,90 +2557,173 @@ export function createThermometerLab(t, options = {}) {
       state.liquidType = 'alcohol';
       wrap.querySelector('#tl-card-mercury').className = 'tl-seg-btn';
       wrap.querySelector('#tl-card-alcohol').className = 'tl-seg-btn active-alcohol';
+      applyDesignToLengths();
       updateCalculations();
     });
 
     bindParamPair(
       wrap.querySelector('#tl-slider-bulb-vol'),
       wrap.querySelector('#tl-input-bulb-vol'),
-      { min: 10, max: 1000, step: 10, decimals: 0, onUpdate: (v) => { state.bulbVolume = v; } }
+      {
+        min: 10, max: 1000, step: 10, decimals: 0,
+        onUpdate: (v) => {
+          state.bulbVolume = v;
+          state.lastDesignChange = 'bulb';
+          applyDesignToLengths();
+          updateCalculations();
+        }
+      }
     );
 
     bindParamPair(
       wrap.querySelector('#tl-slider-wall-thick'),
       wrap.querySelector('#tl-input-wall-thick'),
-      { min: 0.05, max: 3.0, step: 0.05, decimals: 2, onUpdate: (v) => { state.wallThickness = v; } }
+      {
+        min: 0.05, max: 3.0, step: 0.05, decimals: 2,
+        onUpdate: (v) => {
+          state.wallThickness = v;
+          state.lastDesignChange = 'wall';
+          updateCalculations();
+        }
+      }
     );
 
     bindParamPair(
       wrap.querySelector('#tl-slider-capillary-bore'),
       wrap.querySelector('#tl-input-capillary-bore'),
-      { min: 0.05, max: 2.0, step: 0.05, decimals: 2, onUpdate: (v) => { state.capillaryBore = v; } }
+      {
+        min: 0.05, max: 2.0, step: 0.05, decimals: 2,
+        onUpdate: (v) => {
+          state.capillaryBore = v;
+          state.lastDesignChange = 'bore';
+          applyDesignToLengths();
+          updateCalculations();
+        }
+      }
     );
+
+    function setDesignParamUI(part, value) {
+      if (part === 'bulb') {
+        const slider = wrap.querySelector('#tl-slider-bulb-vol');
+        const input = wrap.querySelector('#tl-input-bulb-vol');
+        if (slider) slider.value = String(value);
+        if (input) input.value = Number(value).toFixed(0);
+      } else if (part === 'bore') {
+        const slider = wrap.querySelector('#tl-slider-capillary-bore');
+        const input = wrap.querySelector('#tl-input-capillary-bore');
+        if (slider) slider.value = String(value);
+        if (input) input.value = Number(value).toFixed(2);
+      } else if (part === 'wall') {
+        const slider = wrap.querySelector('#tl-slider-wall-thick');
+        const input = wrap.querySelector('#tl-input-wall-thick');
+        if (slider) slider.value = String(value);
+        if (input) input.value = Number(value).toFixed(2);
+      }
+    }
+
+    function resetDesignPart(part) {
+      if (part === 'bulb') {
+        state.bulbVolume = DESIGN.V_ref;
+        setDesignParamUI('bulb', DESIGN.V_ref);
+      } else if (part === 'bore') {
+        state.capillaryBore = DESIGN.d_ref;
+        setDesignParamUI('bore', DESIGN.d_ref);
+      } else if (part === 'wall') {
+        state.wallThickness = DESIGN.w_ref;
+        setDesignParamUI('wall', DESIGN.w_ref);
+      }
+      state.lastDesignChange = part;
+      applyDesignToLengths();
+      updateCalculations();
+      drawVisuals();
+    }
+
+    function resetAllDesignParts() {
+      state.bulbVolume = DESIGN.V_ref;
+      state.capillaryBore = DESIGN.d_ref;
+      state.wallThickness = DESIGN.w_ref;
+      setDesignParamUI('bulb', DESIGN.V_ref);
+      setDesignParamUI('bore', DESIGN.d_ref);
+      setDesignParamUI('wall', DESIGN.w_ref);
+      state.lastDesignChange = state.focusPart || 'bulb';
+      applyDesignToLengths();
+      updateCalculations();
+      drawVisuals();
+    }
+
+    wrap.querySelector('#tl-btn-reset-bulb')?.addEventListener('click', () => resetDesignPart('bulb'));
+    wrap.querySelector('#tl-btn-reset-bore')?.addEventListener('click', () => resetDesignPart('bore'));
+    wrap.querySelector('#tl-btn-reset-wall')?.addEventListener('click', () => resetDesignPart('wall'));
+    wrap.querySelector('#tl-btn-reset-design')?.addEventListener('click', () => resetAllDesignParts());
 
     bindParamPair(
       wrap.querySelector('#tl-slider-liquid-l0'),
       wrap.querySelector('#tl-input-liquid-l0'),
-      { min: 0.5, max: 15.0, step: 0.1, decimals: 1, onUpdate: (v) => { state.liquidL0 = v; updateCalculations(); } }
-    );
-
-    bindParamPair(
-      wrap.querySelector('#tl-slider-liquid-l100'),
-      wrap.querySelector('#tl-input-liquid-l100'),
-      { min: 5.0, max: 30.0, step: 0.1, decimals: 1, onUpdate: (v) => { state.liquidL100 = v; updateCalculations(); } }
-    );
-
-    bindParamPair(
-      wrap.querySelector('#tl-slider-resistance-r0'),
-      wrap.querySelector('#tl-input-resistance-r0'),
       {
+        min: 0.5, max: 15.0, step: 0.1, decimals: 1,
+        onUpdate: (v) => {
+          state.liquidL0 = v;
+          applyDesignToLengths();
+          updateCalculations();
+        }
+      }
+    );
+
+    const r0Slider = wrap.querySelector('#tl-slider-resistance-r0');
+    const r0Input = wrap.querySelector('#tl-input-resistance-r0');
+    if (r0Slider && r0Input) {
+      bindParamPair(r0Slider, r0Input, {
         min: 0.5, max: 20.0, step: 0.1, decimals: 1,
         onUpdate: (v) => {
           state.resistanceR0 = v;
-          wrap.querySelector('#tl-spec-resistance-r0').textContent = v.toFixed(1) + ' Ω';
+          const el = wrap.querySelector('#tl-spec-resistance-r0');
+          if (el) el.textContent = v.toFixed(1) + ' Ω';
           updateCalculations();
         }
-      }
-    );
+      });
+    }
 
-    bindParamPair(
-      wrap.querySelector('#tl-slider-resistance-r100'),
-      wrap.querySelector('#tl-input-resistance-r100'),
-      {
+    const r100Slider = wrap.querySelector('#tl-slider-resistance-r100');
+    const r100Input = wrap.querySelector('#tl-input-resistance-r100');
+    if (r100Slider && r100Input) {
+      bindParamPair(r100Slider, r100Input, {
         min: 2.0, max: 30.0, step: 0.1, decimals: 1,
         onUpdate: (v) => {
           state.resistanceR100 = v;
-          wrap.querySelector('#tl-spec-resistance-r100').textContent = v.toFixed(1) + ' Ω';
+          const el = wrap.querySelector('#tl-spec-resistance-r100');
+          if (el) el.textContent = v.toFixed(1) + ' Ω';
           updateCalculations();
         }
-      }
-    );
+      });
+    }
 
-    bindParamPair(
-      wrap.querySelector('#tl-slider-thermistor-r25'),
-      wrap.querySelector('#tl-input-thermistor-r25'),
-      {
+    const thRSlider = wrap.querySelector('#tl-slider-thermistor-r25');
+    const thRInput = wrap.querySelector('#tl-input-thermistor-r25');
+    if (thRSlider && thRInput) {
+      bindParamPair(thRSlider, thRInput, {
         min: 0.5, max: 50.0, step: 0.1, decimals: 1,
         onUpdate: (v) => {
           state.thermistorR25 = v;
-          wrap.querySelector('#tl-spec-thermistor-r25').textContent = v.toFixed(1) + ' kΩ';
+          const el = wrap.querySelector('#tl-spec-thermistor-r25');
+          if (el) el.textContent = v.toFixed(1) + ' kΩ';
           updateCalculations();
         }
-      }
-    );
+      });
+    }
 
-    bindParamPair(
-      wrap.querySelector('#tl-slider-thermistor-beta'),
-      wrap.querySelector('#tl-input-thermistor-beta'),
-      {
+    const thBSlider = wrap.querySelector('#tl-slider-thermistor-beta');
+    const thBInput = wrap.querySelector('#tl-input-thermistor-beta');
+    if (thBSlider && thBInput) {
+      bindParamPair(thBSlider, thBInput, {
         min: 1000, max: 8000, step: 50, decimals: 0,
         onUpdate: (v) => {
           state.thermistorBeta = v;
-          wrap.querySelector('#tl-spec-thermistor-beta').textContent = v + ' K';
+          const el = wrap.querySelector('#tl-spec-thermistor-beta');
+          if (el) el.textContent = v + ' K';
           updateCalculations();
         }
-      }
-    );
+      });
+    }
 
     const btnSolveQ10a = wrap.querySelector('#tl-btn-solve-q10a');
     const btnSolveQ10b = wrap.querySelector('#tl-btn-solve-q10b');
@@ -2215,6 +2773,8 @@ export function createThermometerLab(t, options = {}) {
 
   initParticles();
   setupEventListeners();
+  applyDesignToLengths();
+  if (isLiquidDesign) setFocusPart('bulb');
   updateCalculations();
 
   const dash = wrap.querySelector('.tl-dash');
@@ -2222,14 +2782,14 @@ export function createThermometerLab(t, options = {}) {
   const toggleBtn = wrap.querySelector('#tl-controls-toggle');
   const dragHandle = wrap.querySelector('#tl-controls-drag');
   const floatBar = wrap.querySelector('.tl-controls-float-bar');
-  if (dash && controlsPanel && toggleBtn) {
+  if (!isLiquidDesign && dash && controlsPanel && toggleBtn) {
     initFloatingControlsPanel({
       container: dash,
       panel: controlsPanel,
       toggleBtn,
       dragHandle,
       dragSurface: floatBar,
-      storageKey: `s3phy-thermo-${defaultType}`,
+      storageKey: `s3phy-thermo-design-v13-${defaultType}`,
       breakpoint: THERM_FLOAT_BREAKPOINT,
       getToggleTitle: (collapsed) => collapsed
         ? t('tools.floatingControls.showParams')
@@ -2239,10 +2799,14 @@ export function createThermometerLab(t, options = {}) {
   }
 
   if (typeof ResizeObserver !== 'undefined' && dash) {
+    const vizHost = wrap.querySelector('.tl-viz-phys--large') || dash;
     const ro = new ResizeObserver(() => drawVisuals());
-    ro.observe(dash);
+    ro.observe(vizHost);
+    const onWinResize = () => drawVisuals();
+    window.addEventListener('resize', onWinResize);
     wrap._thermometerLabCleanup = () => {
       ro.disconnect();
+      window.removeEventListener('resize', onWinResize);
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
   } else {
