@@ -209,7 +209,7 @@ export function createThermometerLab(t, options = {}) {
             </div>
             <div class="tl-design-stat" data-stat="range">
               <span class="tl-design-k">${t('tools.thermometerLab.design.range')}</span>
-              <b class="tl-design-v" id="tl-val-range">400 °C</b>
+              <b class="tl-design-v" id="tl-val-range">180 °C</b>
             </div>
             <div class="tl-design-stat" data-stat="response">
               <span class="tl-design-k">${t('tools.thermometerLab.design.response')}</span>
@@ -263,13 +263,12 @@ export function createThermometerLab(t, options = {}) {
             <span>T<sub>bath</sub></span>
             <span class="tl-badge tl-lr-value tl-val-bath-temp" id="tl-val-bath-temp">25.0 °C</span>
           </div>
-          <input type="range" id="tl-bath-temp-slider" min="0" max="400" step="0.5" value="25.0">
+          <input type="range" id="tl-bath-temp-slider" min="0" max="200" step="0.5" value="25.0">
           <div class="tl-btn-group">
             <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice" type="button">0°C</button>
             <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room" type="button">25°C</button>
             <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam" type="button">100°C</button>
             <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil" type="button">150°C</button>
-            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-hot" type="button">400°C</button>
           </div>
           <div class="tl-cg" style="margin-top:6px">
             <span class="tl-section-label">${t('tools.thermometerLab.design.liquid')}</span>
@@ -513,19 +512,16 @@ export function createThermometerLab(t, options = {}) {
   };
 
   // Teaching model (design lab):
-  // - Fixed stem scale: 0 °C → 400 °C
-  // - Capillary bore → sensitivity S only (S ∝ 1/d²); at S_ref, liquid tracks the scale
-  // - Bulb volume → usable range only (larger V_b → smaller range, capped at 400 °C)
+  // - Capillary bore → sensitivity S only (S ∝ 1/d²)
+  // - Bulb volume → range only (larger V_b → smaller range); scale ticks follow range
   // - Glass wall → response time τ
   const DESIGN = {
     V_ref: 200,
     d_ref: 0.3,
     w_ref: 0.5,
-    S_ref: 0.10, // cm/°C at reference bore — calibrates liquid to the 0–400 scale
+    S_ref: 0.10, // cm/°C at reference bore
     stemRiseCm: 18,
-    scaleMinC: 0,
-    scaleMaxC: 400,
-    rangeMinC: 50, // smallest usable range when bulb is very large
+    range_ref: 180, // °C at reference bulb volume
   };
 
   const TL_SVG = { xs: 11, sm: 14, md: 17, lg: 18, sub: 10 };
@@ -728,9 +724,8 @@ export function createThermometerLab(t, options = {}) {
 
   function getDesignRangeC() {
     const V = Math.max(10, state.bulbVolume);
-    // Larger bulb → smaller usable range; always within the fixed 0–400 °C scale
-    const raw = DESIGN.scaleMaxC * (DESIGN.V_ref / V);
-    return Math.min(DESIGN.scaleMaxC, Math.max(DESIGN.rangeMinC, raw));
+    // Design lab: range depends on bulb volume only (larger bulb → smaller range)
+    return DESIGN.range_ref * (DESIGN.V_ref / V);
   }
 
   function applyDesignToLengths() {
@@ -1386,32 +1381,22 @@ export function createThermometerLab(t, options = {}) {
     const zeroY = isLiquidDesign ? 420 : 210;
     const maxCY = isLiquidDesign ? 30 : 40;
     const stemPx = zeroY - maxCY;
+    let tickPixelsPerC;
     let currentY;
     let atTop;
-    let scalePixelsPerC;
-
     if (isLiquidDesign) {
-      // Fixed engraved scale 0–400 °C along the stem
-      scalePixelsPerC = stemPx / (DESIGN.scaleMaxC - DESIGN.scaleMinC);
-      // At S_ref the liquid matches the scale; higher S rises faster (hits top sooner)
-      const liquidPixelsPerC = scalePixelsPerC * (S / DESIGN.S_ref);
-      const cappedT = Math.min(
-        Math.max(state.thermometerTemp, DESIGN.scaleMinC),
-        rangeC,
-        DESIGN.scaleMaxC
-      );
-      const risePx = Math.max(0, (cappedT - DESIGN.scaleMinC) * liquidPixelsPerC);
+      // Bulb → engraved scale spans 0…rangeC over the full stem (shows range)
+      tickPixelsPerC = stemPx / Math.max(rangeC, 1e-6);
+      // Bore → sensitivity vs that scale (S_ref matches the marks)
+      const liquidPixelsPerC = tickPixelsPerC * (S / DESIGN.S_ref);
+      const displayT = Math.min(Math.max(state.thermometerTemp, 0), rangeC);
+      const risePx = displayT * liquidPixelsPerC;
       currentY = Math.max(maxCY, zeroY - risePx);
-      atTop =
-        state.thermometerTemp > rangeC + 0.5 ||
-        state.thermometerTemp > DESIGN.scaleMaxC + 0.5 ||
-        risePx >= stemPx - 0.5;
+      atTop = state.thermometerTemp > rangeC + 0.5 || risePx >= stemPx - 0.5;
     } else {
-      const pixelsPerCm = stemPx / DESIGN.stemRiseCm;
-      const pixelsPerC = pixelsPerCm * S;
-      scalePixelsPerC = pixelsPerC;
+      tickPixelsPerC = (stemPx / DESIGN.stemRiseCm) * S;
       const displayT = Math.min(state.thermometerTemp, rangeC);
-      currentY = zeroY - displayT * pixelsPerC;
+      currentY = zeroY - displayT * tickPixelsPerC;
       atTop = state.thermometerTemp > rangeC + 0.5;
     }
 
@@ -1514,7 +1499,7 @@ export function createThermometerLab(t, options = {}) {
     }
     ctx.restore();
 
-    // Scale markings
+    // Scale markings — follow the bulb's range so students see range change on the stem
     ctx.save();
     ctx.globalAlpha = focus ? 0.55 : 0.9;
     ctx.strokeStyle = '#64748b';
@@ -1524,29 +1509,17 @@ export function createThermometerLab(t, options = {}) {
     ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     const tickLen = isLiquidDesign ? 12 : 5;
-    if (isLiquidDesign) {
-      const tickStep = 50;
-      for (let tVal = DESIGN.scaleMinC; tVal <= DESIGN.scaleMaxC + 0.01; tVal += tickStep) {
-        const yTick = zeroY - (tVal - DESIGN.scaleMinC) * scalePixelsPerC;
-        if (yTick < maxCY - 2) break;
-        ctx.beginPath();
-        ctx.moveTo(leftX, yTick);
-        ctx.lineTo(leftX + tickLen, yTick);
-        ctx.stroke();
-        ctx.fillText(`${tVal}°`, leftX - 8, yTick);
-      }
-    } else {
-      const tickStep = rangeC > 250 ? 50 : rangeC > 120 ? 25 : 10;
-      const maxTick = Math.min(400, Math.ceil(rangeC / tickStep) * tickStep);
-      for (let tVal = 0; tVal <= maxTick; tVal += tickStep) {
-        const yTick = zeroY - tVal * scalePixelsPerC;
-        if (yTick < maxCY - 2) break;
-        ctx.beginPath();
-        ctx.moveTo(leftX, yTick);
-        ctx.lineTo(leftX + tickLen, yTick);
-        ctx.stroke();
-        ctx.fillText(`${tVal}°`, leftX - 18, yTick);
-      }
+    const tickStep = rangeC > 250 ? 50 : rangeC > 120 ? 25 : 10;
+    const maxTick = Math.ceil(rangeC / tickStep) * tickStep;
+    for (let tVal = 0; tVal <= maxTick + 0.01; tVal += tickStep) {
+      if (tVal > rangeC + 0.01) break;
+      const yTick = zeroY - tVal * tickPixelsPerC;
+      if (yTick < maxCY - 2) break;
+      ctx.beginPath();
+      ctx.moveTo(leftX, yTick);
+      ctx.lineTo(leftX + tickLen, yTick);
+      ctx.stroke();
+      ctx.fillText(`${tVal}°`, leftX - (isLiquidDesign ? 8 : 18), yTick);
     }
     ctx.restore();
 
@@ -2277,8 +2250,6 @@ export function createThermometerLab(t, options = {}) {
       stateEl.textContent = 'Melting Ice Bath';
     } else if (state.bathTemp === 150) {
       stateEl.textContent = 'Hot Cooking Oil';
-    } else if (state.bathTemp >= 400) {
-      stateEl.textContent = 'Very Hot Bath';
     } else if (state.bathTemp >= 100) {
       stateEl.textContent = 'Boiling Water/Steam';
     } else {
@@ -2543,7 +2514,6 @@ export function createThermometerLab(t, options = {}) {
     setupPreset('tl-btn-preset-room', 25.0);
     setupPreset('tl-btn-preset-steam', 100.0);
     setupPreset('tl-btn-preset-oil', 150.0);
-    setupPreset('tl-btn-preset-hot', 400.0);
 
     wrap.querySelector('#tl-card-mercury').addEventListener('click', () => {
       state.liquidType = 'mercury';
