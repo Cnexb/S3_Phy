@@ -1391,21 +1391,24 @@ html:has(.tl-wrap--design-simple) #app {
 .tl-wrap--design-simple .tl-part-dot--wall { background: #0284c7; }
 
 .tl-wrap--design-simple .tl-dash--design-simple {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.9fr);
+  gap: 10px;
   flex: 1 1 auto;
   min-height: 0;
+  height: 100%;
+  align-items: stretch;
 }
 .tl-wrap--design-simple .tl-viz-phys--large {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
   width: 100%;
-  min-height: 0;
-  max-height: min(34vh, 300px);
+  min-height: 280px;
+  height: 100%;
+  max-height: none;
   background: linear-gradient(160deg, #ecfeff 0%, #fff7ed 50%, #fdf2f8 100%);
   border: 1px solid var(--tl-border);
   border-radius: 12px;
@@ -1413,10 +1416,10 @@ html:has(.tl-wrap--design-simple) #app {
 }
 .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys {
   width: 100%;
-  height: min(32vh, 280px);
-  max-height: min(32vh, 280px);
+  height: 100%;
+  max-height: none;
   min-height: 0;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   border-radius: 10px;
   background: #fff;
   display: block;
@@ -1424,17 +1427,23 @@ html:has(.tl-wrap--design-simple) #app {
 }
 .tl-wrap--design-simple .tl-design-simple-side {
   flex: 1 1 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr);
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   min-width: 0;
   max-width: none;
   width: 100%;
   min-height: 0;
+  overflow: auto;
 }
-@media (max-width: 820px) {
-  .tl-wrap--design-simple .tl-design-simple-side {
+@media (max-width: 900px) {
+  .tl-wrap--design-simple .tl-dash--design-simple {
     grid-template-columns: 1fr;
+    grid-template-rows: minmax(260px, 48vh) minmax(0, 1fr);
+  }
+  .tl-wrap--design-simple .tl-viz-phys--large {
+    min-height: 260px;
+    max-height: 48vh;
   }
 }
 .tl-wrap--design-simple .tl-reset-row {
@@ -1559,21 +1568,25 @@ html:has(.tl-wrap--design-simple) #app {
 .tl-wrap--design-simple .tl-design-simple-hidden {
   display: none !important;
 }
-html.s3phy-embed .tl-wrap--design-simple .tl-viz-phys--large {
-  flex: 0 1 auto;
-  min-height: 0;
-  max-height: min(34vh, 300px);
-  height: auto;
-}
-html.s3phy-embed .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys {
-  max-height: min(32vh, 280px);
-  min-height: 0;
-  height: min(32vh, 280px);
-}
 html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.9fr);
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
+}
+html.s3phy-embed .tl-wrap--design-simple .tl-viz-phys--large {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  height: 100%;
+}
+html.s3phy-embed .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys {
+  max-height: none;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
 }
 html.s3phy-embed .tl-wrap--design-simple .tl-design-simple-side {
   flex: 1 1 auto;
@@ -1581,6 +1594,12 @@ html.s3phy-embed .tl-wrap--design-simple .tl-design-simple-side {
   width: 100%;
   max-height: none;
   overflow: auto;
+}
+@media (max-width: 900px) {
+  html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(260px, 48vh) minmax(0, 1fr);
+  }
 }
 .tl-wrap .tl-info-label {
   font-size: 0.85rem;
@@ -1867,7 +1886,7 @@ html.s3phy-embed .tl-wrap {
   padding: 8px;
 }
 
-html.s3phy-embed .tl-wrap .tl-dash {
+html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-dash {
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
@@ -1877,12 +1896,15 @@ html.s3phy-embed .tl-wrap .tl-dash {
   flex-direction: column;
 }
 
-html.s3phy-embed .tl-wrap .tl-viz-phys,
-html.s3phy-embed .tl-wrap .tl-viz-graph {
+html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-viz-phys,
+html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-viz-graph {
   flex: 1 1 auto;
-  min-height: clamp(140px, 22vh, 240px);
+  min-height: clamp(180px, 28vh, 360px);
   overflow: hidden;
   padding: 10px;
+}
+html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple):not(.tl-wrap--faulty-cal) .tl-viz-graph {
+  min-height: clamp(220px, 32vh, 420px);
 }
 
 html.s3phy-embed .tl-wrap .tl-canvas-phys,
@@ -1967,15 +1989,15 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
 }
 
 @media (min-width: 768px) {
-  html.s3phy-embed .tl-wrap .tl-dash {
+  html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-dash {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
     grid-template-rows: minmax(0, 1fr) auto auto;
     height: 100%;
   }
 
-  html.s3phy-embed .tl-wrap .tl-viz-phys,
-  html.s3phy-embed .tl-wrap .tl-viz-graph {
+  html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-viz-phys,
+  html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-viz-graph {
     flex: unset;
     min-height: 0;
     max-height: none;
@@ -1987,16 +2009,16 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     overflow: hidden;
   }
 
-  html.s3phy-embed .tl-wrap .tl-viz-phys {
+  html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-viz-phys {
     padding-top: var(--tl-viz-top-reserve);
     justify-content: flex-end;
   }
 
-  html.s3phy-embed .tl-wrap .tl-bath-bar {
+  html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-bath-bar {
     grid-column: 1 / -1;
   }
 
-  html.s3phy-embed .tl-wrap .tl-live-calculations {
+  html.s3phy-embed .tl-wrap:not(.tl-wrap--design-simple) .tl-live-calculations {
     grid-column: 1 / -1;
   }
 
@@ -2519,6 +2541,17 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       </div>
     </div>
   `;
+    let initialBathTemp = 25;
+    try {
+      const saved = sessionStorage.getItem("s3phy.thermometer.bathTemp");
+      if (saved !== null) {
+        const parsed = parseFloat(saved);
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 200) {
+          initialBathTemp = parsed;
+        }
+      }
+    } catch (err) {
+    }
     const state = {
       liquidType: "mercury",
       thermometerType: defaultType,
@@ -2531,8 +2564,8 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       resistanceR100: 6.2,
       thermistorR25: 10,
       thermistorBeta: 3500,
-      bathTemp: 25,
-      thermometerTemp: 25,
+      bathTemp: initialBathTemp,
+      thermometerTemp: initialBathTemp,
       bubbles: [],
       iceCubes: [],
       heatWaves: [],
@@ -2544,8 +2577,10 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       showLabels: true,
       lastDesignChange: null,
       // 'bulb' | 'bore' | 'wall' | null
-      focusPart: isLiquidDesign ? "bulb" : null
+      focusPart: isLiquidDesign ? "bulb" : null,
       // 'bulb' | 'bore' | 'wall'
+      /** Reference thermometer temp (default design τ) for side-by-side response compare */
+      refThermometerTemp: initialBathTemp
     };
     const DESIGN = {
       V_ref: 200,
@@ -2579,7 +2614,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       input.addEventListener("change", () => applyValue(parseFloat(input.value)));
       input.addEventListener("blur", () => applyValue(parseFloat(input.value)));
     }
-    const DESIGN_SCENE_W = 400;
+    const DESIGN_SCENE_W = 780;
     const DESIGN_SCENE_H = 600;
     const PHYS_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : 460;
     const PHYS_HEIGHT = isLiquidDesign ? DESIGN_SCENE_H : 340;
@@ -2589,17 +2624,19 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     const PHYS_SCENE_OFFSET_Y = isLiquidDesign ? 0 : 44;
     let activeSceneW = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
     const SCENE_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
-    const BEAKER_W = isLiquidDesign ? 320 : 130;
+    const BEAKER_W = isLiquidDesign ? 560 : 130;
     const GRAPH_WIDTH = 640;
     const GRAPH_HEIGHT = 420;
     function getPhysLayout() {
       const sceneW = isLiquidDesign ? activeSceneW : SCENE_WIDTH;
       if (state.thermometerType === "liquid") {
-        const beakerW = isLiquidDesign ? Math.min(BEAKER_W * 1.15, sceneW * 0.7) : BEAKER_W;
+        const beakerW = isLiquidDesign ? Math.min(BEAKER_W, sceneW * 0.9) : BEAKER_W;
         return {
           beakerX: sceneW / 2 - beakerW / 2,
           beakerW,
           thermometerX: sceneW / 2,
+          leftThermometerX: sceneW * 0.3,
+          rightThermometerX: sceneW * 0.7,
           sceneW
         };
       }
@@ -2719,14 +2756,35 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     function liquidLengthAtTemp(t2) {
       return state.liquidL0 + (state.liquidL100 - state.liquidL0) / 100 * t2;
     }
-    function getDesignSensitivity() {
-      const d = Math.max(0.05, state.capillaryBore);
-      const liquidFactor = state.liquidType === "alcohol" ? 1.35 : 1;
+    function getDesignSensitivityFor(bore, liquidType = state.liquidType) {
+      const d = Math.max(0.05, bore);
+      const liquidFactor = liquidType === "alcohol" ? 1.35 : 1;
       return DESIGN.S_ref * Math.pow(DESIGN.d_ref / d, 2) * liquidFactor;
     }
+    function getDesignSensitivity() {
+      return getDesignSensitivityFor(state.capillaryBore);
+    }
+    function getDesignRangeCFor(bulbVolume, capillaryBore = DESIGN.d_ref) {
+      const V = Math.max(10, bulbVolume);
+      const d = Math.max(0.05, capillaryBore);
+      return DESIGN.range_ref * (DESIGN.V_ref / V) * Math.pow(d / DESIGN.d_ref, 2);
+    }
     function getDesignRangeC() {
-      const V = Math.max(10, state.bulbVolume);
-      return DESIGN.range_ref * (DESIGN.V_ref / V);
+      return getDesignRangeCFor(state.bulbVolume, state.capillaryBore);
+    }
+    function getReferenceDesign() {
+      return {
+        bulbVolume: DESIGN.V_ref,
+        capillaryBore: DESIGN.d_ref,
+        wallThickness: DESIGN.w_ref
+      };
+    }
+    function getCurrentDesign() {
+      return {
+        bulbVolume: state.bulbVolume,
+        capillaryBore: state.capillaryBore,
+        wallThickness: state.wallThickness
+      };
     }
     function applyDesignToLengths() {
       const S = getDesignSensitivity();
@@ -2747,10 +2805,33 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       }
       return t("tools.thermometerLab.design.cueDefault");
     }
+    function resetDesignParamsToDefaults() {
+      state.bulbVolume = DESIGN.V_ref;
+      state.capillaryBore = DESIGN.d_ref;
+      state.wallThickness = DESIGN.w_ref;
+      state.refThermometerTemp = state.thermometerTemp;
+      const bulbSlider = wrap.querySelector("#tl-slider-bulb-vol");
+      const bulbInput = wrap.querySelector("#tl-input-bulb-vol");
+      if (bulbSlider) bulbSlider.value = String(DESIGN.V_ref);
+      if (bulbInput) bulbInput.value = Number(DESIGN.V_ref).toFixed(0);
+      const boreSlider = wrap.querySelector("#tl-slider-capillary-bore");
+      const boreInput = wrap.querySelector("#tl-input-capillary-bore");
+      if (boreSlider) boreSlider.value = String(DESIGN.d_ref);
+      if (boreInput) boreInput.value = Number(DESIGN.d_ref).toFixed(2);
+      const wallSlider = wrap.querySelector("#tl-slider-wall-thick");
+      const wallInput = wrap.querySelector("#tl-input-wall-thick");
+      if (wallSlider) wallSlider.value = String(DESIGN.w_ref);
+      if (wallInput) wallInput.value = Number(DESIGN.w_ref).toFixed(2);
+      applyDesignToLengths();
+    }
     function setFocusPart(part) {
       if (!isLiquidDesign) return;
+      const switched = state.focusPart !== part;
       state.focusPart = part;
       state.lastDesignChange = part;
+      if (switched) {
+        resetDesignParamsToDefaults();
+      }
       wrap.querySelectorAll(".tl-part-tab").forEach((btn) => {
         const on = btn.dataset.part === part;
         btn.classList.toggle("active", on);
@@ -2863,8 +2944,8 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     graphCtx.scale(dpr, dpr);
     function syncDesignCanvasSize() {
       const host = physCanvas.parentElement;
-      const cssW = Math.max(280, Math.floor(host?.clientWidth || DESIGN_SCENE_W));
-      const cssH = Math.max(280, Math.floor(host?.clientHeight || DESIGN_SCENE_H));
+      const cssW = Math.max(320, Math.floor(host?.clientWidth || DESIGN_SCENE_W));
+      const cssH = Math.max(320, Math.floor(host?.clientHeight || DESIGN_SCENE_H));
       const ratio = window.devicePixelRatio || 1;
       const bw = Math.max(1, Math.floor(cssW * ratio));
       const bh = Math.max(1, Math.floor(cssH * ratio));
@@ -2924,19 +3005,28 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     }
     const BULB_VOLUME_REF = 200;
     const BULB_RADIUS_REF = 11;
-    function getBulbVisualRadius() {
-      const scale = Math.pow(state.bulbVolume / BULB_VOLUME_REF, 1 / 3);
+    function getBulbVisualRadiusFor(bulbVolume) {
+      const scale = Math.pow(Math.max(10, bulbVolume) / BULB_VOLUME_REF, 1 / 3);
       return BULB_RADIUS_REF * scale;
     }
-    function getResponseTimeConstant() {
+    function getBulbVisualRadius() {
+      return getBulbVisualRadiusFor(state.bulbVolume);
+    }
+    function getResponseTimeConstantFor(design, liquidType = state.liquidType) {
       if (state.thermometerType === "resistance" || state.thermometerType === "thermistor") {
         return 0.35;
       }
-      const conductivityFactor = state.liquidType === "mercury" ? 1 : 8;
-      const thicknessFactor = 0.15 + state.wallThickness * 1.8;
-      const volumeFactor = 0.55 + state.bulbVolume * 25e-4;
-      const capillaryFactor = 1.15 - state.capillaryBore * 0.25;
+      const conductivityFactor = liquidType === "mercury" ? 1 : 8;
+      const thicknessFactor = 0.15 + design.wallThickness * 1.8;
+      const volumeFactor = 0.55 + design.bulbVolume * 25e-4;
+      const capillaryFactor = 1.15 - design.capillaryBore * 0.25;
       return Math.max(0.08, thicknessFactor * volumeFactor * capillaryFactor * conductivityFactor * 0.14);
+    }
+    function getResponseTimeConstant() {
+      return getResponseTimeConstantFor(getCurrentDesign());
+    }
+    function getReferenceResponseTimeConstant() {
+      return getResponseTimeConstantFor(getReferenceDesign());
     }
     function updateParticles(dt) {
       const { beakerX, beakerW } = getPhysLayout();
@@ -3218,20 +3308,28 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       ctx.fillText(label, bx + padX, by + boxH / 2);
       ctx.restore();
     }
-    function drawLiquidThermometer(ctx, layout) {
+    function drawLiquidThermometer(ctx, layout, view = null) {
+      const design = view || {
+        bulbVolume: state.bulbVolume,
+        capillaryBore: state.capillaryBore,
+        wallThickness: state.wallThickness,
+        thermometerTemp: state.thermometerTemp,
+        role: "solo"
+      };
       const x = layout.thermometerX;
       const sceneW = layout.sceneW || activeSceneW || SCENE_WIDTH;
-      const stemTop = isLiquidDesign ? 14 : 20;
-      const bulbScale = isLiquidDesign ? 4.4 : 1;
-      const bulbRadius = getBulbVisualRadius() * bulbScale;
+      const isCompare = design.role === "reference" || design.role === "current";
+      const stemTop = isLiquidDesign ? isCompare ? 56 : 14 : 20;
+      const bulbScale = isLiquidDesign ? isCompare ? 3.2 : 4.4 : 1;
+      const bulbRadius = getBulbVisualRadiusFor(design.bulbVolume) * bulbScale;
       const bulbCenterY = isLiquidDesign ? 520 + Math.max(0, bulbRadius - BULB_RADIUS_REF * bulbScale) * 0.15 : 250 + Math.max(0, bulbRadius - BULB_RADIUS_REF) * 0.35;
       const stemBottom = bulbCenterY - bulbRadius - 1;
-      const glassWidth = isLiquidDesign ? 34 + state.wallThickness * 18 : 10 + state.wallThickness * 8;
+      const glassWidth = isLiquidDesign ? 28 + design.wallThickness * 14 : 10 + design.wallThickness * 8;
       const leftX = x - glassWidth / 2;
       const rightX = x + glassWidth / 2;
       const focus = isLiquidDesign ? state.focusPart : null;
       const dim = (part) => focus && focus !== part ? 0.28 : 1;
-      if (isLiquidDesign) {
+      if (isLiquidDesign && !isCompare) {
         const bg = ctx.createLinearGradient(0, 0, sceneW, DESIGN_SCENE_H);
         bg.addColorStop(0, "rgba(56, 189, 248, 0.12)");
         bg.addColorStop(0.5, "rgba(251, 191, 36, 0.1)");
@@ -3257,7 +3355,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       }
       ctx.fillStyle = glassGrad;
       ctx.strokeStyle = focus === "wall" ? "#0284c7" : "#38bdf8";
-      ctx.lineWidth = focus === "wall" ? 2.5 + state.wallThickness * 0.8 : 1.2 + state.wallThickness * 0.5;
+      ctx.lineWidth = focus === "wall" ? 2.5 + design.wallThickness * 0.8 : 1.2 + design.wallThickness * 0.5;
       ctx.beginPath();
       ctx.moveTo(leftX, stemBottom);
       ctx.lineTo(leftX, stemTop + 5);
@@ -3268,7 +3366,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       ctx.fill();
       ctx.stroke();
       ctx.restore();
-      const boreWidth = isLiquidDesign ? Math.max(10, Math.min(glassWidth * 0.62, 10 + state.capillaryBore * 22)) : Math.min(glassWidth * 0.72, 0.8 + state.capillaryBore * 4.5);
+      const boreWidth = isLiquidDesign ? Math.max(8, Math.min(glassWidth * 0.62, 8 + design.capillaryBore * 18)) : Math.min(glassWidth * 0.72, 0.8 + design.capillaryBore * 4.5);
       ctx.save();
       ctx.globalAlpha = dim("bore");
       if (focus === "bore") {
@@ -3283,26 +3381,25 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       const color = isLiquidDesign ? "#dc2626" : isMercury ? "#94a3b8" : "#ef4444";
       const colorHi = isLiquidDesign ? "#f87171" : "#ffffff";
       const colorDeep = isLiquidDesign ? "#991b1b" : isMercury ? "#64748b" : "#b91c1c";
-      const S = getDesignSensitivity();
-      const rangeC = getDesignRangeC();
+      const S = getDesignSensitivityFor(design.capillaryBore);
+      const rangeC = getDesignRangeCFor(design.bulbVolume, design.capillaryBore);
       const zeroY = isLiquidDesign ? 420 : 210;
-      const maxCY = isLiquidDesign ? 30 : 40;
+      const maxCY = isLiquidDesign ? isCompare ? stemTop + 8 : 30 : 40;
       const stemPx = zeroY - maxCY;
       let tickPixelsPerC;
       let currentY;
       let atTop;
       if (isLiquidDesign) {
         tickPixelsPerC = stemPx / Math.max(rangeC, 1e-6);
-        const liquidPixelsPerC = tickPixelsPerC * (S / DESIGN.S_ref);
-        const displayT = Math.min(Math.max(state.thermometerTemp, 0), rangeC);
-        const risePx = displayT * liquidPixelsPerC;
+        const displayT = Math.min(Math.max(design.thermometerTemp, 0), rangeC);
+        const risePx = displayT * tickPixelsPerC;
         currentY = Math.max(maxCY, zeroY - risePx);
-        atTop = state.thermometerTemp > rangeC + 0.5 || risePx >= stemPx - 0.5;
+        atTop = design.thermometerTemp > rangeC + 0.5 || risePx >= stemPx - 0.5;
       } else {
         tickPixelsPerC = stemPx / DESIGN.stemRiseCm * S;
-        const displayT = Math.min(state.thermometerTemp, rangeC);
+        const displayT = Math.min(design.thermometerTemp, rangeC);
         currentY = zeroY - displayT * tickPixelsPerC;
-        atTop = state.thermometerTemp > rangeC + 0.5;
+        atTop = design.thermometerTemp > rangeC + 0.5;
       }
       ctx.save();
       ctx.globalAlpha = dim("bore") * 0.98 + 0.02;
@@ -3332,7 +3429,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       ctx.restore();
       ctx.save();
       ctx.globalAlpha = dim("bulb") * (focus === "wall" ? 0.7 : 1);
-      const wallExtra = (isLiquidDesign ? 2.2 : 0.5) + state.wallThickness * (isLiquidDesign ? 1.2 : 0.5);
+      const wallExtra = (isLiquidDesign ? 2.2 : 0.5) + design.wallThickness * (isLiquidDesign ? 1.2 : 0.5);
       const bulbOuter = bulbRadius + wallExtra;
       const bulbGrad = ctx.createRadialGradient(
         x - bulbRadius * 0.25,
@@ -3361,7 +3458,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       }
       ctx.fillStyle = bulbGrad;
       ctx.strokeStyle = focus === "bulb" ? "#c2410c" : focus === "wall" ? "#0369a1" : isLiquidDesign ? "#f87171" : "#d97706";
-      ctx.lineWidth = focus === "wall" ? 2.8 + state.wallThickness : focus === "bulb" ? 4 : isLiquidDesign ? 3 : 1.5;
+      ctx.lineWidth = focus === "wall" ? 2.8 + design.wallThickness : focus === "bulb" ? 4 : isLiquidDesign ? 3 : 1.5;
       ctx.beginPath();
       ctx.arc(x, bulbCenterY, bulbOuter, 0, Math.PI * 2);
       ctx.fill();
@@ -3405,25 +3502,40 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       }
       ctx.restore();
       ctx.save();
-      ctx.globalAlpha = focus ? 0.55 : 0.9;
+      ctx.globalAlpha = focus ? 0.7 : 0.95;
       ctx.strokeStyle = "#64748b";
       ctx.lineWidth = isLiquidDesign ? 1.4 : 0.6;
-      ctx.font = isLiquidDesign ? "bold 13px Arial" : "bold 7px Arial";
+      ctx.font = isLiquidDesign ? isCompare ? "bold 12px Arial" : "bold 13px Arial" : "bold 7px Arial";
       ctx.fillStyle = "#334155";
-      ctx.textAlign = "right";
       ctx.textBaseline = "middle";
       const tickLen = isLiquidDesign ? 12 : 5;
-      const tickStep = rangeC > 250 ? 50 : rangeC > 120 ? 25 : 10;
+      let tickStep = 10;
+      if (rangeC > 400) tickStep = 100;
+      else if (rangeC > 250) tickStep = 50;
+      else if (rangeC > 120) tickStep = 25;
+      else if (rangeC > 60) tickStep = 10;
+      else if (rangeC > 30) tickStep = 5;
+      else tickStep = 5;
+      const ticksOnRight = isCompare && design.role === "current";
+      ctx.textAlign = ticksOnRight ? "left" : "right";
       const maxTick = Math.ceil(rangeC / tickStep) * tickStep;
+      const labelGap = isLiquidDesign ? isCompare ? 6 : 8 : 18;
       for (let tVal = 0; tVal <= maxTick + 0.01; tVal += tickStep) {
         if (tVal > rangeC + 0.01) break;
         const yTick = zeroY - tVal * tickPixelsPerC;
         if (yTick < maxCY - 2) break;
         ctx.beginPath();
-        ctx.moveTo(leftX, yTick);
-        ctx.lineTo(leftX + tickLen, yTick);
-        ctx.stroke();
-        ctx.fillText(`${tVal}\xB0`, leftX - (isLiquidDesign ? 8 : 18), yTick);
+        if (ticksOnRight) {
+          ctx.moveTo(rightX - tickLen, yTick);
+          ctx.lineTo(rightX, yTick);
+          ctx.stroke();
+          ctx.fillText(`${Math.round(tVal)}\xB0`, rightX + labelGap, yTick);
+        } else {
+          ctx.moveTo(leftX, yTick);
+          ctx.lineTo(leftX + tickLen, yTick);
+          ctx.stroke();
+          ctx.fillText(`${Math.round(tVal)}\xB0`, leftX - labelGap, yTick);
+        }
       }
       ctx.restore();
       if (atTop) {
@@ -3432,7 +3544,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         ctx.textAlign = "left";
         ctx.fillText(t("tools.thermometerLab.design.outOfRange"), rightX + 8, maxCY + 10);
       }
-      if (isLiquidDesign) {
+      if (isLiquidDesign && !isCompare) {
         const labelColRight = Math.min(sceneW - 12, x + Math.max(glassWidth / 2, bulbOuter) + 36);
         if (focus === "bulb") {
           drawFocusCallout(ctx, x + bulbOuter * 0.75, bulbCenterY, labelColRight, bulbCenterY, t("tools.thermometerLab.design.tabBulb"), "#ea580c", "left", sceneW);
@@ -3456,6 +3568,24 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
           ctx.moveTo(leftX + (glassWidth - boreWidth) / 4, midY);
           ctx.lineTo(leftX - 2, midY);
           ctx.stroke();
+        }
+      } else if (isLiquidDesign && isCompare) {
+        if (design.role === "current" && focus === "bulb") {
+          ctx.strokeStyle = "rgba(234, 88, 12, 0.55)";
+          ctx.lineWidth = 3;
+          ctx.setLineDash([5, 4]);
+          ctx.beginPath();
+          ctx.arc(x, bulbCenterY, bulbOuter + 6, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        } else if (design.role === "current" && focus === "bore") {
+          ctx.strokeStyle = "#a855f7";
+          ctx.lineWidth = 3;
+          ctx.strokeRect(x - boreWidth / 2 - 2, stemTop + 6, boreWidth + 4, stemBottom - stemTop - 6);
+        } else if (design.role === "current" && focus === "wall") {
+          ctx.strokeStyle = "#0284c7";
+          ctx.lineWidth = 2.5;
+          ctx.strokeRect(leftX - 2, stemTop + 4, glassWidth + 4, stemBottom - stemTop - 4);
         }
       } else if (state.showLabels) {
         const labelColRight = layout.beakerX + layout.beakerW + 12;
@@ -3816,6 +3946,39 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         ctx.shadowBlur = 0;
       }
     }
+    function getCompareMetricLine(design) {
+      const S = getDesignSensitivityFor(design.capillaryBore);
+      const rangeC = getDesignRangeCFor(design.bulbVolume);
+      const tau = getResponseTimeConstantFor(design);
+      if (state.focusPart === "bore") {
+        return `${t("tools.thermometerLab.design.sensitivity")} ${S.toFixed(3)} cm/\xB0C`;
+      }
+      if (state.focusPart === "wall") {
+        return `${t("tools.thermometerLab.design.response")} ${tau.toFixed(2)} s`;
+      }
+      return `${t("tools.thermometerLab.design.range")} \u2248 ${rangeC.toFixed(0)} \xB0C`;
+    }
+    function drawCompareCaption(ctx, x, y, title2, metric, accent) {
+      ctx.save();
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const boxW = 200;
+      const boxH = 44;
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 10);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = accent;
+      ctx.font = 'bold 14px "Noto Sans TC", Arial, sans-serif';
+      ctx.fillText(title2, x, y - 9);
+      ctx.fillStyle = "#334155";
+      ctx.font = '12px "Noto Sans TC", Arial, sans-serif';
+      ctx.fillText(metric, x, y + 11);
+      ctx.restore();
+    }
     function drawVisuals() {
       if (isLiquidDesign) {
         const { cssW, cssH, ratio } = syncDesignCanvasSize();
@@ -3830,8 +3993,61 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         const oy = (cssH - DESIGN_SCENE_H * fit) / 2;
         physCtx.setTransform(ratio * fit, 0, 0, ratio * fit, ratio * ox, ratio * oy);
         const physLayout2 = getPhysLayout();
+        const sceneW = physLayout2.sceneW;
+        const bg = physCtx.createLinearGradient(0, 0, sceneW, DESIGN_SCENE_H);
+        bg.addColorStop(0, "rgba(56, 189, 248, 0.12)");
+        bg.addColorStop(0.5, "rgba(251, 191, 36, 0.1)");
+        bg.addColorStop(1, "rgba(248, 113, 113, 0.12)");
+        physCtx.fillStyle = bg;
+        physCtx.fillRect(-8, -8, sceneW + 16, DESIGN_SCENE_H + 16);
+        physCtx.save();
+        physCtx.strokeStyle = "rgba(148, 163, 184, 0.55)";
+        physCtx.lineWidth = 2;
+        physCtx.setLineDash([6, 6]);
+        physCtx.beginPath();
+        physCtx.moveTo(sceneW / 2, 10);
+        physCtx.lineTo(sceneW / 2, 440);
+        physCtx.stroke();
+        physCtx.setLineDash([]);
+        physCtx.restore();
         drawBeaker(physCtx, physLayout2);
-        drawLiquidThermometer(physCtx, physLayout2);
+        const refDesign = getReferenceDesign();
+        const curDesign = getCurrentDesign();
+        const refTemp = state.focusPart === "wall" ? state.refThermometerTemp : state.thermometerTemp;
+        const curTemp = state.thermometerTemp;
+        drawLiquidThermometer(
+          physCtx,
+          { ...physLayout2, thermometerX: physLayout2.leftThermometerX },
+          { ...refDesign, thermometerTemp: refTemp, role: "reference" }
+        );
+        drawLiquidThermometer(
+          physCtx,
+          { ...physLayout2, thermometerX: physLayout2.rightThermometerX },
+          { ...curDesign, thermometerTemp: curTemp, role: "current" }
+        );
+        drawCompareCaption(
+          physCtx,
+          physLayout2.leftThermometerX,
+          28,
+          t("tools.thermometerLab.design.compareRef"),
+          getCompareMetricLine(refDesign),
+          "#64748b"
+        );
+        drawCompareCaption(
+          physCtx,
+          physLayout2.rightThermometerX,
+          28,
+          t("tools.thermometerLab.design.compareCurrent"),
+          getCompareMetricLine(curDesign),
+          state.focusPart === "bore" ? "#9333ea" : state.focusPart === "wall" ? "#0284c7" : "#ea580c"
+        );
+        physCtx.save();
+        physCtx.textAlign = "center";
+        physCtx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
+        physCtx.fillStyle = "#0f766e";
+        physCtx.fillText(`T = ${refTemp.toFixed(1)} \xB0C`, physLayout2.leftThermometerX, 448);
+        physCtx.fillText(`T = ${curTemp.toFixed(1)} \xB0C`, physLayout2.rightThermometerX, 448);
+        physCtx.restore();
         return;
       }
       physCtx.clearRect(0, 0, PHYS_WIDTH, PHYS_HEIGHT);
@@ -4037,19 +4253,24 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     `;
     }
     function updateHTMLDisplays(tau) {
-      wrap.querySelector("#tl-bath-temp-display").innerHTML = state.bathTemp.toFixed(1) + "\xB0C";
-      wrap.querySelector("#tl-val-bath-temp").innerHTML = state.bathTemp.toFixed(1) + " \xB0C";
+      const bathTempDisplay = wrap.querySelector("#tl-bath-temp-display");
+      const bathTempVal = wrap.querySelector("#tl-val-bath-temp");
+      if (bathTempDisplay) bathTempDisplay.innerHTML = state.bathTemp.toFixed(1) + "\xB0C";
+      if (bathTempVal) bathTempVal.innerHTML = state.bathTemp.toFixed(1) + " \xB0C";
       const stateEl = wrap.querySelector("#tl-bath-state");
-      if (state.bathTemp <= 0) {
-        stateEl.textContent = "Melting Ice Bath";
-      } else if (state.bathTemp === 150) {
-        stateEl.textContent = "Hot Cooking Oil";
-      } else if (state.bathTemp >= 100) {
-        stateEl.textContent = "Boiling Water/Steam";
-      } else {
-        stateEl.textContent = "Liquid Water";
+      if (stateEl) {
+        if (state.bathTemp <= 0) {
+          stateEl.textContent = "Melting Ice Bath";
+        } else if (state.bathTemp === 150) {
+          stateEl.textContent = "Hot Cooking Oil";
+        } else if (state.bathTemp >= 100) {
+          stateEl.textContent = "Boiling Water/Steam";
+        } else {
+          stateEl.textContent = "Liquid Water";
+        }
       }
-      wrap.querySelector("#tl-val-response-time").textContent = tau.toFixed(2) + " s";
+      const responseEl = wrap.querySelector("#tl-val-response-time");
+      if (responseEl) responseEl.textContent = tau.toFixed(2) + " s";
       if (state.thermometerType === "liquid") {
         const S = getDesignSensitivity();
         const rangeC = getDesignRangeC();
@@ -4062,19 +4283,26 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         updateWhyFocusEffect();
       }
       const warnBanner = wrap.querySelector("#tl-alcohol-boiling-warning");
-      if (state.thermometerType === "liquid" && state.liquidType === "alcohol" && state.bathTemp >= 78) {
-        warnBanner.style.display = "block";
-      } else {
-        warnBanner.style.display = "none";
+      if (warnBanner) {
+        if (state.thermometerType === "liquid" && state.liquidType === "alcohol" && state.bathTemp >= 78) {
+          warnBanner.style.display = "block";
+        } else {
+          warnBanner.style.display = "none";
+        }
       }
       if (state.thermometerType === "liquid") {
-        wrap.querySelector("#tl-live-liquid-lt").textContent = state.currentLength.toFixed(2) + " cm";
-        wrap.querySelector("#tl-live-liquid-t-sub").textContent = state.thermometerTemp.toFixed(1) + "\xB0C";
+        const lt = wrap.querySelector("#tl-live-liquid-lt");
+        const tSub = wrap.querySelector("#tl-live-liquid-t-sub");
+        if (lt) lt.textContent = state.currentLength.toFixed(2) + " cm";
+        if (tSub) tSub.textContent = state.thermometerTemp.toFixed(1) + "\xB0C";
       } else if (state.thermometerType === "resistance") {
-        wrap.querySelector("#tl-live-resistance-rt").textContent = state.currentResistance.toFixed(2) + " \u03A9";
-        wrap.querySelector("#tl-live-resistance-t-sub").textContent = state.thermometerTemp.toFixed(1) + "\xB0C";
+        const rt = wrap.querySelector("#tl-live-resistance-rt");
+        const tSub = wrap.querySelector("#tl-live-resistance-t-sub");
+        if (rt) rt.textContent = state.currentResistance.toFixed(2) + " \u03A9";
+        if (tSub) tSub.textContent = state.thermometerTemp.toFixed(1) + "\xB0C";
       } else {
-        wrap.querySelector("#tl-live-thermistor-rt").textContent = state.currentThermistorR.toFixed(2) + " k\u03A9";
+        const rt = wrap.querySelector("#tl-live-thermistor-rt");
+        if (rt) rt.textContent = state.currentThermistorR.toFixed(2) + " k\u03A9";
       }
       renderSVGFormulas();
     }
@@ -4087,6 +4315,10 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       const tau = getResponseTimeConstant();
       const dTemp = clampedDt / tau * (state.bathTemp - state.thermometerTemp);
       state.thermometerTemp += dTemp;
+      if (isLiquidDesign) {
+        const tauRef = getReferenceResponseTimeConstant();
+        state.refThermometerTemp += clampedDt / tauRef * (state.bathTemp - state.refThermometerTemp);
+      }
       state.currentLength = state.liquidL0 + (state.liquidL100 - state.liquidL0) / 100 * state.thermometerTemp;
       state.currentResistance = state.resistanceR0 + (state.resistanceR100 - state.resistanceR0) / 100 * state.thermometerTemp;
       const tempK = state.thermometerTemp + 273.15;
@@ -4220,11 +4452,18 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       calculateTtoL();
       calculateTtoR();
     }
+    function updateBathTemp(temp) {
+      state.bathTemp = temp;
+      try {
+        sessionStorage.setItem("s3phy.thermometer.bathTemp", String(temp));
+      } catch (err) {
+      }
+    }
     function setupPreset(btnId, temp) {
       const btn = wrap.querySelector("#" + btnId);
       if (!btn) return;
       btn.addEventListener("click", () => {
-        state.bathTemp = temp;
+        updateBathTemp(temp);
         const slider = wrap.querySelector("#tl-bath-temp-slider");
         if (slider) slider.value = String(temp);
         updateCalculations();
@@ -4262,28 +4501,35 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         });
       }
       const tempSlider = wrap.querySelector("#tl-bath-temp-slider");
-      tempSlider.addEventListener("input", (e) => {
-        state.bathTemp = parseFloat(e.target.value);
-        updateCalculations();
-      });
+      if (tempSlider) {
+        tempSlider.value = String(state.bathTemp);
+        tempSlider.addEventListener("input", (e) => {
+          updateBathTemp(parseFloat(e.target.value));
+          updateCalculations();
+        });
+      }
       setupPreset("tl-btn-preset-ice", 0);
       setupPreset("tl-btn-preset-room", 25);
       setupPreset("tl-btn-preset-steam", 100);
       setupPreset("tl-btn-preset-oil", 150);
-      wrap.querySelector("#tl-card-mercury").addEventListener("click", () => {
-        state.liquidType = "mercury";
-        wrap.querySelector("#tl-card-mercury").className = "tl-seg-btn active-mercury";
-        wrap.querySelector("#tl-card-alcohol").className = "tl-seg-btn";
-        applyDesignToLengths();
-        updateCalculations();
-      });
-      wrap.querySelector("#tl-card-alcohol").addEventListener("click", () => {
-        state.liquidType = "alcohol";
-        wrap.querySelector("#tl-card-mercury").className = "tl-seg-btn";
-        wrap.querySelector("#tl-card-alcohol").className = "tl-seg-btn active-alcohol";
-        applyDesignToLengths();
-        updateCalculations();
-      });
+      const mercuryBtn = wrap.querySelector("#tl-card-mercury");
+      const alcoholBtn = wrap.querySelector("#tl-card-alcohol");
+      if (mercuryBtn && alcoholBtn) {
+        mercuryBtn.addEventListener("click", () => {
+          state.liquidType = "mercury";
+          mercuryBtn.className = "tl-seg-btn active-mercury";
+          alcoholBtn.className = "tl-seg-btn";
+          applyDesignToLengths();
+          updateCalculations();
+        });
+        alcoholBtn.addEventListener("click", () => {
+          state.liquidType = "alcohol";
+          mercuryBtn.className = "tl-seg-btn";
+          alcoholBtn.className = "tl-seg-btn active-alcohol";
+          applyDesignToLengths();
+          updateCalculations();
+        });
+      }
       bindParamPair(
         wrap.querySelector("#tl-slider-bulb-vol"),
         wrap.querySelector("#tl-input-bulb-vol"),
@@ -4359,6 +4605,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         } else if (part === "wall") {
           state.wallThickness = DESIGN.w_ref;
           setDesignParamUI("wall", DESIGN.w_ref);
+          state.refThermometerTemp = state.thermometerTemp;
         }
         state.lastDesignChange = part;
         applyDesignToLengths();
@@ -4372,6 +4619,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         setDesignParamUI("bulb", DESIGN.V_ref);
         setDesignParamUI("bore", DESIGN.d_ref);
         setDesignParamUI("wall", DESIGN.w_ref);
+        state.refThermometerTemp = state.thermometerTemp;
         state.lastDesignChange = state.focusPart || "bulb";
         applyDesignToLengths();
         updateCalculations();
@@ -4847,6 +5095,9 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       "tools.thermometerLab.design.resetPart": "Reset to default",
       "tools.thermometerLab.design.resetAll": "Reset bulb, capillary & wall to defaults",
       "tools.thermometerLab.design.outOfRange": "Beyond range (liquid at top)",
+      "tools.thermometerLab.design.compareRef": "Reference (default)",
+      "tools.thermometerLab.design.compareCurrent": "Your design",
+      "tools.thermometerLab.design.compareHint": "Left = default design \xB7 Right = your adjustments",
       "tools.thermometerLab.labels.thinWall": "Thin glass wall (faster heat transfer \u2192 faster response)",
       "tools.thermometerLab.labels.largeBulb": "Large bulb (larger volume \u2192 smaller range)",
       "tools.thermometerLab.labels.narrowBore": "Narrow capillary (liquid rises higher \u2192 higher sensitivity)",
@@ -4934,6 +5185,9 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       "tools.thermometerLab.design.resetPart": "\u91CD\u8A2D\u70BA\u9810\u8A2D\u503C",
       "tools.thermometerLab.design.resetAll": "\u91CD\u8A2D\u73BB\u7483\u6CE1\u3001\u6BDB\u7D30\u7BA1\u3001\u73BB\u7483\u58C1\u70BA\u9810\u8A2D\u503C",
       "tools.thermometerLab.design.outOfRange": "\u8D85\u51FA\u91CF\u7A0B\uFF08\u6DB2\u9AD4\u5DF2\u5230\u9802\uFF09",
+      "tools.thermometerLab.design.compareRef": "\u53C3\u8003\uFF08\u9810\u8A2D\uFF09",
+      "tools.thermometerLab.design.compareCurrent": "\u4F60\u5605\u8A2D\u8A08",
+      "tools.thermometerLab.design.compareHint": "\u5DE6 = \u9810\u8A2D\u8A2D\u8A08 \xB7 \u53F3 = \u4F60\u8ABF\u6821\u5F8C\u7684\u8A2D\u8A08",
       "tools.thermometerLab.faulty.dualScale": "\u96D9\u523B\u5EA6\u5C0D\u6BD4\u793A\u610F\u5716",
       "tools.thermometerLab.faulty.trueScale": "\u6A19\u6E96\u6EAB\u6A19 (\xB0C)",
       "tools.thermometerLab.faulty.faultyScale": "\u504F\u5DEE\u6EAB\u6A19 (\xB0C)",
