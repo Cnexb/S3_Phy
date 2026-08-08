@@ -575,8 +575,8 @@ export function createThermometerLab(t, options = {}) {
         beakerX: sceneW / 2 - beakerW / 2,
         beakerW,
         thermometerX: sceneW / 2,
-        leftThermometerX: sceneW * 0.27,
-        rightThermometerX: sceneW * 0.73,
+        leftThermometerX: sceneW * 0.30,
+        rightThermometerX: sceneW * 0.70,
         sceneW,
       };
     }
@@ -920,8 +920,8 @@ export function createThermometerLab(t, options = {}) {
 
   function syncDesignCanvasSize() {
     const host = physCanvas.parentElement;
-    const cssW = Math.max(280, Math.floor(host?.clientWidth || DESIGN_SCENE_W));
-    const cssH = Math.max(280, Math.floor(host?.clientHeight || DESIGN_SCENE_H));
+    const cssW = Math.max(320, Math.floor(host?.clientWidth || DESIGN_SCENE_W));
+    const cssH = Math.max(320, Math.floor(host?.clientHeight || DESIGN_SCENE_H));
     const ratio = window.devicePixelRatio || 1;
     const bw = Math.max(1, Math.floor(cssW * ratio));
     const bh = Math.max(1, Math.floor(cssH * ratio));
@@ -1551,25 +1551,44 @@ export function createThermometerLab(t, options = {}) {
 
     // Scale markings — follow the bulb's range so students see range change on the stem
     ctx.save();
-    ctx.globalAlpha = focus ? 0.55 : 0.9;
+    ctx.globalAlpha = focus ? 0.7 : 0.95;
     ctx.strokeStyle = '#64748b';
     ctx.lineWidth = isLiquidDesign ? 1.4 : 0.6;
-    ctx.font = isLiquidDesign ? 'bold 13px Arial' : 'bold 7px Arial';
+    ctx.font = isLiquidDesign
+      ? (isCompare ? 'bold 12px Arial' : 'bold 13px Arial')
+      : 'bold 7px Arial';
     ctx.fillStyle = '#334155';
-    ctx.textAlign = 'right';
     ctx.textBaseline = 'middle';
     const tickLen = isLiquidDesign ? 12 : 5;
-    const tickStep = rangeC > 250 ? 50 : rangeC > 120 ? 25 : 10;
+    // Choose a readable tick step for the current range (always adjust with bulb volume)
+    let tickStep = 10;
+    if (rangeC > 400) tickStep = 100;
+    else if (rangeC > 250) tickStep = 50;
+    else if (rangeC > 120) tickStep = 25;
+    else if (rangeC > 60) tickStep = 10;
+    else if (rangeC > 30) tickStep = 5;
+    else tickStep = 5;
+    // In compare mode, put labels on the outside so the two stems do not collide
+    const ticksOnRight = isCompare && design.role === 'current';
+    ctx.textAlign = ticksOnRight ? 'left' : 'right';
     const maxTick = Math.ceil(rangeC / tickStep) * tickStep;
+    const labelGap = isLiquidDesign ? (isCompare ? 6 : 8) : 18;
     for (let tVal = 0; tVal <= maxTick + 0.01; tVal += tickStep) {
       if (tVal > rangeC + 0.01) break;
       const yTick = zeroY - tVal * tickPixelsPerC;
       if (yTick < maxCY - 2) break;
       ctx.beginPath();
-      ctx.moveTo(leftX, yTick);
-      ctx.lineTo(leftX + tickLen, yTick);
-      ctx.stroke();
-      ctx.fillText(`${tVal}°`, leftX - (isLiquidDesign ? 8 : 18), yTick);
+      if (ticksOnRight) {
+        ctx.moveTo(rightX - tickLen, yTick);
+        ctx.lineTo(rightX, yTick);
+        ctx.stroke();
+        ctx.fillText(`${Math.round(tVal)}°`, rightX + labelGap, yTick);
+      } else {
+        ctx.moveTo(leftX, yTick);
+        ctx.lineTo(leftX + tickLen, yTick);
+        ctx.stroke();
+        ctx.fillText(`${Math.round(tVal)}°`, leftX - labelGap, yTick);
+      }
     }
     ctx.restore();
 
@@ -2417,21 +2436,26 @@ export function createThermometerLab(t, options = {}) {
   }
 
   function updateHTMLDisplays(tau) {
-    wrap.querySelector('#tl-bath-temp-display').innerHTML = state.bathTemp.toFixed(1) + '°C';
-    wrap.querySelector('#tl-val-bath-temp').innerHTML = state.bathTemp.toFixed(1) + ' °C';
+    const bathTempDisplay = wrap.querySelector('#tl-bath-temp-display');
+    const bathTempVal = wrap.querySelector('#tl-val-bath-temp');
+    if (bathTempDisplay) bathTempDisplay.innerHTML = state.bathTemp.toFixed(1) + '°C';
+    if (bathTempVal) bathTempVal.innerHTML = state.bathTemp.toFixed(1) + ' °C';
 
     const stateEl = wrap.querySelector('#tl-bath-state');
-    if (state.bathTemp <= 0) {
-      stateEl.textContent = 'Melting Ice Bath';
-    } else if (state.bathTemp === 150) {
-      stateEl.textContent = 'Hot Cooking Oil';
-    } else if (state.bathTemp >= 100) {
-      stateEl.textContent = 'Boiling Water/Steam';
-    } else {
-      stateEl.textContent = 'Liquid Water';
+    if (stateEl) {
+      if (state.bathTemp <= 0) {
+        stateEl.textContent = 'Melting Ice Bath';
+      } else if (state.bathTemp === 150) {
+        stateEl.textContent = 'Hot Cooking Oil';
+      } else if (state.bathTemp >= 100) {
+        stateEl.textContent = 'Boiling Water/Steam';
+      } else {
+        stateEl.textContent = 'Liquid Water';
+      }
     }
 
-    wrap.querySelector('#tl-val-response-time').textContent = tau.toFixed(2) + ' s';
+    const responseEl = wrap.querySelector('#tl-val-response-time');
+    if (responseEl) responseEl.textContent = tau.toFixed(2) + ' s';
 
     if (state.thermometerType === 'liquid') {
       const S = getDesignSensitivity();
@@ -2446,20 +2470,27 @@ export function createThermometerLab(t, options = {}) {
     }
 
     const warnBanner = wrap.querySelector('#tl-alcohol-boiling-warning');
-    if (state.thermometerType === 'liquid' && state.liquidType === 'alcohol' && state.bathTemp >= 78) {
-      warnBanner.style.display = 'block';
-    } else {
-      warnBanner.style.display = 'none';
+    if (warnBanner) {
+      if (state.thermometerType === 'liquid' && state.liquidType === 'alcohol' && state.bathTemp >= 78) {
+        warnBanner.style.display = 'block';
+      } else {
+        warnBanner.style.display = 'none';
+      }
     }
 
     if (state.thermometerType === 'liquid') {
-      wrap.querySelector('#tl-live-liquid-lt').textContent = state.currentLength.toFixed(2) + ' cm';
-      wrap.querySelector('#tl-live-liquid-t-sub').textContent = state.thermometerTemp.toFixed(1) + '°C';
+      const lt = wrap.querySelector('#tl-live-liquid-lt');
+      const tSub = wrap.querySelector('#tl-live-liquid-t-sub');
+      if (lt) lt.textContent = state.currentLength.toFixed(2) + ' cm';
+      if (tSub) tSub.textContent = state.thermometerTemp.toFixed(1) + '°C';
     } else if (state.thermometerType === 'resistance') {
-      wrap.querySelector('#tl-live-resistance-rt').textContent = state.currentResistance.toFixed(2) + ' Ω';
-      wrap.querySelector('#tl-live-resistance-t-sub').textContent = state.thermometerTemp.toFixed(1) + '°C';
+      const rt = wrap.querySelector('#tl-live-resistance-rt');
+      const tSub = wrap.querySelector('#tl-live-resistance-t-sub');
+      if (rt) rt.textContent = state.currentResistance.toFixed(2) + ' Ω';
+      if (tSub) tSub.textContent = state.thermometerTemp.toFixed(1) + '°C';
     } else {
-      wrap.querySelector('#tl-live-thermistor-rt').textContent = state.currentThermistorR.toFixed(2) + ' kΩ';
+      const rt = wrap.querySelector('#tl-live-thermistor-rt');
+      if (rt) rt.textContent = state.currentThermistorR.toFixed(2) + ' kΩ';
     }
 
     renderSVGFormulas();
@@ -2685,31 +2716,37 @@ export function createThermometerLab(t, options = {}) {
     }
 
     const tempSlider = wrap.querySelector('#tl-bath-temp-slider');
-    tempSlider.addEventListener('input', (e) => {
-      state.bathTemp = parseFloat(e.target.value);
-      updateCalculations();
-    });
+    if (tempSlider) {
+      tempSlider.addEventListener('input', (e) => {
+        state.bathTemp = parseFloat(e.target.value);
+        updateCalculations();
+      });
+    }
 
     setupPreset('tl-btn-preset-ice', 0.0);
     setupPreset('tl-btn-preset-room', 25.0);
     setupPreset('tl-btn-preset-steam', 100.0);
     setupPreset('tl-btn-preset-oil', 150.0);
 
-    wrap.querySelector('#tl-card-mercury').addEventListener('click', () => {
-      state.liquidType = 'mercury';
-      wrap.querySelector('#tl-card-mercury').className = 'tl-seg-btn active-mercury';
-      wrap.querySelector('#tl-card-alcohol').className = 'tl-seg-btn';
-      applyDesignToLengths();
-      updateCalculations();
-    });
+    const mercuryBtn = wrap.querySelector('#tl-card-mercury');
+    const alcoholBtn = wrap.querySelector('#tl-card-alcohol');
+    if (mercuryBtn && alcoholBtn) {
+      mercuryBtn.addEventListener('click', () => {
+        state.liquidType = 'mercury';
+        mercuryBtn.className = 'tl-seg-btn active-mercury';
+        alcoholBtn.className = 'tl-seg-btn';
+        applyDesignToLengths();
+        updateCalculations();
+      });
 
-    wrap.querySelector('#tl-card-alcohol').addEventListener('click', () => {
-      state.liquidType = 'alcohol';
-      wrap.querySelector('#tl-card-mercury').className = 'tl-seg-btn';
-      wrap.querySelector('#tl-card-alcohol').className = 'tl-seg-btn active-alcohol';
-      applyDesignToLengths();
-      updateCalculations();
-    });
+      alcoholBtn.addEventListener('click', () => {
+        state.liquidType = 'alcohol';
+        mercuryBtn.className = 'tl-seg-btn';
+        alcoholBtn.className = 'tl-seg-btn active-alcohol';
+        applyDesignToLengths();
+        updateCalculations();
+      });
+    }
 
     bindParamPair(
       wrap.querySelector('#tl-slider-bulb-vol'),
