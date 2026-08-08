@@ -509,6 +509,8 @@ export function createThermometerLab(t, options = {}) {
     showLabels: true,
     lastDesignChange: null, // 'bulb' | 'bore' | 'wall' | null
     focusPart: isLiquidDesign ? 'bulb' : null, // 'bulb' | 'bore' | 'wall'
+    /** Reference thermometer temp (default design τ) for side-by-side response compare */
+    refThermometerTemp: 25.0,
   };
 
   // Teaching model (design lab):
@@ -550,8 +552,8 @@ export function createThermometerLab(t, options = {}) {
     input.addEventListener('blur', () => applyValue(parseFloat(input.value)));
   }
 
-  // Design mode scene — portrait content; layout puts controls under the viz so width is usable
-  const DESIGN_SCENE_W = 400;
+  // Design mode: wide scene for side-by-side reference vs current thermometer
+  const DESIGN_SCENE_W = 780;
   const DESIGN_SCENE_H = 600;
   const PHYS_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : 460;
   const PHYS_HEIGHT = isLiquidDesign ? DESIGN_SCENE_H : 340;
@@ -561,18 +563,20 @@ export function createThermometerLab(t, options = {}) {
   const PHYS_SCENE_OFFSET_Y = isLiquidDesign ? 0 : 44;
   let activeSceneW = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
   const SCENE_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
-  const BEAKER_W = isLiquidDesign ? 320 : 130;
+  const BEAKER_W = isLiquidDesign ? 560 : 130;
   const GRAPH_WIDTH = 640;
   const GRAPH_HEIGHT = 420;
 
   function getPhysLayout() {
     const sceneW = isLiquidDesign ? activeSceneW : SCENE_WIDTH;
     if (state.thermometerType === 'liquid') {
-      const beakerW = isLiquidDesign ? Math.min(BEAKER_W * 1.15, sceneW * 0.7) : BEAKER_W;
+      const beakerW = isLiquidDesign ? Math.min(BEAKER_W, sceneW * 0.9) : BEAKER_W;
       return {
         beakerX: sceneW / 2 - beakerW / 2,
         beakerW,
         thermometerX: sceneW / 2,
+        leftThermometerX: sceneW * 0.27,
+        rightThermometerX: sceneW * 0.73,
         sceneW,
       };
     }
@@ -714,18 +718,42 @@ export function createThermometerLab(t, options = {}) {
     return state.liquidL0 + ((state.liquidL100 - state.liquidL0) / 100) * t;
   }
 
-  function getDesignSensitivity() {
-    const d = Math.max(0.05, state.capillaryBore);
+  function getDesignSensitivityFor(bore, liquidType = state.liquidType) {
+    const d = Math.max(0.05, bore);
     // Alcohol expands more than mercury → slightly higher sensitivity
-    const liquidFactor = state.liquidType === 'alcohol' ? 1.35 : 1.0;
+    const liquidFactor = liquidType === 'alcohol' ? 1.35 : 1.0;
     // Design lab: sensitivity depends on capillary bore only (not bulb volume)
     return DESIGN.S_ref * Math.pow(DESIGN.d_ref / d, 2) * liquidFactor;
   }
 
-  function getDesignRangeC() {
-    const V = Math.max(10, state.bulbVolume);
+  function getDesignSensitivity() {
+    return getDesignSensitivityFor(state.capillaryBore);
+  }
+
+  function getDesignRangeCFor(bulbVolume) {
+    const V = Math.max(10, bulbVolume);
     // Design lab: range depends on bulb volume only (larger bulb → smaller range)
     return DESIGN.range_ref * (DESIGN.V_ref / V);
+  }
+
+  function getDesignRangeC() {
+    return getDesignRangeCFor(state.bulbVolume);
+  }
+
+  function getReferenceDesign() {
+    return {
+      bulbVolume: DESIGN.V_ref,
+      capillaryBore: DESIGN.d_ref,
+      wallThickness: DESIGN.w_ref,
+    };
+  }
+
+  function getCurrentDesign() {
+    return {
+      bulbVolume: state.bulbVolume,
+      capillaryBore: state.capillaryBore,
+      wallThickness: state.wallThickness,
+    };
   }
 
   function applyDesignToLengths() {
@@ -957,21 +985,33 @@ export function createThermometerLab(t, options = {}) {
   const BULB_VOLUME_REF = 200;
   const BULB_RADIUS_REF = 11;
 
-  function getBulbVisualRadius() {
-    const scale = Math.pow(state.bulbVolume / BULB_VOLUME_REF, 1 / 3);
+  function getBulbVisualRadiusFor(bulbVolume) {
+    const scale = Math.pow(Math.max(10, bulbVolume) / BULB_VOLUME_REF, 1 / 3);
     return BULB_RADIUS_REF * scale;
   }
 
-  function getResponseTimeConstant() {
+  function getBulbVisualRadius() {
+    return getBulbVisualRadiusFor(state.bulbVolume);
+  }
+
+  function getResponseTimeConstantFor(design, liquidType = state.liquidType) {
     if (state.thermometerType === 'resistance' || state.thermometerType === 'thermistor') {
       return 0.35;
     }
     // HKDSE: thinner glass wall → faster heat transfer → smaller τ (faster response)
-    const conductivityFactor = state.liquidType === 'mercury' ? 1.0 : 8.0;
-    const thicknessFactor = 0.15 + state.wallThickness * 1.8;
-    const volumeFactor = 0.55 + state.bulbVolume * 0.0025;
-    const capillaryFactor = 1.15 - state.capillaryBore * 0.25;
+    const conductivityFactor = liquidType === 'mercury' ? 1.0 : 8.0;
+    const thicknessFactor = 0.15 + design.wallThickness * 1.8;
+    const volumeFactor = 0.55 + design.bulbVolume * 0.0025;
+    const capillaryFactor = 1.15 - design.capillaryBore * 0.25;
     return Math.max(0.08, thicknessFactor * volumeFactor * capillaryFactor * conductivityFactor * 0.14);
+  }
+
+  function getResponseTimeConstant() {
+    return getResponseTimeConstantFor(getCurrentDesign());
+  }
+
+  function getReferenceResponseTimeConstant() {
+    return getResponseTimeConstantFor(getReferenceDesign());
   }
 
   function updateParticles(dt) {
@@ -1294,27 +1334,37 @@ export function createThermometerLab(t, options = {}) {
     ctx.restore();
   }
 
-  function drawLiquidThermometer(ctx, layout) {
+  function drawLiquidThermometer(ctx, layout, view = null) {
+    const design = view || {
+      bulbVolume: state.bulbVolume,
+      capillaryBore: state.capillaryBore,
+      wallThickness: state.wallThickness,
+      thermometerTemp: state.thermometerTemp,
+      role: 'solo',
+    };
     const x = layout.thermometerX;
     const sceneW = layout.sceneW || activeSceneW || SCENE_WIDTH;
+    const isCompare = design.role === 'reference' || design.role === 'current';
     // Design mode: tall stem + oversized bulb for classroom / TV visibility
-    const stemTop = isLiquidDesign ? 14 : 20;
-    const bulbScale = isLiquidDesign ? 4.4 : 1;
-    const bulbRadius = getBulbVisualRadius() * bulbScale;
+    // Compare mode leaves room for the Ref / Your-design caption badges at the top
+    const stemTop = isLiquidDesign ? (isCompare ? 56 : 14) : 20;
+    const bulbScale = isLiquidDesign ? (isCompare ? 3.2 : 4.4) : 1;
+    const bulbRadius = getBulbVisualRadiusFor(design.bulbVolume) * bulbScale;
     const bulbCenterY = isLiquidDesign
       ? 520 + Math.max(0, bulbRadius - BULB_RADIUS_REF * bulbScale) * 0.15
       : 250 + Math.max(0, bulbRadius - BULB_RADIUS_REF) * 0.35;
     const stemBottom = bulbCenterY - bulbRadius - 1;
     const glassWidth = isLiquidDesign
-      ? 34 + state.wallThickness * 18
-      : 10 + state.wallThickness * 8;
+      ? 28 + design.wallThickness * 14
+      : 10 + design.wallThickness * 8;
     const leftX = x - glassWidth / 2;
     const rightX = x + glassWidth / 2;
-    const focus = isLiquidDesign ? state.focusPart : null;
+    // Only highlight focus parts on the current (right) thermometer in compare mode
+    const focus = isLiquidDesign && design.role !== 'reference' ? state.focusPart : null;
     const dim = (part) => (focus && focus !== part ? 0.28 : 1);
 
-    // Soft colorful bath backdrop when in design mode
-    if (isLiquidDesign) {
+    // Soft colorful bath backdrop when in design mode (once; compare mode draws it in drawVisuals)
+    if (isLiquidDesign && !isCompare) {
       const bg = ctx.createLinearGradient(0, 0, sceneW, DESIGN_SCENE_H);
       bg.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
       bg.addColorStop(0.5, 'rgba(251, 191, 36, 0.1)');
@@ -1342,7 +1392,7 @@ export function createThermometerLab(t, options = {}) {
     }
     ctx.fillStyle = glassGrad;
     ctx.strokeStyle = focus === 'wall' ? '#0284c7' : '#38bdf8';
-    ctx.lineWidth = focus === 'wall' ? 2.5 + state.wallThickness * 0.8 : 1.2 + state.wallThickness * 0.5;
+    ctx.lineWidth = focus === 'wall' ? 2.5 + design.wallThickness * 0.8 : 1.2 + design.wallThickness * 0.5;
     ctx.beginPath();
     ctx.moveTo(leftX, stemBottom);
     ctx.lineTo(leftX, stemTop + 5);
@@ -1356,8 +1406,8 @@ export function createThermometerLab(t, options = {}) {
 
     // Capillary bore channel first (drawn under liquid); exaggerated for TV visibility
     const boreWidth = isLiquidDesign
-      ? Math.max(10, Math.min(glassWidth * 0.62, 10 + state.capillaryBore * 22))
-      : Math.min(glassWidth * 0.72, 0.8 + state.capillaryBore * 4.5);
+      ? Math.max(8, Math.min(glassWidth * 0.62, 8 + design.capillaryBore * 18))
+      : Math.min(glassWidth * 0.72, 0.8 + design.capillaryBore * 4.5);
     ctx.save();
     ctx.globalAlpha = dim('bore');
     if (focus === 'bore') {
@@ -1376,10 +1426,10 @@ export function createThermometerLab(t, options = {}) {
     const colorHi = isLiquidDesign ? '#f87171' : '#ffffff';
     const colorDeep = isLiquidDesign ? '#991b1b' : (isMercury ? '#64748b' : '#b91c1c');
 
-    const S = getDesignSensitivity();
-    const rangeC = getDesignRangeC();
+    const S = getDesignSensitivityFor(design.capillaryBore);
+    const rangeC = getDesignRangeCFor(design.bulbVolume);
     const zeroY = isLiquidDesign ? 420 : 210;
-    const maxCY = isLiquidDesign ? 30 : 40;
+    const maxCY = isLiquidDesign ? (isCompare ? stemTop + 8 : 30) : 40;
     const stemPx = zeroY - maxCY;
     let tickPixelsPerC;
     let currentY;
@@ -1389,15 +1439,15 @@ export function createThermometerLab(t, options = {}) {
       tickPixelsPerC = stemPx / Math.max(rangeC, 1e-6);
       // Bore → sensitivity vs that scale (S_ref matches the marks)
       const liquidPixelsPerC = tickPixelsPerC * (S / DESIGN.S_ref);
-      const displayT = Math.min(Math.max(state.thermometerTemp, 0), rangeC);
+      const displayT = Math.min(Math.max(design.thermometerTemp, 0), rangeC);
       const risePx = displayT * liquidPixelsPerC;
       currentY = Math.max(maxCY, zeroY - risePx);
-      atTop = state.thermometerTemp > rangeC + 0.5 || risePx >= stemPx - 0.5;
+      atTop = design.thermometerTemp > rangeC + 0.5 || risePx >= stemPx - 0.5;
     } else {
       tickPixelsPerC = (stemPx / DESIGN.stemRiseCm) * S;
-      const displayT = Math.min(state.thermometerTemp, rangeC);
+      const displayT = Math.min(design.thermometerTemp, rangeC);
       currentY = zeroY - displayT * tickPixelsPerC;
-      atTop = state.thermometerTemp > rangeC + 0.5;
+      atTop = design.thermometerTemp > rangeC + 0.5;
     }
 
     // Liquid column — bright red highlight
@@ -1431,7 +1481,7 @@ export function createThermometerLab(t, options = {}) {
     // Bulb glass shell (drawn after stem so outline stays crisp)
     ctx.save();
     ctx.globalAlpha = dim('bulb') * (focus === 'wall' ? 0.7 : 1);
-    const wallExtra = (isLiquidDesign ? 2.2 : 0.5) + state.wallThickness * (isLiquidDesign ? 1.2 : 0.5);
+    const wallExtra = (isLiquidDesign ? 2.2 : 0.5) + design.wallThickness * (isLiquidDesign ? 1.2 : 0.5);
     const bulbOuter = bulbRadius + wallExtra;
     const bulbGrad = ctx.createRadialGradient(
       x - bulbRadius * 0.25, bulbCenterY - bulbRadius * 0.25, bulbRadius * 0.08,
@@ -1457,7 +1507,7 @@ export function createThermometerLab(t, options = {}) {
     }
     ctx.fillStyle = bulbGrad;
     ctx.strokeStyle = focus === 'bulb' ? '#c2410c' : (focus === 'wall' ? '#0369a1' : (isLiquidDesign ? '#f87171' : '#d97706'));
-    ctx.lineWidth = focus === 'wall' ? 2.8 + state.wallThickness : (focus === 'bulb' ? 4 : (isLiquidDesign ? 3 : 1.5));
+    ctx.lineWidth = focus === 'wall' ? 2.8 + design.wallThickness : (focus === 'bulb' ? 4 : (isLiquidDesign ? 3 : 1.5));
     ctx.beginPath();
     ctx.arc(x, bulbCenterY, bulbOuter, 0, Math.PI * 2);
     ctx.fill();
@@ -1532,8 +1582,8 @@ export function createThermometerLab(t, options = {}) {
       ctx.fillText(t('tools.thermometerLab.design.outOfRange'), rightX + 8, maxCY + 10);
     }
 
-    // Focus indicators / callouts
-    if (isLiquidDesign) {
+    // Focus indicators / callouts (solo design mode only — compare mode uses captions)
+    if (isLiquidDesign && !isCompare) {
       const labelColRight = Math.min(sceneW - 12, x + Math.max(glassWidth / 2, bulbOuter) + 36);
       if (focus === 'bulb') {
         drawFocusCallout(ctx, x + bulbOuter * 0.75, bulbCenterY, labelColRight, bulbCenterY, t('tools.thermometerLab.design.tabBulb'), '#ea580c', 'left', sceneW);
@@ -1557,6 +1607,25 @@ export function createThermometerLab(t, options = {}) {
         ctx.moveTo(leftX + (glassWidth - boreWidth) / 4, midY);
         ctx.lineTo(leftX - 2, midY);
         ctx.stroke();
+      }
+    } else if (isLiquidDesign && isCompare) {
+      // Compact focus ring on the active part of the current thermometer
+      if (design.role === 'current' && focus === 'bulb') {
+        ctx.strokeStyle = 'rgba(234, 88, 12, 0.55)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.arc(x, bulbCenterY, bulbOuter + 6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (design.role === 'current' && focus === 'bore') {
+        ctx.strokeStyle = '#a855f7';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x - boreWidth / 2 - 2, stemTop + 6, boreWidth + 4, stemBottom - stemTop - 6);
+      } else if (design.role === 'current' && focus === 'wall') {
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(leftX - 2, stemTop + 4, glassWidth + 4, stemBottom - stemTop - 4);
       }
     } else if (state.showLabels) {
       const labelColRight = layout.beakerX + layout.beakerW + 12;
@@ -1999,6 +2068,41 @@ export function createThermometerLab(t, options = {}) {
     }
   }
 
+  function getCompareMetricLine(design) {
+    const S = getDesignSensitivityFor(design.capillaryBore);
+    const rangeC = getDesignRangeCFor(design.bulbVolume);
+    const tau = getResponseTimeConstantFor(design);
+    if (state.focusPart === 'bore') {
+      return `${t('tools.thermometerLab.design.sensitivity')} ${S.toFixed(3)} cm/°C`;
+    }
+    if (state.focusPart === 'wall') {
+      return `${t('tools.thermometerLab.design.response')} ${tau.toFixed(2)} s`;
+    }
+    return `${t('tools.thermometerLab.design.range')} ≈ ${rangeC.toFixed(0)} °C`;
+  }
+
+  function drawCompareCaption(ctx, x, y, title, metric, accent) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const boxW = 200;
+    const boxH = 44;
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 10);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 14px "Noto Sans TC", Arial, sans-serif';
+    ctx.fillText(title, x, y - 9);
+    ctx.fillStyle = '#334155';
+    ctx.font = '12px "Noto Sans TC", Arial, sans-serif';
+    ctx.fillText(metric, x, y + 11);
+    ctx.restore();
+  }
+
   function drawVisuals() {
     if (isLiquidDesign) {
       const { cssW, cssH, ratio } = syncDesignCanvasSize();
@@ -2008,14 +2112,85 @@ export function createThermometerLab(t, options = {}) {
       const availW = Math.max(1, cssW - pad * 2);
       const availH = Math.max(1, cssH - pad * 2);
       activeSceneW = DESIGN_SCENE_W;
-      // Contain: keep the whole thermometer visible (no crop / over-zoom)
+      // Contain: keep both thermometers visible (no crop / over-zoom)
       const fit = Math.min(availW / DESIGN_SCENE_W, availH / DESIGN_SCENE_H);
       const ox = (cssW - DESIGN_SCENE_W * fit) / 2;
       const oy = (cssH - DESIGN_SCENE_H * fit) / 2;
       physCtx.setTransform(ratio * fit, 0, 0, ratio * fit, ratio * ox, ratio * oy);
+
       const physLayout = getPhysLayout();
+      const sceneW = physLayout.sceneW;
+
+      // Shared backdrop once for the compare scene
+      const bg = physCtx.createLinearGradient(0, 0, sceneW, DESIGN_SCENE_H);
+      bg.addColorStop(0, 'rgba(56, 189, 248, 0.12)');
+      bg.addColorStop(0.5, 'rgba(251, 191, 36, 0.1)');
+      bg.addColorStop(1, 'rgba(248, 113, 113, 0.12)');
+      physCtx.fillStyle = bg;
+      physCtx.fillRect(-8, -8, sceneW + 16, DESIGN_SCENE_H + 16);
+
+      // Divider between reference and current
+      physCtx.save();
+      physCtx.strokeStyle = 'rgba(148, 163, 184, 0.55)';
+      physCtx.lineWidth = 2;
+      physCtx.setLineDash([6, 6]);
+      physCtx.beginPath();
+      physCtx.moveTo(sceneW / 2, 10);
+      physCtx.lineTo(sceneW / 2, 440);
+      physCtx.stroke();
+      physCtx.setLineDash([]);
+      physCtx.restore();
+
       drawBeaker(physCtx, physLayout);
-      drawLiquidThermometer(physCtx, physLayout);
+
+      const refDesign = getReferenceDesign();
+      const curDesign = getCurrentDesign();
+      // Wall tab: each thermometer uses its own τ-driven temperature.
+      // Bulb / bore tabs: same temperature so students compare range / sensitivity only.
+      const refTemp = state.focusPart === 'wall' ? state.refThermometerTemp : state.thermometerTemp;
+      const curTemp = state.thermometerTemp;
+
+      drawLiquidThermometer(
+        physCtx,
+        { ...physLayout, thermometerX: physLayout.leftThermometerX },
+        { ...refDesign, thermometerTemp: refTemp, role: 'reference' }
+      );
+      drawLiquidThermometer(
+        physCtx,
+        { ...physLayout, thermometerX: physLayout.rightThermometerX },
+        { ...curDesign, thermometerTemp: curTemp, role: 'current' }
+      );
+
+      drawCompareCaption(
+        physCtx,
+        physLayout.leftThermometerX,
+        28,
+        t('tools.thermometerLab.design.compareRef'),
+        getCompareMetricLine(refDesign),
+        '#64748b'
+      );
+      drawCompareCaption(
+        physCtx,
+        physLayout.rightThermometerX,
+        28,
+        t('tools.thermometerLab.design.compareCurrent'),
+        getCompareMetricLine(curDesign),
+        state.focusPart === 'bore' ? '#9333ea'
+          : state.focusPart === 'wall' ? '#0284c7'
+            : '#ea580c'
+      );
+
+      // Living temperature readout under each stem (helps wall/response demos)
+      if (state.focusPart === 'wall') {
+        physCtx.save();
+        physCtx.textAlign = 'center';
+        physCtx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
+        physCtx.fillStyle = '#0f766e';
+        physCtx.fillText(`T = ${refTemp.toFixed(1)} °C`, physLayout.leftThermometerX, 448);
+        physCtx.fillText(`T = ${curTemp.toFixed(1)} °C`, physLayout.rightThermometerX, 448);
+        physCtx.restore();
+      }
+
       return;
     }
 
@@ -2301,6 +2476,11 @@ export function createThermometerLab(t, options = {}) {
 
     const dTemp = (clampedDt / tau) * (state.bathTemp - state.thermometerTemp);
     state.thermometerTemp += dTemp;
+
+    if (isLiquidDesign) {
+      const tauRef = getReferenceResponseTimeConstant();
+      state.refThermometerTemp += (clampedDt / tauRef) * (state.bathTemp - state.refThermometerTemp);
+    }
 
     state.currentLength = state.liquidL0 + ((state.liquidL100 - state.liquidL0) / 100) * state.thermometerTemp;
     state.currentResistance = state.resistanceR0 + ((state.resistanceR100 - state.resistanceR0) / 100) * state.thermometerTemp;
@@ -2601,6 +2781,8 @@ export function createThermometerLab(t, options = {}) {
       } else if (part === 'wall') {
         state.wallThickness = DESIGN.w_ref;
         setDesignParamUI('wall', DESIGN.w_ref);
+        // Align both columns so the next bath change shows a clean response compare
+        state.refThermometerTemp = state.thermometerTemp;
       }
       state.lastDesignChange = part;
       applyDesignToLengths();
@@ -2615,6 +2797,7 @@ export function createThermometerLab(t, options = {}) {
       setDesignParamUI('bulb', DESIGN.V_ref);
       setDesignParamUI('bore', DESIGN.d_ref);
       setDesignParamUI('wall', DESIGN.w_ref);
+      state.refThermometerTemp = state.thermometerTemp;
       state.lastDesignChange = state.focusPart || 'bulb';
       applyDesignToLengths();
       updateCalculations();
