@@ -741,14 +741,15 @@ export function createThermometerLab(t, options = {}) {
     return getDesignSensitivityFor(state.capillaryBore);
   }
 
-  function getDesignRangeCFor(bulbVolume) {
+  function getDesignRangeCFor(bulbVolume, capillaryBore = DESIGN.d_ref) {
     const V = Math.max(10, bulbVolume);
-    // Design lab: range depends on bulb volume only (larger bulb → smaller range)
-    return DESIGN.range_ref * (DESIGN.V_ref / V);
+    const d = Math.max(0.05, capillaryBore);
+    // Design lab: range depends on bulb volume and capillary bore (larger bulb or narrower bore → smaller range)
+    return DESIGN.range_ref * (DESIGN.V_ref / V) * Math.pow(d / DESIGN.d_ref, 2);
   }
 
   function getDesignRangeC() {
-    return getDesignRangeCFor(state.bulbVolume);
+    return getDesignRangeCFor(state.bulbVolume, state.capillaryBore);
   }
 
   function getReferenceDesign() {
@@ -1470,7 +1471,7 @@ export function createThermometerLab(t, options = {}) {
     const colorDeep = isLiquidDesign ? '#991b1b' : (isMercury ? '#64748b' : '#b91c1c');
 
     const S = getDesignSensitivityFor(design.capillaryBore);
-    const rangeC = getDesignRangeCFor(design.bulbVolume);
+    const rangeC = getDesignRangeCFor(design.bulbVolume, design.capillaryBore);
     const zeroY = isLiquidDesign ? 420 : 210;
     const maxCY = isLiquidDesign ? (isCompare ? stemTop + 8 : 30) : 40;
     const stemPx = zeroY - maxCY;
@@ -1478,12 +1479,10 @@ export function createThermometerLab(t, options = {}) {
     let currentY;
     let atTop;
     if (isLiquidDesign) {
-      // Bulb → engraved scale spans 0…rangeC over the full stem (shows range)
+      // Scale tick spacing matches the sensitivity and actual range perfectly, ensuring perfect reading alignment
       tickPixelsPerC = stemPx / Math.max(rangeC, 1e-6);
-      // Bore → sensitivity vs that scale (S_ref matches the marks)
-      const liquidPixelsPerC = tickPixelsPerC * (S / DESIGN.S_ref);
       const displayT = Math.min(Math.max(design.thermometerTemp, 0), rangeC);
-      const risePx = displayT * liquidPixelsPerC;
+      const risePx = displayT * tickPixelsPerC;
       currentY = Math.max(maxCY, zeroY - risePx);
       atTop = design.thermometerTemp > rangeC + 0.5 || risePx >= stemPx - 0.5;
     } else {
