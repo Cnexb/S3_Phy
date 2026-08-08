@@ -474,7 +474,7 @@
       <div class="vt-dash">
         <div class="vt-viz">
           <canvas id="vectorCanvas" class="vt-canvas" width="900" height="640"></canvas>
-          <p class="vt-hint" id="drag-hint">拖藍色箭嘴改力 · 拖黑點移原點 · 選物件後點圖放置</p>
+          <p class="vt-hint" id="drag-hint">拖物件移動 · 拖藍角縮放 · 拖藍色箭嘴改力</p>
         </div>
 
         <div class="vt-controls">
@@ -511,6 +511,13 @@
             <div class="stamp-actions">
               <button type="button" id="btn-del-obj">刪除</button>
               <button type="button" id="btn-clear-obj">清空</button>
+            </div>
+            <div class="vt-cg" id="obj-size-wrap" hidden>
+              <div class="vt-lr">
+                <label id="label-obj-size">物件大小</label>
+                <span id="obj-size-val" style="font-weight:800;font-variant-numeric:tabular-nums;">100%</span>
+              </div>
+              <input type="range" id="objSizeSlider" min="40" max="250" step="5" value="100">
             </div>
           </div>
 
@@ -597,7 +604,7 @@
       docTitle: '矢量工具 — 受力圖',
       pageTitle: '矢量工具 — 受力圖',
       pageSub: '調力的大小同方向，再放物件示範',
-      dragHint: '拖藍色箭嘴改力 · 拖黑點移原點 · 選物件後點圖放置',
+      dragHint: '拖物件移動 · 拖藍角縮放 · 拖藍色箭嘴改力',
       secVector: '① 調力',
       panelTip: '亦可直接拖圖上藍色箭嘴尖端。',
       secStamps: '② 放物件',
@@ -608,6 +615,7 @@
       stampWedge: '斜面',
       btnDelObj: '刪除',
       btnClearObj: '清空',
+      labelObjSize: '物件大小',
       secAdvanced: '進階設定（老師用）',
       labelMag: '力的大小 F',
       labelAngle: '方向角度 θ°',
@@ -637,7 +645,7 @@
       docTitle: 'Vector Tool — Force Diagram',
       pageTitle: 'Vector Tool — Force Diagram',
       pageSub: 'Set force size and direction, then place objects',
-      dragHint: 'Drag the blue arrow tip · Drag the black origin · Pick an object then click to place',
+      dragHint: 'Drag objects to move · Drag blue corner to resize · Drag blue arrow for force',
       secVector: '① Set the force',
       panelTip: 'You can also drag the blue arrow tip on the graph.',
       secStamps: '② Place objects',
@@ -648,6 +656,7 @@
       stampWedge: 'Slope',
       btnDelObj: 'Delete',
       btnClearObj: 'Clear',
+      labelObjSize: 'Object size',
       secAdvanced: 'Advanced (for teachers)',
       labelMag: 'Force size F',
       labelAngle: 'Direction angle θ°',
@@ -702,6 +711,7 @@
     document.getElementById('stamp-wedge').textContent = tr.stampWedge;
     document.getElementById('btn-del-obj').textContent = tr.btnDelObj;
     document.getElementById('btn-clear-obj').textContent = tr.btnClearObj;
+    document.getElementById('label-obj-size').textContent = tr.labelObjSize;
     document.getElementById('sec-advanced').textContent = tr.secAdvanced;
     document.getElementById('label-mag').textContent = tr.labelMag;
     document.getElementById('label-angle').textContent = tr.labelAngle;
@@ -756,12 +766,13 @@
   let compStyle = 'head-to-tail';
   let decompOrder = 'xy';
 
-  /** @type {{ id: number, kind: string, x: number, y: number }[]} */
+  /** @type {{ id: number, kind: string, x: number, y: number, size?: number }[]} */
   let sceneObjects = [];
   let nextObjId = 1;
   let stampKind = null; // 'box' | 'person' | 'ball' | 'wedge' | null
   let selectedObjId = null;
   let isDraggingObject = false;
+  let isResizingObject = false;
   let objDragOff = { x: 0, y: 0 };
 
   let drawnLabels = [];
@@ -947,10 +958,34 @@
     btn.addEventListener('click', () => setStampKind(btn.dataset.kind));
   });
 
+  function syncObjSizeUI() {
+    const wrap = document.getElementById('obj-size-wrap');
+    const slider = document.getElementById('objSizeSlider');
+    const valEl = document.getElementById('obj-size-val');
+    const o = sceneObjects.find((x) => x.id === selectedObjId);
+    if (!o) {
+      wrap.hidden = true;
+      return;
+    }
+    wrap.hidden = false;
+    const pct = Math.round((o.size || 1) * 100);
+    slider.value = String(pct);
+    valEl.textContent = `${pct}%`;
+  }
+
+  document.getElementById('objSizeSlider').addEventListener('input', (e) => {
+    const o = sceneObjects.find((x) => x.id === selectedObjId);
+    if (!o) return;
+    o.size = Math.max(0.4, Math.min(2.5, parseFloat(e.target.value) / 100));
+    document.getElementById('obj-size-val').textContent = `${Math.round(o.size * 100)}%`;
+    draw();
+  });
+
   function deleteSelectedObj() {
     if (selectedObjId == null) return;
     sceneObjects = sceneObjects.filter((o) => o.id !== selectedObjId);
     selectedObjId = null;
+    syncObjSizeUI();
     draw();
   }
 
@@ -958,6 +993,7 @@
   document.getElementById('btn-clear-obj').addEventListener('click', () => {
     sceneObjects = [];
     selectedObjId = null;
+    syncObjSizeUI();
     draw();
   });
   window.addEventListener('keydown', (e) => {
@@ -980,6 +1016,7 @@
     sceneObjects = [];
     selectedObjId = null;
     setStampKind(null);
+    syncObjSizeUI();
     inputs.angleRefs[0].checked = true;
     inputs.axisPolarities[0].checked = true;
     inputs.compStyles[0].checked = true;
@@ -1018,41 +1055,74 @@
     };
   }
 
-  function objectHitRadius(kind) {
+  /** Selection box half-extent in screen px (before object.size). */
+  function objectBaseHalf(kind) {
     if (kind === 'ball') return 28;
-    if (kind === 'person') return 36;
+    if (kind === 'person') return 38;
     if (kind === 'wedge') return 40;
-    return 34; // box
+    return 34;
+  }
+
+  function objectHalf(o) {
+    return objectBaseHalf(o.kind) * (o.size || 1);
+  }
+
+  function resizeHandlePos(o) {
+    const h = objectHalf(o);
+    return { x: o.x + h, y: o.y + h };
+  }
+
+  function hitTestResizeHandle(pos, o) {
+    const h = resizeHandlePos(o);
+    return Math.hypot(pos.x - h.x, pos.y - h.y) <= 12;
   }
 
   function hitTestObject(pos) {
     for (let i = sceneObjects.length - 1; i >= 0; i--) {
       const o = sceneObjects[i];
-      if (Math.hypot(pos.x - o.x, pos.y - o.y) <= objectHitRadius(o.kind)) return o;
+      const half = objectHalf(o);
+      if (Math.abs(pos.x - o.x) <= half && Math.abs(pos.y - o.y) <= half) return o;
     }
     return null;
   }
 
   function beginDragAt(pos, forceOrigin) {
-    if (stampKind) {
-      sceneObjects.push({ id: nextObjId++, kind: stampKind, x: pos.x, y: pos.y });
-      selectedObjId = nextObjId - 1;
-      draw();
-      return;
+    // Prefer interacting with existing objects (drag / resize) even if a stamp is selected
+    if (selectedObjId != null) {
+      const sel = sceneObjects.find((x) => x.id === selectedObjId);
+      if (sel && hitTestResizeHandle(pos, sel)) {
+        isResizingObject = true;
+        isDraggingObject = false;
+        isDraggingVector = false;
+        isDraggingOrigin = false;
+        return;
+      }
     }
 
     const hit = hitTestObject(pos);
     if (hit) {
       selectedObjId = hit.id;
       isDraggingObject = true;
+      isResizingObject = false;
       isDraggingVector = false;
       isDraggingOrigin = false;
       objDragOff = { x: pos.x - hit.x, y: pos.y - hit.y };
+      setStampKind(null);
+      syncObjSizeUI();
+      draw();
+      return;
+    }
+
+    if (stampKind) {
+      sceneObjects.push({ id: nextObjId++, kind: stampKind, x: pos.x, y: pos.y, size: 1 });
+      selectedObjId = nextObjId - 1;
+      syncObjSizeUI();
       draw();
       return;
     }
 
     selectedObjId = null;
+    syncObjSizeUI();
     const distOrigin = Math.hypot(pos.x - origin.x, pos.y - origin.y);
     const tip = tipScreenPos();
     const distTip = Math.hypot(pos.x - tip.x, pos.y - tip.y);
@@ -1070,7 +1140,17 @@
   }
 
   function moveDragAt(pos) {
-    if (isDraggingObject && selectedObjId != null) {
+    if (isResizingObject && selectedObjId != null) {
+      const o = sceneObjects.find((x) => x.id === selectedObjId);
+      if (o) {
+        const dx = Math.abs(pos.x - o.x);
+        const dy = Math.abs(pos.y - o.y);
+        const half = Math.max(dx, dy, 12);
+        o.size = Math.max(0.4, Math.min(2.5, half / objectBaseHalf(o.kind)));
+        syncObjSizeUI();
+        draw();
+      }
+    } else if (isDraggingObject && selectedObjId != null) {
       const o = sceneObjects.find((x) => x.id === selectedObjId);
       if (o) {
         o.x = pos.x - objDragOff.x;
@@ -1086,6 +1166,13 @@
       vector.x = Math.max(-20, Math.min(20, local.x));
       vector.y = Math.max(-20, Math.min(20, local.y));
       updateUI();
+    } else {
+      // Hover cursor feedback
+      const sel = selectedObjId != null ? sceneObjects.find((x) => x.id === selectedObjId) : null;
+      if (sel && hitTestResizeHandle(pos, sel)) canvas.style.cursor = 'nwse-resize';
+      else if (hitTestObject(pos)) canvas.style.cursor = 'move';
+      else if (stampKind) canvas.style.cursor = 'copy';
+      else canvas.style.cursor = 'crosshair';
     }
   }
 
@@ -1093,6 +1180,7 @@
     isDraggingVector = false;
     isDraggingOrigin = false;
     isDraggingObject = false;
+    isResizingObject = false;
   }
 
   canvas.addEventListener('mousedown', (e) => {
@@ -1110,7 +1198,7 @@
   }, { passive: false });
   canvas.addEventListener('touchmove', (e) => {
     if (e.touches.length !== 1) return;
-    if (!isDraggingOrigin && !isDraggingVector && !isDraggingObject) return;
+    if (!isDraggingOrigin && !isDraggingVector && !isDraggingObject && !isResizingObject) return;
     e.preventDefault();
     const touch = e.touches[0];
     moveDragAt(getPointerPos(touch.clientX, touch.clientY));
@@ -1120,6 +1208,20 @@
 
   // --- Drawing ---
 
+  function drawPaperBackground(c) {
+    // Graph-paper tint
+    c.fillStyle = '#f4f1e8';
+    c.fillRect(0, 0, width, height);
+    // Soft edge vignette
+    const g = c.createLinearGradient(0, 0, 0, height);
+    g.addColorStop(0, 'rgba(255,255,255,0.35)');
+    g.addColorStop(0.08, 'rgba(255,255,255,0)');
+    g.addColorStop(0.92, 'rgba(255,255,255,0)');
+    g.addColorStop(1, 'rgba(180,160,120,0.12)');
+    c.fillStyle = g;
+    c.fillRect(0, 0, width, height);
+  }
+
   function drawBackground(c) {
     if (!bgImage) return;
     const hRatio = width / bgImage.width;
@@ -1128,7 +1230,7 @@
     const centerShift_x = (width - bgImage.width * ratio) / 2;
     const centerShift_y = (height - bgImage.height * ratio) / 2;
     c.save();
-    c.globalAlpha = 0.5;
+    c.globalAlpha = 0.45;
     c.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height,
       centerShift_x, centerShift_y, bgImage.width * ratio, bgImage.height * ratio);
     c.restore();
@@ -1136,19 +1238,22 @@
 
   function drawSceneObject(c, o) {
     const selected = o.id === selectedObjId;
+    const s = o.size || 1;
     c.save();
     c.translate(o.x, o.y);
+    c.scale(s, s);
     if (selected) {
       c.strokeStyle = '#2563eb';
-      c.lineWidth = 2;
-      c.setLineDash([4, 3]);
-      c.strokeRect(-42, -42, 84, 84);
+      c.lineWidth = 2 / s;
+      c.setLineDash([4 / s, 3 / s]);
+      const half = objectBaseHalf(o.kind);
+      c.strokeRect(-half, -half, half * 2, half * 2);
       c.setLineDash([]);
     }
     if (o.kind === 'box') {
       c.fillStyle = '#c4a484';
       c.strokeStyle = '#7c5c3e';
-      c.lineWidth = 2;
+      c.lineWidth = 2 / s;
       c.fillRect(-30, -22, 60, 44);
       c.strokeRect(-30, -22, 60, 44);
       c.strokeStyle = 'rgba(0,0,0,0.15)';
@@ -1159,7 +1264,7 @@
     } else if (o.kind === 'ball') {
       c.fillStyle = '#94a3b8';
       c.strokeStyle = '#475569';
-      c.lineWidth = 2;
+      c.lineWidth = 2 / s;
       c.beginPath();
       c.arc(0, 0, 26, 0, Math.PI * 2);
       c.fill();
@@ -1181,7 +1286,7 @@
     } else if (o.kind === 'wedge') {
       c.fillStyle = '#a8b5c4';
       c.strokeStyle = '#64748b';
-      c.lineWidth = 2;
+      c.lineWidth = 2 / s;
       c.beginPath();
       c.moveTo(-36, 22);
       c.lineTo(36, 22);
@@ -1191,6 +1296,18 @@
       c.stroke();
     }
     c.restore();
+
+    // Resize handle in screen space (after restore)
+    if (selected) {
+      const h = resizeHandlePos(o);
+      c.fillStyle = '#2563eb';
+      c.strokeStyle = '#fff';
+      c.lineWidth = 2;
+      c.beginPath();
+      c.rect(h.x - 6, h.y - 6, 12, 12);
+      c.fill();
+      c.stroke();
+    }
   }
 
   function drawArrow(c, fromX, fromY, toX, toY, color, lineW, dashed) {
@@ -1258,14 +1375,28 @@
   function drawGrid(c) {
     if (!showGrid) return;
     const gridSize = 40;
-    c.strokeStyle = 'rgba(0,0,0,0.12)';
+
+    // Minor lines (every unit) — classic blue graph paper
+    c.strokeStyle = 'rgba(120, 160, 200, 0.35)';
     c.lineWidth = 1;
     for (let i = -gridSize; i <= gridSize; i++) {
+      if (i % 5 === 0) continue;
       c.beginPath(); c.moveTo(i * scale, -gridSize * scale); c.lineTo(i * scale, gridSize * scale); c.stroke();
       c.beginPath(); c.moveTo(-gridSize * scale, i * scale); c.lineTo(gridSize * scale, i * scale); c.stroke();
     }
-    c.strokeStyle = '#444';
-    c.lineWidth = 2;
+
+    // Major lines (every 5 units)
+    c.strokeStyle = 'rgba(80, 130, 180, 0.55)';
+    c.lineWidth = 1.25;
+    for (let i = -gridSize; i <= gridSize; i += 5) {
+      if (i === 0) continue;
+      c.beginPath(); c.moveTo(i * scale, -gridSize * scale); c.lineTo(i * scale, gridSize * scale); c.stroke();
+      c.beginPath(); c.moveTo(-gridSize * scale, i * scale); c.lineTo(gridSize * scale, i * scale); c.stroke();
+    }
+
+    // Main axes
+    c.strokeStyle = '#334155';
+    c.lineWidth = 2.25;
     c.beginPath();
     c.moveTo(0, -gridSize * scale); c.lineTo(0, gridSize * scale);
     c.moveTo(-gridSize * scale, 0); c.lineTo(gridSize * scale, 0);
@@ -1405,8 +1536,7 @@
   function draw() {
     drawnLabels = [];
     resetLogicalTransform();
-    ctx.clearRect(0, 0, width, height);
-
+    drawPaperBackground(ctx);
     drawBackground(ctx);
     sceneObjects.forEach((o) => drawSceneObject(ctx, o));
 

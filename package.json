@@ -14,6 +14,7 @@
     "export:optics-definitions-flashcards": "python scripts/export-optics-definitions-flashcards.py"
   },
   "devDependencies": {
+    "playwright": "^1.61.1",
     "vite": "^6.3.5"
   }
 }

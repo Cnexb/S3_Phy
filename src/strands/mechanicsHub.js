@@ -79,12 +79,14 @@ const MECHANICS_TOPICS = [
     titleKey: 'topic.circularMotion',
     fileEn: 'circular-motion-en.pdf',
     fileZh: 'circular-motion-zhHant.pdf',
+    tool: 'orbitalForces',
   },
   {
     id: 'gravitationalForce',
     titleKey: 'topic.gravitationalForce',
     fileEn: 'gravitational-force-en.pdf',
     fileZh: 'gravitational-force-zhHant.pdf',
+    tool: 'orbitalForces',
   },
 ];
 
@@ -114,7 +116,7 @@ const MECHANICS_SUMMARY_ROWS = MECHANICS_TOPICS.map((r) => {
   };
 });
 
-const TOOL_ORDER = ['vectorTool', 'elevatorWeight', 'projectileMotion'];
+const TOOL_ORDER = ['vectorTool', 'elevatorWeight', 'projectileMotion', 'orbitalForces'];
 
 const TOOL_LOADERS = {
   vectorTool: () => import('../tools/vectorToolLab.js').then((m) => m.createVectorToolLab),
@@ -122,6 +124,8 @@ const TOOL_LOADERS = {
     import('../tools/elevatorWeightLab.js').then((m) => m.createElevatorWeightLab),
   projectileMotion: () =>
     import('../tools/projectileMotionLab.js').then((m) => m.createProjectileMotionLab),
+  orbitalForces: () =>
+    import('../tools/orbitalForcesLab.js').then((m) => m.createOrbitalForcesLab),
 };
 
 function toolLabel(id) {
@@ -129,6 +133,7 @@ function toolLabel(id) {
     vectorTool: 'tools.vectorTool.title',
     elevatorWeight: 'tools.elevatorWeight.title',
     projectileMotion: 'tools.projectileMotion.title',
+    orbitalForces: 'tools.orbitalForces.title',
   };
   return t(map[id] || id);
 }

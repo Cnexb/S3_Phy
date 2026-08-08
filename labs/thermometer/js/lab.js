@@ -480,6 +480,17 @@ export function createThermometerLab(t, options = {}) {
   `;
 
   // --- STATE MANAGEMENT ---
+  let initialBathTemp = 25.0;
+  try {
+    const saved = sessionStorage.getItem('s3phy.thermometer.bathTemp');
+    if (saved !== null) {
+      const parsed = parseFloat(saved);
+      if (!isNaN(parsed) && parsed >= 0 && parsed <= 200) {
+        initialBathTemp = parsed;
+      }
+    }
+  } catch (err) {}
+
   const state = {
     liquidType: 'mercury',
     thermometerType: defaultType,
@@ -493,8 +504,8 @@ export function createThermometerLab(t, options = {}) {
     thermistorR25: 10.0,
     thermistorBeta: 3500,
 
-    bathTemp: 25.0,
-    thermometerTemp: 25.0,
+    bathTemp: initialBathTemp,
+    thermometerTemp: initialBathTemp,
 
     bubbles: [],
     iceCubes: [],
@@ -510,7 +521,7 @@ export function createThermometerLab(t, options = {}) {
     lastDesignChange: null, // 'bulb' | 'bore' | 'wall' | null
     focusPart: isLiquidDesign ? 'bulb' : null, // 'bulb' | 'bore' | 'wall'
     /** Reference thermometer temp (default design τ) for side-by-side response compare */
-    refThermometerTemp: 25.0,
+    refThermometerTemp: initialBathTemp,
   };
 
   // Teaching model (design lab):
@@ -1391,8 +1402,8 @@ export function createThermometerLab(t, options = {}) {
       : 10 + design.wallThickness * 8;
     const leftX = x - glassWidth / 2;
     const rightX = x + glassWidth / 2;
-    // Only highlight focus parts on the current (right) thermometer in compare mode
-    const focus = isLiquidDesign && design.role !== 'reference' ? state.focusPart : null;
+    // Highlight active parts on both thermometers in compare mode to keep them visually symmetrical and identical in size/opacity
+    const focus = isLiquidDesign ? state.focusPart : null;
     const dim = (part) => (focus && focus !== part ? 0.28 : 1);
 
     // Soft colorful bath backdrop when in design mode (once; compare mode draws it in drawVisuals)
@@ -2231,16 +2242,14 @@ export function createThermometerLab(t, options = {}) {
             : '#ea580c'
       );
 
-      // Living temperature readout under each stem (helps wall/response demos)
-      if (state.focusPart === 'wall') {
-        physCtx.save();
-        physCtx.textAlign = 'center';
-        physCtx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
-        physCtx.fillStyle = '#0f766e';
-        physCtx.fillText(`T = ${refTemp.toFixed(1)} °C`, physLayout.leftThermometerX, 448);
-        physCtx.fillText(`T = ${curTemp.toFixed(1)} °C`, physLayout.rightThermometerX, 448);
-        physCtx.restore();
-      }
+      // Living temperature readout under each stem (helps wall/response demos and shows current thermometer temp)
+      physCtx.save();
+      physCtx.textAlign = 'center';
+      physCtx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
+      physCtx.fillStyle = '#0f766e';
+      physCtx.fillText(`T = ${refTemp.toFixed(1)} °C`, physLayout.leftThermometerX, 448);
+      physCtx.fillText(`T = ${curTemp.toFixed(1)} °C`, physLayout.rightThermometerX, 448);
+      physCtx.restore();
 
       return;
     }
@@ -2697,11 +2706,18 @@ export function createThermometerLab(t, options = {}) {
     calculateTtoR();
   }
 
+  function updateBathTemp(temp) {
+    state.bathTemp = temp;
+    try {
+      sessionStorage.setItem('s3phy.thermometer.bathTemp', String(temp));
+    } catch (err) {}
+  }
+
   function setupPreset(btnId, temp) {
     const btn = wrap.querySelector('#' + btnId);
     if (!btn) return;
     btn.addEventListener('click', () => {
-      state.bathTemp = temp;
+      updateBathTemp(temp);
       const slider = wrap.querySelector('#tl-bath-temp-slider');
       if (slider) slider.value = String(temp);
       updateCalculations();
@@ -2749,8 +2765,9 @@ export function createThermometerLab(t, options = {}) {
 
     const tempSlider = wrap.querySelector('#tl-bath-temp-slider');
     if (tempSlider) {
+      tempSlider.value = String(state.bathTemp);
       tempSlider.addEventListener('input', (e) => {
-        state.bathTemp = parseFloat(e.target.value);
+        updateBathTemp(parseFloat(e.target.value));
         updateCalculations();
       });
     }
