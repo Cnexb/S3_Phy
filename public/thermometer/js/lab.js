@@ -783,10 +783,42 @@ export function createThermometerLab(t, options = {}) {
     return t('tools.thermometerLab.design.cueDefault');
   }
 
+  function resetDesignParamsToDefaults() {
+    state.bulbVolume = DESIGN.V_ref;
+    state.capillaryBore = DESIGN.d_ref;
+    state.wallThickness = DESIGN.w_ref;
+    // Keep both thermometers aligned so the next demo starts from equilibrium
+    state.refThermometerTemp = state.thermometerTemp;
+
+    const bulbSlider = wrap.querySelector('#tl-slider-bulb-vol');
+    const bulbInput = wrap.querySelector('#tl-input-bulb-vol');
+    if (bulbSlider) bulbSlider.value = String(DESIGN.V_ref);
+    if (bulbInput) bulbInput.value = Number(DESIGN.V_ref).toFixed(0);
+
+    const boreSlider = wrap.querySelector('#tl-slider-capillary-bore');
+    const boreInput = wrap.querySelector('#tl-input-capillary-bore');
+    if (boreSlider) boreSlider.value = String(DESIGN.d_ref);
+    if (boreInput) boreInput.value = Number(DESIGN.d_ref).toFixed(2);
+
+    const wallSlider = wrap.querySelector('#tl-slider-wall-thick');
+    const wallInput = wrap.querySelector('#tl-input-wall-thick');
+    if (wallSlider) wallSlider.value = String(DESIGN.w_ref);
+    if (wallInput) wallInput.value = Number(DESIGN.w_ref).toFixed(2);
+
+    applyDesignToLengths();
+  }
+
   function setFocusPart(part) {
     if (!isLiquidDesign) return;
+    const switched = state.focusPart !== part;
     state.focusPart = part;
     state.lastDesignChange = part;
+
+    // Switching tabs starts a fresh demo from the default thermometer design
+    if (switched) {
+      resetDesignParamsToDefaults();
+    }
+
     wrap.querySelectorAll('.tl-part-tab').forEach((btn) => {
       const on = btn.dataset.part === part;
       btn.classList.toggle('active', on);
