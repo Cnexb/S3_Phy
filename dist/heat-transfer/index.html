@@ -401,25 +401,38 @@
         }
 
         #dull-black-block {
-            /* Matte dull black stays black; heat is shown only via #glow-black red filter. */
+            /* Matte dull black stays black; heat rim may glow outside the edge. */
             background-color: #0c0c0e !important;
             background-image: none !important;
             border-color: #2a2a30;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
             transition: border-color 0.45s ease, box-shadow 0.45s ease;
-            overflow: hidden;
+            overflow: visible;
+        }
+        #sec-radiation .canvas-container {
+            overflow: visible;
+        }
+        #rad-fs-root,
+        #rad-fs-root.glass-panel {
+            border: none !important;
+            box-shadow: none;
+        }
+        #sec-radiation .rad-fs-sandbox,
+        #rad-fs-root:fullscreen .rad-fs-sandbox,
+        #rad-fs-root:-webkit-full-screen .rad-fs-sandbox {
+            border: none !important;
         }
         #dull-black-block span.text-slate-400,
         #dull-black-block span.text-slate-500 {
             color: #9ca3af !important; /* Original dark theme muted grey for legibility on black */
         }
         #shiny-silver-block {
-            /* Shiny silver base stays metallic; heat is shown only via #glow-shiny red filter. */
+            /* Shiny silver base stays metallic; heat rim may glow outside the edge. */
             background-color: #e8edf3 !important;
             background-image: linear-gradient(135deg, #ffffff 0%, #dbe3ec 22%, #c5ced9 48%, #eef2f6 72%, #b8c2ce 100%) !important;
             border-color: #94a3b8;
             transition: border-color 0.45s ease, box-shadow 0.45s ease;
-            overflow: hidden;
+            overflow: visible;
         }
         #shiny-silver-block::after {
             content: "";
@@ -454,11 +467,27 @@
         .radiation-surface-rate {
             position: relative;
             z-index: 3;
+            max-width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
         .radiation-surface-label {
             align-self: center;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 999px;
+            font-size: 15px;
+            letter-spacing: 0.06em;
+            line-height: 1.15;
+        }
+        .radiation-surface-temp {
+            font-size: 38px;
+            line-height: 1.1;
+        }
+        .radiation-surface-rate {
+            font-size: 15px;
+            line-height: 1.15;
         }
         #dull-black-block .radiation-surface-label {
             color: #f8fafc !important;
@@ -474,11 +503,286 @@
             color: #e2e8f0 !important;
         }
         #shiny-silver-block .radiation-surface-rate {
-            color: #334155 !important;
+            color: #000000 !important;
         }
-        #ir-heater:not(.border-rose-500) {
-            background-color: #1a1c2c !important; /* Keep heater physically black when inactive */
-            border-color: #3d4254 !important;
+        .ir-sun {
+            width: 8rem;
+            height: 8rem;
+            position: relative;
+            border-radius: 9999px;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        #ir-heater[hidden] {
+            display: none !important;
+        }
+        .ir-sun-disk {
+            position: absolute;
+            inset: 22%;
+            border-radius: 9999px;
+            z-index: 2;
+            background: radial-gradient(circle at 35% 30%, #94a3b8 0%, #475569 55%, #1e293b 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+        .ir-sun-on .ir-sun-disk {
+            background: radial-gradient(circle at 35% 30%, #fef3c7 0%, #fbbf24 45%, #d97706 100%);
+            box-shadow: 0 0 22px 6px rgba(245, 158, 11, 0.55), inset 0 1px 0 rgba(255,255,255,0.55);
+        }
+        .ir-sun-rays {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.28;
+            background: repeating-conic-gradient(from 0deg, rgba(148, 163, 184, 0.85) 0deg 8deg, transparent 8deg 22.5deg);
+            border-radius: 9999px;
+            -webkit-mask: radial-gradient(circle, transparent 34%, #000 38%, #000 50%, transparent 52%);
+            mask: radial-gradient(circle, transparent 34%, #000 38%, #000 50%, transparent 52%);
+        }
+        .ir-sun-on .ir-sun-rays {
+            opacity: 1;
+            background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.95) 0deg 8deg, transparent 8deg 22.5deg);
+            animation: ir-sun-spin 10s linear infinite;
+        }
+        @keyframes ir-sun-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #conv-fs-hud {
+            display: none;
+        }
+        #conv-fs-root {
+            --conv-fs-bg: transparent;
+        }
+        #conv-fs-root:fullscreen,
+        #conv-fs-root:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            background: var(--conv-fs-bg, transparent);
+            border-radius: 0;
+            border: none;
+        }
+        #conv-fs-root:fullscreen.conv-fs-day,
+        #conv-fs-root:-webkit-full-screen.conv-fs-day {
+            background: var(--conv-fs-bg, #f8fafc);
+        }
+        #conv-fs-root:fullscreen.conv-fs-night,
+        #conv-fs-root:-webkit-full-screen.conv-fs-night {
+            background: var(--conv-fs-bg, #020617);
+        }
+        #conv-fs-root:fullscreen .conv-fluid-legend,
+        #conv-fs-root:-webkit-full-screen .conv-fluid-legend {
+            display: none;
+        }
+        #conv-fs-root:fullscreen #convectionCanvas,
+        #conv-fs-root:-webkit-full-screen #convectionCanvas {
+            height: 100%;
+            background-color: var(--conv-fs-bg, transparent);
+        }
+        #conv-fs-root:fullscreen #conv-fs-hud,
+        #conv-fs-root:-webkit-full-screen #conv-fs-hud {
+            display: flex;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 40;
+            gap: 12px;
+            pointer-events: none;
+        }
+        #conv-fs-root:fullscreen #conv-fs-hud button,
+        #conv-fs-root:-webkit-full-screen #conv-fs-hud button {
+            pointer-events: auto;
+            min-height: 46px;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            line-height: 1.2;
+            border-radius: 14px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.32);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        #conv-fs-root:fullscreen #conv-fs-daynight,
+        #conv-fs-root:-webkit-full-screen #conv-fs-daynight {
+            background: rgba(255, 255, 255, 0.94);
+            color: #0f172a;
+            border: 2px solid rgba(15, 23, 42, 0.22);
+        }
+        #conv-fs-root:fullscreen.conv-fs-night #conv-fs-daynight,
+        #conv-fs-root:-webkit-full-screen.conv-fs-night #conv-fs-daynight {
+            background: rgba(15, 23, 42, 0.82);
+            color: #f8fafc;
+            border-color: rgba(248, 250, 252, 0.35);
+        }
+        #conv-fs-root:fullscreen #conv-fs-exit,
+        #conv-fs-root:-webkit-full-screen #conv-fs-exit {
+            background: #4f46e5;
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.28);
+        }
+        #conv-fs-root:fullscreen #conv-fs-exit:hover,
+        #conv-fs-root:-webkit-full-screen #conv-fs-exit:hover {
+            background: #4338ca;
+        }
+        #conv-fs-root:fullscreen #conv-fs-showctrl,
+        #conv-fs-root:-webkit-full-screen #conv-fs-showctrl {
+            background: rgba(255, 255, 255, 0.94);
+            color: #0f172a;
+            border: 2px solid rgba(15, 23, 42, 0.22);
+        }
+        #rad-fs-hud {
+            display: none;
+        }
+        #rad-fs-root:fullscreen,
+        #rad-fs-root:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            border-radius: 0;
+            border: none;
+            background: #ffffff;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+        #rad-fs-root:fullscreen .rad-fs-toolbar,
+        #rad-fs-root:-webkit-full-screen .rad-fs-toolbar {
+            display: none;
+        }
+        #rad-fs-root:fullscreen .rad-fs-sandbox,
+        #rad-fs-root:-webkit-full-screen .rad-fs-sandbox {
+            flex: 1 1 auto;
+            height: auto !important;
+            min-height: 0;
+        }
+        #rad-fs-root:fullscreen #dull-black-block,
+        #rad-fs-root:-webkit-full-screen #dull-black-block,
+        #rad-fs-root:fullscreen #shiny-silver-block,
+        #rad-fs-root:-webkit-full-screen #shiny-silver-block {
+            width: 320px;
+            height: 320px;
+        }
+        #rad-fs-root:fullscreen .radiation-surface-label,
+        #rad-fs-root:-webkit-full-screen .radiation-surface-label,
+        #rad-fs-root:fullscreen .radiation-surface-rate,
+        #rad-fs-root:-webkit-full-screen .radiation-surface-rate {
+            font-size: 24px;
+        }
+        #rad-fs-root:fullscreen .radiation-surface-temp,
+        #rad-fs-root:-webkit-full-screen .radiation-surface-temp {
+            font-size: 60px;
+        }
+        #rad-fs-root:fullscreen .rad-sun-slot,
+        #rad-fs-root:-webkit-full-screen .rad-sun-slot,
+        #rad-fs-root:fullscreen .ir-sun,
+        #rad-fs-root:-webkit-full-screen .ir-sun {
+            width: 160px;
+            height: 160px;
+        }
+        #rad-fs-root:fullscreen #rad-fs-hud,
+        #rad-fs-root:-webkit-full-screen #rad-fs-hud {
+            display: flex;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 50;
+            gap: 12px;
+            pointer-events: none;
+        }
+        #rad-fs-root:fullscreen #rad-fs-hud button,
+        #rad-fs-root:-webkit-full-screen #rad-fs-hud button {
+            pointer-events: auto;
+            min-height: 46px;
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            line-height: 1.2;
+            border-radius: 14px;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.32);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        #rad-fs-root:fullscreen #rad-fs-reset,
+        #rad-fs-root:-webkit-full-screen #rad-fs-reset {
+            background: rgba(255, 255, 255, 0.94);
+            color: #0f172a;
+            border: 2px solid rgba(15, 23, 42, 0.22);
+        }
+        #rad-fs-root:fullscreen #rad-fs-exit,
+        #rad-fs-root:-webkit-full-screen #rad-fs-exit {
+            background: #4f46e5;
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.28);
+        }
+        #rad-fs-root:fullscreen #rad-fs-exit:hover,
+        #rad-fs-root:-webkit-full-screen #rad-fs-exit:hover {
+            background: #4338ca;
+        }
+        #rad-fs-enter {
+            background: #4f46e5 !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.28) !important;
+        }
+        #rad-fs-enter:hover {
+            background: #4338ca !important;
+            color: #ffffff !important;
+        }
+        #rad-fs-enter span {
+            color: #ffffff !important;
+        }
+        #rad-heat-btn.rad-sun-on,
+        #rad-fs-heat-btn.rad-sun-on {
+            background: #000000 !important;
+            color: #ffffff !important;
+            border-color: #000000 !important;
+        }
+        #rad-heat-btn.rad-sun-on:hover,
+        #rad-fs-heat-btn.rad-sun-on:hover {
+            background: #171717 !important;
+            color: #ffffff !important;
+        }
+        #rad-heat-btn.rad-sun-on span,
+        #rad-fs-heat-btn.rad-sun-on span {
+            color: #ffffff !important;
+        }
+
+        #conv-fs-room-panel {
+            display: none;
+        }
+        #conv-fs-root:fullscreen.conv-fs-room-controls,
+        #conv-fs-root:-webkit-full-screen.conv-fs-room-controls {
+            flex-direction: row;
+            align-items: stretch;
+        }
+        #conv-fs-root:fullscreen.conv-fs-room-controls #convectionCanvas,
+        #conv-fs-root:-webkit-full-screen.conv-fs-room-controls #convectionCanvas {
+            flex: 1 1 auto;
+            width: auto;
+            min-width: 0;
+            height: 100%;
+        }
+        #conv-fs-root:fullscreen.conv-fs-room-controls #conv-annotation-svg,
+        #conv-fs-root:-webkit-full-screen.conv-fs-room-controls #conv-annotation-svg {
+            right: min(380px, 34vw);
+            width: auto;
+            left: 0;
+            top: 0;
+            height: 100%;
+        }
+        #conv-fs-root:fullscreen.conv-fs-room-controls #conv-fs-room-panel,
+        #conv-fs-root:-webkit-full-screen.conv-fs-room-controls #conv-fs-room-panel {
+            display: flex;
+            flex-direction: column;
+            width: min(380px, 34vw);
+            flex-shrink: 0;
+            height: 100%;
+            overflow: auto;
+            padding: 76px 18px 20px;
+            background: rgba(248, 250, 252, 0.97);
+            border-left: 1px solid #cbd5e1;
+            color: #0f172a;
+            z-index: 30;
         }
 
         /* Vacuum Flask White HUD & Control Panels (Clean Light Theme Styling) */
@@ -789,7 +1093,7 @@
                     </div>
 
                     <!-- Sandbox Viewport -->
-                    <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 flex flex-col min-h-[12rem] flex-1 canvas-container conv-canvas-fill">
+                    <div id="conv-fs-root" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 flex flex-col min-h-[12rem] flex-1 canvas-container conv-canvas-fill">
                         <div class="conv-fluid-legend flex-shrink-0 h-6 bg-slate-900 border-b border-slate-800/80 flex justify-around items-center text-[10px] text-slate-400 font-semibold select-none">
                             <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span><span data-i18n="convection.hotRising">Hot Fluid Expands & Rises (Low ρ)</span></span>
                             <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span><span data-i18n="convection.coldSinking">Cold Fluid Contracts & Sinks (High ρ)</span></span>
@@ -798,20 +1102,27 @@
                         <svg id="conv-annotation-svg" viewBox="0 0 800 400" class="svg-annotation absolute inset-x-0 top-6 bottom-0 w-full h-[calc(100%-1.5rem)] pointer-events-none" aria-label="Convection flow annotations" preserveAspectRatio="xMidYMid meet">
                             <g id="conv-flow-arrows"></g>
                         </svg>
+                        <div id="conv-fs-hud">
+                            <button type="button" id="conv-fs-showctrl" onclick="toggleRoomFsControls()" class="px-3.5 py-2 bg-white/90 text-black border border-slate-400 rounded-xl text-xs font-bold shadow-lg">
+                                <span id="conv-fs-showctrl-lbl">Show controls</span>
+                            </button>
+                            <button type="button" id="conv-fs-daynight" onclick="toggleBreezeFullscreenTime()" class="px-3.5 py-2 bg-white/90 text-black border border-slate-400 rounded-xl text-xs font-bold shadow-lg">
+                                <span id="conv-fs-daynight-lbl">Daytime</span>
+                            </button>
+                            <button type="button" id="conv-fs-exit" onclick="exitConvFullscreen()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg" data-i18n="common.exitFullscreen">Exit</button>
+                        </div>
+                        <div id="conv-fs-room-panel">
+                            <div id="conv-fs-room-controls"></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Right Panel: Core Physics, Curriculum, & Scenarios -->
             <div class="lg:col-span-4 tab-sidebar-col flex flex-col gap-6">
-                <!-- Syllabus Information Panel -->
-                <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-sky-500">
-                    <span class="text-[10px] font-black tracking-widest text-sky-400 uppercase" data-i18n="common.curriculumConcept">Curriculum Concept</span>
-                    <h3 class="font-black text-lg text-white mt-0.5" data-i18n="convection.title">Convection</h3>
-                    <p class="text-slate-300 text-xs leading-relaxed mt-2" data-i18n="convection.concept">
-                        Warm fluid expands, becomes less dense and rises; cooler denser fluid sinks to replace it — forming a convection current.
-                    </p>
-                </div>
+                <button type="button" id="conv-fs-enter" onclick="enterConvFullscreen()" class="glass-panel rounded-2xl p-5 border-l-4 border-l-sky-500 w-full text-left font-bold text-sm text-slate-200 hover:border-l-indigo-500 transition-all">
+                    <span data-i18n="common.fullscreen">Full Screen</span>
+                </button>
 
                 <div class="glass-panel conv-scenarios-card rounded-2xl p-5 flex flex-col gap-4 flex-1 min-h-0 conv-scenarios-panel">
                     <h4 class="font-bold text-sm text-slate-200 flex-shrink-0" data-i18n="convection.scenarios">Interactive Scenarios</h4>
@@ -844,79 +1155,65 @@
         <section id="sec-radiation" class="tab-content main-grid grid grid-cols-1 gap-6 hidden">
             <!-- Full-width Interactive Simulation Area -->
             <div class="sim-main-col flex flex-col gap-6">
-                <div class="glass-panel rounded-2xl p-5 flex flex-col flex-grow relative overflow-hidden">
-                    <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <div id="rad-fs-root" class="glass-panel rounded-2xl p-5 flex flex-col flex-grow relative overflow-hidden">
+                    <div class="rad-fs-toolbar flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
                         <div class="flex items-center gap-2.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
                             <h3 class="font-bold text-sm tracking-wide text-slate-200" data-i18n="radiation.simTitle">Surface Absorption & Emission Lab</h3>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button id="rad-heat-btn" onclick="toggleRadiationHeater()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-md">
-                                <i data-lucide="power" class="w-3.5 h-3.5"></i>
-                                <span id="rad-heat-lbl" data-i18n="radiation.turnOn">Turn ON Heater</span>
+                            <button type="button" id="rad-reset-btn" onclick="resetRadiationSim()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-all border border-slate-700">
+                                <span data-i18n="common.resetBtn">Reset</span>
                             </button>
-                            <button onclick="resetRadiationSim()" class="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition-colors border border-slate-700" data-i18n-title="common.reset" title="Reset Simulation">
-                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            <button id="rad-heat-btn" onclick="toggleRadiationHeater()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-md">
+                                <span id="rad-heat-lbl" data-i18n="radiation.turnOn">Under sunlight</span>
+                            </button>
+                            <button type="button" id="rad-fs-enter" onclick="enterRadFullscreen()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all">
+                                <span data-i18n="common.fullscreen">Full screen</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Sandbox Viewport -->
-                    <div class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-72 lg:h-[380px] xl:h-[420px] flex flex-col justify-between p-5 canvas-container">
+                    <div class="rad-fs-sandbox relative bg-slate-950 rounded-xl overflow-hidden h-80 lg:h-[380px] xl:h-[420px] flex flex-col justify-between p-5 canvas-container">
                         <div class="flex justify-between items-center h-full relative">
                             
                             <!-- Dull Black Block -->
-                            <div id="dull-black-block" class="w-28 h-28 bg-slate-900 rounded-2xl border border-slate-850 flex flex-col justify-between p-3 text-center text-white relative z-10 shadow-lg">
-                                <span class="radiation-surface-label text-[9px] font-black tracking-widest text-slate-400 uppercase" data-i18n="radiation.dullBlack">Dull Black</span>
-                                <div class="radiation-surface-temp text-2xl font-black text-red-500" id="temp-black">20.0 C</div>
-                                <span class="radiation-surface-rate text-[9px] text-slate-400" id="rate-black">Room Temp</span>
+                            <div id="dull-black-block" class="w-[200px] h-[200px] bg-slate-900 rounded-2xl border border-slate-850 flex flex-col justify-between p-3 text-center text-white relative z-10 shadow-lg">
+                                <span class="radiation-surface-label font-black tracking-wide text-slate-400 uppercase" data-i18n="radiation.dullBlack">Dull Black</span>
+                                <div class="radiation-surface-temp font-black text-red-500" id="temp-black">20.0 C</div>
+                                <span class="radiation-surface-rate text-slate-400" id="rate-black">Room Temp</span>
                                 <div id="glow-black" class="absolute inset-0 rounded-2xl opacity-0 pointer-events-none" aria-hidden="true"></div>
                             </div>
 
-                            <!-- Central Infrared Heater -->
-                            <div class="flex flex-col items-center justify-center z-20">
-                                <div id="ir-heater" class="w-20 h-20 bg-slate-900 rounded-full border-2 border-slate-800 flex items-center justify-center transition-all duration-300">
-                                    <i data-lucide="flame" class="w-10 h-10 text-slate-600" id="ir-flame-icon"></i>
+                            <!-- Central Infrared Sun -->
+                            <div class="rad-sun-slot flex flex-col items-center justify-center z-20 w-32 h-32 shrink-0">
+                                <div id="ir-heater" class="ir-sun" hidden aria-hidden="true" aria-label="IR Sun">
+                                    <div class="ir-sun-rays" aria-hidden="true"></div>
+                                    <div class="ir-sun-disk" aria-hidden="true"></div>
                                 </div>
-                                <span class="text-[9px] font-black text-slate-500 mt-2.5 uppercase tracking-widest" data-i18n="radiation.irEmitter">IR Emitter</span>
                             </div>
 
                             <!-- Shiny Silver Block -->
-                            <div id="shiny-silver-block" class="w-28 h-28 bg-slate-100 rounded-2xl border-2 border-slate-300 flex flex-col justify-between p-3 text-center text-slate-800 relative z-10 shadow-lg">
-                                <span class="radiation-surface-label text-[9px] font-black tracking-widest text-slate-500 uppercase" data-i18n="radiation.shinySilver">Shiny Silver</span>
-                                <div class="radiation-surface-temp text-2xl font-black text-indigo-600" id="temp-shiny">20.0 C</div>
-                                <span class="radiation-surface-rate text-[9px] text-slate-500" id="rate-shiny">Room Temp</span>
+                            <div id="shiny-silver-block" class="w-[200px] h-[200px] bg-slate-100 rounded-2xl border-2 border-slate-300 flex flex-col justify-between p-3 text-center text-slate-800 relative z-10 shadow-lg">
+                                <span class="radiation-surface-label font-black tracking-wide text-slate-500 uppercase" data-i18n="radiation.shinySilver">Shiny Silver</span>
+                                <div class="radiation-surface-temp font-black text-indigo-600" id="temp-shiny">20.0 C</div>
+                                <span class="radiation-surface-rate text-slate-500" id="rate-shiny">Room Temp</span>
                                 <div id="glow-shiny" class="absolute inset-0 rounded-2xl opacity-0 pointer-events-none" aria-hidden="true"></div>
                             </div>
 
                             <canvas id="radiationWaveCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-                            <svg class="svg-annotation absolute inset-0 w-full h-full pointer-events-none" id="ir-waves-svg" aria-label="Infrared wave labels"></svg>
                         </div>
                     </div>
 
-                    <!-- Sandbox Controls Dashboard (Stefan-Boltzmann & Wien's visualizer) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4 pt-4 border-t border-slate-800">
-                        <div class="space-y-1.5">
-                            <span class="text-[10px] font-black tracking-widest text-slate-400 uppercase" data-i18n="radiation.emissivity">Surface Emissivity (e)</span>
-                            <div class="grid grid-cols-2 gap-2 mt-1">
-                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800/80 text-[10px] flex flex-col justify-between">
-                                    <span class="text-slate-400 font-bold" data-i18n="radiation.dullBlack">Dull Black</span>
-                                    <span class="text-rose-500 font-extrabold mt-0.5" data-i18n="radiation.eHigh">e ≈ 0.95 (High)</span>
-                                </div>
-                                <div class="bg-slate-900/80 p-2 rounded-xl border border-slate-800/80 text-[10px] flex flex-col justify-between">
-                                    <span class="text-slate-400 font-bold" data-i18n="radiation.shinySilver">Shiny Silver</span>
-                                    <span class="text-sky-400 font-extrabold mt-0.5" data-i18n="radiation.eLow">e ≈ 0.05 (Low)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-1.5 flex flex-col justify-center">
-                            <div class="flex justify-between text-[10px] font-black tracking-widest text-slate-400 uppercase">
-                                <span data-i18n="radiation.emitterTemp">Emitter Temp</span>
-                                <span id="rad-power-val" class="live-value font-bold">500°C</span>
-                            </div>
-                            <input type="range" id="rad-power-slider" min="150" max="1000" value="500" oninput="updateRadiationPower(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer mt-1">
-                            <div class="text-[9px] text-slate-500 font-medium tracking-wide mt-1" data-i18n="radiation.emissivityNote">Wavelength λ_max ∝ 1/T (Wien's Law) · Energy P ∝ T⁴</div>
-                        </div>
+                    <div id="rad-fs-hud">
+                        <button type="button" id="rad-fs-reset" onclick="resetRadiationSim()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold shadow-lg">
+                            <span data-i18n="common.resetBtn">Reset</span>
+                        </button>
+                        <button type="button" id="rad-fs-heat-btn" onclick="toggleRadiationHeater()" class="px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-lg">
+                            <span id="rad-fs-heat-lbl" data-i18n="radiation.turnOn">Under sunlight</span>
+                        </button>
+                        <button type="button" id="rad-fs-exit" onclick="exitConvFullscreen()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg" data-i18n="common.exitFullscreen">Exit</button>
                     </div>
 
                     </div>
@@ -1249,8 +1546,10 @@
                 },
                 nav: { conduction: 'Conduction', convection: 'Convection', radiation: 'Radiation', applications: 'Applications' },
                 common: {
-                    pause: 'Pause', play: 'Play', reset: 'Reset Simulation', zoomIn: 'Zoom In',
+                    pause: 'Pause', play: 'Play', reset: 'Reset Simulation', resetBtn: 'Reset', zoomIn: 'Zoom In',
                     clearGraph: 'Clear Graph', curriculumConcept: 'Curriculum Concept',
+                    fullscreen: 'Full screen', exitFullscreen: 'Exit',
+                    showControls: 'Show controls', hideControls: 'Hide controls',
                     active: 'ACTIVE', standby: 'STANDBY', heating: 'HEATING', off: 'OFF',
                     center: 'Center', left: 'Left', right: 'Right',
                     stuck: 'Stuck', dropped: 'Dropped ({time}s)', roomTemp: 'Room Temp',
@@ -1307,6 +1606,10 @@
                     buoyancy: 'Buoyancy force F_b ∝ Δρ · g',
                     landHot: 'LAND (HOT)', landCold: 'LAND (COLD)',
                     seaCool: 'SEA (COOL)', seaWarm: 'SEA (WARM)',
+                    labelLandWarmer: 'Land warmer',
+                    labelSeaCooler: 'Sea cooler',
+                    labelLandCooler: 'Land cooler',
+                    labelSeaWarmer: 'Sea warmer',
                     landHeatedFast: 'Land (Heated Fast): ρ_land ≈ 1.10 kg/m³',
                     seaCooler: 'Sea (Cooler Water): ρ_sea ≈ 1.25 kg/m³',
                     seaBreeze: 'Current flow: SEA BREEZE (Sea → Land)',
@@ -1316,9 +1619,9 @@
                 },
                 radiation: {
                     simTitle: 'Surface Absorption & Emission Lab',
-                    turnOn: 'Turn ON Heater', turnOff: 'Turn OFF Heater',
+                    turnOn: 'Under sunlight', turnOff: 'Remove sunlight',
                     dullBlack: 'Dull Black', shinySilver: 'Shiny Silver',
-                    irEmitter: 'IR Emitter',
+                    irEmitter: 'IR Sun',
                     emissivity: 'Surface Emissivity (e)', emitterTemp: 'Emitter Temp',
                     emissivityNote: 'Wavelength λ_max ∝ 1/T (Wien\'s Law) · Energy P ∝ T⁴',
                     eHigh: 'e ≈ 0.95 (High)', eLow: 'e ≈ 0.05 (Low)',
@@ -1326,8 +1629,8 @@
                     concept: 'Radiation transfers heat by IR electromagnetic waves — no medium required, works in vacuum. Dull black surfaces absorb and emit well; shiny silver surfaces reflect IR and absorb poorly.',
                     graphTitle: 'Real-time Radiation Comparison',
                     graphDesc: 'Temperature of Black & Silver blocks (synced with simulation)',
-                    absorbingFast: 'Absorbing Fast!', reflectingIR: 'Reflecting IR...',
-                    emittingFast: 'Emitting Fast!', emittingSlow: 'Emitting Slow',
+                    absorbingFast: 'Absorbing Fast!', reflectingIR: 'Reflecting IR',
+                    emittingFast: 'Emitting Fast!', emittingSlow: 'Emitting Slow!',
                     absorbLabel: 'Absorb →', reflectLabel: '← Reflect', irWaves: 'IR WAVES'
                 },
                 applications: {
@@ -1372,8 +1675,10 @@
                 },
                 nav: { conduction: '傳導', convection: '對流', radiation: '輻射', applications: '應用' },
                 common: {
-                    pause: '暫停', play: '播放', reset: '重設模擬', zoomIn: '放大',
+                    pause: '暫停', play: '播放', reset: '重設模擬', resetBtn: '重設', zoomIn: '放大',
                     clearGraph: '清除圖表', curriculumConcept: '課程概念',
+                    fullscreen: '全畫面', exitFullscreen: '離開',
+                    showControls: '顯示控制', hideControls: '隱藏控制',
                     active: '運作中', standby: '待機', heating: '加熱中', off: '關閉',
                     center: '中間', left: '左側', right: '右側',
                     stuck: '固定', dropped: '已掉落 ({time}秒)', roomTemp: '室溫',
@@ -1430,6 +1735,10 @@
                     buoyancy: '浮力 F_b ∝ Δρ · g',
                     landHot: '陸地（熱）', landCold: '陸地（冷）',
                     seaCool: '海洋（涼）', seaWarm: '海洋（暖）',
+                    labelLandWarmer: '陸地較暖',
+                    labelSeaCooler: '海洋較涼',
+                    labelLandCooler: '陸地較涼',
+                    labelSeaWarmer: '海洋較暖',
                     landHeatedFast: '陸地（升溫快）：ρ_land ≈ 1.10 kg/m³',
                     seaCooler: '海洋（較涼）：ρ_sea ≈ 1.25 kg/m³',
                     seaBreeze: '流向：海風（海 → 陸）',
@@ -1439,9 +1748,9 @@
                 },
                 radiation: {
                     simTitle: '表面吸收與輻射實驗',
-                    turnOn: '開啟加熱器', turnOff: '關閉加熱器',
+                    turnOn: '置於陽光下', turnOff: '移除陽光',
                     dullBlack: '啞黑', shinySilver: '亮銀',
-                    irEmitter: '紅外線發射器',
+                    irEmitter: '紅外線太陽',
                     emissivity: '表面放射率 (e)', emitterTemp: '發射器溫度',
                     emissivityNote: '波長 λ_max ∝ 1/T（溫位移定律）· 能量 P ∝ T⁴',
                     eHigh: 'e ≈ 0.95（高）', eLow: 'e ≈ 0.05（低）',
@@ -1449,8 +1758,8 @@
                     concept: '輻射以紅外電磁波傳熱——不需介質，真空亦可。啞黑表面善於吸收與輻射；亮銀表面反射紅外線、吸收差。',
                     graphTitle: '即時輻射比較',
                     graphDesc: '黑/銀方塊表面溫度（與模擬同步）',
-                    absorbingFast: '快速吸收！', reflectingIR: '反射紅外線...',
-                    emittingFast: '快速輻射！', emittingSlow: '緩慢輻射',
+                    absorbingFast: '快速吸收！', reflectingIR: '反射紅外線',
+                    emittingFast: '快速輻射！', emittingSlow: '緩慢輻射！',
                     absorbLabel: '吸收 →', reflectLabel: '← 反射', irWaves: '紅外線'
                 },
                 applications: {
@@ -1505,12 +1814,13 @@
             document.title = t('app.pageTitle');
 
             const skipI18nIds = new Set([
-                'cond-bar-hot', 'cond-play-text', 'conv-play-text', 'rad-heat-lbl',
+                'cond-bar-hot', 'cond-play-text', 'conv-play-text', 'rad-heat-lbl', 'rad-fs-heat-lbl',
                 'cond-amp-stat', 'cond-elec-stat',
                 'flask-detail-title', 'flask-detail-desc',
                 'status-pin-a', 'status-pin-b', 'status-pin-c',
-                'rate-black', 'rate-shiny', 'kettle-pos-val',
-                'lbl-ac-state', 'lbl-heater-state', 'lbl-kettle-state'
+                'rate-black', 'rate-shiny', 'kettle-pos-val', 'fs-kettle-pos-val',
+                'lbl-ac-state', 'lbl-heater-state', 'lbl-kettle-state',
+                'fs-lbl-ac-state', 'fs-lbl-heater-state', 'fs-lbl-kettle-state'
             ]);
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 if (skipI18nIds.has(el.id)) return;
@@ -1548,6 +1858,7 @@
             if (typeof convScenario !== 'undefined') {
                 updateConvectionControls();
             }
+            if (typeof syncConvFullscreenHud === 'function') syncConvFullscreenHud();
             updateRadiationHeaterLabel();
             updateWaxPinStatuses();
             if (lastFlaskPart) showFlaskDetail(lastFlaskPart);
@@ -1570,10 +1881,28 @@
         }
 
         function updateRadiationHeaterLabel() {
-            const lbl = document.getElementById('rad-heat-lbl');
-            if (lbl && typeof radHeaterOn !== 'undefined') {
-                lbl.textContent = radHeaterOn ? t('radiation.turnOff') : t('radiation.turnOn');
+            const on = typeof radHeaterOn !== 'undefined' && radHeaterOn;
+            ['rad-heat-lbl', 'rad-fs-heat-lbl'].forEach(id => {
+                const lbl = document.getElementById(id);
+                if (lbl) lbl.textContent = on ? t('radiation.turnOff') : t('radiation.turnOn');
+            });
+        }
+
+        function syncRadiationHeaterButtons() {
+            const on = typeof radHeaterOn !== 'undefined' && radHeaterOn;
+            const btn = document.getElementById('rad-heat-btn');
+            const fsBtn = document.getElementById('rad-fs-heat-btn');
+            if (btn) {
+                btn.className = on
+                    ? "rad-sun-on px-3.5 py-1.5 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1"
+                    : "px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-md";
             }
+            if (fsBtn) {
+                fsBtn.className = on
+                    ? "rad-sun-on px-3.5 py-2 text-white rounded-xl text-xs font-bold shadow-lg"
+                    : "px-3.5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-lg";
+            }
+            updateRadiationHeaterLabel();
         }
 
         function updateWaxPinStatuses() {
@@ -1682,8 +2011,12 @@
             const ctx = canvas.getContext('2d');
             const dpr = window.devicePixelRatio || 1;
             const rect = canvas.getBoundingClientRect();
-            canvas.width = Math.max(1, rect.width * dpr);
-            canvas.height = Math.max(1, rect.height * dpr);
+            const nextW = Math.max(1, Math.round(rect.width * dpr));
+            const nextH = Math.max(1, Math.round(rect.height * dpr));
+            if (canvas.width !== nextW || canvas.height !== nextH) {
+                canvas.width = nextW;
+                canvas.height = nextH;
+            }
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
             return { ctx, rect, dpr };
@@ -1808,7 +2141,23 @@
             }
             const convectionSec = document.getElementById('sec-convection');
             if (convectionSec && !convectionSec.classList.contains('hidden')) {
-                setupCanvas(document.getElementById('convectionCanvas'));
+                const canvas = document.getElementById('convectionCanvas');
+                const setup = setupCanvas(canvas);
+                if (setup) {
+                    convCanvas = canvas;
+                    convCtx = setup.ctx;
+                    applyConvRootBackdrop(isConvFullscreen());
+                    if (convScenario === 'breeze') {
+                        fillConvCanvasBackdrop(setup);
+                        if (convGrid && convGrid.length) {
+                            convOpaqueBackdropFrames = 8;
+                            paintConvectionFrameNow();
+                        }
+                    } else if (convGrid && convGrid.length) {
+                        convOpaqueBackdropFrames = 0;
+                        paintConvectionFrameNow();
+                    }
+                }
                 updateConvectionAnnotations();
             }
             const radiationSec = document.getElementById('sec-radiation');
@@ -1851,6 +2200,161 @@
         document.addEventListener('mozfullscreenchange', handleFullscreenChange);
         document.addEventListener('MSFullscreenChange', handleFullscreenChange);
 
+        function isConvFullscreen() {
+            const root = document.getElementById('conv-fs-root');
+            const fsElement = document.fullscreenElement ||
+                              document.webkitFullscreenElement ||
+                              document.mozFullScreenElement ||
+                              document.msFullscreenElement;
+            return !!root && fsElement === root;
+        }
+
+        function getConvBackdropColor() {
+            if (typeof convScenario !== 'undefined' && convScenario === 'breeze') {
+                return (typeof breezeTime !== 'undefined' && breezeTime === 'night') ? '#020617' : '#f8fafc';
+            }
+            return '#0f172a';
+        }
+
+        function applyConvRootBackdrop(inlineOnRoot) {
+            const root = document.getElementById('conv-fs-root');
+            const canvas = document.getElementById('convectionCanvas');
+            if (typeof convScenario !== 'undefined' && convScenario === 'breeze') {
+                const color = getConvBackdropColor();
+                if (root) {
+                    root.style.setProperty('--conv-fs-bg', color);
+                    root.style.backgroundColor = inlineOnRoot ? color : '';
+                }
+                if (canvas) canvas.style.backgroundColor = color;
+                return;
+            }
+            // Room / kettle: do not paint a solid dark-blue chrome (#0f172a).
+            if (root) {
+                root.style.setProperty('--conv-fs-bg', 'transparent');
+                root.style.backgroundColor = inlineOnRoot ? 'transparent' : '';
+            }
+            if (canvas) canvas.style.backgroundColor = 'transparent';
+        }
+
+        function fillConvCanvasBackdrop(setup) {
+            if (!setup || !setup.ctx || !setup.rect) return;
+            setup.ctx.fillStyle = getConvBackdropColor();
+            setup.ctx.fillRect(0, 0, setup.rect.width, setup.rect.height);
+        }
+
+        function paintConvectionFrameNow() {
+            if (!convCanvas || !convCtx) return;
+            const wasRunning = convIsRunning;
+            convIsRunning = true;
+            animateConvection(false);
+            convIsRunning = wasRunning;
+        }
+
+        function settleConvFullscreenLayout() {
+            handleResize();
+            if (convScenario === 'breeze') {
+                requestAnimationFrame(() => {
+                    handleResize();
+                    requestAnimationFrame(handleResize);
+                });
+                return;
+            }
+            requestAnimationFrame(() => {
+                paintConvectionFrameNow();
+            });
+        }
+
+        function syncConvFullscreenHud() {
+            const root = document.getElementById('conv-fs-root');
+            const dayNightBtn = document.getElementById('conv-fs-daynight');
+            const lbl = document.getElementById('conv-fs-daynight-lbl');
+            const showCtrlBtn = document.getElementById('conv-fs-showctrl');
+            const showCtrlLbl = document.getElementById('conv-fs-showctrl-lbl');
+            const sideOpen = (convScenario === 'room' || convScenario === 'kettle') && roomFsControlsOpen && isConvFullscreen();
+            if (root) {
+                root.classList.remove('conv-fs-night', 'conv-fs-day');
+                if (convScenario === 'breeze') {
+                    root.classList.add(breezeTime === 'night' ? 'conv-fs-night' : 'conv-fs-day');
+                }
+                root.classList.toggle('conv-fs-room-controls', sideOpen);
+            }
+            if (dayNightBtn) dayNightBtn.style.display = convScenario === 'breeze' ? '' : 'none';
+            if (lbl) lbl.textContent = breezeTime === 'day' ? t('convection.daytime') : t('convection.nighttime');
+            if (showCtrlBtn) showCtrlBtn.style.display = (convScenario === 'room' || convScenario === 'kettle') ? '' : 'none';
+            if (showCtrlLbl) showCtrlLbl.textContent = roomFsControlsOpen ? t('common.hideControls') : t('common.showControls');
+        }
+
+        function toggleRoomFsControls() {
+            if ((convScenario !== 'room' && convScenario !== 'kettle') || !isConvFullscreen()) return;
+            roomFsControlsOpen = !roomFsControlsOpen;
+            syncConvFullscreenHud();
+            updateConvectionControls();
+            settleConvFullscreenLayout();
+        }
+
+        function resetRoomFsControls() {
+            if (!roomFsControlsOpen) {
+                syncConvFullscreenHud();
+                return;
+            }
+            roomFsControlsOpen = false;
+            syncConvFullscreenHud();
+            updateConvectionControls();
+        }
+
+        function enterConvFullscreen() {
+            const root = document.getElementById('conv-fs-root');
+            if (!root) return;
+            syncConvFullscreenHud();
+            applyConvRootBackdrop(true);
+            const req = root.requestFullscreen || root.webkitRequestFullscreen || root.mozRequestFullScreen || root.msRequestFullscreen;
+            if (req) {
+                Promise.resolve(req.call(root)).catch(() => {});
+            }
+        }
+
+        function exitConvFullscreen() {
+            const exitFn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+            if (exitFn) Promise.resolve(exitFn.call(document)).catch(() => {});
+        }
+
+        function toggleBreezeFullscreenTime() {
+            if (convScenario !== 'breeze') return;
+            setBreezeTime(breezeTime === 'day' ? 'night' : 'day');
+            syncConvFullscreenHud();
+            applyConvRootBackdrop(isConvFullscreen());
+        }
+
+        function isRadFullscreen() {
+            const root = document.getElementById('rad-fs-root');
+            const fsElement = document.fullscreenElement ||
+                              document.webkitFullscreenElement ||
+                              document.mozFullScreenElement ||
+                              document.msFullscreenElement;
+            return !!root && fsElement === root;
+        }
+
+        function enterRadFullscreen() {
+            const root = document.getElementById('rad-fs-root');
+            if (!root) return;
+            syncRadiationHeaterButtons();
+            const req = root.requestFullscreen || root.webkitRequestFullscreen || root.mozRequestFullScreen || root.msRequestFullscreen;
+            if (req) {
+                Promise.resolve(req.call(root)).catch(() => {});
+            }
+        }
+
+        function settleRadFullscreenLayout() {
+            handleResize();
+            requestAnimationFrame(() => {
+                handleResize();
+                requestAnimationFrame(() => {
+                    initRadiationWaveCanvas();
+                    handleResize();
+                });
+            });
+        }
+
         function handleFullscreenChange() {
             const fsElement = document.fullscreenElement || 
                               document.webkitFullscreenElement || 
@@ -1859,6 +2363,15 @@
             if (!fsElement) {
                 // We exited fullscreen. Close any zoomed cards.
                 closeAllZoomedCards();
+                applyConvRootBackdrop(false);
+                resetRoomFsControls();
+            } else if (isConvFullscreen()) {
+                applyConvRootBackdrop(true);
+            }
+            syncConvFullscreenHud();
+            settleConvFullscreenLayout();
+            if (isRadFullscreen() || !fsElement) {
+                settleRadFullscreenLayout();
             }
         }
 
@@ -1921,6 +2434,7 @@
 
         function closeAllZoomedCards() {
             const zoomedCards = document.querySelectorAll('.app-card-zoomed');
+            const hadZoomedCard = zoomedCards.length > 0;
             zoomedCards.forEach(card => {
                 card.classList.remove('app-card-zoomed');
                 const cardId = card.id;
@@ -1939,8 +2453,8 @@
                 lucide.createIcons();
             }
             
-            // Smooth fluid resize loop during 300ms scale transition
-            triggerSmoothResizeLoop();
+            // Only loop-resize when a zoomed card actually closed (not conv fullscreen exit)
+            if (hadZoomedCard) triggerSmoothResizeLoop();
         }
 
         window.addEventListener('resize', handleResize);
@@ -2959,9 +3473,11 @@
         let convCanvas, convCtx;
         let convAnimationId = null;
         let convIsRunning = false;
+        let convOpaqueBackdropFrames = 0;
         let convScenario = 'room'; // 'room', 'kettle', 'breeze'
+        let roomFsControlsOpen = false;
         let convParticles = [];
-        const maxConvParticles = 380;
+        const maxConvParticles = 190;
         let convFrameCount = 0;
 
         let roomAC_Active = true;
@@ -2986,6 +3502,8 @@
             const setup = setupCanvas(convCanvas);
             if (!setup) return;
             convCtx = setup.ctx;
+            applyConvRootBackdrop(isConvFullscreen());
+            fillConvCanvasBackdrop(setup);
 
             updateConvectionControls();
             initConvectionParticles();
@@ -3009,6 +3527,7 @@
             const h = 400; // Fixed virtual height
             const ac = getRoomACRect(w, h);
             const ht = getRoomHeaterRect(w, h);
+            const air = getRoomAirRect(w, h);
             for (let i = 0; i < maxConvParticles; i++) {
                 let x = Math.random() * w;
                 let y = Math.random() * h;
@@ -3017,14 +3536,17 @@
                 let vy = (Math.random() - 0.5) * 1.2;
                 if (convScenario === 'room') {
                     const roll = i / maxConvParticles;
+                    x = 12 + Math.random() * (w - 24);
+                    y = air.y + 8 + Math.random() * Math.max(8, air.h - 16);
                     if (roomHeater_Active && roll < 0.42) {
                         x = ht.x - 20 + Math.random() * (ht.w + 40);
-                        y = h * 0.55 + Math.random() * (h * 0.40);
+                        y = ht.y - Math.min(air.h * 0.45, 80) - Math.random() * Math.min(air.h * 0.35, 90);
+                        y = Math.max(air.y + 8, Math.min(ht.y - 8, y));
                         temp = 52 + Math.random() * 16;
                         vy = -1.4 - Math.random() * 0.8;
                     } else if (roomAC_Active && roll < (roomHeater_Active ? 0.84 : 0.75)) {
                         x = ac.x - 30 + Math.random() * (ac.w + 60);
-                        y = 20 + Math.random() * (h * 0.38);
+                        y = air.y + 8 + Math.random() * Math.min(air.h * 0.38, 120);
                         temp = 12 + Math.random() * 6;
                         vy = 1.2 + Math.random() * 0.8;
                     } else if (!roomHeater_Active) {
@@ -3101,10 +3623,13 @@
                 }
             }
 
+            if (scen !== 'room' && scen !== 'kettle') roomFsControlsOpen = false;
             updateConvectionControls();
             initConvectionParticles();
             if (scen === 'breeze') resetBreezeCirculation();
             updateConvectionAnnotations();
+            applyConvRootBackdrop(isConvFullscreen());
+            syncConvFullscreenHud();
         }
 
         function getRoomPosLabel(percent) {
@@ -3117,7 +3642,7 @@
             const minX = 15;
             const maxX = w - applianceW - 15;
             const x = minX + (roomAC_XPercent / 100) * (maxX - minX);
-            return { x, y: 15, w: applianceW, h: 20 };
+            return { x, y: 0, w: applianceW, h: 20 };
         }
 
         function getRoomHeaterRect(w, h) {
@@ -3125,16 +3650,55 @@
             const minX = 15;
             const maxX = w - applianceW - 15;
             const x = minX + (roomHeater_XPercent / 100) * (maxX - minX);
-            return { x, y: h - 35, w: applianceW, h: 20 };
+            return { x, y: h - 20, w: applianceW, h: 20 };
         }
 
-        /** +1 when AC is right of heater (default); -1 when positions are swapped */
+        function getRoomAirRect(w, h) {
+            const ac = getRoomACRect(w, h);
+            const ht = getRoomHeaterRect(w, h);
+            const y = ac.y + ac.h;
+            return { x: 0, y, w, h: ht.y - y };
+        }
+
+        /** +1 = clockwise (AC on the right half sinks on the right). -1 = anticlockwise. */
         function getRoomCirculationSign(w, h) {
             const ac = getRoomACRect(w, h);
             const ht = getRoomHeaterRect(w, h);
             const acCx = ac.x + ac.w / 2;
             const htCx = ht.x + ht.w / 2;
-            return acCx > htCx ? 1 : -1;
+            if (roomAC_Active) {
+                return acCx >= w / 2 ? 1 : -1;
+            }
+            if (roomHeater_Active) {
+                return htCx < w / 2 ? 1 : -1;
+            }
+            return acCx >= w / 2 ? 1 : -1;
+        }
+
+        function getRoomLoopGeometry(w, h, acRect, htRect) {
+            const acCx = acRect.x + acRect.w / 2;
+            const htCx = htRect.x + htRect.w / 2;
+            return {
+                cx: (acCx + htCx) / 2,
+                cy: h / 2,
+                rx: Math.max(w * 0.28, Math.abs(acCx - htCx) / 2 + 80),
+                ry: h * 0.30,
+                sign: getRoomCirculationSign(w, h)
+            };
+        }
+
+        /** Unit tangent of the convection ellipse at (x, y). Follows the dotted loop (not 45°). */
+        function getRoomLoopTangent(x, y, w, h, acRect, htRect) {
+            const g = getRoomLoopGeometry(w, h, acRect, htRect);
+            const theta = Math.atan2((y - g.cy) / g.ry, (x - g.cx) / g.rx);
+            let tx = -g.rx * Math.sin(theta);
+            let ty = g.ry * Math.cos(theta);
+            if (g.sign < 0) {
+                tx = -tx;
+                ty = -ty;
+            }
+            const mag = Math.hypot(tx, ty) || 1;
+            return { vx: tx / mag, vy: ty / mag };
         }
 
         function getKettlePosLabel() {
@@ -3142,59 +3706,81 @@
             return kettleHeaterXPercent < 45 ? t('common.left') : t('common.right');
         }
 
-        function updateConvectionControls() {
-            const container = document.getElementById('convection-controls');
-            if (!container) return;
+        function getRoomControlsHTML(idPrefix) {
+            const p = idPrefix || '';
+            if (roomAC_Active && !roomHeater_Active) roomHeater_XPercent = 50;
+            if (roomHeater_Active && !roomAC_Active) roomAC_XPercent = 50;
 
-            if (convScenario === 'room') {
-                container.innerHTML = `
-                    <div class="space-y-2">
-                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">${t('convection.applianceControl')}</span>
-                        <div class="flex flex-col gap-2">
-                            <button onclick="toggleRoomAppliance('ac')" id="btn-ac-toggle" class="px-3.5 py-2.5 bg-sky-600/20 text-sky-400 border border-sky-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-between">
-                                <span>${t('convection.acHigh')}</span>
-                                <span class="px-2 py-0.5 bg-sky-500 text-white rounded text-[9px] font-black" id="lbl-ac-state">${roomAC_Active ? t('common.active') : t('common.standby')}</span>
-                            </button>
-                            <button onclick="toggleRoomAppliance('heater')" id="btn-heater-toggle" class="px-3.5 py-2.5 ${roomHeater_Active ? 'bg-red-600/20 text-red-400 border border-red-500/30' : 'bg-slate-900/80 text-slate-400 border border-slate-800'} rounded-xl text-xs font-bold transition-all flex items-center justify-between">
-                                <span>${t('convection.floorHeater')}</span>
-                                <span class="px-2 py-0.5 ${roomHeater_Active ? 'bg-red-500 text-white' : 'bg-slate-700 text-slate-300'} rounded text-[9px] font-black" id="lbl-heater-state">${roomHeater_Active ? t('common.active') : t('common.standby')}</span>
-                            </button>
-                        </div>
+            const acSlider = roomAC_Active ? `
                         <div class="space-y-1.5 mt-2">
                             <div class="flex justify-between text-[10px] font-black tracking-widest text-slate-400 uppercase">
                                 <span>${t('convection.acPosition')}</span>
-                                <span id="room-ac-pos-val" class="live-value font-bold">${getRoomPosLabel(roomAC_XPercent)}</span>
+                                <span id="${p}room-ac-pos-val" class="live-value font-bold">${getRoomPosLabel(roomAC_XPercent)}</span>
                             </div>
-                            <input type="range" id="room-ac-pos-slider" min="10" max="90" value="${roomAC_XPercent}" oninput="updateRoomACPos(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
-                        </div>
+                            <input type="range" id="${p}room-ac-pos-slider" min="10" max="90" value="${roomAC_XPercent}" oninput="updateRoomACPos(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                        </div>` : '';
+            const heaterSlider = roomHeater_Active ? `
                         <div class="space-y-1.5 mt-2">
                             <div class="flex justify-between text-[10px] font-black tracking-widest text-slate-400 uppercase">
                                 <span>${t('convection.heaterPosition')}</span>
-                                <span id="room-heater-pos-val" class="live-value font-bold">${getRoomPosLabel(roomHeater_XPercent)}</span>
+                                <span id="${p}room-heater-pos-val" class="live-value font-bold">${getRoomPosLabel(roomHeater_XPercent)}</span>
                             </div>
-                            <input type="range" id="room-heater-pos-slider" min="10" max="90" value="${roomHeater_XPercent}" oninput="updateRoomHeaterPos(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="${p}room-heater-pos-slider" min="10" max="90" value="${roomHeater_XPercent}" oninput="updateRoomHeaterPos(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                        </div>` : '';
+
+            return `
+                    <div class="space-y-2">
+                        <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">${t('convection.applianceControl')}</span>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="toggleRoomAppliance('ac')" id="${p}btn-ac-toggle" class="px-3.5 py-2.5 ${roomAC_Active ? 'bg-sky-600/20 text-sky-400 border border-sky-500/30' : 'bg-slate-900/80 text-slate-400 border border-slate-800'} rounded-xl text-xs font-bold transition-all flex items-center justify-between">
+                                <span>${t('convection.acHigh')}</span>
+                                <span class="px-2 py-0.5 ${roomAC_Active ? 'bg-sky-500 text-white' : 'bg-slate-700 text-slate-300'} rounded text-[9px] font-black" id="${p}lbl-ac-state">${roomAC_Active ? t('common.active') : t('common.standby')}</span>
+                            </button>
+                            <button onclick="toggleRoomAppliance('heater')" id="${p}btn-heater-toggle" class="px-3.5 py-2.5 ${roomHeater_Active ? 'bg-red-600/20 text-red-400 border border-red-500/30' : 'bg-slate-900/80 text-slate-400 border border-slate-800'} rounded-xl text-xs font-bold transition-all flex items-center justify-between">
+                                <span>${t('convection.floorHeater')}</span>
+                                <span class="px-2 py-0.5 ${roomHeater_Active ? 'bg-red-500 text-white' : 'bg-slate-700 text-slate-300'} rounded text-[9px] font-black" id="${p}lbl-heater-state">${roomHeater_Active ? t('common.active') : t('common.standby')}</span>
+                            </button>
                         </div>
+                        ${acSlider}
+                        ${heaterSlider}
                     </div>
                 `;
-            } else if (convScenario === 'kettle') {
-                container.innerHTML = `
+        }
+
+        function getKettleControlsHTML(idPrefix) {
+            const p = idPrefix || '';
+            return `
                     <div class="space-y-2">
                         <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">${t('convection.heaterControl')}</span>
-                        <button onclick="toggleKettleHeater()" id="btn-kettle-toggle" class="w-full px-3.5 py-2.5 ${kettleHeater_Active ? 'bg-rose-600/20 text-rose-400 border border-rose-500/30' : 'bg-slate-900/80 text-slate-400 border border-slate-800'} rounded-xl text-xs font-bold transition-all flex items-center justify-between">
+                        <button onclick="toggleKettleHeater()" id="${p}btn-kettle-toggle" class="w-full px-3.5 py-2.5 ${kettleHeater_Active ? 'bg-rose-600/20 text-rose-400 border border-rose-500/30' : 'bg-slate-900/80 text-slate-400 border border-slate-800'} rounded-xl text-xs font-bold transition-all flex items-center justify-between">
                             <span>${t('convection.immersionElement')}</span>
-                            <span class="px-2 py-0.5 ${kettleHeater_Active ? 'bg-rose-500 text-white' : 'bg-slate-700 text-slate-300'} rounded text-[9px] font-black" id="lbl-kettle-state">${kettleHeater_Active ? t('common.heating') : t('common.off')}</span>
+                            <span class="px-2 py-0.5 ${kettleHeater_Active ? 'bg-rose-500 text-white' : 'bg-slate-700 text-slate-300'} rounded text-[9px] font-black" id="${p}lbl-kettle-state">${kettleHeater_Active ? t('common.heating') : t('common.off')}</span>
                         </button>
 
                         <div class="space-y-1.5 mt-2">
                             <div class="flex justify-between text-[10px] font-black tracking-widest text-slate-400 uppercase">
                                 <span>${t('convection.heaterPosition')}</span>
-                                <span id="kettle-pos-val" class="live-value font-bold">${getKettlePosLabel()}</span>
+                                <span id="${p}kettle-pos-val" class="live-value font-bold">${getKettlePosLabel()}</span>
                             </div>
-                            <input type="range" id="kettle-pos-slider" min="10" max="90" value="${kettleHeaterXPercent}" oninput="updateKettleHeaterPos(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="${p}kettle-pos-slider" min="10" max="90" value="${kettleHeaterXPercent}" oninput="updateKettleHeaterPos(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
                         </div>
                     </div>
                 `;
+        }
+
+        function updateConvectionControls() {
+            const container = document.getElementById('convection-controls');
+            const fsRoom = document.getElementById('conv-fs-room-controls');
+            if (!container) return;
+
+            if (convScenario === 'room') {
+                container.innerHTML = getRoomControlsHTML('');
+                if (fsRoom) fsRoom.innerHTML = getRoomControlsHTML('fs-');
+            } else if (convScenario === 'kettle') {
+                container.innerHTML = getKettleControlsHTML('');
+                if (fsRoom) fsRoom.innerHTML = getKettleControlsHTML('fs-');
             } else if (convScenario === 'breeze') {
+                if (fsRoom) fsRoom.innerHTML = '';
                 container.innerHTML = `
                     <div class="space-y-2">
                         <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">${t('convection.diurnalSwitcher')}</span>
@@ -3216,69 +3802,44 @@
         function toggleRoomAppliance(appliance) {
             if (appliance === 'ac') {
                 roomAC_Active = !roomAC_Active;
-                const btn = document.getElementById('btn-ac-toggle');
-                const lbl = document.getElementById('lbl-ac-state');
-                if (roomAC_Active) {
-                    btn.className = "px-3.5 py-2.5 bg-sky-600/20 text-sky-400 border border-sky-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-between";
-                    lbl.innerText = t('common.active');
-                    lbl.className = "px-2 py-0.5 bg-sky-50 text-sky-700 rounded text-[9px] font-black";
-                } else {
-                    btn.className = "px-3.5 py-2.5 bg-slate-900/80 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-between";
-                    lbl.innerText = t('common.standby');
-                    lbl.className = "px-2 py-0.5 bg-slate-700 text-slate-300 rounded text-[9px] font-black";
-                }
             } else if (appliance === 'heater') {
                 roomHeater_Active = !roomHeater_Active;
-                const btn = document.getElementById('btn-heater-toggle');
-                const lbl = document.getElementById('lbl-heater-state');
-                if (roomHeater_Active) {
-                    btn.className = "px-3.5 py-2.5 bg-red-600/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-between";
-                    lbl.innerText = t('common.active');
-                    lbl.className = "px-2 py-0.5 bg-red-500 text-white rounded text-[9px] font-black";
-                } else {
-                    btn.className = "px-3.5 py-2.5 bg-slate-900/80 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-between";
-                    lbl.innerText = t('common.standby');
-                    lbl.className = "px-2 py-0.5 bg-slate-700 text-slate-300 rounded text-[9px] font-black";
-                }
             }
+            updateConvectionControls();
+            updateConvectionAnnotations();
         }
 
         let kettleHeater_Active = true;
         function toggleKettleHeater() {
             kettleHeater_Active = !kettleHeater_Active;
-            const btn = document.getElementById('btn-kettle-toggle');
-            const lbl = document.getElementById('lbl-kettle-state');
-            if (kettleHeater_Active) {
-                btn.className = "w-full px-3.5 py-2.5 bg-rose-600/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-between";
-                lbl.innerText = t('common.heating');
-                lbl.className = "px-2 py-0.5 bg-rose-500 text-white rounded text-[9px] font-black";
-            } else {
-                btn.className = "w-full px-3.5 py-2.5 bg-slate-900/80 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-between";
-                lbl.innerText = t('common.off');
-                lbl.className = "px-2 py-0.5 bg-slate-700 text-slate-300 rounded text-[9px] font-black";
-            }
+            updateConvectionControls();
+            updateConvectionAnnotations();
         }
 
         function updateKettleHeaterPos(val) {
             kettleHeaterXPercent = parseInt(val);
-            const lbl = document.getElementById('kettle-pos-val');
-            if (lbl) {
-                lbl.innerText = getKettlePosLabel();
-            }
+            ['kettle-pos-val', 'fs-kettle-pos-val'].forEach(id => {
+                const lbl = document.getElementById(id);
+                if (lbl) lbl.innerText = getKettlePosLabel();
+            });
             updateConvectionAnnotations();
         }
 
         function updateRoomACPos(val) {
             roomAC_XPercent = parseInt(val);
-            const lbl = document.getElementById('room-ac-pos-val');
-            if (lbl) lbl.innerText = getRoomPosLabel(roomAC_XPercent);
+            ['room-ac-pos-val', 'fs-room-ac-pos-val'].forEach(id => {
+                const lbl = document.getElementById(id);
+                if (lbl) lbl.innerText = getRoomPosLabel(roomAC_XPercent);
+            });
             updateConvectionAnnotations();
         }
 
         function updateRoomHeaterPos(val) {
             roomHeater_XPercent = parseInt(val);
-            const lbl = document.getElementById('room-heater-pos-val');
-            if (lbl) lbl.innerText = getRoomPosLabel(roomHeater_XPercent);
+            ['room-heater-pos-val', 'fs-room-heater-pos-val'].forEach(id => {
+                const lbl = document.getElementById(id);
+                if (lbl) lbl.innerText = getRoomPosLabel(roomHeater_XPercent);
+            });
             updateConvectionAnnotations();
         }
 
@@ -3287,19 +3848,29 @@
             return breezeTime === 'day' ? -1 : 1;
         }
 
+        /** Air ceiling above land/sea fill. Dots never go below this. */
+        function getBreezeAirBottom(h) {
+            return h - 38;
+        }
+
         function seedBreezeParticleState(i, count, w, h) {
             const isDay = breezeTime === 'day';
-            const wind = getBreezeSurfaceWind();
             const x = 16 + Math.random() * (w - 32);
-            const y = 28 + Math.random() * (h - 80);
+            const airTop = 18;
+            const airBottom = getBreezeAirBottom(h);
+            const midY = h / 2;
+            const isUpper = i % 2 === 0;
+            const y = Math.min(
+                isUpper
+                    ? airTop + Math.random() * Math.max(8, midY - airTop - 4)
+                    : midY + Math.random() * Math.max(8, airBottom - midY - 2),
+                airBottom
+            );
             const speed = 1.35 + Math.random() * 0.55;
-            const vx = wind * speed;
-            const vy = (Math.random() - 0.5) * 0.25;
-            const overLand = x < w / 2;
-            const temp = isDay
-                ? (overLand ? 46 + Math.random() * 16 : 16 + Math.random() * 7)
-                : (overLand ? 15 + Math.random() * 6 : 40 + Math.random() * 12);
-            return { x, y, vx, vy, temp };
+            const vx = isDay
+                ? (isUpper ? speed : -speed)
+                : (isUpper ? -speed : speed);
+            return { x, y, vx, vy: 0, temp: isUpper ? 58 : 17 };
         }
 
         function applyBreezeTimeButtons() {
@@ -3341,6 +3912,9 @@
             applyBreezeTimeButtons();
             resetBreezeCirculation();
             updateConvectionAnnotations();
+            syncConvFullscreenHud();
+            applyConvRootBackdrop(isConvFullscreen());
+            convOpaqueBackdropFrames = 4;
         }
 
         /** Room scenario: animated circulation arcs tied to AC/heater positions */
@@ -3355,7 +3929,7 @@
             const rx = Math.max(w * 0.28, Math.abs(acCx - htCx) / 2 + 80);
             const ry = h * 0.30;
             const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 600);
-            const dashOffset = -(Date.now() / 45);
+            const dashOffset = Date.now() / 45;
 
             function traceEllipseArc(startAngle, sweepRad, color, alpha, active) {
                 if (!active) return;
@@ -3394,49 +3968,27 @@
 
             const acAngle = Math.atan2(ac.y + ac.h + 25 - cy, acCx - cx);
             const htAngle = Math.atan2(ht.y - 25 - cy, htCx - cx);
-            const halfLoop = Math.PI * 0.92 * sign;
 
-            // Heater-only also shows a return loop: hot rise, cool sink.
-            traceEllipseArc(htAngle, halfLoop, 'rgb(239, 68, 68)', 0.52, roomHeater_Active);
-            if (roomHeater_Active && !roomAC_Active) {
-                // Cooler return path under the warm plume.
-                traceEllipseArc(htAngle + Math.PI, halfLoop, 'rgb(96, 165, 250)', 0.42, true);
+            // Cold air leaves the AC going down: right-half AC → clockwise,
+            // left-half AC → anticlockwise. Independent of heater position.
+            let halfLoop;
+            if (roomAC_Active) {
+                const y0 = cy + ry * Math.sin(acAngle);
+                const yInc = cy + ry * Math.sin(acAngle + 0.08);
+                const sinkSweep = (yInc > y0) ? 1 : -1;
+                halfLoop = Math.PI * 0.92 * sinkSweep;
             } else {
-                traceEllipseArc(acAngle, halfLoop, 'rgb(29, 78, 216)', 0.65, roomAC_Active);
+                halfLoop = Math.PI * 0.92 * sign;
+            }
+
+            traceEllipseArc(htAngle, halfLoop, 'rgb(239, 68, 68)', 0.52, roomHeater_Active);
+            if (roomAC_Active) {
+                traceEllipseArc(acAngle, halfLoop, 'rgb(29, 78, 216)', 0.65, true);
             }
         }
 
         function drawBreezeLiveFlowLines(w, h) {
-            const isDay = breezeTime === 'day';
-            const wind = getBreezeSurfaceWind();
-            const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 600);
-            const offset = (Date.now() / 28) % 36;
-            const color = isDay ? 'rgb(14, 165, 233)' : 'rgb(124, 58, 237)';
-
-            convCtx.save();
-            convCtx.strokeStyle = color;
-            convCtx.fillStyle = color;
-            convCtx.globalAlpha = 0.72 + pulse * 0.16;
-            convCtx.lineWidth = 3;
-
-            for (let i = 0; i < 5; i++) {
-                const y = 70 + i * 48;
-                const len = 95;
-                const mid = w / 2 + wind * offset;
-                const tipX = mid + wind * len;
-                const tailX = mid - wind * (len * 0.55);
-                convCtx.beginPath();
-                convCtx.moveTo(tailX, y);
-                convCtx.lineTo(tipX, y);
-                convCtx.stroke();
-                convCtx.beginPath();
-                convCtx.moveTo(tipX, y);
-                convCtx.lineTo(tipX - wind * 14, y - 7);
-                convCtx.lineTo(tipX - wind * 14, y + 7);
-                convCtx.closePath();
-                convCtx.fill();
-            }
-            convCtx.restore();
+            // Mid-screen breeze arrows removed (day and night).
         }
 
         /** 情境環流裝飾曲線 · Scenario-specific convection streamlines */
@@ -3541,15 +4093,24 @@
             const acCx = acRect.x + acRect.w / 2;
             const htCx = htRect.x + htRect.w / 2;
             const sign = getRoomCirculationSign(w, h);
-            const acContact = roomAC_Active
-                && p.x > acRect.x - 55
-                && p.x < acRect.x + acRect.w + 55
-                && p.y > acRect.y - 8
-                && p.y < acRect.y + acRect.h + 95;
-            const heaterContact = roomHeater_Active
-                && p.x > htRect.x - 70
-                && p.x < htRect.x + htRect.w + 70
-                && p.y > htRect.y - 110;
+            const air = getRoomAirRect(w, h);
+            const airTop = air.y + 8;
+            const airBottom = air.y + air.h - 8;
+            const xPad = 80;
+            const heaterBandH = Math.max(140, air.h * 0.45);
+            const acBandH = Math.max(140, air.h * 0.45);
+            const inHeaterBand = roomHeater_Active
+                && p.x > htRect.x - xPad
+                && p.x < htRect.x + htRect.w + xPad
+                && p.y <= htRect.y
+                && p.y > htRect.y - heaterBandH;
+            const inAcBand = roomAC_Active
+                && p.x > acRect.x - xPad
+                && p.x < acRect.x + acRect.w + xPad
+                && p.y >= air.y
+                && p.y < air.y + acBandH;
+            const acContact = inAcBand;
+            const heaterContact = inHeaterBand;
 
             if (acContact) {
                 // Active cooling only inside the AC jet.
@@ -3601,24 +4162,35 @@
                 const onHtWall = sign > 0 ? p.x < w * 0.24 : p.x > w * 0.76;
                 if (onAcWall) p.vy += 0.14;
                 if (onHtWall) p.vy -= 0.14;
-            } else if (roomAC_Active && !roomHeater_Active) {
-                const acSide = acCx > w / 2 ? 1 : -1;
-                if (p.temp < neutralTemp) {
-                    p.vx -= 0.12 * acSide;
+            } else if (roomAC_Active !== roomHeater_Active) {
+                if (p.orbitBias == null) p.orbitBias = 0.62 + Math.random() * 0.75;
+                const bias = p.orbitBias;
+                const loopSign = sign;
+                const nearCeiling = p.y < air.y + air.h * 0.40;
+                const nearFloor = p.y > air.y + air.h * 0.60;
+                const farLeft = p.x < w * 0.24;
+                const farRight = p.x > w * 0.76;
+                if (nearCeiling) p.vx += 0.15 * loopSign * bias;
+                if (nearFloor) p.vx -= 0.15 * loopSign * bias;
+                if (roomHeater_Active) {
+                    if (loopSign > 0) {
+                        if (farLeft) p.vy -= 0.17 * bias;
+                        if (farRight) p.vy += 0.22 * bias;
+                    } else {
+                        if (farRight) p.vy -= 0.17 * bias;
+                        if (farLeft) p.vy += 0.22 * bias;
+                    }
                 } else {
-                    p.vx += (p.y < h * 0.38 ? 0.14 : -0.04) * acSide;
+                    if (loopSign > 0) {
+                        if (farRight) p.vy += 0.17 * bias;
+                        if (farLeft) p.vy -= 0.22 * bias;
+                    } else {
+                        if (farLeft) p.vy += 0.17 * bias;
+                        if (farRight) p.vy -= 0.22 * bias;
+                    }
                 }
-            } else if (roomHeater_Active && !roomAC_Active) {
-                const htSign = htCx < w * 0.5 ? 1 : -1;
-                // Hot air rises above heater, travels across ceiling, cools and returns along floor.
-                if (p.temp > neutralTemp) {
-                    if (p.y < h * 0.40) p.vx += 0.16 * htSign;
-                    else if (heaterContact) p.vy -= 0.22;
-                } else {
-                    if (p.y > h * 0.60) p.vx -= 0.16 * htSign;
-                    if ((htSign > 0 && p.x > w - 80) || (htSign < 0 && p.x < 80)) p.vy += 0.14;
-                }
-                if (heaterContact) p.vy -= 0.18;
+                p.vx += (Math.random() - 0.5) * 0.09;
+                p.vy += (Math.random() - 0.5) * 0.09;
             } else {
                 p.vx += (Math.random() - 0.5) * 0.06;
                 p.vy += (Math.random() - 0.5) * 0.06;
@@ -3629,99 +4201,222 @@
             p.vx += (Math.random() - 0.5) * 0.035;
             p.vx = Math.max(-2.8, Math.min(2.8, p.vx));
             p.vy = Math.max(-2.8, Math.min(2.8, p.vy));
+
+            // All particles in the heater/AC band follow the loop tangent (curve, not 45° / not skip).
+            const preferHeater = inHeaterBand && (!inAcBand || p.y > air.y + air.h * 0.5);
+            const preferAC = inAcBand && !preferHeater;
+            if (preferHeater || preferAC) {
+                const tan = getRoomLoopTangent(p.x, p.y, w, h, acRect, htRect);
+                let ux = tan.vx;
+                let uy = tan.vy;
+                if (preferHeater && uy > -0.28) {
+                    uy = -Math.max(0.55, Math.abs(uy));
+                }
+                if (preferAC && uy < 0.28) {
+                    uy = Math.max(0.55, Math.abs(uy));
+                }
+                const mag = Math.hypot(ux, uy) || 1;
+                ux /= mag;
+                uy /= mag;
+                const speed = 2.25;
+                p.vx += (ux * speed - p.vx) * 0.62;
+                p.vy += (uy * speed - p.vy) * 0.62;
+                if (preferHeater) {
+                    p.temp = Math.max(p.temp, 48);
+                    p.vy = Math.min(p.vy, -0.85);
+                } else {
+                    p.temp = Math.min(p.temp, 18);
+                    p.vy = Math.max(p.vy, 0.85);
+                }
+            }
+
             p.x += p.vx;
             p.y += p.vy;
 
             if (p.x < 12) {
                 p.x = 12;
-                p.vx = Math.abs(p.vx) * 0.35 + 0.18;
-                if (roomAC_Active && roomHeater_Active && sign > 0) p.vy -= 0.22;
+                const tan = getRoomLoopTangent(12, p.y, w, h, acRect, htRect);
+                if (preferHeater || (inHeaterBand && p.y > air.y + air.h * 0.5)) {
+                    p.vx = Math.abs(tan.vx) * 0.4 + 0.12;
+                    p.vy = -Math.max(1.8, Math.abs(tan.vy) * 2.2);
+                } else if (preferAC || inAcBand) {
+                    p.vx = Math.abs(tan.vx) * 0.4 + 0.12;
+                    p.vy = Math.max(1.8, Math.abs(tan.vy) * 2.2);
+                } else if (roomAC_Active !== roomHeater_Active) {
+                    p.vx = 0.22 + Math.random() * 0.18;
+                    p.vy = -sign * (1.35 + Math.random() * 0.5);
+                } else {
+                    p.vx = Math.abs(p.vx) * 0.35 + 0.18;
+                }
             } else if (p.x > w - 12) {
                 p.x = w - 12;
-                p.vx = -Math.abs(p.vx) * 0.35 - 0.18;
-                if (roomAC_Active && roomHeater_Active && sign > 0) p.vy += 0.22;
+                const tan = getRoomLoopTangent(w - 12, p.y, w, h, acRect, htRect);
+                if (preferHeater || (inHeaterBand && p.y > air.y + air.h * 0.5)) {
+                    p.vx = -Math.abs(tan.vx) * 0.4 - 0.12;
+                    p.vy = -Math.max(1.8, Math.abs(tan.vy) * 2.2);
+                } else if (preferAC || inAcBand) {
+                    p.vx = -Math.abs(tan.vx) * 0.4 - 0.12;
+                    p.vy = Math.max(1.8, Math.abs(tan.vy) * 2.2);
+                } else if (roomAC_Active !== roomHeater_Active) {
+                    p.vx = -0.22 - Math.random() * 0.18;
+                    p.vy = sign * (1.35 + Math.random() * 0.5);
+                } else {
+                    p.vx = -Math.abs(p.vx) * 0.35 - 0.18;
+                }
             }
-            if (p.y < 12) {
-                p.y = 12;
+            if (p.y < airTop) {
+                p.y = airTop;
                 p.vy = Math.abs(p.vy) * 0.22 + 0.10;
+                if (inAcBand || preferAC) p.vy = Math.max(p.vy, 1.6);
                 if (roomAC_Active && roomHeater_Active) p.vx += 0.40 * sign;
-            } else if (p.y > h - 12) {
-                p.y = h - 12;
+                else if (roomAC_Active !== roomHeater_Active) p.vx += 0.32 * sign + (Math.random() - 0.5) * 0.2;
+            } else if (p.y > airBottom) {
+                p.y = airBottom;
                 p.vy = -Math.abs(p.vy) * 0.22 - 0.10;
+                if (inHeaterBand || preferHeater) p.vy = -Math.max(1.6, Math.abs(p.vy));
                 if (roomAC_Active && roomHeater_Active) p.vx -= 0.40 * sign;
+                else if (roomAC_Active !== roomHeater_Active) p.vx -= 0.32 * sign + (Math.random() - 0.5) * 0.2;
             }
         }
 
         /**
-         * One teaching direction only:
-         * Day sea breeze = sea → land. Night land breeze = land → sea.
-         * Particles keep that horizontal heading; they warm/cool as they cross land or sea.
+         * Day and night: two purely horizontal air layers (vy = 0).
+         * Day: upper L→R stays red; lower R→L stays blue.
+         * Night: upper R→L stays red; lower L→R stays blue.
          */
         function updateBreezeConvectionParticle(p, w, h) {
             const isDay = breezeTime === 'day';
-            const wind = getBreezeSurfaceWind();
-            const overLand = p.x < w / 2;
-            const groundY = h - 42;
-
-            if (isDay) {
-                p.temp += ((overLand ? 58 : 17) - p.temp) * (overLand ? 0.055 : 0.04);
-            } else {
-                p.temp += ((overLand ? 16 : 50) - p.temp) * (overLand ? 0.04 : 0.05);
-            }
-            p.temp = Math.max(14, Math.min(68, p.temp));
-
-            const targetVx = wind * (1.55 + Math.min(0.55, Math.abs(p.temp - 28) * 0.012));
-            p.vx += (targetVx - p.vx) * 0.18;
-
-            const lift = (p.temp - 28) * -0.028;
-            p.vy += (lift - p.vy) * 0.08;
-            p.vy += (Math.random() - 0.5) * 0.03;
-
-            p.vx = Math.max(-2.4, Math.min(2.4, p.vx));
-            p.vy = Math.max(-0.7, Math.min(0.7, p.vy));
-            if (wind < 0 && p.vx > -0.45) p.vx = -0.45;
-            if (wind > 0 && p.vx < 0.45) p.vx = 0.45;
-
+            const airBottom = getBreezeAirBottom(h);
+            const isUpper = p.y < h / 2;
+            const speed = Math.max(1.35, Math.abs(p.vx) || 1.6);
+            p.vx = isDay
+                ? (isUpper ? speed : -speed)
+                : (isUpper ? -speed : speed);
+            p.vy = 0;
             p.x += p.vx;
-            p.y += p.vy;
+            if (p.x > w - 4) p.x = 8;
+            else if (p.x < 4) p.x = w - 8;
+            p.temp = isUpper ? 58 : 17;
+            if (p.y > airBottom) p.y = airBottom;
+        }
 
-            if (p.y < 18) { p.y = 18; p.vy = Math.abs(p.vy) * 0.2; }
-            if (p.y > groundY) { p.y = groundY; p.vy = -Math.abs(p.vy) * 0.2; }
+        function getBreezeCaptionMetrics(rect) {
+            const fontPx = Math.round(Math.min(48, Math.max(32, rect.width * 0.028)));
+            const boxH = Math.max(fontPx + 22, 54);
+            const pad = 10;
+            return { fontPx, boxH, pad, bandH: boxH + pad * 2 };
+        }
 
-            if (wind < 0 && p.x < 4) {
-                p.x = w - 8;
-                p.y = 40 + Math.random() * (groundY - 50);
-                p.temp = 16 + Math.random() * 6;
-                p.vx = -1.4 - Math.random() * 0.5;
-            } else if (wind > 0 && p.x > w - 4) {
-                p.x = 8;
-                p.y = 40 + Math.random() * (groundY - 50);
-                p.temp = 15 + Math.random() * 6;
-                p.vx = 1.4 + Math.random() * 0.5;
+        function getConvSceneLayout(rect, w, h) {
+            if (convScenario !== 'breeze') {
+                const s = Math.min(rect.width / w, rect.height / h);
+                return {
+                    s,
+                    offsetX: (rect.width - w * s) / 2,
+                    offsetY: (rect.height - h * s) / 2
+                };
             }
+            const metrics = getBreezeCaptionMetrics(rect);
+            const topGap = 6;
+            const needBottom = metrics.bandH;
+            const s = Math.max(0.15, Math.min(rect.width / w, (rect.height - topGap - needBottom) / h));
+            return {
+                s,
+                offsetX: (rect.width - w * s) / 2,
+                offsetY: topGap,
+                fontPx: metrics.fontPx,
+                boxH: metrics.boxH,
+                pad: metrics.pad
+            };
+        }
+
+        function drawBreezeSurfaceCaptions(rect, offsetX, offsetY, s, vw, vh, layout) {
+            const isDay = breezeTime === 'day';
+            const sceneLeft = offsetX;
+            const sceneW = vw * s;
+            const sceneBottom = offsetY + vh * s;
+            const fontPx = layout && layout.fontPx ? layout.fontPx : Math.round(Math.min(48, Math.max(32, rect.width * 0.028)));
+            const boxH = layout && layout.boxH ? layout.boxH : Math.max(fontPx + 22, 54);
+            const pad = layout && layout.pad ? layout.pad : 10;
+            const boxY = Math.min(
+                sceneBottom + pad,
+                Math.max(pad, rect.height - boxH - pad)
+            );
+            const halfW = sceneW / 2;
+            const r = Math.max(8, Math.round(fontPx * 0.28));
+            const landText = isDay ? t('convection.labelLandWarmer') : t('convection.labelLandCooler');
+            const seaText = isDay ? t('convection.labelSeaCooler') : t('convection.labelSeaWarmer');
+            convCtx.font = `bold ${fontPx}px Plus Jakarta Sans, sans-serif`;
+            const textW = Math.max(convCtx.measureText(landText).width, convCtx.measureText(seaText).width);
+            const boxW = Math.min(halfW - 12, Math.max(textW + 40, 320));
+
+            const drawBox = (cx, text, warm) => {
+                const x = cx - boxW / 2;
+                convCtx.save();
+                if (isDay) {
+                    convCtx.fillStyle = warm ? 'rgba(254, 226, 226, 0.96)' : 'rgba(224, 242, 254, 0.96)';
+                    convCtx.strokeStyle = warm ? '#e11d48' : '#0284c7';
+                } else {
+                    convCtx.fillStyle = warm ? 'rgba(69, 10, 10, 0.92)' : 'rgba(15, 23, 42, 0.92)';
+                    convCtx.strokeStyle = warm ? '#fb7185' : '#7dd3fc';
+                }
+                convCtx.lineWidth = 1.5;
+                convCtx.beginPath();
+                convCtx.moveTo(x + r, boxY);
+                convCtx.lineTo(x + boxW - r, boxY);
+                convCtx.quadraticCurveTo(x + boxW, boxY, x + boxW, boxY + r);
+                convCtx.lineTo(x + boxW, boxY + boxH - r);
+                convCtx.quadraticCurveTo(x + boxW, boxY + boxH, x + boxW - r, boxY + boxH);
+                convCtx.lineTo(x + r, boxY + boxH);
+                convCtx.quadraticCurveTo(x, boxY + boxH, x, boxY + boxH - r);
+                convCtx.lineTo(x, boxY + r);
+                convCtx.quadraticCurveTo(x, boxY, x + r, boxY);
+                convCtx.closePath();
+                convCtx.fill();
+                convCtx.stroke();
+                convCtx.fillStyle = isDay ? '#0f172a' : '#f8fafc';
+                convCtx.font = `bold ${fontPx}px Plus Jakarta Sans, sans-serif`;
+                convCtx.textAlign = 'center';
+                convCtx.textBaseline = 'middle';
+                convCtx.fillText(text, cx, boxY + boxH / 2);
+                convCtx.restore();
+            };
+
+            drawBox(sceneLeft + halfW * 0.5, landText, isDay);
+            drawBox(sceneLeft + halfW * 1.5, seaText, !isDay);
         }
 
         /**
          * 對流動畫幀 · Convection frame with scale-independent virtual coordinate rendering (800x400)
          */
-        function animateConvection() {
-            if (!convIsRunning) return;
+        function animateConvection(scheduleNext = true) {
+            if (!convIsRunning || !convCanvas || !convCtx || !convGrid || !convGrid.length) return;
 
             const rect = convCanvas.getBoundingClientRect();
             const w = 800; // Fixed scale-independent virtual width
             const h = 400; // Fixed scale-independent virtual height
 
-            // Clear the actual canvas with subtle motion blur trail
-            convCtx.fillStyle = 'rgba(255, 255, 255, 0.22)';
-            convCtx.fillRect(0, 0, rect.width, rect.height);
+            // After fullscreen resize, paint an opaque scene colour so the
+            // white trail + blue heat overlay cannot flash light blue.
+            if (convOpaqueBackdropFrames > 0) {
+                convOpaqueBackdropFrames--;
+                if (convScenario === 'breeze') {
+                    convCtx.fillStyle = getConvBackdropColor();
+                    convCtx.fillRect(0, 0, rect.width, rect.height);
+                }
+            } else {
+                convCtx.fillStyle = (convScenario === 'breeze' && breezeTime === 'night')
+                    ? 'rgba(2, 6, 23, 0.35)'
+                    : 'rgba(255, 255, 255, 0.22)';
+                convCtx.fillRect(0, 0, rect.width, rect.height);
+            }
 
-            // Calculate scale and offset to center virtual canvas (800x400) uniformly inside the actual canvas
-            const scaleX = rect.width / w;
-            const scaleY = rect.height / h;
-            const s = Math.min(scaleX, scaleY); // Uniform scale factor
-
-            const offsetX = (rect.width - w * s) / 2;
-            const offsetY = (rect.height - h * s) / 2;
+            // Breeze: shift scene up and reserve a bottom band for caption boxes.
+            // Room / kettle stay centered 800x400.
+            const layout = getConvSceneLayout(rect, w, h);
+            const s = layout.s;
+            const offsetX = layout.offsetX;
+            const offsetY = layout.offsetY;
 
             convCtx.save();
             convCtx.translate(offsetX, offsetY);
@@ -3798,27 +4493,27 @@
             } else if (convScenario === 'breeze') {
                 if (breezeTime === 'day') {
                     for (let c = 0; c < 5; c++) {
-                        convGrid[convGridRows - 1][c] = 74;
-                        convGrid[convGridRows - 2][c] = 62;
-                        convGrid[convGridRows - 3][c] = 48;
+                        convGrid[0][c] = 74;
+                        convGrid[1][c] = 62;
+                        convGrid[2][c] = 48;
+                        convGrid[convGridRows - 1][c] = 26;
                     }
                     for (let c = 5; c < convGridCols; c++) {
-                        convGrid[convGridRows - 1][c] = 16;
-                        convGrid[convGridRows - 2][c] = 18;
                         convGrid[0][c] = 20;
+                        convGrid[convGridRows - 2][c] = 18;
+                        convGrid[convGridRows - 1][c] = 16;
                     }
-                    for (let c = 0; c < 5; c++) convGrid[0][c] = 26;
                 } else {
                     for (let c = 0; c < 5; c++) {
-                        convGrid[convGridRows - 1][c] = 15;
-                        convGrid[convGridRows - 2][c] = 16;
                         convGrid[0][c] = 18;
+                        convGrid[convGridRows - 2][c] = 16;
+                        convGrid[convGridRows - 1][c] = 15;
                     }
                     for (let c = 5; c < convGridCols; c++) {
-                        convGrid[convGridRows - 1][c] = 52;
-                        convGrid[convGridRows - 2][c] = 44;
-                        convGrid[convGridRows - 3][c] = 36;
-                        convGrid[0][c] = 24;
+                        convGrid[0][c] = 52;
+                        convGrid[1][c] = 44;
+                        convGrid[2][c] = 36;
+                        convGrid[convGridRows - 1][c] = 24;
                     }
                 }
             }
@@ -3868,6 +4563,9 @@
                 const kMaxY = h - 25;
                 // Draw the heat map smoothly bounded strictly inside the water kettle cup
                 convCtx.drawImage(tempCanvas, kMinX, kMinY, kMaxX - kMinX, kMaxY - kMinY);
+            } else if (convScenario === 'room') {
+                const air = getRoomAirRect(w, h);
+                convCtx.drawImage(tempCanvas, air.x, air.y, air.w, air.h);
             } else {
                 convCtx.drawImage(tempCanvas, 0, 0, w, h);
             }
@@ -3879,6 +4577,12 @@
             if (convScenario === 'room') {
                 const acRect = getRoomACRect(w, h);
                 const htRect = getRoomHeaterRect(w, h);
+                convCtx.shadowBlur = 0;
+                convCtx.shadowColor = 'transparent';
+                // Remove the fading old AC/heater box (trail ghost) before redrawing.
+                convCtx.fillStyle = '#ffffff';
+                convCtx.fillRect(0, acRect.y, w, acRect.h);
+                convCtx.fillRect(0, htRect.y, w, htRect.h);
                 // AC Unit rendering
                 if (roomAC_Active) {
                     let acGrad = convCtx.createLinearGradient(acRect.x, 0, acRect.x + acRect.w, 0);
@@ -3888,9 +4592,14 @@
                     convCtx.fillStyle = acGrad;
                     convCtx.fillRect(acRect.x, acRect.y, acRect.w, acRect.h);
 
-                    // Flow lines blowing down (Vibrant dark blue for supreme contrast on light background)
+                    // Blue wind: starts on AC bottom = air top, blows down into the air region.
+                    const air = getRoomAirRect(w, h);
                     let ventOffset = (Date.now() / 15) % 30;
-                    convCtx.strokeStyle = 'rgba(29, 78, 216, 0.85)'; // Dark Blue
+                    convCtx.save();
+                    convCtx.beginPath();
+                    convCtx.rect(air.x, air.y, air.w, air.h);
+                    convCtx.clip();
+                    convCtx.strokeStyle = 'rgba(29, 78, 216, 0.85)';
                     convCtx.lineWidth = 2.0;
                     convCtx.setLineDash([4, 4]);
                     convCtx.beginPath();
@@ -3899,7 +4608,7 @@
                     convCtx.moveTo(acRect.x + acRect.w - 15, acRect.y + acRect.h);
                     convCtx.lineTo(acRect.x + acRect.w - 55 + ventOffset, acRect.y + acRect.h + 40);
                     convCtx.stroke();
-                    convCtx.setLineDash([]);
+                    convCtx.restore();
 
                     convCtx.fillStyle = '#ffffff';
                     convCtx.font = 'bold 9px monospace';
@@ -3914,8 +4623,13 @@
                     convCtx.fillStyle = heaterGrad;
                     convCtx.fillRect(htRect.x, htRect.y, htRect.w, htRect.h);
 
-                    // Rising heat vectors
+                    // Orange fire: starts on heater top = air bottom, rises into the air region.
+                    const air = getRoomAirRect(w, h);
                     let heatOffset = (Date.now() / 10) % 25;
+                    convCtx.save();
+                    convCtx.beginPath();
+                    convCtx.rect(air.x, air.y, air.w, air.h);
+                    convCtx.clip();
                     convCtx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
                     convCtx.lineWidth = 1.5;
                     convCtx.beginPath();
@@ -3924,6 +4638,7 @@
                     convCtx.moveTo(htRect.x + htRect.w - 15, htRect.y);
                     convCtx.quadraticCurveTo(htRect.x + htRect.w - 15 + Math.sin(heatOffset + 2) * 3, htRect.y - 15 - heatOffset, htRect.x + htRect.w - 10, htRect.y - 30 - heatOffset);
                     convCtx.stroke();
+                    convCtx.restore();
 
                     convCtx.fillStyle = '#ffffff';
                     convCtx.font = 'bold 9px monospace';
@@ -4075,82 +4790,102 @@
                     drawConvectionParticle(p);
                 });
             } else if (convScenario === 'breeze') {
-                // Land (left): hot red by day, cold indigo at night
-                convCtx.fillStyle = breezeTime === 'day' ? '#e11d48' : '#1e1b4b';
-                convCtx.fillRect(0, h - 35, w / 2, 35);
-                
-                // Sea (right): cool blue by day, warmer teal-rose at night
-                if (breezeTime === 'day') {
-                    convCtx.fillStyle = '#0284c7';
+                const isDay = breezeTime === 'day';
+                const landGroundY = h - 36;
+                const seaSurfaceY = landGroundY + 2;
+                const tWave = Date.now() / 400;
+
+                // Land ground (left): soil + grass, not a word badge
+                const landGrad = convCtx.createLinearGradient(0, landGroundY, 0, h);
+                if (isDay) {
+                    landGrad.addColorStop(0, '#d97706');
+                    landGrad.addColorStop(1, '#7c2d12');
                 } else {
-                    const seaNight = convCtx.createLinearGradient(w / 2, h - 30, w, h);
-                    seaNight.addColorStop(0, '#0e7490');
-                    seaNight.addColorStop(1, '#db2777');
-                    convCtx.fillStyle = seaNight;
+                    landGrad.addColorStop(0, '#312e81');
+                    landGrad.addColorStop(1, '#1e1b4b');
                 }
-                convCtx.fillRect(w / 2, h - 30, w / 2, 30);
+                convCtx.fillStyle = landGrad;
+                convCtx.fillRect(0, landGroundY, w / 2, h - landGroundY);
+                convCtx.fillStyle = isDay ? '#65a30d' : '#1e3a2f';
+                convCtx.fillRect(0, landGroundY, w / 2, 5);
 
-                // Draw a beautiful sandy shore divider in the middle
-                convCtx.fillStyle = '#f59e0b'; // golden sand shore
-                convCtx.fillRect(w / 2 - 2, h - 35, 4, 35);
-
-                // --- Draw dynamic, gorgeous text badges directly on the canvas for absolute reliability & high visibility! ---
-                const lx = w * 0.25;
-                const ly = h - 18;
-                const sx = w * 0.75;
-                const sy = h - 15;
-
-                const drawBadgeOnCanvas = (ctx, x, y, text, strokeColor) => {
-                    const paddingX = 10;
-                    const paddingY = 4;
-                    ctx.font = 'bold 9px monospace, sans-serif';
-                    const textWidth = ctx.measureText(text).width;
-                    const wBadge = textWidth + paddingX * 2;
-                    const hBadge = 18;
-                    const rx = x - wBadge / 2;
-                    const ry = y - hBadge / 2;
-                    const r = 5;
-
-                    // Draw semi-transparent card background
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                    ctx.strokeStyle = strokeColor;
-                    ctx.lineWidth = 1.5;
-
-                    ctx.beginPath();
-                    ctx.moveTo(rx + r, ry);
-                    ctx.lineTo(rx + wBadge - r, ry);
-                    ctx.quadraticCurveTo(rx + wBadge, ry, rx + wBadge, ry + r);
-                    ctx.lineTo(rx + wBadge, ry + hBadge - r);
-                    ctx.quadraticCurveTo(rx + wBadge, ry + hBadge, rx + wBadge - r, ry + hBadge);
-                    ctx.lineTo(rx + r, ry + hBadge);
-                    ctx.quadraticCurveTo(rx, ry + hBadge, rx, ry + hBadge - r);
-                    ctx.lineTo(rx, ry + r);
-                    ctx.quadraticCurveTo(rx, ry, rx + r, ry);
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.stroke();
-
-                    // Draw text
-                    ctx.save();
-                    ctx.fillStyle = '#0f172a';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(text, x, y + 0.5);
-                    ctx.restore();
+                const drawBuilding = (bx, baseY, bw, bh, roof) => {
+                    convCtx.fillStyle = isDay ? '#475569' : '#1e293b';
+                    convCtx.fillRect(bx, baseY - bh, bw, bh);
+                    if (roof === 'peak') {
+                        convCtx.fillStyle = isDay ? '#b45309' : '#334155';
+                        convCtx.beginPath();
+                        convCtx.moveTo(bx - 2, baseY - bh);
+                        convCtx.lineTo(bx + bw / 2, baseY - bh - 8);
+                        convCtx.lineTo(bx + bw + 2, baseY - bh);
+                        convCtx.closePath();
+                        convCtx.fill();
+                    } else {
+                        convCtx.fillStyle = isDay ? '#64748b' : '#0f172a';
+                        convCtx.fillRect(bx - 1, baseY - bh - 4, bw + 2, 4);
+                    }
+                    const cols = Math.max(2, Math.floor(bw / 7));
+                    const rows = Math.max(2, Math.floor(bh / 10));
+                    for (let r = 0; r < rows; r++) {
+                        for (let c = 0; c < cols; c++) {
+                            const wx = bx + 3 + c * (bw / cols);
+                            const wy = baseY - bh + 4 + r * (bh / rows);
+                            if (wx + 3 > bx + bw - 2) continue;
+                            convCtx.fillStyle = isDay ? '#ffffff' : '#fbbf24';
+                            convCtx.fillRect(wx, wy, 3.5, 4);
+                        }
+                    }
                 };
 
-                const landColor = breezeTime === 'day' ? '#f43f5e' : '#6366f1';
-                const landStr = breezeTime === 'day' ? t('convection.landHot') : t('convection.landCold');
-                drawBadgeOnCanvas(convCtx, lx, ly, landStr, landColor);
+                [
+                    { x: w * 0.04, bw: 18, bh: 38, roof: 'flat' },
+                    { x: w * 0.09, bw: 22, bh: 58, roof: 'flat' },
+                    { x: w * 0.145, bw: 16, bh: 32, roof: 'peak' },
+                    { x: w * 0.20, bw: 26, bh: 70, roof: 'flat' },
+                    { x: w * 0.27, bw: 18, bh: 44, roof: 'flat' },
+                    { x: w * 0.33, bw: 20, bh: 36, roof: 'peak' },
+                    { x: w * 0.40, bw: 24, bh: 52, roof: 'flat' }
+                ].forEach(b => {
+                    if (b.x + b.bw < w / 2 - 8) drawBuilding(b.x, landGroundY, b.bw, b.bh, b.roof);
+                });
 
-                const seaColor = breezeTime === 'day' ? '#0ea5e9' : '#ec4899';
-                const seaStr = breezeTime === 'day' ? t('convection.seaCool') : t('convection.seaWarm');
-                drawBadgeOnCanvas(convCtx, sx, sy, seaStr, seaColor);
+                // Sea (right): water body + animated waves, not a word badge
+                const seaGrad = convCtx.createLinearGradient(w / 2, seaSurfaceY - 8, w, h);
+                if (isDay) {
+                    seaGrad.addColorStop(0, '#38bdf8');
+                    seaGrad.addColorStop(0.45, '#0284c7');
+                    seaGrad.addColorStop(1, '#0c4a6e');
+                } else {
+                    seaGrad.addColorStop(0, '#0e4a6e');
+                    seaGrad.addColorStop(0.4, '#0c4a6e');
+                    seaGrad.addColorStop(1, '#082f49');
+                }
+                convCtx.fillStyle = seaGrad;
+                convCtx.fillRect(w / 2, seaSurfaceY, w / 2, h - seaSurfaceY);
+
+                convCtx.strokeStyle = isDay ? 'rgba(224, 242, 254, 0.85)' : 'rgba(165, 243, 252, 0.55)';
+                convCtx.lineWidth = 1.6;
+                for (let row = 0; row < 4; row++) {
+                    convCtx.beginPath();
+                    const wy = seaSurfaceY + 6 + row * 8;
+                    for (let x = w / 2; x <= w; x += 4) {
+                        const y = wy + Math.sin((x / 18) + tWave + row * 0.8) * 2.4;
+                        if (x === w / 2) convCtx.moveTo(x, y);
+                        else convCtx.lineTo(x, y);
+                    }
+                    convCtx.stroke();
+                }
+
+                convCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                convCtx.fillRect(w / 2, seaSurfaceY, 7, 3);
+
+                // Sandy shore divider
+                convCtx.fillStyle = '#f59e0b';
+                convCtx.fillRect(w / 2 - 3, landGroundY, 6, h - landGroundY);
 
                 // Draw rotating Sun / Moon
                 const pulse = Math.sin(Date.now() / 400);
-                if (breezeTime === 'day') {
-                    // Golden glowing Sun
+                if (isDay) {
                     convCtx.save();
                     convCtx.shadowColor = '#f59e0b';
                     convCtx.shadowBlur = 15 + pulse * 5;
@@ -4160,7 +4895,6 @@
                     convCtx.fill();
                     convCtx.restore();
 
-                    // Rays
                     convCtx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
                     convCtx.lineWidth = 1.5;
                     let rotateAngle = Date.now() / 1500;
@@ -4171,7 +4905,6 @@
                         convCtx.stroke();
                     }
                 } else {
-                    // Glowing Moon
                     convCtx.save();
                     convCtx.shadowColor = '#cbd5e1';
                     convCtx.shadowBlur = 10;
@@ -4183,34 +4916,6 @@
                     convCtx.restore();
                 }
 
-                // Breeze densities and wind status HUD
-                convCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                convCtx.fillRect(10, 10, 245, 45); // Expanded width to 245 and height to 45 for perfect word fitting
-                convCtx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
-                convCtx.lineWidth = 1;
-                convCtx.strokeRect(10, 10, 245, 45);
-
-                // Reset text alignment states to avoid leaks and set font explicitly
-                convCtx.textAlign = 'left';
-                convCtx.textBaseline = 'alphabetic';
-                convCtx.font = 'bold 8.5px monospace'; // Explicitly set font for perfect box fitting
-
-                if (breezeTime === 'day') {
-                    convCtx.fillStyle = '#f97316';
-                    convCtx.fillText(t('convection.landHeatedFast'), 15, 22);
-                    convCtx.fillStyle = '#0284c7';
-                    convCtx.fillText(t('convection.seaCooler'), 15, 33);
-                    convCtx.fillStyle = '#10b981';
-                    convCtx.fillText(t('convection.seaBreeze'), 15, 44);
-                } else {
-                    convCtx.fillStyle = '#0284c7';
-                    convCtx.fillText(t('convection.landCoolsFast'), 15, 22);
-                    convCtx.fillStyle = '#ea580c';
-                    convCtx.fillText(t('convection.seaRetainsHeat'), 15, 33);
-                    convCtx.fillStyle = '#7e22ce';
-                    convCtx.fillText(t('convection.landBreeze'), 15, 44);
-                }
-
                 convParticles.forEach(p => {
                     updateBreezeConvectionParticle(p, w, h);
                     drawConvectionParticle(p);
@@ -4218,6 +4923,10 @@
             }
 
             convCtx.restore(); // Restore context scale to actual screen boundaries
+
+            if (convScenario === 'breeze') {
+                drawBreezeSurfaceCaptions(rect, offsetX, offsetY, s, w, h, layout);
+            }
 
             if (convParticles.length) {
                 const avgT = convParticles.reduce((s, p) => s + p.temp, 0) / convParticles.length;
@@ -4236,7 +4945,9 @@
                 }
             }
 
-            convAnimationId = requestAnimationFrame(animateConvection);
+            if (scheduleNext) {
+                convAnimationId = requestAnimationFrame(() => animateConvection(true));
+            }
         }
 
         function drawConvectionParticle(p) {
@@ -4278,7 +4989,52 @@
         let radWaves = [];
         let radPhotons = [];
         let radLastSpawn = 0;
-        let radHeaterTemp = 500; // Emitter temperature in °C
+        let radHeaterTemp = 500; // unused after emitter slider removal
+        let radLastTempMs = 0;
+        const RAD_TMIN = 20;
+        const RAD_TMAX = 100;
+        const RAD_BLACK_RATE = 15 / 5;
+        const RAD_SHINY_RATE = 15 / 15;
+
+        function stepRadiationTemps(now) {
+            if (!radLastTempMs) {
+                radLastTempMs = now;
+                return;
+            }
+            const dt = Math.min(0.05, (now - radLastTempMs) / 1000);
+            radLastTempMs = now;
+            const dir = radHeaterOn ? 1 : -1;
+            tempBlack = Math.max(RAD_TMIN, Math.min(RAD_TMAX, tempBlack + dir * RAD_BLACK_RATE * dt));
+            tempShiny = Math.max(RAD_TMIN, Math.min(RAD_TMAX, tempShiny + dir * RAD_SHINY_RATE * dt));
+            const tb = document.getElementById('temp-black');
+            const ts = document.getElementById('temp-shiny');
+            if (tb) tb.innerText = tempBlack.toFixed(1) + '°C';
+            if (ts) ts.innerText = tempShiny.toFixed(1) + '°C';
+            const rb = document.getElementById('rate-black');
+            const rs = document.getElementById('rate-shiny');
+            if (radHeaterOn) {
+                if (rb) {
+                    rb.innerText = t('radiation.absorbingFast');
+                    rb.className = 'radiation-surface-rate text-red-500 font-extrabold';
+                }
+                if (rs) {
+                    rs.innerText = t('radiation.reflectingIR');
+                    rs.className = 'radiation-surface-rate text-black font-bold';
+                }
+            } else {
+                if (rb) {
+                    rb.innerText = t('radiation.emittingFast');
+                    rb.className = 'radiation-surface-rate text-amber-500 font-bold';
+                }
+                if (rs) {
+                    rs.innerText = t('radiation.emittingSlow');
+                    rs.className = 'radiation-surface-rate text-black font-bold';
+                }
+            }
+            physicsState.radiation.tempBlack = tempBlack;
+            physicsState.radiation.tempShiny = tempShiny;
+            physicsState.radiation.heaterOn = radHeaterOn;
+        }
 
         function updateRadiationPower(val) {
             radHeaterTemp = parseInt(val);
@@ -4313,22 +5069,22 @@
 
         function toggleRadiationHeater() {
             radHeaterOn = !radHeaterOn;
-            const btn = document.getElementById('rad-heat-btn');
-            const lbl = document.getElementById('rad-heat-lbl');
-            const icon = document.getElementById('ir-flame-icon');
             const heater = document.getElementById('ir-heater');
 
             if (radHeaterOn) {
-                btn.className = "px-3 py-1.5 bg-slate-800 hover:bg-slate-750 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1";
-                lbl.innerText = t('radiation.turnOff');
-                icon.className = "w-10 h-10 text-rose-500 animate-pulse";
-                heater.className = "w-20 h-20 bg-rose-950/20 rounded-full border-2 border-rose-500 flex items-center justify-center shadow-lg shadow-rose-500/20";
+                if (heater) {
+                    heater.className = "ir-sun ir-sun-on";
+                    heater.removeAttribute('hidden');
+                    heater.setAttribute('aria-hidden', 'false');
+                }
             } else {
-                btn.className = "px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shadow-md shadow-red-600/10";
-                lbl.innerText = t('radiation.turnOn');
-                icon.className = "w-10 h-10 text-slate-600";
-                heater.className = "w-20 h-20 bg-slate-900 rounded-full border-2 border-slate-800 flex items-center justify-center";
+                if (heater) {
+                    heater.className = "ir-sun";
+                    heater.setAttribute('hidden', '');
+                    heater.setAttribute('aria-hidden', 'true');
+                }
             }
+            syncRadiationHeaterButtons();
             physicsState.radiation.heaterOn = radHeaterOn;
         }
 
@@ -4339,69 +5095,6 @@
             radInterval = setInterval(() => {
                 if (activeTabId !== 'radiation') return;
                 radChartTime += 1;
-
-                if (radHeaterOn) {
-                    // Absolute temperatures for Stefan-Boltzmann Equation (P = e · σ · A · T⁴)
-                    let T_emitter = radHeaterTemp + 273.15;
-                    let T_black = tempBlack + 273.15;
-                    let T_shiny = tempShiny + 273.15;
-
-                    // Stefan-Boltzmann constant scaling for visible laboratory speed
-                    const k_SB = 2.0e-11; 
-                    let rateBlack = 0.95 * k_SB * (Math.pow(T_emitter, 4) - Math.pow(T_black, 4));
-                    let rateShiny = 0.05 * k_SB * (Math.pow(T_emitter, 4) - Math.pow(T_shiny, 4));
-
-                    tempBlack += rateBlack;
-                    tempShiny += rateShiny;
-
-                    // Clamping upper limits based on power
-                    tempBlack = Math.min(radHeaterTemp * 0.9, tempBlack);
-                    tempShiny = Math.min(radHeaterTemp * 0.4, tempShiny);
-                    
-                    document.getElementById('rate-black').innerText = t('radiation.absorbingFast');
-                    document.getElementById('rate-black').className = "text-[9px] text-red-500 font-extrabold";
-                    document.getElementById('rate-shiny').innerText = t('radiation.reflectingIR');
-                    document.getElementById('rate-shiny').className = "text-[9px] text-slate-400";
-                } else {
-                    // Cooling down to room temp via emissivity and temperature differences
-                    let T_black = tempBlack + 273.15;
-                    let T_shiny = tempShiny + 273.15;
-                    let T_room = 20.0 + 273.15;
-
-                    const k_cool = 4.0e-11;
-                    let coolBlack = 0.95 * k_cool * (Math.pow(T_black, 4) - Math.pow(T_room, 4));
-                    let coolShiny = 0.05 * k_cool * (Math.pow(T_shiny, 4) - Math.pow(T_room, 4));
-
-                    tempBlack -= Math.max(0.1, coolBlack);
-                    tempShiny -= Math.max(0.02, coolShiny);
-
-                    tempBlack = Math.max(20.0, tempBlack);
-                    tempShiny = Math.max(20.0, tempShiny);
-                    
-                    if (tempBlack > 21) {
-                        document.getElementById('rate-black').innerText = t('radiation.emittingFast');
-                        document.getElementById('rate-black').className = "text-[9px] text-amber-500 font-bold";
-                    } else {
-                        document.getElementById('rate-black').innerText = t('common.stable');
-                        document.getElementById('rate-black').className = "text-[9px] text-slate-500";
-                    }
-
-                    if (tempShiny > 21) {
-                        document.getElementById('rate-shiny').innerText = t('radiation.emittingSlow');
-                        document.getElementById('rate-shiny').className = "text-[9px] text-slate-500";
-                    } else {
-                        document.getElementById('rate-shiny').innerText = t('common.stable');
-                        document.getElementById('rate-shiny').className = "text-[9px] text-slate-500";
-                    }
-                }
-
-                document.getElementById('temp-black').innerText = tempBlack.toFixed(1) + "°C";
-                document.getElementById('temp-shiny').innerText = tempShiny.toFixed(1) + "°C";
-
-                physicsState.radiation.tempBlack = tempBlack;
-                physicsState.radiation.tempShiny = tempShiny;
-                physicsState.radiation.heaterOn = radHeaterOn;
-
                 if (radChart) {
                     radChart.data.labels.push(radChartTime);
                     radChart.data.datasets[0].data.push(tempBlack.toFixed(1));
@@ -4419,10 +5112,10 @@
 
         /** Keep dull-black / shiny-silver base fixed; heat only via red filter overlay. */
         function updateRadiationBlockAppearance() {
-            const blackHeat = Math.max(0, Math.min(1, (tempBlack - 20) / 100));
-            const shinyHeat = Math.max(0, Math.min(1, (tempShiny - 20) / 80));
+            const blackHeat = Math.max(0, (tempBlack - 20) / 15);
+            const shinyHeat = Math.max(0, (tempShiny - 20) / 15);
             const blackEase = Math.pow(blackHeat, 0.7);
-            const shinyEase = Math.pow(shinyHeat, 0.72);
+            const shinyEase = Math.pow(shinyHeat, 0.7);
 
             const blackBlock = document.getElementById('dull-black-block');
             const shinyBlock = document.getElementById('shiny-silver-block');
@@ -4433,23 +5126,57 @@
                 blackBlock.style.backgroundColor = '';
                 blackBlock.style.backgroundImage = '';
                 blackBlock.style.background = '';
-                blackBlock.style.borderColor = '';
-                blackBlock.style.boxShadow = blackEase > 0.05
-                    ? `inset 0 1px 0 rgba(255,255,255,0.04), 0 0 ${10 + blackEase * 22}px rgba(239, 68, 68, ${0.12 + blackEase * 0.38})`
-                    : '';
+                if (radHeaterOn) {
+                    const pulse = 0.55 + 0.45 * Math.sin(Date.now() / 380);
+                    const rim = 2 + blackEase * 2;
+                    const halo = 16 + blackEase * 26;
+                    blackBlock.style.borderColor = `rgba(248, 113, 113, ${Math.min(1, 0.65 + blackEase * 0.35)})`;
+                    blackBlock.style.boxShadow = [
+                        `inset 0 0 ${10 + blackEase * 16}px rgba(239, 68, 68, ${Math.min(1, 0.28 + blackEase * 0.4)})`,
+                        `0 0 0 ${rim}px rgba(239, 68, 68, ${Math.min(1, 0.75 + pulse * 0.2)})`,
+                        `0 0 ${halo}px ${8 + blackEase * 12}px rgba(239, 68, 68, ${Math.min(1, 0.4 + blackEase * 0.35)})`,
+                        `0 0 ${halo * 1.7}px rgba(185, 28, 28, ${Math.min(1, 0.28 + blackEase * 0.32)})`
+                    ].join(', ');
+                } else if (blackHeat <= 0) {
+                    blackBlock.style.borderColor = '';
+                    blackBlock.style.boxShadow = '';
+                } else {
+                    const h = blackHeat;
+                    const pulse = 0.55 + 0.45 * Math.sin(Date.now() / 380);
+                    const rim = 2 + h * 2;
+                    const halo = 16 + h * 26;
+                    blackBlock.style.borderColor = `rgba(248, 113, 113, ${Math.min(1, (0.65 + h * 0.35) * h)})`;
+                    blackBlock.style.boxShadow = [
+                        `inset 0 0 ${10 + h * 16}px rgba(239, 68, 68, ${Math.min(1, (0.28 + h * 0.4) * h)})`,
+                        `0 0 0 ${rim}px rgba(239, 68, 68, ${Math.min(1, (0.75 + pulse * 0.2) * h)})`,
+                        `0 0 ${halo}px ${8 + h * 12}px rgba(239, 68, 68, ${Math.min(1, (0.4 + h * 0.35) * h)})`,
+                        `0 0 ${halo * 1.7}px rgba(185, 28, 28, ${Math.min(1, (0.28 + h * 0.32) * h)})`
+                    ].join(', ');
+                }
             }
             if (shinyBlock) {
                 shinyBlock.style.backgroundColor = '';
                 shinyBlock.style.backgroundImage = '';
                 shinyBlock.style.background = '';
-                shinyBlock.style.borderColor = '';
-                shinyBlock.style.boxShadow = shinyEase > 0.05
-                    ? `inset 0 1px 0 rgba(255,255,255,0.65), 0 0 ${8 + shinyEase * 16}px rgba(248, 113, 113, ${0.10 + shinyEase * 0.26})`
-                    : 'inset 0 1px 0 rgba(255,255,255,0.65)';
+                const pulse = 0.55 + 0.45 * Math.sin(Date.now() / 380);
+                const h = shinyEase;
+                if (h <= 0) {
+                    shinyBlock.style.borderColor = '';
+                    shinyBlock.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.65)';
+                } else {
+                    shinyBlock.style.borderColor = `rgba(248, 113, 113, ${Math.min(1, h * 1.0)})`;
+                    shinyBlock.style.boxShadow = [
+                        `inset 0 0 ${26 * h}px rgba(239, 68, 68, ${Math.min(1, 0.68 * h)})`,
+                        `0 0 0 ${4 * h}px rgba(239, 68, 68, ${Math.min(1, (0.75 + pulse * 0.2) * h)})`,
+                        `0 0 ${42 * h}px ${20 * h}px rgba(239, 68, 68, ${Math.min(1, 0.75 * h)})`,
+                        `0 0 ${71.4 * h}px rgba(185, 28, 28, ${Math.min(1, 0.6 * h)})`
+                    ].join(', ');
+                }
             }
             if (tempBlackEl) {
-                tempBlackEl.style.color = blackEase > 0.18 ? '#fee2e2' : '#ef4444';
-                tempBlackEl.style.textShadow = blackEase > 0.08 ? '0 0 9px rgba(254, 202, 202, 0.65)' : '';
+                const tbGlow = radHeaterOn ? blackEase : blackHeat;
+                tempBlackEl.style.color = tbGlow > 0.18 ? '#fee2e2' : '#ef4444';
+                tempBlackEl.style.textShadow = tbGlow > 0.08 ? '0 0 9px rgba(254, 202, 202, 0.65)' : '';
             }
             if (tempShinyEl) {
                 tempShinyEl.style.color = shinyEase > 0.12 ? '#991b1b' : '#4f46e5';
@@ -4463,46 +5190,49 @@
             const glowBlack = document.getElementById('glow-black');
             const glowShiny = document.getElementById('glow-shiny');
             if (glowBlack) {
-                const heat = Math.max(0, Math.min(1, (tempBlack - 20) / 100));
-                const op = tempBlack > 21
-                    ? 0.10 + heat * (0.55 + pulse * 0.18)
-                    : 0;
-                glowBlack.style.opacity = Math.min(0.78, op);
-                glowBlack.style.background = `rgba(185, 28, 28, ${0.22 + heat * 0.42})`;
+                const heat = Math.max(0, (tempBlack - 20) / 15);
+                if (radHeaterOn) {
+                    const op = tempBlack > 21
+                        ? 0.10 + heat * (0.55 + pulse * 0.18)
+                        : 0;
+                    glowBlack.style.opacity = Math.min(1, op);
+                    glowBlack.style.background = `rgba(185, 28, 28, ${Math.min(1, 0.22 + heat * 0.42)})`;
+                } else if (heat <= 0) {
+                    glowBlack.style.opacity = 0;
+                } else {
+                    const op = heat * (0.10 + (0.55 + pulse * 0.18));
+                    glowBlack.style.opacity = Math.min(1, op);
+                    glowBlack.style.background = `rgba(185, 28, 28, ${Math.min(1, 0.22 + heat * 0.42)})`;
+                }
             }
             if (glowShiny) {
-                const heat = Math.max(0, Math.min(1, (tempShiny - 20) / 80));
+                const heat = Math.max(0, (tempShiny - 20) / 15);
                 const op = tempShiny > 21
                     ? 0.06 + heat * (0.42 + pulse * 0.14)
                     : 0;
-                glowShiny.style.opacity = Math.min(0.72, op);
-                glowShiny.style.background = `rgba(239, 68, 68, ${0.28 + heat * 0.40})`;
+                glowShiny.style.opacity = Math.min(1, op);
+                glowShiny.style.background = `rgba(239, 68, 68, ${Math.min(1, 0.28 + heat * 0.40)})`;
             }
             updateRadiationBlockAppearance();
         }
 
-        function drawIRWavePath(ctx, x0, y0, x1, y1, color, opacity, freq = 12) {
-            const steps = 24;
-            const dx = x1 - x0;
-            const dy = y1 - y0;
-            const len = Math.hypot(dx, dy) || 1;
-            const nx = -dy / len;
-            const ny = dx / len;
-            ctx.strokeStyle = color;
-            ctx.globalAlpha = opacity;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(x0, y0);
-            for (let i = 1; i <= steps; i++) {
-                const t = i / steps;
-                const px = x0 + dx * t;
-                const py = y0 + dy * t;
-                const amp = 6 * (1 - t * 0.3);
-                ctx.lineTo(px + nx * Math.sin(t * Math.PI * freq) * amp, py + ny * Math.sin(t * Math.PI * freq) * amp);
+        const IR_ORANGE = '#f97316';
+
+        function getRadiationHitXs(canvasRect) {
+            // Sun-facing outer surfaces: black right edge, shiny left edge.
+            let leftX = canvasRect.width * 0.24;
+            let rightX = canvasRect.width * 0.76;
+            const black = document.getElementById('dull-black-block');
+            const shiny = document.getElementById('shiny-silver-block');
+            if (black) {
+                const br = black.getBoundingClientRect();
+                leftX = Math.max(0, br.right - canvasRect.left);
             }
-            ctx.stroke();
-            ctx.globalAlpha = 1;
-            return { x: x1, y: y1 };
+            if (shiny) {
+                const sr = shiny.getBoundingClientRect();
+                rightX = Math.min(canvasRect.width, sr.left - canvasRect.left);
+            }
+            return { leftX, rightX };
         }
 
         function spawnRadiationWaves() {
@@ -4524,38 +5254,12 @@
             }
         }
 
-        function drawIRWaveLabels() {
-            const svg = document.getElementById('ir-waves-svg');
-            if (!svg) return;
-            const w = svg.clientWidth || 600;
-            const h = svg.clientHeight || 250;
-            const cx = w / 2;
-            const cy = h / 2;
-            
-            // Calculate responsive x-coordinates in the middle of open spaces to avoid block overlap
-            const leftX = w * 0.31;
-            const rightX = w * 0.69;
-
-            svg.innerHTML = `<g>
-                <!-- Background box and label for Heat Absorption (Left) -->
-                <rect x="${leftX - 52}" y="${cy - 30}" width="104" height="20" rx="5" fill="rgba(255, 255, 255, 0.95)" stroke="rgba(239, 68, 68, 0.45)" stroke-width="1.2"/>
-                <text x="${leftX}" y="${cy - 20}" text-anchor="middle" dominant-baseline="central" fill="#f43f5e" font-size="9" font-weight="900" letter-spacing="0.5">${t('radiation.absorbLabel')}</text>
-
-                <!-- Background box and label for IR Wave Reflection (Right) -->
-                <rect x="${rightX - 52}" y="${cy - 30}" width="104" height="20" rx="5" fill="rgba(255, 255, 255, 0.95)" stroke="rgba(56, 189, 248, 0.45)" stroke-width="1.2"/>
-                <text x="${rightX}" y="${cy - 20}" text-anchor="middle" dominant-baseline="central" fill="#0284c7" font-size="9" font-weight="900" letter-spacing="0.5">${t('radiation.reflectLabel')}</text>
-
-                <!-- Premium Header Badge -->
-                <rect x="${cx - 60}" y="10" width="120" height="18" rx="4" fill="rgba(255, 255, 255, 0.9)" stroke="rgba(15, 23, 42, 0.15)" stroke-width="1"/>
-                <text x="${cx}" y="19" text-anchor="middle" dominant-baseline="central" fill="#475569" font-size="8.5" font-weight="800" letter-spacing="0.5">${t('radiation.irWaves')}</text>
-            </g>`;
-        }
-
         /**
          * 輻射波動畫幀 60fps · Radiation wave animation via requestAnimationFrame
          */
         function animateRadiation() {
             if (activeTabId !== 'radiation') return;
+            stepRadiationTemps(performance.now());
 
             if (!radWaveCtx || !radWaveCanvas) {
                 initRadiationWaveCanvas();
@@ -4567,16 +5271,12 @@
                 const h = rect.height;
                 const cx = w / 2;
                 const cy = h / 2;
-                const leftX = w * 0.18;
-                const rightX = w * 0.82;
+                const { leftX, rightX } = getRadiationHitXs(rect);
 
                 radWaveCtx.clearRect(0, 0, w, h);
                 spawnRadiationWaves();
                 updateRadiationBlockGlow();
 
-                // Calculate dynamic wavelength (Wien's Displacement Law: frequency ∝ Temp)
-                let dynamicFreq = Math.round(5 + (radHeaterTemp / 1000) * 16);
-                const heaterColor = tempToCSS(radHeaterTemp, 20, 800);
                 const blackColor = tempToCSS(tempBlack, 20, 180);
                 const shinyColor = tempToCSS(tempShiny, 20, 180);
 
@@ -4586,17 +5286,13 @@
 
                     if (wave.kind === 'toBlack') {
                         const x = cx - wave.progress * (cx - leftX);
-                        const op = (1 - wave.progress) * 0.85;
-                        drawIRWavePath(radWaveCtx, cx, cy, x, cy, heaterColor, op, dynamicFreq);
-                        radPhotons.push({ x, y: cy, life: 0.7, color: heaterColor, r: 5 });
-                        
+                        radPhotons.push({ x, y: cy, life: 0.7, color: IR_ORANGE, r: 5 });
                         if (wave.progress >= 1) {
-                            // Absorption high-energy splash particles on Dull Black block!
                             for (let k = 0; k < 18; k++) {
                                 radPhotons.push({
                                     x: leftX,
                                     y: cy,
-                                    vx: (Math.random() - 0.1) * 2.5, // Explode outwards and backwards
+                                    vx: (Math.random() - 0.1) * 2.5,
                                     vy: (Math.random() - 0.5) * 2.5,
                                     life: 0.8,
                                     color: blackColor,
@@ -4607,12 +5303,8 @@
                         }
                     } else if (wave.kind === 'toShiny') {
                         const x = cx + wave.progress * (rightX - cx);
-                        const op = (1 - wave.progress) * 0.7;
-                        drawIRWavePath(radWaveCtx, cx, cy, x, cy, heaterColor, op, dynamicFreq);
-                        
                         if (wave.progress >= 0.92 && !wave.reflected) {
                             wave.reflected = true;
-                            // Specular reflection wave rays keep the heater temperature colour
                             [-0.4, 0, 0.4].forEach((ang) => {
                                 radWaves.push({
                                     kind: 'reflect',
@@ -4621,15 +5313,14 @@
                                     angle: Math.PI + ang * 0.6,
                                     progress: 0,
                                     speed: 0.025,
-                                    color: heaterColor
+                                    color: IR_ORANGE
                                 });
                             });
-                            // Specular reflection visual splash particles
                             for (let k = 0; k < 16; k++) {
                                 radPhotons.push({
                                     x: rightX,
                                     y: cy,
-                                    vx: -1.5 - Math.random() * 3, // Fast bounce-back to the left
+                                    vx: -1.5 - Math.random() * 3,
                                     vy: (Math.random() - 0.5) * 2.5,
                                     life: 0.7,
                                     color: shinyColor,
@@ -4638,23 +5329,20 @@
                             }
                             radWaves.splice(i, 1);
                         } else if (wave.progress < 0.92) {
-                            radPhotons.push({ x, y: cy, life: 0.6, color: heaterColor, r: 4.5 });
+                            radPhotons.push({ x, y: cy, life: 0.6, color: IR_ORANGE, r: 4.5 });
                         }
                     } else if (wave.kind === 'reflect') {
                         const len = 80 * wave.progress;
                         const ex = wave.x + Math.cos(wave.angle) * len;
                         const ey = wave.y + Math.sin(wave.angle) * len;
-                        drawIRWavePath(radWaveCtx, wave.x, wave.y, ex, ey, wave.color || heaterColor, (1 - wave.progress) * 0.6, 8);
-                        radPhotons.push({ x: ex, y: ey, life: 0.4, color: wave.color || heaterColor, r: 2 });
+                        radPhotons.push({ x: ex, y: ey, life: 0.4, color: IR_ORANGE, r: 2 });
                         if (wave.progress >= 1) radWaves.splice(i, 1);
                     } else if (wave.kind === 'emitBlack') {
                         const x = leftX - wave.progress * 40;
-                        drawIRWavePath(radWaveCtx, leftX, cy, x, cy - 20 * wave.progress, blackColor, wave.intensity * (1 - wave.progress), 6);
                         radPhotons.push({ x, y: cy - 20 * wave.progress, life: 0.45, color: blackColor, r: 2.2 });
                         if (wave.progress >= 1) radWaves.splice(i, 1);
                     } else if (wave.kind === 'emitShiny') {
                         const x = rightX + wave.progress * 30;
-                        drawIRWavePath(radWaveCtx, rightX, cy, x, cy - 15 * wave.progress, shinyColor, wave.intensity * 0.5 * (1 - wave.progress), 5);
                         radPhotons.push({ x, y: cy - 15 * wave.progress, life: 0.4, color: shinyColor, r: 2 });
                         if (wave.progress >= 1) radWaves.splice(i, 1);
                     }
@@ -4683,7 +5371,6 @@
                 }
             }
 
-            drawIRWaveLabels();
             radAnimationId = requestAnimationFrame(animateRadiation);
         }
 
@@ -4730,7 +5417,7 @@
                         y: {
                             title: { display: true, text: t('charts.radTemp'), color: '#64748b', font: { size: 9, weight: 'bold' } },
                             min: 15,
-                            max: 50,
+                            max: 110,
                             grid: { color: 'rgba(15, 23, 42, 0.05)' },
                             ticks: { color: '#475569', font: { size: 9 } }
                         }
@@ -4745,8 +5432,7 @@
 
         function updateRadiationChartYScale() {
             if (!radChart) return;
-            let peak = 20;
-            if (radHeaterOn) peak = Math.max(peak, radHeaterTemp * 0.9);
+            let peak = 100;
             radChart.data.datasets.forEach(ds => {
                 ds.data.forEach(v => {
                     const n = parseFloat(v);
@@ -4764,6 +5450,7 @@
             if (radHeaterOn) toggleRadiationHeater();
             tempBlack = 20.0;
             tempShiny = 20.0;
+            radLastTempMs = 0;
             radWaves = [];
             radPhotons = [];
             radHeaterTemp = 500;
@@ -4773,8 +5460,8 @@
             if (val) val.innerText = '500°C';
             document.getElementById('temp-black').innerText = "20.0°C";
             document.getElementById('temp-shiny').innerText = "20.0°C";
-            document.getElementById('rate-black').innerText = t('common.roomTemp');
-            document.getElementById('rate-shiny').innerText = t('common.roomTemp');
+            document.getElementById('rate-black').innerText = t('radiation.emittingFast');
+            document.getElementById('rate-shiny').innerText = t('radiation.emittingSlow');
             const glowBlack = document.getElementById('glow-black');
             const glowShiny = document.getElementById('glow-shiny');
             if (glowBlack) glowBlack.style.opacity = '0';
