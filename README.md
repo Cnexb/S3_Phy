@@ -123,9 +123,9 @@ npm run export:optics-definitions-flashcards
 
 ## 🌐 Live Site & Deployment
 
-**Live URL:** `https://unipluseducationact-ctrl.github.io/S3_PHY/`
+**Live URL:** `https://cnexb.github.io/S3_Phy/`
 
-If you still see a blank page, open `https://unipluseducationact-ctrl.github.io/S3_PHY/dist/` once, or configure Pages as below.
+Light → Comics (Initial D): open the live site, choose Light, then **6. Comics**.
 
 ### Why the page was blank
 

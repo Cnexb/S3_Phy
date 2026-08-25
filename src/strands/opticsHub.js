@@ -17,7 +17,7 @@ const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refract
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
-const COMICS_ASSET_VERSION = '20260825-initial-d-v2';
+const COMICS_ASSET_VERSION = '20260825-initial-d-v3';
 
 const OPTICS_COMIC_ROWS = [
   {
