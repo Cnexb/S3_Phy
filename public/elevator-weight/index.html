@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-HK" translate="no">
 <head>
-  <meta name="google" content="notranslate">
+    <meta name="google" content="notranslate">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>電梯中的受力</title>
@@ -29,11 +29,13 @@
             margin: 0;
             padding: 16px;
             font-family: "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
+            font-size: 17px;
             background: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
         .header-top {
             width: 100%;
@@ -44,19 +46,96 @@
             gap: 12px;
             margin-bottom: 10px;
         }
-        h2 { margin: 0 0 4px; color: var(--accent); font-size: 1.35rem; font-weight: 800; }
-        #page-desc { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.4; }
-        .lang-btn {
+        h2 { margin: 0 0 4px; color: var(--accent); font-size: 1.75rem; font-weight: 800; }
+        #page-desc { margin: 0; color: var(--muted); font-size: 1.12rem; line-height: 1.45; }
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .lang-btn, .fs-btn {
             background: var(--btn);
             border: 1px solid var(--border);
             color: var(--btn-text);
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 16px;
             cursor: pointer;
             flex-shrink: 0;
         }
+        .fs-btn {
+            background: #0f766e;
+            border-color: #0f766e;
+            color: #fff;
+        }
+        .fs-btn:hover { filter: brightness(1.05); }
+        /* Fullscreen = same layout as normal, no N–t, fit one screen (no scroll) */
+        body.is-fullscreen {
+            height: 100dvh;
+            max-height: 100dvh;
+            padding: 6px 10px;
+            overflow: hidden;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        body.is-fullscreen .header-top,
+        body.is-fullscreen .container {
+            width: 100%;
+            max-width: 1080px;
+        }
+        body.is-fullscreen .header-top { flex: 0 0 auto; margin-bottom: 4px; }
+        body.is-fullscreen .container {
+            flex: 1 1 auto;
+            min-height: 0;
+            gap: 6px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        body.is-fullscreen .container > .card:first-child { flex: 0 0 auto; }
+        body.is-fullscreen #page-desc { display: none; }
+        body.is-fullscreen h2 { font-size: 1.3rem; margin: 0; }
+        body.is-fullscreen .card { padding: 6px 10px; }
+        body.is-fullscreen .controls-row { margin-top: 4px; gap: 6px 10px; }
+        body.is-fullscreen .slider-label { font-size: 0.82rem; }
+        body.is-fullscreen .val { font-size: 0.9rem; }
+        body.is-fullscreen .play-btn { padding: 7px 12px; font-size: 0.9rem; }
+        body.is-fullscreen .sc-btn { padding: 5px 10px; font-size: 0.85rem; }
+        body.is-fullscreen .canvas-label { font-size: 0.85rem; margin-bottom: 4px; }
+        body.is-fullscreen .main-grid {
+            flex: 1 1 auto;
+            min-height: 0;
+            gap: 8px;
+            align-items: stretch;
+        }
+        body.is-fullscreen .main-grid > .card {
+            min-height: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Shaft card fills remaining height; canvas stretches into empty lower space */
+        body.is-fullscreen .main-grid > .card:first-child #sceneCanvas {
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            height: auto; /* override fixed 580px so card can stretch, then JS sizes to fill */
+        }
+        body.is-fullscreen .main-grid > .card:first-child .legend { flex: 0 0 auto; }
+        body.is-fullscreen #case-cue { margin: 2px 0 0 !important; font-size: 0.9rem !important; }
+        body.is-fullscreen .fbd-card #fbdCanvas { flex: 0 0 auto; }
+        body.is-fullscreen .fbd-card .readouts { gap: 5px; margin-top: 5px; }
+        body.is-fullscreen .stat { padding: 5px 7px; }
+        body.is-fullscreen .stat .k { font-size: 0.78rem; }
+        body.is-fullscreen .stat .v { font-size: 0.98rem; }
+        body.is-fullscreen .feel { margin-top: 5px; padding: 6px 8px; font-size: 0.9rem; }
+        body.is-fullscreen .eq-box { margin-top: 5px; padding: 6px 8px; font-size: 0.9rem; }
+        body.is-fullscreen .nt-card { display: none !important; }
         .container {
             width: 100%;
             max-width: 1080px;
@@ -80,9 +159,9 @@
             border: 1.5px solid var(--border);
             background: #fff;
             color: var(--btn-text);
-            padding: 7px 12px;
+            padding: 9px 14px;
             border-radius: 999px;
-            font-size: 0.82rem;
+            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
             transition: 0.15s;
@@ -108,7 +187,7 @@
             flex: 1 1 160px;
         }
         .slider-label {
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--muted);
             letter-spacing: 0.03em;
@@ -118,45 +197,64 @@
         .val {
             font-variant-numeric: tabular-nums;
             font-weight: 700;
-            min-width: 4.5rem;
+            min-width: 5rem;
             text-align: right;
-            font-size: 0.88rem;
+            font-size: 1.05rem;
         }
         .play-btn {
             background: var(--accent);
             color: #fff;
             border: none;
             border-radius: 10px;
-            padding: 10px 16px;
+            padding: 12px 18px;
             font-weight: 800;
             cursor: pointer;
-            font-size: 0.88rem;
+            font-size: 1.05rem;
         }
         .main-grid {
             display: grid;
-            grid-template-columns: 1.7fr 0.55fr;
+            grid-template-columns: 6fr 4fr;
             gap: 14px;
-            align-items: start;
+            align-items: stretch;
         }
         @media (max-width: 820px) {
             .main-grid { grid-template-columns: 1fr; }
         }
+        .main-grid > .card {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .main-grid > .card:first-child #sceneCanvas {
+            flex: 1 1 auto;
+            width: 100%;
+            min-height: 640px;
+            height: auto;
+        }
+        .fbd-card #fbdCanvas { flex: 0 0 auto; }
+        .fbd-card .readouts,
+        .fbd-card .feel,
+        .fbd-card .eq-box { flex: 0 0 auto; }
         .canvas-label {
-            font-size: 0.78rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--muted);
             margin-bottom: 8px;
+            flex: 0 0 auto;
         }
         canvas {
             width: 100%;
+            max-width: 100%;
             display: block;
             border-radius: 12px;
             border: 1px solid var(--border);
             background: #eef2f6;
+            box-sizing: border-box;
         }
-        #sceneCanvas { height: 580px; }
-        #fbdCanvas { height: 280px; background: #fafafa; }
-        #ntCanvas { height: 260px; background: #fafafa; }
+        #sceneCanvas { height: 640px; }
+        #fbdCanvas { height: 360px; background: #fafafa; }
+        #ntCanvas { height: 380px; background: #fafafa; }
+        .nt-card { display: none !important; }
         .readouts {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -171,14 +269,14 @@
         }
         .stat .k {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--muted);
             margin-bottom: 2px;
         }
         .stat .v {
             font-weight: 800;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-variant-numeric: tabular-nums;
         }
         .stat.n .v { color: var(--n); }
@@ -190,7 +288,7 @@
             padding: 10px 12px;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             text-align: center;
             border: 1px solid transparent;
         }
@@ -201,7 +299,7 @@
         .eq-box {
             margin-top: 10px;
             font-family: "Roboto Mono", Consolas, monospace;
-            font-size: 0.84rem;
+            font-size: 1.05rem;
             background: #f0fdfa;
             border-radius: 8px;
             padding: 10px 12px;
@@ -213,9 +311,10 @@
             flex-wrap: wrap;
             gap: 12px;
             margin-top: 8px;
-            font-size: 0.8rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--muted);
+            flex: 0 0 auto;
         }
         .legend span::before {
             content: "";
@@ -233,10 +332,12 @@
         .phase-tag {
             display: inline-block;
             margin-top: 8px;
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 999px;
-            font-size: 0.78rem;
+            font-size: 0.98rem;
             font-weight: 700;
+            flex: 0 0 auto;
+            align-self: flex-start;
             background: #ecfdf5;
             color: #047857;
             border: 1px solid #a7f3d0;
@@ -250,7 +351,7 @@
         #whyCaption {
             margin: 10px 0 0;
             min-height: 2.6em;
-            font-size: 0.92rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #0f766e;
             line-height: 1.45;
@@ -258,13 +359,14 @@
         .why-eq {
             margin-top: 8px;
             font-family: "Roboto Mono", Consolas, monospace;
-            font-size: 0.82rem;
+            font-size: 1rem;
             color: #475569;
             background: #f1f5f9;
             border-radius: 8px;
             padding: 8px 10px;
             line-height: 1.5;
         }
+        #case-cue { font-size: 1.1rem !important; }
     </style>
 </head>
 <body>
@@ -273,7 +375,10 @@
             <h2 id="page-title">Forces in an elevator</h2>
             <p id="page-desc">Normal force, weight and acceleration when a lift goes up or down.</p>
         </div>
-        <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
+        <div class="header-actions">
+            <button type="button" class="fs-btn" id="fullscreen-btn">⛶ Full screen</button>
+            <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
+        </div>
     </div>
 
     <div class="container">
@@ -285,13 +390,6 @@
                     <div class="slider-row">
                         <input type="range" id="massSlider" min="40" max="100" step="1" value="70">
                         <span class="val" id="massVal">70 kg</span>
-                    </div>
-                </div>
-                <div class="control-group" id="accel-group">
-                    <span class="slider-label" id="label-accel">|a| magnitude</span>
-                    <div class="slider-row">
-                        <input type="range" id="accelSlider" min="0.5" max="8" step="0.1" value="2.5">
-                        <span class="val" id="accelVal">2.5 ms⁻²</span>
                     </div>
                 </div>
                 <div class="control-group">
@@ -317,8 +415,9 @@
                     <span class="la" id="leg-a">a (acceleration)</span>
                     <span class="lv" id="leg-v">v (speed)</span>
                 </div>
+                <span class="phase-tag" id="phaseTag"></span>
             </div>
-            <div class="card">
+            <div class="card fbd-card">
                 <div class="canvas-label" id="label-fbd">Free-body diagram</div>
                 <canvas id="fbdCanvas" width="320" height="280"></canvas>
                 <div class="readouts">
@@ -332,41 +431,34 @@
                 <div class="eq-box" id="eqBox">ΣF = N − mg = ma</div>
             </div>
         </div>
-
-        <div class="card">
-            <div class="canvas-label" id="label-nt">N vs time</div>
-            <canvas id="ntCanvas" width="900" height="260"></canvas>
-            <div class="legend">
-                <span class="ln" id="leg-nt-n">N(t)</span>
-                <span class="lw" id="leg-nt-mg">mg (reference)</span>
-            </div>
-            <span class="phase-tag" id="phaseTag"></span>
-        </div>
     </div>
 
     <script>
         const G = 9.81;
         // Physical shaft height so cabinY∈[0,1] maps to metres
-        const SHAFT_H = 55; // m — room for BRAKE_T=3 s even at |a|=8
-        const BRAKE_T = 3; // seconds of non-zero a just before stop
-        const V_REF = 24; // m/s — scale for v arrow (≈ max cruise = 8×3)
+        const SHAFT_H = 85; // m — room for accel + coast + brake at |a|=5, t=3 s
+        const BRAKE_T = 3; // seconds of non-zero |a| while speeding up or braking
+        const FIXED_A = 5.0; // fixed |a| for all scenarios (ms⁻²)
+        const V_REF = 24; // m/s — scale for v arrow (≈ max cruise = 5×3)
         const FORCE_REF = 70 * G; // pixel scale reference (70 kg · g)
-        const A_REF = 8; // max |a| on slider
-        // Focus cases: coast, then decelerate only in the last BRAKE_T seconds
+        const A_REF = 8; // scale for a arrow length
         const SCENARIOS = [
-            { id: 'upDecel', aSign: -1, moving: 1, needA: true },   // v↑ then a↓ to stop
-            { id: 'downDecel', aSign: 1, moving: -1, needA: true }, // v↓ then a↑ to stop
+            { id: 'upAccel' },   // from rest, a↑ — ends still accelerating (N > mg)
+            { id: 'upDecel' },   // coast up, then a↓ — ends still braking (N < mg)
+            { id: 'downAccel' }, // from rest, a↓ — ends still accelerating (N < mg)
+            { id: 'downDecel' }, // coast down, then a↑ — ends still braking (N > mg)
         ];
 
         const dict = {
             zh: {
                 title: '電梯中的受力',
-                desc: '兩個重點：向上行時先勻速，停車前向下加速（減速至停）；向下行時先勻速，停車前向上加速（減速至停）。',
+                desc: '四個情況（|a| = 5.0 ms⁻²）：從靜止向上／向下加速；以及勻速後停車前減速（上行變輕、下行變重）。動畫結束時停在 N ≠ mg 的運動狀態。',
                 mass: '質量 m',
-                accel: '|a| 大小（減速階段）',
                 animSpeed: '動畫速度',
                 play: '▶ 播放',
                 pause: '⏸ 暫停',
+                fullscreen: '⛶ 全螢幕',
+                exitFullscreen: '⛶ 退出全螢幕',
                 reset: '↺ 重設位置',
                 scene: '電梯井（側視）',
                 fbd: '受力圖（自由體圖）',
@@ -388,11 +480,15 @@
                 feelZero: '失重（N = 0）',
                 eq: (n, mg, a) => `ΣF = N − mg = ma\nN − ${mg} = m(${a})\nN = ${n} N`,
                 scenarios: {
+                    upAccel: '上行 · 由靜止 a 向上',
                     upDecel: '上行 · 停車前 a 向下',
+                    downAccel: '下行 · 由靜止 a 向下',
                     downDecel: '下行 · 停車前 a 向上',
                 },
-                cueUpDecel: '先勻速上行（a = 0，N = mg）→ 停車前約 3 秒向下加速減速（N < mg）',
-                cueDownDecel: '先勻速下行（a = 0，N = mg）→ 停車前約 3 秒向上加速減速（N > mg）',
+                cueUpAccel: '由靜止向上加速（|a| = 5.0 ms⁻²，a↑，N > mg）→ 之後保持勻速上行 → 結束時回到 t = 0 的初始加速畫面（N ≠ mg）',
+                cueUpDecel: '先勻速上行（a = 0，N = mg）→ 停車前減速（a↓，N < mg）→ 結束停在減速中（仍在動，N ≠ mg）',
+                cueDownAccel: '由靜止向下加速（|a| = 5.0 ms⁻²，a↓，N < mg）→ 之後保持勻速下行 → 結束時回到 t = 0 的初始加速畫面（N ≠ mg）',
+                cueDownDecel: '先勻速下行（a = 0，N = mg）→ 停車前減速（a↑，N > mg）→ 結束停在減速中（仍在動，N ≠ mg）',
                 why: '點解減速至停會變輕／變重？',
                 whyLight: '上行減速 → 變輕',
                 whyHeavy: '下行減速 → 變重',
@@ -417,10 +513,12 @@
                 whyInertia: '慣性',
                 phases: {
                     rest: '階段：靜止（a = 0）',
-                    accel: '階段：向上加速（N > mg）',
+                    accel: '階段：加速中',
                     coast: '階段：勻速（N = mg）',
-                    decel: '階段：減速（N < mg）',
+                    decel: '階段：減速中',
+                    upAccel: '階段：上行加速（N > mg）',
                     upDecel: '階段：上行減速（N < mg）',
+                    downAccel: '階段：下行加速（N < mg）',
                     downDecel: '階段：下行減速（N > mg）',
                     stopped: '階段：已停下（N = mg）',
                 },
@@ -431,12 +529,13 @@
             },
             en: {
                 title: 'Forces in an elevator',
-                desc: 'Two focus cases: coast upward, then accelerate downward only to stop; coast downward, then accelerate upward only to stop.',
+                desc: 'Four cases (|a| = 5.0 ms⁻²): accelerate up/down from rest; and coast then brake (lighter going up, heavier going down). Animation ends frozen while still moving with N ≠ mg.',
                 mass: 'Mass m',
-                accel: '|a| magnitude (braking)',
                 animSpeed: 'Animation speed',
                 play: '▶ Play',
                 pause: '⏸ Pause',
+                fullscreen: '⛶ Full screen',
+                exitFullscreen: '⛶ Exit full screen',
                 reset: '↺ Reset position',
                 scene: 'Elevator shaft (side view)',
                 fbd: 'Free-body diagram',
@@ -458,11 +557,15 @@
                 feelZero: 'Weightless (N = 0)',
                 eq: (n, mg, a) => `ΣF = N − mg = ma\nN − ${mg} = m(${a})\nN = ${n} N`,
                 scenarios: {
+                    upAccel: 'Going up · a up from rest',
                     upDecel: 'Going up · a down before stop',
+                    downAccel: 'Going down · a down from rest',
                     downDecel: 'Going down · a up before stop',
                 },
-                cueUpDecel: 'Coast UP (a = 0, N = mg) → about 3 s before stop, a DOWN to brake (N < mg)',
-                cueDownDecel: 'Coast DOWN (a = 0, N = mg) → about 3 s before stop, a UP to brake (N > mg)',
+                cueUpAccel: 'From rest, accelerate UP (|a| = 5.0 ms⁻², a↑, N > mg) → keep constant speed UP → at end, jump back to the t = 0 accel frame (N ≠ mg)',
+                cueUpDecel: 'Coast UP (a = 0, N = mg) → brake with a DOWN (N < mg) → ends frozen while still braking (moving, N ≠ mg)',
+                cueDownAccel: 'From rest, accelerate DOWN (|a| = 5.0 ms⁻², a↓, N < mg) → keep constant speed DOWN → at end, jump back to the t = 0 accel frame (N ≠ mg)',
+                cueDownDecel: 'Coast DOWN (a = 0, N = mg) → brake with a UP (N > mg) → ends frozen while still braking (moving, N ≠ mg)',
                 why: 'Why slowing to a stop feels lighter / heavier',
                 whyLight: 'Up & slowing → lighter',
                 whyHeavy: 'Down & slowing → heavier',
@@ -487,10 +590,12 @@
                 whyInertia: 'Inertia',
                 phases: {
                     rest: 'Phase: at rest (a = 0)',
-                    accel: 'Phase: accelerating up (N > mg)',
+                    accel: 'Phase: accelerating',
                     coast: 'Phase: constant speed (N = mg)',
-                    decel: 'Phase: decelerating (N < mg)',
+                    decel: 'Phase: decelerating',
+                    upAccel: 'Phase: up & speeding up (N > mg)',
                     upDecel: 'Phase: up & slowing (N < mg)',
+                    downAccel: 'Phase: down & speeding up (N < mg)',
                     downDecel: 'Phase: down & slowing (N > mg)',
                     stopped: 'Phase: stopped (N = mg)',
                 },
@@ -514,12 +619,15 @@
         let posM = 0.12 * SHAFT_H; // cabin height from bottom (m)
         let velocity = 0; // signed SI speed (m/s), up +
         let stopped = false;
-        let phase = 'coast'; // coast | decel | rest
+        let tripFinished = false; // ended frozen in N≠mg moving phase
+        let phase = 'coast'; // accel | coast | decel | rest
         let simTime = 0;
         let history = []; // { t, N, a }
         let lastTs = 0;
+        let accelElapsed = 0;
+        let accelDuration = BRAKE_T; // may shorten if shaft room is tight
         const HISTORY_MAX_T = 40;
-        /** Instantaneous SI acceleration (up +). Non-zero only while braking. */
+        /** Instantaneous SI acceleration (up +). Non-zero while speeding up or braking. */
         let instantA = 0;
 
         const sceneCanvas = document.getElementById('sceneCanvas');
@@ -527,17 +635,15 @@
         const fbdCanvas = document.getElementById('fbdCanvas');
         const fbdCtx = fbdCanvas.getContext('2d');
         const ntCanvas = document.getElementById('ntCanvas');
-        const ntCtx = ntCanvas.getContext('2d');
+        const ntCtx = ntCanvas ? ntCanvas.getContext('2d') : null;
         const massSlider = document.getElementById('massSlider');
-        const accelSlider = document.getElementById('accelSlider');
         const animSpeedSlider = document.getElementById('animSpeedSlider');
         const playBtn = document.getElementById('playBtn');
-        const accelGroup = document.getElementById('accel-group');
 
         function t() { return dict[currentLang]; }
         function scenario() { return SCENARIOS.find((s) => s.id === scenarioId); }
         function mass() { return parseFloat(massSlider.value); }
-        function aMag() { return parseFloat(accelSlider.value); }
+        function aMag() { return FIXED_A; }
         function animSpeed() { return parseFloat(animSpeedSlider.value); }
 
         function accel() {
@@ -560,22 +666,47 @@
             return Math.min(maxPx, (Math.abs(v) / V_REF) * maxPx);
         }
 
+        function isUpScenario() {
+            return scenarioId === 'upAccel' || scenarioId === 'upDecel';
+        }
+        function isAccelScenario() {
+            return scenarioId === 'upAccel' || scenarioId === 'downAccel';
+        }
+        function motionSign() {
+            return isUpScenario() ? 1 : -1;
+        }
         function targetY() {
-            return scenarioId === 'downDecel' ? 0.1 : 0.9;
+            return isUpScenario() ? 0.9 : 0.1;
         }
-
+        /** a while speeding up from rest */
+        function accelPhaseA() {
+            return motionSign() * aMag();
+        }
+        /** a while braking to a stop */
+        function brakePhaseA() {
+            return -motionSign() * aMag();
+        }
+        /** Signed a for the current non-coast phase. */
         function signedA() {
-            return scenarioId === 'upDecel' ? -aMag() : aMag();
+            if (phase === 'accel') return accelPhaseA();
+            if (phase === 'decel') return brakePhaseA();
+            return 0;
+        }
+        /** Fixed N–t axis mark: accel scenarios → speeding-up N; decel scenarios → braking N */
+        function referencePhaseA() {
+            return isAccelScenario() ? accelPhaseA() : brakePhaseA();
         }
 
-        /** Cruise speed so constant |a| brakes to rest in exactly BRAKE_T seconds. */
+        /** Cruise |v| after the accel interval (or for coast-start scenarios). */
         function cruiseSpeed() {
-            return aMag() * BRAKE_T;
+            const tCruise = isAccelScenario() ? accelDuration : BRAKE_T;
+            return aMag() * tCruise;
         }
 
-        /** Distance covered while braking at |a| for BRAKE_T (from cruise to rest). */
+        /** Distance covered while braking from cruise to rest at |a|. */
         function brakeDistanceM() {
-            return 0.5 * aMag() * BRAKE_T * BRAKE_T;
+            const tCruise = isAccelScenario() ? accelDuration : BRAKE_T;
+            return 0.5 * aMag() * tCruise * tCruise;
         }
 
         function remainingM() {
@@ -587,14 +718,80 @@
         }
 
         function syncCruiseVelocity() {
-            velocity = scenarioId === 'upDecel' ? cruiseSpeed() : -cruiseSpeed();
+            velocity = motionSign() * cruiseSpeed();
+        }
+
+        /** Cap accel time so accel + a stretch of constant-speed coast fit in the shaft. */
+        function fitAccelDuration() {
+            const travel = Math.abs(targetY() * SHAFT_H - startY * SHAFT_H);
+            const coastMin = 8; // m of constant-speed coast after speeding up
+            // accelDist = 0.5 a t^2
+            const tmax = Math.sqrt(Math.max(0.25, 2 * (travel - coastMin) / Math.max(aMag(), 0.05)));
+            return Math.min(BRAKE_T, tmax);
+        }
+
+        /** True when cabin has reached the destination end of the shaft. */
+        function reachedDestination() {
+            const dest = targetY() * SHAFT_H;
+            return isUpScenario() ? posM >= dest - 0.05 : posM <= dest + 0.05;
+        }
+
+        /**
+         * Accel scenarios: after coasting to the end, snap the display back to
+         * the t = 0 start (as if Pause was pressed at the beginning): a ≠ 0, N ≠ mg.
+         */
+        function finishShowingInitialAccel() {
+            playing = false;
+            tripFinished = true;
+            stopped = false;
+            // Restore the opening frame of this scenario (t = 0)
+            posM = startY * SHAFT_H;
+            syncCabinFromPos();
+            velocity = 0;
+            accelElapsed = 0;
+            phase = 'accel';
+            instantA = accelPhaseA();
+            simTime = 0;
+            pushHistory();
+            updateUI();
+        }
+
+        /** Freeze near end of braking: still moving slowly, a ≠ 0, N ≠ mg. */
+        function finishAtBrakePhase() {
+            playing = false;
+            tripFinished = true;
+            stopped = false;
+            phase = 'decel';
+            instantA = brakePhaseA();
+            const sign = motionSign();
+            const keepV = Math.max(1.2, 0.2 * cruiseSpeed());
+            velocity = sign * keepV;
+            pushHistory();
+            updateUI();
+        }
+
+        /** Restart current scenario from the beginning and play. */
+        function replayScenario() {
+            applyScenarioStart();
+            playing = true;
+            tripFinished = false;
+            stopped = false;
+            lastTs = 0;
+            updateUI();
+            draw();
         }
 
         function currentPhaseKey() {
-            if (stopped || phase === 'rest') return 'stopped';
+            if (phase === 'rest' || (stopped && !tripFinished)) return 'stopped';
+            if (phase === 'accel') {
+                if (scenarioId === 'upAccel') return 'upAccel';
+                if (scenarioId === 'downAccel') return 'downAccel';
+                return 'accel';
+            }
+            if (phase === 'decel') {
+                return isUpScenario() ? 'upDecel' : 'downDecel';
+            }
             if (phase === 'coast') return 'coast';
-            if (scenarioId === 'upDecel') return 'upDecel';
-            if (scenarioId === 'downDecel') return 'downDecel';
             return 'rest';
         }
 
@@ -621,19 +818,29 @@
         }
 
         function applyScenarioStart() {
-            const s = scenario();
             stopped = false;
+            tripFinished = false;
             clearHistory();
-            startY = s.id === 'upDecel' ? 0.12 : 0.88;
+            startY = isUpScenario() ? 0.12 : 0.88;
             posM = startY * SHAFT_H;
             syncCabinFromPos();
-            syncCruiseVelocity();
-            instantA = 0;
-            phase = 'coast';
-            // If already inside the last BRAKE_T seconds of travel, brake immediately
-            if (remainingM() <= brakeDistanceM() + 0.05) {
-                phase = 'decel';
-                instantA = signedA();
+            accelElapsed = 0;
+
+            if (isAccelScenario()) {
+                accelDuration = fitAccelDuration();
+                velocity = 0;
+                phase = 'accel';
+                instantA = accelPhaseA();
+            } else {
+                accelDuration = BRAKE_T;
+                syncCruiseVelocity();
+                instantA = 0;
+                phase = 'coast';
+                // If already inside the braking distance, brake immediately
+                if (remainingM() <= brakeDistanceM() + 0.05) {
+                    phase = 'decel';
+                    instantA = brakePhaseA();
+                }
             }
             pushHistory();
         }
@@ -668,11 +875,11 @@
             document.getElementById('page-title').innerText = d.title;
             document.getElementById('page-desc').innerText = d.desc;
             document.getElementById('label-mass').innerText = d.mass;
-            document.getElementById('label-accel').innerText = d.accel;
             document.getElementById('label-anim').innerText = d.animSpeed;
             document.getElementById('label-scene').innerText = d.scene;
             document.getElementById('label-fbd').innerText = d.fbd;
-            document.getElementById('label-nt').innerText = d.nt;
+            const labelNt = document.getElementById('label-nt');
+            if (labelNt) labelNt.innerText = d.nt;
             document.getElementById('k-a').innerText = d.ka;
             document.getElementById('k-v').innerText = d.kv;
             document.getElementById('k-n').innerText = d.kn;
@@ -683,17 +890,45 @@
             document.getElementById('leg-a').innerText = d.legA;
             const legV = document.getElementById('leg-v');
             if (legV) legV.innerText = d.legV;
-            document.getElementById('leg-nt-n').innerText = d.legNtN;
-            document.getElementById('leg-nt-mg').innerText = d.legNtMg;
+            const legNtN = document.getElementById('leg-nt-n');
+            if (legNtN) legNtN.innerText = d.legNtN;
+            const legNtMg = document.getElementById('leg-nt-mg');
+            if (legNtMg) legNtMg.innerText = d.legNtMg;
             playBtn.innerText = playing ? d.pause : d.play;
+            updateFullscreenBtn();
             buildScenarioButtons();
             updateUI();
             draw();
         }
 
+        function isFullscreen() {
+            return !!(document.fullscreenElement || document.webkitFullscreenElement);
+        }
+
+        function updateFullscreenBtn() {
+            const btn = document.getElementById('fullscreen-btn');
+            if (!btn) return;
+            const d = t();
+            btn.textContent = isFullscreen() ? d.exitFullscreen : d.fullscreen;
+        }
+
+        async function toggleFullscreen() {
+            try {
+                if (isFullscreen()) {
+                    if (document.exitFullscreen) await document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                } else {
+                    const el = document.documentElement;
+                    if (el.requestFullscreen) await el.requestFullscreen();
+                    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                }
+            } catch (_) {
+                /* ignore denied / unsupported */
+            }
+        }
+
         function updateUI() {
             const d = t();
-            const s = scenario();
             const m = mass();
             const a = accel();
             const N = normal();
@@ -701,10 +936,7 @@
             const ratio = W > 0 ? N / W : 0;
 
             document.getElementById('massVal').textContent = `${m.toFixed(0)} kg`;
-            document.getElementById('accelVal').textContent = `${aMag().toFixed(1)} ms⁻²`;
             document.getElementById('animSpeedVal').textContent = `×${animSpeed().toFixed(2)}`;
-            accelGroup.style.opacity = s.needA ? '1' : '0.45';
-            accelSlider.disabled = !s.needA;
 
             document.getElementById('v-a').textContent = `${a.toFixed(2)} ms⁻²`;
             document.getElementById('v-v').textContent = `${Math.abs(velocity).toFixed(2)} ms⁻¹`;
@@ -734,24 +966,34 @@
             );
             playBtn.innerText = playing ? d.pause : d.play;
             document.getElementById('resetBtn').innerText = d.reset;
-            const cues = { upDecel: d.cueUpDecel, downDecel: d.cueDownDecel };
+            const cues = {
+                upAccel: d.cueUpAccel,
+                upDecel: d.cueUpDecel,
+                downAccel: d.cueDownAccel,
+                downDecel: d.cueDownDecel,
+            };
             document.getElementById('case-cue').textContent = cues[scenarioId] || '';
             document.getElementById('phaseTag').textContent = d.phases[currentPhaseKey()] || '';
         }
 
-        function drawArrow(ctx, x0, y0, x1, y1, color, width = 3) {
+        function drawArrow(ctx, x0, y0, x1, y1, color, width = 3, headLen = 10) {
             const ang = Math.atan2(y1 - y0, x1 - x0);
+            const head = headLen;
+            // Shaft stops short of the tip so the head stays full-size while the stem can be thin
+            const shaftEndX = x1 - head * 0.72 * Math.cos(ang);
+            const shaftEndY = y1 - head * 0.72 * Math.sin(ang);
             ctx.strokeStyle = color;
             ctx.fillStyle = color;
             ctx.lineWidth = width;
+            ctx.lineCap = 'butt';
             ctx.beginPath();
             ctx.moveTo(x0, y0);
-            ctx.lineTo(x1, y1);
+            ctx.lineTo(shaftEndX, shaftEndY);
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(x1, y1);
-            ctx.lineTo(x1 - 10 * Math.cos(ang - 0.4), y1 - 10 * Math.sin(ang - 0.4));
-            ctx.lineTo(x1 - 10 * Math.cos(ang + 0.4), y1 - 10 * Math.sin(ang + 0.4));
+            ctx.lineTo(x1 - head * Math.cos(ang - 0.4), y1 - head * Math.sin(ang - 0.4));
+            ctx.lineTo(x1 - head * Math.cos(ang + 0.4), y1 - head * Math.sin(ang + 0.4));
             ctx.closePath();
             ctx.fill();
         }
@@ -763,139 +1005,180 @@
             const d = t();
             ctx.clearRect(0, 0, w, h);
 
-            // Shaft — left margin for |v|, right margin for a + N gauge
-            const sx = w * 0.30;
-            const sw = w * 0.38;
+            const s = Math.max(0.52, Math.min(1, h / 580));
+            const shaftTop = Math.round(20 * s);
+            const shaftPad = Math.round(20 * s);
+            const shaftH = h - shaftTop - shaftPad;
+            const cabinH = Math.round(110 * s);
+            const travelPadTop = Math.round(20 * s);
+            const travelPadBot = Math.round(30 * s);
+            const travel = Math.max(24, shaftH - cabinH - travelPadTop - travelPadBot);
+
+            // Room on left for |v|, on right for N gauge + N magnitude + a
+            const leftLane = Math.min(150, Math.max(118, w * 0.26));
+            const rightLane = Math.min(200, Math.max(120, w * 0.34));
+            const sw = Math.max(72, Math.min(w * 0.40, w - leftLane - rightLane));
+            const sx = leftLane;
             ctx.fillStyle = '#dbe3ec';
-            ctx.fillRect(sx, 20, sw, h - 40);
+            ctx.fillRect(sx, shaftTop, sw, shaftH);
             ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(sx, 20, sw, h - 40);
+            ctx.lineWidth = Math.max(2, 3 * s);
+            ctx.strokeRect(sx, shaftTop, sw, shaftH);
 
             // Floors marks
             ctx.strokeStyle = 'rgba(100,116,139,0.35)';
             ctx.lineWidth = 1;
             for (let i = 0; i < 6; i++) {
-                const y = 40 + i * ((h - 80) / 5);
+                const y = shaftTop + travelPadTop + i * (travel / 5);
                 ctx.beginPath();
                 ctx.moveTo(sx, y);
                 ctx.lineTo(sx + sw, y);
                 ctx.stroke();
             }
 
-            // Cabin
-            const travel = h - 160;
-            const cabinTop = 40 + (1 - cabinY) * travel;
-            const cabinH = 110;
-            const cabinW = sw - 24;
-            const cx = sx + 12;
+            const cabinTop = shaftTop + travelPadTop + (1 - cabinY) * travel;
+            const cabinInset = 12 * s;
+            const cabinW = Math.max(40, sw - 2 * cabinInset);
+            const cx = sx + (sw - cabinW) / 2;
+            const cabinPad = 8 * s;
 
             // Cable
             ctx.strokeStyle = '#64748b';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = Math.max(1.5, 2 * s);
             ctx.beginPath();
-            ctx.moveTo(sx + sw / 2, 20);
+            ctx.moveTo(sx + sw / 2, shaftTop);
             ctx.lineTo(sx + sw / 2, cabinTop);
             ctx.stroke();
             ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
-            ctx.fillText(d.cable, sx + sw / 2 + 8, 36);
+            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.textAlign = 'left';
+            ctx.fillText(d.cable, sx + sw / 2 + 8 * s, shaftTop + 18 * s);
 
             // Cabin body
             ctx.fillStyle = '#f8fafc';
             ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = Math.max(1.5, 2 * s);
             ctx.beginPath();
-            ctx.roundRect(cx, cabinTop, cabinW, cabinH, 8);
+            ctx.roundRect(cx, cabinTop, cabinW, cabinH, 8 * s);
             ctx.fill();
             ctx.stroke();
 
             // Floor of cabin
             ctx.fillStyle = '#cbd5e1';
-            ctx.fillRect(cx + 4, cabinTop + cabinH - 14, cabinW - 8, 10);
+            ctx.fillRect(cx + 4 * s, cabinTop + cabinH - 14 * s, cabinW - 8 * s, 10 * s);
             ctx.fillStyle = '#475569';
-            ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
-            ctx.fillText(d.floor, cx + 8, cabinTop + cabinH - 4);
+            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.fillText(d.floor, cx + cabinPad, cabinTop + cabinH - 2 * s);
 
             // Person (simple)
             const px = cx + cabinW / 2;
-            const py = cabinTop + cabinH - 18;
+            const py = cabinTop + cabinH - 18 * s;
             ctx.fillStyle = '#1e293b';
             ctx.beginPath();
-            ctx.arc(px, py - 52, 10, 0, Math.PI * 2); // head
+            ctx.arc(px, py - 52 * s, 10 * s, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillRect(px - 9, py - 42, 18, 28); // torso
-            ctx.fillRect(px - 12, py - 14, 8, 14); // legs
-            ctx.fillRect(px + 4, py - 14, 8, 14);
+            ctx.fillRect(px - 9 * s, py - 42 * s, 18 * s, 28 * s);
+            ctx.fillRect(px - 12 * s, py - 14 * s, 8 * s, 14 * s);
+            ctx.fillRect(px + 4 * s, py - 14 * s, 8 * s, 14 * s);
             ctx.fillStyle = '#0f766e';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText(d.man, px + 16, py - 48);
+            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.textAlign = 'left';
+            // Sit right of the person so the label does not cover the N arrow
+            ctx.fillText(d.man, px + 16 * s, py - 64 * s);
 
-            // Forces & kinematics: arrow lengths track live magnitudes
             const N = normal();
             const W = weight();
             const a = accel();
-            const baseLen = 58;
+            const baseLen = 58 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
 
-            // N up from feet
+            const nArrowX = px - 22 * s;
+            const nTextX = nArrowX - 8 * s;
             if (nLen > 0) {
-                drawArrow(ctx, px - 26, py, px - 26, py - nLen, '#059669', 4.5);
+                drawArrow(ctx, nArrowX, py, nArrowX, py - nLen, '#059669', 3.5 * s);
                 ctx.fillStyle = '#059669';
-                ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-                ctx.fillText('N', px - 48, py - nLen / 2);
-                ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-                ctx.fillText(`${N.toFixed(1)} N`, px - 52, py - nLen / 2 + 14);
+                ctx.textAlign = 'right';
+                ctx.font = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
+                ctx.fillText('N', nTextX, py - nLen / 2 - 4 * s);
+                ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+                ctx.fillText(`${N.toFixed(1)} N`, nTextX, py - nLen / 2 + 14 * s);
             } else {
                 ctx.fillStyle = '#059669';
-                ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-                ctx.fillText('N = 0', px - 48, py - 8);
+                ctx.textAlign = 'right';
+                ctx.font = `bold ${Math.round(15 * s)}px "Noto Sans TC", sans-serif`;
+                ctx.fillText('N = 0', nTextX, py - 8 * s);
             }
-            // W down from COM — length grows/shrinks with mass
-            drawArrow(ctx, px + 26, py - 30, px + 26, py - 30 + wLen, '#dc2626', 4.5);
+
+            const wArrowX = px + 22 * s;
+            const wStartY = py - 30 * s;
+            drawArrow(ctx, wArrowX, wStartY, wArrowX, wStartY + wLen, '#dc2626', 3.5 * s);
+            const wMidY = wStartY + wLen / 2;
+            const cabinBlackBottom = cabinTop + cabinH;
+            const mgLabelY = Math.min(wMidY - 4 * s, cabinBlackBottom - 22 * s);
+            const mgTextX = wArrowX + 12 * s;
             ctx.fillStyle = '#dc2626';
-            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-            ctx.fillText('mg', px + 32, py - 30 + wLen / 2);
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText(`${W.toFixed(1)} N`, px + 32, py - 30 + wLen / 2 + 14);
+            ctx.textAlign = 'left';
+            ctx.font = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.fillText('mg', mgTextX, mgLabelY);
+            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.fillText(`${W.toFixed(1)} N`, mgTextX, mgLabelY + 16 * s);
+            ctx.textAlign = 'left';
 
-            // N magnitude gauge (green fill vs red mg tick) — right of shaft
-            drawNormalGauge(ctx, sx + sw + 20, cabinTop + 8, cabinH - 16, N, W, d);
+            const aLabelSample = 'a 0.0 ms⁻²';
+            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            const aTextW = ctx.measureText(aLabelSample).width + 14;
+            const gaugeX = Math.min(sx + sw + 56 * s, w - aTextW - 70 * s);
+            drawNormalGauge(ctx, gaugeX, cabinTop + 8 * s, cabinH - 16 * s, N, W, d, s);
 
-            // |v| on the LEFT of the shaft (never share column with a)
-            const kvx = sx - 36;
+            // |v| on the LEFT of the shaft
+            const kvx = Math.max(22 * s, sx - 28 * s);
             const kvy = cabinTop + cabinH / 2;
             const speed = Math.abs(velocity);
-            const vLen = vPx(velocity, 52);
+            const vLen = vPx(velocity, 100 * s);
             ctx.fillStyle = '#0369a1';
-            ctx.font = 'bold 11px sans-serif';
+            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            ctx.textAlign = 'right';
             if (vLen > 2) {
-                if (velocity > 0) drawArrow(ctx, kvx, kvy + vLen / 2, kvx, kvy - vLen / 2, '#0369a1', 3);
-                else drawArrow(ctx, kvx, kvy - vLen / 2, kvx, kvy + vLen / 2, '#0369a1', 3);
-                ctx.fillText(`|v| ${speed.toFixed(2)} ms⁻¹`, Math.max(4, kvx - 86), kvy + vLen / 2 + 14);
+                if (velocity > 0) drawArrow(ctx, kvx, kvy + vLen / 2, kvx, kvy - vLen / 2, '#0369a1', 3 * s);
+                else drawArrow(ctx, kvx, kvy - vLen / 2, kvx, kvy + vLen / 2, '#0369a1', 3 * s);
+                ctx.fillText(`|v| = ${speed.toFixed(2)} ms⁻¹`, Math.max(4, kvx - 8 * s), kvy + vLen / 2 + 18 * s);
             } else {
-                ctx.fillText('|v| 0.00 ms⁻¹', Math.max(4, kvx - 86), kvy + 4);
+                ctx.fillText('|v| = 0.00 ms⁻¹', Math.max(4, kvx - 8 * s), kvy + 6 * s);
             }
+            ctx.textAlign = 'left';
 
-            // a on the RIGHT of the N gauge — separate from |v|
-            const kax = sx + sw + 88;
-            const kay = cabinTop + cabinH / 2;
-            const aLen = aPx(a, 58);
+            // a — label above, arrow underneath; sit right of N magnitude so they do not overlap
+            const aLen = aPx(a, 110 * s);
             ctx.fillStyle = '#7c3aed';
-            ctx.font = 'bold 11px sans-serif';
+            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            ctx.textAlign = 'left';
+            const aLabel = aLen > 2 ? `a ${a.toFixed(1)} ms⁻²` : 'a = 0 ms⁻²';
+            const aLabelW = ctx.measureText(aLabel).width;
+            ctx.font = `bold ${Math.round(15 * s)}px "Noto Sans TC", sans-serif`;
+            const nMagW = ctx.measureText(N.toFixed(1)).width;
+            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            const aLabelX = Math.min(
+                gaugeX + 22 * s + nMagW + 22 * s,
+                w - aLabelW - 6
+            );
+            const aBlockH = (aLen > 2 ? aLen : 16 * s) + 22 * s;
+            const aLabelY = Math.max(
+                cabinTop + 18 * s,
+                cabinTop + cabinH / 2 - aBlockH / 2 + 14 * s
+            );
+            ctx.fillText(aLabel, aLabelX, aLabelY);
+            const kax = aLabelX + aLabelW / 2;
+            const arrowTop = aLabelY + 10 * s;
             if (aLen > 2) {
-                if (a > 0) drawArrow(ctx, kax, kay + aLen / 2, kax, kay - aLen / 2, '#7c3aed', 3.5);
-                else drawArrow(ctx, kax, kay - aLen / 2, kax, kay + aLen / 2, '#7c3aed', 3.5);
-                ctx.fillText(`a ${a.toFixed(1)} ms⁻²`, kax + 12, kay + 4);
-            } else {
-                ctx.fillText('a = 0 ms⁻²', kax + 8, kay + 4);
+                if (a > 0) drawArrow(ctx, kax, arrowTop + aLen, kax, arrowTop, '#7c3aed', 3.5 * s);
+                else drawArrow(ctx, kax, arrowTop, kax, arrowTop + aLen, '#7c3aed', 3.5 * s);
             }
         }
 
-        function drawNormalGauge(ctx, x, yTop, height, N, W, d) {
+        function drawNormalGauge(ctx, x, yTop, height, N, W, d, s = 1, ts = s) {
             const yBot = yTop + height;
-            const barW = 10;
+            const barW = 12 * s;
             const maxRatio = 1.8; // gauge top = 1.8 mg
             const mgY = yBot - (1 / maxRatio) * height;
             const nRatio = W > 0 ? Math.min(maxRatio, N / W) : 0;
@@ -915,28 +1198,36 @@
 
             // Red mg reference line across the bar
             ctx.strokeStyle = '#dc2626';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = Math.max(1.5, 2 * s);
             ctx.beginPath();
-            ctx.moveTo(x - 14, mgY);
-            ctx.lineTo(x + 14, mgY);
+            ctx.moveTo(x - 16 * s, mgY);
+            ctx.lineTo(x + 16 * s, mgY);
             ctx.stroke();
+
+            // "mg" on the LEFT of the vertical column (gap from lift box set by gaugeX)
             ctx.fillStyle = '#dc2626';
-            ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
-            ctx.fillText('mg', x + 16, mgY + 3);
+            ctx.font = `bold ${Math.round(16 * ts)}px "Noto Sans TC", sans-serif`;
+            ctx.textAlign = 'right';
+            ctx.fillText('mg', x - 18 * s, mgY + 5 * ts);
 
             // Side marker at N level (tip on the bar edge at nY — aligns with red line when N = mg)
             ctx.fillStyle = '#059669';
             ctx.beginPath();
             ctx.moveTo(x + barW / 2, nY);          // tip touches bar at N height
-            ctx.lineTo(x + barW / 2 + 11, nY - 7);
-            ctx.lineTo(x + barW / 2 + 11, nY + 7);
+            ctx.lineTo(x + barW / 2 + 12 * s, nY - 8 * s);
+            ctx.lineTo(x + barW / 2 + 12 * s, nY + 8 * s);
             ctx.closePath();
             ctx.fill();
 
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText('N', x - 4, yTop - 6);
+            // Title "N" above the column; numeric value stays on the RIGHT only
+            ctx.textAlign = 'center';
             ctx.fillStyle = '#059669';
-            ctx.fillText(`${N.toFixed(1)}`, x + 18, nY + 4);
+            ctx.font = `bold ${Math.round(16 * ts)}px "Noto Sans TC", sans-serif`;
+            ctx.fillText('N', x, yTop - 8 * ts);
+            ctx.textAlign = 'left';
+            ctx.font = `bold ${Math.round(15 * ts)}px "Noto Sans TC", sans-serif`;
+            ctx.fillText(`${N.toFixed(1)}`, x + 20 * s, nY + 5 * ts);
+            ctx.textAlign = 'left';
         }
 
         function drawFbd() {
@@ -945,66 +1236,75 @@
             const h = fbdCanvas.clientHeight || fbdCanvas.height;
             ctx.clearRect(0, 0, w, h);
 
+            const s = Math.max(0.72, Math.min(1, h / 300));
             const cx = w / 2;
-            const cy = h / 2 + 10;
+            const cy = h / 2 + 6 * s;
             const N = normal();
             const W = weight();
             const a = accel();
-            const baseLen = 88;
+            const baseLen = 88 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
+            const forceFont = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
+            const sideFont = `bold ${Math.round(12.5 * s)}px sans-serif`;
 
             ctx.fillStyle = '#e2e8f0';
             ctx.beginPath();
-            ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+            ctx.arc(cx, cy, 22 * s, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = '#334155';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
+            ctx.font = forceFont;
             ctx.textAlign = 'center';
-            ctx.fillText('m', cx, cy + 4);
+            ctx.fillText('m', cx, cy + 5 * s);
             ctx.textAlign = 'left';
 
             if (nLen > 0) {
-                drawArrow(ctx, cx, cy, cx, cy - nLen, '#059669', 5);
+                drawArrow(ctx, cx, cy, cx, cy - nLen, '#059669', 3.5 * s);
                 ctx.fillStyle = '#059669';
-                ctx.font = 'bold 13px "Noto Sans TC", sans-serif';
-                ctx.fillText(`N = ${N.toFixed(1)} N`, cx + 18, cy - nLen / 2);
+                ctx.font = forceFont;
+                ctx.fillText(`N = ${N.toFixed(1)} N`, cx + 22 * s, cy - Math.max(22 * s, nLen / 2));
             } else {
                 ctx.fillStyle = '#059669';
-                ctx.font = 'bold 13px "Noto Sans TC", sans-serif';
-                ctx.fillText('N = 0', cx + 28, cy - 10);
+                ctx.font = forceFont;
+                ctx.fillText('N = 0', cx + 28 * s, cy - 14 * s);
             }
-            drawArrow(ctx, cx, cy, cx, cy + wLen, '#dc2626', 5);
+            drawArrow(ctx, cx, cy, cx, cy + wLen, '#dc2626', 3.5 * s);
             ctx.fillStyle = '#dc2626';
-            ctx.font = 'bold 13px "Noto Sans TC", sans-serif';
-            ctx.fillText(`mg = ${W.toFixed(1)} N`, cx + 18, cy + wLen / 2);
+            ctx.font = forceFont;
+            ctx.fillText(`mg = ${W.toFixed(1)} N`, cx + 22 * s, cy + Math.max(28 * s, wLen / 2 + 4));
 
+            // a (left) and |v| (right): label above, arrow underneath — symmetric layout
             ctx.fillStyle = '#7c3aed';
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillText(`a = ${a.toFixed(2)} ms⁻²`, 16, 24);
-            const al = aPx(a, 48);
-            const aMidY = 78;
+            ctx.font = sideFont;
+            const aFbdLabel = `a = ${a.toFixed(2)} ms⁻²`;
+            const aFbdX = 10;
+            const sideLabelY = 18 + 4 * s;
+            ctx.textAlign = 'left';
+            ctx.fillText(aFbdLabel, aFbdX, sideLabelY);
+            const al = aPx(a, 88 * s);
+            const aArrowX = aFbdX + ctx.measureText(aFbdLabel).width / 2;
+            const sideArrowTop = sideLabelY + 10 * s;
             if (al > 2) {
-                // Same convention as the scene: tip toward top ⇔ a > 0
-                if (a > 0) drawArrow(ctx, 40, aMidY + al / 2, 40, aMidY - al / 2, '#7c3aed', 3);
-                else drawArrow(ctx, 40, aMidY - al / 2, 40, aMidY + al / 2, '#7c3aed', 3);
+                if (a > 0) drawArrow(ctx, aArrowX, sideArrowTop + al, aArrowX, sideArrowTop, '#7c3aed', 3.5 * s);
+                else drawArrow(ctx, aArrowX, sideArrowTop, aArrowX, sideArrowTop + al, '#7c3aed', 3.5 * s);
             }
 
-            // Speed magnitude on FBD
-            const vl = vPx(velocity, 42);
             const speed = Math.abs(velocity);
+            const vl = vPx(velocity, 88 * s);
             ctx.fillStyle = '#0369a1';
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillText(`|v| = ${speed.toFixed(2)} ms⁻¹`, w - 150, 24);
+            ctx.font = sideFont;
+            const vFbdLabel = `|v| = ${speed.toFixed(2)} ms⁻¹`;
+            ctx.textAlign = 'right';
+            ctx.fillText(vFbdLabel, w - 10, sideLabelY);
+            const vArrowX = w - 10 - ctx.measureText(vFbdLabel).width / 2;
             if (vl > 2) {
-                const vx = w - 40;
-                const vMidY = 78;
-                if (velocity > 0) drawArrow(ctx, vx, vMidY + vl / 2, vx, vMidY - vl / 2, '#0369a1', 3);
-                else drawArrow(ctx, vx, vMidY - vl / 2, vx, vMidY + vl / 2, '#0369a1', 3);
+                if (velocity > 0) drawArrow(ctx, vArrowX, sideArrowTop + vl, vArrowX, sideArrowTop, '#0369a1', 3.5 * s);
+                else drawArrow(ctx, vArrowX, sideArrowTop, vArrowX, sideArrowTop + vl, '#0369a1', 3.5 * s);
             }
+            ctx.textAlign = 'left';
         }
 
         function drawNtGraph() {
@@ -1013,11 +1313,13 @@
             const h = ntCanvas.clientHeight || ntCanvas.height;
             ctx.clearRect(0, 0, w, h);
 
-            const pad = { l: 52, r: 18, t: 18, b: 36 };
+            const pad = { l: 100, r: 36, t: 32, b: 40 };
             const plotW = w - pad.l - pad.r;
             const plotH = h - pad.t - pad.b;
             const W = weight();
-            const maxN = Math.max(W * 1.85, ...(history.map((p) => p.N)), normal());
+            // Fixed non-mg phase normal force for current m and |a| (does not move with time)
+            const Nphase = Math.max(0, mass() * (G + referencePhaseA()));
+            const maxN = Math.max(W, Nphase) * 1.25;
             const t0 = history.length ? history[0].t : 0;
             const t1 = Math.max(t0 + 4, history.length ? history[history.length - 1].t : 4, simTime);
             const span = Math.max(0.001, t1 - t0);
@@ -1026,7 +1328,7 @@
             const yOf = (N) => pad.t + plotH - (N / maxN) * plotH;
 
             // Axes
-            ctx.strokeStyle = '#94a3b8';
+            ctx.strokeStyle = '#334155';
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(pad.l, pad.t);
@@ -1034,18 +1336,26 @@
             ctx.lineTo(pad.l + plotW, pad.t + plotH);
             ctx.stroke();
 
-            // mg reference
+            const mgY = yOf(W);
+            const nPhaseY = yOf(Nphase);
+
+            // Dashed mg reference across the plot
             ctx.strokeStyle = '#dc2626';
             ctx.lineWidth = 1.5;
             ctx.setLineDash([6, 5]);
             ctx.beginPath();
-            ctx.moveTo(pad.l, yOf(W));
-            ctx.lineTo(pad.l + plotW, yOf(W));
+            ctx.moveTo(pad.l, mgY);
+            ctx.lineTo(pad.l + plotW, mgY);
             ctx.stroke();
             ctx.setLineDash([]);
-            ctx.fillStyle = '#dc2626';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText('mg', pad.l + 4, yOf(W) - 6);
+
+            // Tick on Y-axis at the fixed brake-phase N level
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(pad.l - 7, nPhaseY);
+            ctx.lineTo(pad.l + 7, nPhaseY);
+            ctx.stroke();
 
             // N(t) polyline
             if (history.length >= 1) {
@@ -1060,7 +1370,6 @@
                 });
                 ctx.stroke();
 
-                // Current marker
                 const cur = history[history.length - 1];
                 ctx.fillStyle = '#059669';
                 ctx.beginPath();
@@ -1068,21 +1377,38 @@
                 ctx.fill();
             }
 
-            // Labels
+            // Left-axis labels (sketch format):
+            //   mg = XXX  at mg level (red, with equals)
+            //   XXX       at fixed brake-phase N level (number only, no "N" / no "=")
+            ctx.font = 'bold 14px "Noto Sans TC", sans-serif';
+            ctx.textAlign = 'right';
+            let yMgLbl = mgY + 5;
+            let yNLbl = nPhaseY + 5;
+            if (Math.abs(yMgLbl - yNLbl) < 16) {
+                if (Nphase < W) yNLbl = yMgLbl + 18;
+                else yNLbl = yMgLbl - 18;
+            }
+            ctx.fillStyle = '#dc2626';
+            ctx.fillText(`mg = ${W.toFixed(1)}`, pad.l - 10, yMgLbl);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText(Nphase.toFixed(1), pad.l - 10, yNLbl);
             ctx.fillStyle = '#64748b';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText('N (N)', 8, pad.t + 10);
-            ctx.fillText('t (s)', pad.l + plotW - 28, h - 10);
-            ctx.fillText(t0.toFixed(1), pad.l, h - 10);
-            ctx.fillText(t1.toFixed(1), pad.l + plotW - 8, h - 10);
-            ctx.fillText('0', 28, pad.t + plotH + 4);
-            ctx.fillText(maxN.toFixed(0), 8, pad.t + 22);
+            ctx.fillText('0', pad.l - 10, pad.t + plotH + 5);
+
+            // Axis titles
+            ctx.fillStyle = '#334155';
+            ctx.textAlign = 'left';
+            ctx.fillText('N (N)', 8, 18);
+            ctx.fillText(t0.toFixed(1), pad.l, h - 12);
+            ctx.textAlign = 'right';
+            ctx.fillText(t1.toFixed(1), pad.l + plotW, h - 12);
+            ctx.fillText('t (s)', pad.l + plotW + 4, pad.t + plotH - 8);
+            ctx.textAlign = 'left';
         }
 
         function draw() {
             drawScene();
             drawFbd();
-            drawNtGraph();
         }
 
         function fitCanvas(canvas, cssW, cssH) {
@@ -1103,11 +1429,73 @@
         function resize() {
             const sParent = sceneCanvas.parentElement;
             const fParent = fbdCanvas.parentElement;
-            const nParent = ntCanvas.parentElement;
-            fitCanvas(sceneCanvas, Math.max(320, sParent.clientWidth - 32), 580);
-            fitCanvas(fbdCanvas, Math.max(220, fParent.clientWidth - 32), 280);
-            fitCanvas(ntCanvas, Math.max(320, nParent.clientWidth - 32), 260);
+            let sceneH = 640;
+            let fbdH = 360;
+            if (isFullscreen()) {
+                // Stretch shaft to use full remaining height (no empty gap under the well)
+                const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
+                const phaseH = sParent.querySelector('.phase-tag')?.offsetHeight || 0;
+                const cardPad = 16;
+                const extras = labelH + legendH + phaseH + cardPad + 8;
+                const cardH = sParent.clientHeight;
+                const gridH = document.querySelector('.main-grid')?.clientHeight || 0;
+                const fillH = Math.max(cardH, gridH);
+                if (fillH > extras + 120) {
+                    sceneH = Math.floor(fillH - extras);
+                } else {
+                    const vh = window.innerHeight;
+                    sceneH = Math.max(280, vh - 150 - extras);
+                }
+                const fbdReadoutReserve = 185;
+                const fbdFill = fParent.clientHeight || fillH;
+                fbdH = Math.max(120, Math.min(sceneH - 40, fbdFill - fbdReadoutReserve - 30));
+            }
+            const sceneW = Math.min(Math.max(280, sParent.clientWidth - 32), 1048);
+            const fbdW = Math.min(Math.max(260, fParent.clientWidth - 32), 1048);
+            fitCanvas(fbdCanvas, fbdW, fbdH);
+
+            if (!isFullscreen()) {
+                // Match shaft card bottom with FBD card: stretch scene canvas to fill
+                fitCanvas(sceneCanvas, sceneW, sceneH);
+                draw();
+                requestAnimationFrame(() => {
+                    if (isFullscreen()) return;
+                    const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                    const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
+                    const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
+                    const cs = getComputedStyle(sParent);
+                    const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+                    const fbdCardH = fParent.offsetHeight;
+                    const nextH = Math.max(640, Math.floor(fbdCardH - padY - labelH - legendH - phaseH - 16));
+                    if (Math.abs(nextH - sceneCanvas.clientHeight) > 4) {
+                        fitCanvas(sceneCanvas, sceneW, nextH);
+                    }
+                    draw();
+                });
+                return;
+            }
+
+            fitCanvas(sceneCanvas, sceneW, sceneH);
             draw();
+
+            // Fullscreen: remeasure after layout so shaft fills any leftover lower space
+            requestAnimationFrame(() => {
+                if (!isFullscreen()) return;
+                const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
+                const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
+                const extras = labelH + legendH + phaseH + 24;
+                const fillH = Math.max(sParent.clientHeight, document.querySelector('.main-grid')?.clientHeight || 0);
+                const nextH = Math.floor(fillH - extras);
+                if (nextH > 120 && Math.abs(nextH - sceneH) > 6) {
+                    fitCanvas(sceneCanvas, sceneW, nextH);
+                    const fbdFill = fParent.clientHeight || fillH;
+                    const nextFbd = Math.max(120, Math.min(nextH - 40, fbdFill - 215));
+                    fitCanvas(fbdCanvas, fbdW, nextFbd);
+                    draw();
+                }
+            });
         }
 
         function stopCabin() {
@@ -1127,33 +1515,55 @@
             const dt = Math.min(0.04, (ts - lastTs) / 1000);
             lastTs = ts;
 
-            if (playing && !stopped) {
+            if (playing && !stopped && !tripFinished) {
                 const dtSim = dt * animSpeed();
                 simTime += dtSim;
 
-                // Enter braking for the last BRAKE_T seconds before stop
-                if (phase === 'coast' && remainingM() <= brakeDistanceM() + 1e-4) {
-                    phase = 'decel';
-                    syncCruiseVelocity(); // lock v so |a|×BRAKE_T → rest in ~3 s
-                }
-
-                if (phase === 'coast') {
+                if (phase === 'accel') {
+                    instantA = accelPhaseA();
+                    posM += velocity * dtSim + 0.5 * instantA * dtSim * dtSim;
+                    velocity += instantA * dtSim;
+                    accelElapsed += dtSim;
+                    syncCabinFromPos();
+                    if (accelElapsed >= accelDuration - 1e-4
+                        || Math.abs(velocity) >= cruiseSpeed() - 1e-3) {
+                        // Reach constant speed, then keep coasting
+                        phase = 'coast';
+                        syncCruiseVelocity();
+                        instantA = 0;
+                    }
+                } else if (phase === 'coast') {
                     instantA = 0;
                     syncCruiseVelocity();
                     posM += velocity * dtSim;
                     syncCabinFromPos();
-                } else {
-                    // Constant SI deceleration at slider |a| for ~BRAKE_T seconds
-                    instantA = signedA();
+
+                    if (isAccelScenario()) {
+                        // Keep moving at constant speed; when trip ends, show initial N ≠ mg
+                        if (reachedDestination()) {
+                            finishShowingInitialAccel();
+                            draw();
+                            requestAnimationFrame(tick);
+                            return;
+                        }
+                    } else if (remainingM() <= brakeDistanceM() + 1e-4) {
+                        phase = 'decel';
+                        syncCruiseVelocity();
+                        instantA = brakePhaseA();
+                    }
+                }
+                if (phase === 'decel' && !stopped && !tripFinished) {
+                    instantA = brakePhaseA();
                     posM += velocity * dtSim + 0.5 * instantA * dtSim * dtSim;
                     velocity += instantA * dtSim;
                     syncCabinFromPos();
 
-                    const arrived = scenarioId === 'upDecel'
+                    const arrived = isUpScenario()
                         ? (velocity <= 0 || posM >= targetY() * SHAFT_H)
                         : (velocity >= 0 || posM <= targetY() * SHAFT_H);
-                    if (arrived) {
-                        stopCabin();
+                    // Freeze while still braking / moving (N ≠ mg), not fully stopped
+                    if (arrived || Math.abs(velocity) <= 0.25 * cruiseSpeed()) {
+                        finishAtBrakePhase();
                         draw();
                         requestAnimationFrame(tick);
                         return;
@@ -1172,42 +1582,39 @@
             updateUI();
             draw();
         });
-        accelSlider.addEventListener('input', () => {
-            if (!stopped && phase === 'coast') {
-                syncCruiseVelocity();
-                if (remainingM() <= brakeDistanceM()) {
-                    phase = 'decel';
-                    instantA = signedA();
-                }
-            } else if (!stopped && phase === 'decel') {
-                instantA = signedA();
-            }
-            pushHistory();
-            updateUI();
-            draw();
-        });
         animSpeedSlider.addEventListener('input', () => {
             updateUI();
         });
         playBtn.addEventListener('click', () => {
-            if (!playing && stopped) {
-                applyScenarioStart();
+            // After an accel trip ends at the side, Play restarts the animation
+            if (tripFinished || stopped) {
+                replayScenario();
+                return;
             }
             playing = !playing;
             lastTs = 0;
             updateUI();
         });
         document.getElementById('resetBtn').addEventListener('click', () => {
-            applyScenarioStart();
-            playing = true;
-            lastTs = 0;
-            updateUI();
-            draw();
+            replayScenario();
         });
         document.getElementById('lang-toggle').addEventListener('click', () => {
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             updateLanguageUI();
         });
+        document.getElementById('fullscreen-btn').addEventListener('click', () => {
+            toggleFullscreen();
+        });
+        function onFullscreenChange() {
+            document.body.classList.toggle('is-fullscreen', isFullscreen());
+            updateFullscreenBtn();
+            // Wait a frame so layout width is restored before measuring canvases
+            requestAnimationFrame(() => {
+                requestAnimationFrame(resize);
+            });
+        }
+        document.addEventListener('fullscreenchange', onFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', onFullscreenChange);
         window.addEventListener('message', (ev) => {
             if (ev.data?.type !== 's3phy:lang') return;
             currentLang = hubLangToLocal(ev.data.lang);

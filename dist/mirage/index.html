@@ -1,743 +1,1017 @@
 <!DOCTYPE html>
-<html lang="zh-HK" translate="no">
+<html lang="en" translate="no">
 <head>
   <meta name="google" content="notranslate">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>海市蜃樓 — 熱空氣全內反射</title>
-    <link rel="stylesheet" href="../shared/s3phy-embed.css">
-    <script src="../shared/s3phy-embed-init.js"></script>
-    <style>
-        html.s3phy-embed .lang-btn { display: none; }
-        html.s3phy-embed body { padding: 12px; }
-        :root {
-            --panel: #fffdf8;
-            --text: #2a241c;
-            --muted: #6b5f52;
-            --border: #e6ddd0;
-            --cold: #1d6a8a;
-            --hot: #c2410c;
-            --accent: #b45309;
-            --ok: #0f766e;
-            --btn: #efe6d8;
-            --btn-text: #4a3f34;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: "Noto Sans TC", "Segoe UI", sans-serif;
-            background:
-                radial-gradient(ellipse 80% 50% at 50% -10%, #fde8c8 0%, transparent 55%),
-                linear-gradient(180deg, #f7f3eb 0%, #efe6d8 100%);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            width: 100%;
-            max-width: 920px;
-            margin-bottom: 8px;
-            gap: 12px;
-        }
-        .header-text { flex: 1; }
-        h2 {
-            margin: 0 0 6px;
-            color: var(--accent);
-            font-weight: 800;
-            font-size: 1.4rem;
-        }
-        #page-desc {
-            margin: 0;
-            color: var(--muted);
-            font-size: 0.95rem;
-            line-height: 1.45;
-        }
-        .lang-btn {
-            background: var(--btn);
-            color: var(--btn-text);
-            border: 1px solid var(--border);
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .container {
-            width: 100%;
-            max-width: 920px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .controls, .canvas-card, .explain {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(42, 36, 28, 0.05);
-        }
-        .controls {
-            padding: 14px 16px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px 20px;
-            align-items: flex-end;
-        }
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            min-width: 180px;
-            flex: 1 1 180px;
-        }
-        .slider-label {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--muted);
-            letter-spacing: 0.03em;
-        }
-        .slider-row { display: flex; align-items: center; gap: 10px; }
-        input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
-        .val {
-            font-variant-numeric: tabular-nums;
-            font-weight: 700;
-            min-width: 4.2rem;
-            text-align: right;
-            font-size: 0.9rem;
-        }
-        .stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            flex: 2 1 280px;
-        }
-        .stat {
-            background: #faf6ef;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px 11px;
-            min-width: 100px;
-            flex: 1;
-        }
-        .stat .k {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--muted);
-            margin-bottom: 2px;
-        }
-        .stat .v {
-            font-weight: 800;
-            font-size: 0.95rem;
-            font-variant-numeric: tabular-nums;
-        }
-        .stat.cold .v { color: var(--cold); }
-        .stat.hot .v { color: var(--hot); }
-        .status-pill {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 0.88rem;
-            flex: 1 1 150px;
-            text-align: center;
-            border: 1px solid transparent;
-        }
-        .status-pill.tir {
-            background: #ecfdf5;
-            color: var(--ok);
-            border-color: #a7f3d0;
-        }
-        .status-pill.refract {
-            background: #fff7ed;
-            color: var(--hot);
-            border-color: #fed7aa;
-        }
-        .canvas-card { padding: 14px; }
-        .canvas-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--muted);
-            margin-bottom: 8px;
-        }
-        #sceneCanvas {
-            width: 100%;
-            height: 400px;
-            display: block;
-            border-radius: 12px;
-            background: #c8dff0;
-            border: 1px solid var(--border);
-            cursor: crosshair;
-        }
-        .hint {
-            text-align: center;
-            font-size: 0.82rem;
-            color: var(--muted);
-            margin-top: 8px;
-        }
-        .explain {
-            padding: 12px 16px;
-            font-size: 0.88rem;
-            line-height: 1.55;
-            color: var(--muted);
-        }
-        .explain strong { color: var(--text); }
-        .formula {
-            margin-top: 8px;
-            font-family: "Roboto Mono", Consolas, monospace;
-            font-size: 0.84rem;
-            color: var(--cold);
-            background: #f0f7fb;
-            border-radius: 8px;
-            padding: 7px 11px;
-            display: inline-block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirage Lab Mirage0825_2 | Uni+ Education</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html { min-height: 100dvh; }
+    body {
+      font-family: var(--s3-font, 'Inter', 'Microsoft JhengHei', sans-serif);
+      min-height: 100dvh;
+    }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    /* Shorter canvas: same layer count, smaller gap between layers */
+    .lab-section { min-height: 0; }
+    .lab-controls { overflow-y: auto; max-height: min(640px, calc(100dvh - 48px)); }
+    .lab-viz { display: flex; flex-direction: column; min-height: 0; }
+    .lab-viz-canvas { aspect-ratio: 16 / 9; min-height: 420px; max-height: 480px; }
+    @media (min-width: 900px) {
+      .lab-viz-canvas { aspect-ratio: auto; flex: 1; min-height: 420px; max-height: 480px; }
+    }
+    html:fullscreen, html:-webkit-full-screen {
+      height: 100%;
+      background: #f8fafc;
+    }
+    html:fullscreen body, html:-webkit-full-screen body {
+      min-height: 100%;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    input[type=range].mg-range {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+    }
+    input[type=range].mg-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #2563eb;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(15,23,42,.25);
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body>
-    <div class="header-top">
-        <div class="header-text">
-            <h2 id="page-title">Mirage — TIR in hot &amp; cold air</h2>
-            <p id="page-desc">Cool dense air over hot rare air can totally reflect sky light — looking like water on the road.</p>
+<body class="bg-slate-50 text-slate-800 min-h-dvh flex items-center justify-center p-1.5">
+  <main class="w-full mx-auto px-2 py-1.5">
+    <section class="lab-section grid grid-cols-1 lg:grid-cols-12 gap-2">
+      <div class="lab-controls lg:col-span-3 bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
+          <h2 class="text-lg font-bold text-slate-900" data-i18n="controls">Simulation Controls</h2>
         </div>
-        <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
-    </div>
+        <p class="text-xs text-slate-500" data-i18n="controlsHint">Adjust on this page — no separate control screen.</p>
 
-    <div class="container">
-        <div class="controls">
-            <div class="control-group">
-                <span class="slider-label" id="label-temp">Hot-air temperature</span>
-                <div class="slider-row">
-                    <input type="range" id="tempSlider" min="20" max="80" step="1" value="60">
-                    <span class="val" id="tempVal">60 °C</span>
-                </div>
-            </div>
-            <div class="control-group">
-                <span class="slider-label" id="label-angle">Incidence angle θ₁</span>
-                <div class="slider-row">
-                    <input type="range" id="angleSlider" min="25" max="80" step="0.5" value="58">
-                    <span class="val" id="angleVal">58.0°</span>
-                </div>
-            </div>
-            <div class="stats">
-                <div class="stat cold">
-                    <span class="k" id="label-ncold">n cold (dense)</span>
-                    <span class="v" id="nColdVal">1.50</span>
-                </div>
-                <div class="stat hot">
-                    <span class="k" id="label-nhot">n hot (rare)</span>
-                    <span class="v" id="nHotVal">1.15</span>
-                </div>
-                <div class="stat">
-                    <span class="k" id="label-crit">Critical angle θc</span>
-                    <span class="v" id="critVal">—</span>
-                </div>
-                <div class="status-pill tir" id="statusPill">TIR → mirage</div>
-            </div>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="layers">Number of air layers</label>
+            <span id="layersVal" class="mono text-xs font-bold text-blue-600">15</span>
+          </div>
+          <input type="range" id="layers" class="mg-range" min="10" max="18" step="1" value="15">
         </div>
 
-        <div class="canvas-card">
-            <div class="canvas-label" id="label-scene">Side view: cool air (above) → hot air (near road)</div>
-            <canvas id="sceneCanvas" width="880" height="400"></canvas>
-            <div class="hint" id="drag-hint">Drag the eye · raise hot-air temperature or θ₁ until θ₁ &gt; θc to see the mirage</div>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="distance">Person distance from the car</label>
+            <span id="distVal" class="mono text-xs font-bold text-blue-600">0 m</span>
+          </div>
+          <input type="range" id="distance" class="mg-range" min="0" max="75" step="1" value="0">
+          <p class="text-[10px] text-slate-400" data-i18n="distanceDesc">Distance from the car, 0 m to 75 m.</p>
         </div>
 
-        <div class="explain" id="explain-box"></div>
-    </div>
+        <div id="statusBox" class="mt-auto rounded-xl border border-emerald-600 bg-emerald-500 px-3.5 py-3.5">
+          <span id="hudStatus" class="text-lg font-bold leading-snug text-white">—</span>
+        </div>
 
-    <script>
-        // Classroom model: larger Δn so θc moves clearly (real air Δn is tiny).
-        const N_COLD = 1.50;
-        function nHotFromTemp(tC) {
-            const t = Math.max(0, Math.min(1, (tC - 20) / 60));
-            return 1.35 - t * 0.30; // 20°C → 1.35; 80°C → 1.05
+        <button id="fullscreenBtn" type="button" class="w-full py-2.5 px-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm leading-snug" data-i18n="fullscreen">Full screen</button>
+
+        <div class="flex flex-col gap-2">
+          <button id="adjustManBtn" type="button" class="w-full py-2.5 px-3 bg-black hover:bg-neutral-800 text-white font-bold rounded-xl text-sm leading-snug" data-i18n="adjustMan">Adjust the position of the man</button>
+          <button id="resetBtn" type="button" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl" data-i18n="reset">Reset</button>
+        </div>
+      </div>
+
+      <div class="lab-viz lg:col-span-9 bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="eye" class="w-5 h-5 text-indigo-600"></i>
+          <span data-i18n="visualLab">Inferior mirage on a hot road</span>
+        </h3>
+        <div class="lab-viz-canvas relative bg-white rounded-xl overflow-hidden border border-slate-200 shadow-inner">
+          <canvas id="mirageCanvas" class="w-full h-full"></canvas>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-slate-600">
+          <span class="mono" id="hudI">iₘₐₓ = —</span>
+          <span class="mono" id="hudC">c = —</span>
+          <span class="mono" id="hudLayers">layers = —</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const locales = {
+      en: {
+        controls: 'Simulation Controls',
+        controlsHint: 'Adjust on this page — no separate control screen.',
+        layers: 'Number of air layers',
+        distance: 'Person distance from the car',
+        distanceDesc: 'Distance from the car, 0 m to 75 m.',
+        deltaN: 'Δn between layers',
+        deltaNFixed: 'Fixed — not adjustable.',
+        nTop: 'Top layer n₁ (cold)',
+        reset: 'Reset',
+        adjustMan: 'Adjust the position of the man',
+        fullscreen: 'Full screen',
+        exitFullscreen: 'Exit full screen',
+        visualLab: 'Inferior mirage on a hot road',
+        cold: 'Cold air / 冷空氣',
+        hot: 'Hot air / 熱空氣',
+        water: 'Water / 水',
+        tir: 'Total internal reflection / 全內反射',
+        statusOk: 'Mirage can be seen — ray reaches the eye',
+        statusFar: 'Mirage cannot be seen — move the person further from the car',
+        statusNear: 'Mirage cannot be seen — move the person closer to the car',
+      },
+      'zh-Hant': {
+        controls: '模擬控制',
+        controlsHint: '在同一頁調整，無需另開控制頁。',
+        layers: '空氣層數',
+        distance: '人物與車子的距離',
+        distanceDesc: '由車子量起，0 m 至 75 m。',
+        deltaN: '相鄰層折射率差 Δn',
+        deltaNFixed: '固定值，不可調整。',
+        nTop: '最上層 n₁（冷空氣）',
+        reset: '重設',
+        adjustMan: '調整人物位置',
+        fullscreen: '全螢幕',
+        exitFullscreen: '結束全螢幕',
+        visualLab: '熱路面下蜃景',
+        cold: 'Cold air / 冷空氣',
+        hot: 'Hot air / 熱空氣',
+        water: 'Water / 水',
+        tir: 'Total internal reflection / 全內反射',
+        statusOk: '可以看到蜃景 — 光線進入眼睛',
+        statusFar: '看不見蜃景 — 請將人物移離車子更遠',
+        statusNear: '看不見蜃景 — 請將人物移近車子',
+      },
+    };
+
+    let lang = 'en';
+    const DEFAULTS = { layers: 15, distance: 0 };
+    const state = { ...DEFAULTS, launchDeg: -4 };
+
+    /** Double the previous preview car (0.19 → 0.38). Person matches this height. */
+    const CAR = { x: 16, roofY: 0.5016 };
+    const CAR_LOCAL_H = 33.5;
+    /** Cabin roof runs local x = -14 … +14; ray starts at the right end. */
+    const CAR_ROOF_RIGHT_LOCAL = 14;
+    /** Tiny gap so image wheels kiss object wheels without overlapping. */
+    const IMAGE_GAP = 0.02112;
+    /** Same height as the car. */
+    const PERSON_H = CAR.roofY;
+    /** Keep sky space so the doubled car stays modest on the tall canvas. */
+    const WORLD_YMAX = 3.0;
+
+    function t(key) {
+      return (locales[lang] || locales.en)[key] || key;
+    }
+
+    function applyLang(l) {
+      lang = l === 'zh-Hant' || l === 'zh' ? 'zh-Hant' : 'en';
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      if (window.lucide) window.lucide.createIcons();
+      syncFullscreenLabel();
+      syncUI();
+      refitLaunchFromAtmosphere();
+      draw();
+    }
+
+    function isFullscreen() {
+      return Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+
+    function syncFullscreenLabel() {
+      const btn = document.getElementById('fullscreenBtn');
+      if (!btn) return;
+      const active = isFullscreen();
+      btn.textContent = t(active ? 'exitFullscreen' : 'fullscreen');
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    }
+
+    async function toggleFullscreen() {
+      try {
+        if (isFullscreen()) {
+          if (document.exitFullscreen) await document.exitFullscreen();
+          else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
+        } else {
+          const el = document.documentElement;
+          if (el.requestFullscreen) await el.requestFullscreen();
+          else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
+        }
+      } catch {
+        /* ignore */
+      }
+      syncFullscreenLabel();
+      draw();
+    }
+
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 's3phy:lang') applyLang(e.data.lang);
+    });
+
+    function nTop() { return 1.008; }
+    /** Small per-layer Δn so the ray stays nearly as high as the car on the right. */
+    function dN() { return 0.00015; }
+
+    function carRayStartX() {
+      return CAR.x + CAR_ROOF_RIGHT_LOCAL * (CAR.roofY / CAR_LOCAL_H);
+    }
+
+    function personBaseX() {
+      const carRight = 26.8 * (CAR.roofY / CAR_LOCAL_H);
+      const leftHand = 14 * (PERSON_H / 43);
+      const touchGap = 6;
+      return CAR.x + carRight + leftHand + touchGap;
+    }
+
+    function personFeetX() {
+      // 0 m = current 6 m pose: left hand just touching the car, no overlap.
+      return personBaseX() + state.distance;
+    }
+
+    function buildN() {
+      const arr = [];
+      for (let i = 0; i < state.layers; i++) {
+        arr.push(Math.max(1.0008, nTop() - i * dN()));
+      }
+      return arr;
+    }
+
+    /** Layers fill the air above the road so the ray can keep bending across the screen. */
+    function atmHeight() {
+      return 2.35;
+    }
+
+    function worldBox() {
+      const imgDepth = CAR.roofY + IMAGE_GAP + 0.12;
+      return { w: 100, yMin: -imgDepth, yMax: WORLD_YMAX };
+    }
+
+    /**
+     * Snell at a horizontal interface. θ is from the vertical normal.
+     * Always returns a bent (or TIR) direction when n1 ≠ n2.
+     */
+    function snellHorizontal(vx, vy, n1, n2) {
+      const sp = Math.hypot(vx, vy) || 1;
+      const ux = vx / sp;
+      const uy = vy / sp;
+      const sinI = Math.min(1, Math.abs(ux));
+      const i = Math.asin(sinI);
+      const sx = ux >= 0 ? 1 : -1;
+      const sy = uy >= 0 ? 1 : -1;
+      const c = n2 < n1 - 1e-15 ? Math.asin(Math.min(1, n2 / n1)) : null;
+
+      if (n2 < n1 - 1e-15) {
+        const ratio = n2 / n1;
+        if (sinI > ratio + 1e-12) {
+          return { vx: ux * sp, vy: -uy * sp, tir: true, i, r: i, c, refracted: false };
+        }
+      }
+
+      const sinR = Math.min(1, (n1 / n2) * sinI);
+      const r = Math.asin(sinR);
+      const nvx = sx * Math.sin(r) * sp;
+      const nvy = sy * Math.cos(r) * sp;
+      return { vx: nvx, vy: nvy, tir: false, i, r, c, refracted: true };
+    }
+
+    /**
+     * Walk layer-by-layer. The ray hits every interface in its path and
+     * applies Snell (or TIR) at that boundary — never skips a layer.
+     */
+    function finishToRight(pts, x, y, vx, vy, xRight) {
+      if (vx > 1e-12 && x < xRight) {
+        const dt = (xRight - x) / vx;
+        const yy = Math.min(WORLD_YMAX - 0.08, Math.max(0.02, y + vy * dt));
+        pts.push({ x: xRight, y: yy });
+      } else {
+        pts.push({ x: xRight, y: Math.min(WORLD_YMAX - 0.08, Math.max(0.02, y)) });
+      }
+    }
+
+    function castRay(deg, nArr) {
+      const N = nArr.length;
+      const atmH = atmHeight();
+      const layerH = atmH / N;
+      const xRight = worldBox().w;
+      const rad = (deg * Math.PI) / 180;
+      let x = carRayStartX();
+      let y = Math.min(atmH - 1e-4, Math.max(1e-4, CAR.roofY));
+      let vx = Math.cos(rad);
+      let vy = Math.sin(rad);
+      const pts = [{ x, y }];
+      const kinkPts = [];
+      let tir = null;
+      let iAtTir = null;
+      let rAtTir = null;
+      let cAtTir = null;
+      let maxY = y;
+      let bendsBeforeTir = 0;
+      let downBends = 0;
+      let skippedTir = false;
+
+      for (let step = 0; step < 400; step++) {
+        maxY = Math.max(maxY, y);
+        if (x >= xRight - 1e-6) break;
+
+        let li = Math.floor((atmH - y) / layerH + 1e-9);
+        li = Math.min(N - 1, Math.max(0, li));
+        const yTop = atmH - li * layerH;
+        const yBot = atmH - (li + 1) * layerH;
+
+        if (vx <= 1e-12) {
+          finishToRight(pts, x, y, 1, 0, xRight);
+          break;
         }
 
-        const dict = {
-            zh: {
-                title: '海市蜃樓 — 熱／冷空氣全內反射',
-                desc: '較密冷空氣喺上，較疏熱空氣喺路面附近；光由冷 → 熱可以全內反射，睇落好似有水。',
-                temp: '熱空氣溫度',
-                angle: '入射角 θ₁（對法線）',
-                ncold: 'n 冷（光密）',
-                nhot: 'n 熱（光疏）',
-                crit: '臨界角 θc',
-                scene: '側視：冷空氣（上）→ 熱空氣（近路面）',
-                hint: '拖曳眼睛 · 提高熱空氣溫度或 θ₁，令 θ₁ > θc 就會出現蜃景',
-                explain: '<strong>點解似水：</strong>冷空氣較密（n 大），熱空氣較疏（n 細）。光由冷 → 熱，當 <strong>θ₁ &gt; θc</strong> 發生<strong>全內反射</strong>，天空光反射入眼，路面好似有水。<br><em>課堂模型：Δn 已放大，方便睇到 θc 變化（真實大氣 Δn 好細）。</em>',
-                formula: 'θc = arcsin(n_熱 / n_冷)　·　θ₁ > θc → 全內反射',
-                statusTir: '全內反射 → 海市蜃樓',
-                statusRefract: '折射入熱層（未成蜃景）',
-                coldAir: '冷空氣（密）',
-                hotAir: '熱空氣（疏）',
-                road: '熱瀝青路',
-                sky: '天空',
-                eye: '眼睛',
-                interface: '冷／熱介面',
-                tirRay: '全內反射',
-                refrRay: '折射',
-                virtual: '虛像',
-                water: '「假水」',
-                toEye: '入眼',
-                compare: (i, c) => `θ₁ = ${i}°  ${i > c ? '>' : '≤'}  θc = ${c}°`,
-                langBtn: '🌐 English'
-            },
-            en: {
-                title: 'Mirage — TIR in hot & cold air',
-                desc: 'Cool dense air over hot rare air can totally reflect sky light — looking like water on the road.',
-                temp: 'Hot-air temperature',
-                angle: 'Incidence angle θ₁ (from normal)',
-                ncold: 'n cold (dense)',
-                nhot: 'n hot (rare)',
-                crit: 'Critical angle θc',
-                scene: 'Side view: cool air (above) → hot air (near road)',
-                hint: 'Drag the eye · raise hot-air temperature or θ₁ until θ₁ > θc to see the mirage',
-                explain: '<strong>Why it looks like water:</strong> cool air is denser (higher n); hot air near the road is rarer (lower n). Light going cold → hot undergoes <strong>TIR</strong> when <strong>θ₁ &gt; θc</strong>, so sky light reaches the eye and the road looks wet.<br><em>Classroom model: Δn is exaggerated so θc changes clearly (real air Δn is tiny).</em>',
-                formula: 'θc = arcsin(n_hot / n_cold)  ·  θ₁ > θc → TIR',
-                statusTir: 'TIR → mirage',
-                statusRefract: 'Refracts into hot layer (no mirage)',
-                coldAir: 'Cool air (dense)',
-                hotAir: 'Hot air (rare)',
-                road: 'Hot asphalt',
-                sky: 'Sky',
-                eye: 'Eye',
-                interface: 'Cold / hot interface',
-                tirRay: 'TIR',
-                refrRay: 'Refraction',
-                virtual: 'Virtual image',
-                water: '“False water”',
-                toEye: 'to eye',
-                compare: (i, c) => `θ₁ = ${i}°  ${i > c ? '>' : '≤'}  θc = ${c}°`,
-                langBtn: '🌐 中文'
-            }
-        };
-
-        function hubLangToLocal(lang) {
-            return lang === 'en' ? 'en' : 'zh';
+        if (Math.abs(vy) < 1e-12) {
+          finishToRight(pts, x, y, vx, 0, xRight);
+          break;
         }
 
-        const params = new URLSearchParams(location.search);
-        let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+        const hitTop = vy > 0;
+        const yHit = hitTop ? yTop : yBot;
+        let dtBound = (yHit - y) / vy;
+        if (dtBound < 1e-8) dtBound = layerH * 0.02 / Math.abs(vy);
+        const dtSide = (xRight - x) / vx;
 
-        const canvas = document.getElementById('sceneCanvas');
-        const ctx = canvas.getContext('2d');
-        const tempSlider = document.getElementById('tempSlider');
-        const angleSlider = document.getElementById('angleSlider');
-        const statusPill = document.getElementById('statusPill');
-
-        let eyeY = 110;
-        let draggingEye = false;
-        let shimmerT = 0;
-
-        function nHot() { return nHotFromTemp(parseFloat(tempSlider.value)); }
-        function criticalAngleDeg() {
-            const r = nHot() / N_COLD;
-            if (r >= 1) return 90;
-            return (Math.asin(r) * 180) / Math.PI;
-        }
-        function incidenceDeg() { return parseFloat(angleSlider.value); }
-        function isTir() { return incidenceDeg() > criticalAngleDeg() + 1e-6; }
-
-        function updateLanguageUI() {
-            const t = dict[currentLang];
-            document.documentElement.lang = currentLang === 'zh' ? 'zh-HK' : 'en';
-            document.title = t.title;
-            document.getElementById('lang-toggle').innerText = t.langBtn;
-            document.getElementById('page-title').innerText = t.title;
-            document.getElementById('page-desc').innerText = t.desc;
-            document.getElementById('label-temp').innerText = t.temp;
-            document.getElementById('label-angle').innerText = t.angle;
-            document.getElementById('label-ncold').innerText = t.ncold;
-            document.getElementById('label-nhot').innerText = t.nhot;
-            document.getElementById('label-crit').innerText = t.crit;
-            document.getElementById('label-scene').innerText = t.scene;
-            document.getElementById('drag-hint').innerText = t.hint;
-            document.getElementById('explain-box').innerHTML =
-                t.explain + `<div class="formula">${t.formula}</div>`;
-            updateReadouts();
-            draw();
+        if (dtSide <= dtBound + 1e-12) {
+          x = xRight;
+          y += vy * dtSide;
+          pts.push({ x, y });
+          break;
         }
 
-        function updateReadouts() {
-            const t = dict[currentLang];
-            const th = parseFloat(tempSlider.value);
-            const tc = criticalAngleDeg();
-            const i = incidenceDeg();
-            document.getElementById('tempVal').textContent = `${th.toFixed(0)} °C`;
-            document.getElementById('angleVal').textContent = `${i.toFixed(1)}°`;
-            document.getElementById('nColdVal').textContent = N_COLD.toFixed(2);
-            document.getElementById('nHotVal').textContent = nHot().toFixed(2);
-            document.getElementById('critVal').textContent = `${tc.toFixed(1)}°`;
-            const tir = isTir();
-            statusPill.textContent = tir ? t.statusTir : t.statusRefract;
-            statusPill.className = 'status-pill ' + (tir ? 'tir' : 'refract');
+        x += vx * dtBound;
+        y = yHit;
+        pts.push({ x, y });
+
+        const n1 = nArr[li];
+        const n2i = hitTop ? li - 1 : li + 1;
+
+        if (n2i < 0) {
+          // White/sky above the top air layer: no Snell kink — continue straight.
+          if (vx > 1e-12 && x < xRight) {
+            const dt = (xRight - x) / vx;
+            pts.push({ x: xRight, y: y + vy * dt });
+          }
+          break;
         }
 
-        function layout() {
-            const w = canvas.width;
-            const h = canvas.height;
-            const roadTop = h - 52;
-            const interfaceY = roadTop - 78;
-            return { w, h, roadTop, interfaceY, eyeX: w - 86 };
+        // Never TIR on the road. Lowest allowed TIR is the last air–air
+        // boundary (one layer above the floor).
+        if (n2i >= N) {
+          pts.pop();
+          const prev = pts[pts.length - 1];
+          x = prev.x;
+          y = prev.y;
+          const yAir = layerH;
+          if (vy < -1e-12 && y > yAir) {
+            const dt = (yAir - y) / vy;
+            x += vx * dt;
+            y = yAir;
+            pts.push({ x, y });
+          }
+          const sp = Math.hypot(vx, vy) || 1;
+          vy = Math.abs(vy);
+          if (!tir) {
+            tir = { x, y: Math.max(y, yAir) };
+            iAtTir = Math.asin(Math.min(1, Math.abs(vx) / sp));
+            rAtTir = iAtTir;
+            cAtTir = Math.asin(Math.min(1, nArr[N - 1] / nArr[Math.max(0, N - 2)]));
+          }
+          kinkPts.push({ x, y: tir.y, tir: true });
+          y = tir.y + 1e-5;
+          continue;
         }
 
-        function clampEyeY(L) {
-            eyeY = Math.max(40, Math.min(L.interfaceY - 28, eyeY));
-            return eyeY;
+        const n2 = nArr[n2i];
+        let out = snellHorizontal(vx, vy, n1, n2);
+
+        // Move TIR one air-air boundary lower: skip the first downward TIR
+        // and reflect at the next interface (still above the road).
+        if (!hitTop && out.tir && !skippedTir && n2i < N - 1) {
+          skippedTir = true;
+          const sp = Math.hypot(vx, vy) || 1;
+          const sx = vx >= 0 ? 1 : -1;
+          const ux = 0.9996;
+          out = {
+            vx: sx * ux * sp,
+            vy: -Math.sqrt(Math.max(1e-8, 1 - ux * ux)) * sp,
+            tir: false,
+            i: out.i,
+            r: Math.acos(Math.min(1, Math.sqrt(Math.max(0, 1 - ux * ux)))),
+            c: out.c,
+            refracted: true,
+          };
         }
 
-        function drawScene(L, t) {
-            // Sky / cool air
-            const sky = ctx.createLinearGradient(0, 0, 0, L.interfaceY);
-            sky.addColorStop(0, '#6eafd4');
-            sky.addColorStop(1, '#d5e8f4');
-            ctx.fillStyle = sky;
-            ctx.fillRect(0, 0, L.w, L.interfaceY);
-
-            // Hot layer
-            const hot = ctx.createLinearGradient(0, L.interfaceY, 0, L.roadTop);
-            hot.addColorStop(0, 'rgba(251, 191, 36, 0.14)');
-            hot.addColorStop(1, 'rgba(194, 65, 12, 0.38)');
-            ctx.fillStyle = hot;
-            ctx.fillRect(0, L.interfaceY, L.w, L.roadTop - L.interfaceY);
-
-            ctx.strokeStyle = 'rgba(255, 170, 70, 0.35)';
-            ctx.lineWidth = 1.4;
-            for (let i = 0; i < 4; i++) {
-                const y = L.interfaceY + 14 + i * 14;
-                ctx.beginPath();
-                for (let x = 0; x <= L.w; x += 10) {
-                    const yy = y + Math.sin(x * 0.035 + shimmerT * 0.04 + i) * 2.2;
-                    if (x === 0) ctx.moveTo(x, yy);
-                    else ctx.lineTo(x, yy);
-                }
-                ctx.stroke();
-            }
-
-            // Road
-            const road = ctx.createLinearGradient(0, L.roadTop, 0, L.h);
-            road.addColorStop(0, '#4a4745');
-            road.addColorStop(1, '#2a2826');
-            ctx.fillStyle = road;
-            ctx.fillRect(0, L.roadTop, L.w, L.h - L.roadTop);
-            ctx.strokeStyle = 'rgba(255,255,255,0.28)';
-            ctx.setLineDash([16, 12]);
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            ctx.moveTo(36, L.roadTop + 24);
-            ctx.lineTo(L.w - 36, L.roadTop + 24);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Interface
-            ctx.strokeStyle = 'rgba(42,36,28,0.55)';
-            ctx.setLineDash([7, 5]);
-            ctx.lineWidth = 1.8;
-            ctx.beginPath();
-            ctx.moveTo(0, L.interfaceY);
-            ctx.lineTo(L.w, L.interfaceY);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-            ctx.fillStyle = '#1d6a8a';
-            ctx.fillText(t.coldAir, 12, 24);
-            ctx.fillStyle = '#c2410c';
-            ctx.fillText(t.hotAir, 12, L.interfaceY + 20);
-            ctx.fillStyle = '#f5f5f4';
-            ctx.fillText(t.road, 12, L.roadTop + 40);
-            ctx.fillStyle = 'rgba(42,36,28,0.65)';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText(t.interface, L.w / 2 - 40, L.interfaceY - 8);
+        // Last air–air boundary (one layer above the floor): TIR here if
+        // it has not already happened one boundary higher.
+        if (!hitTop && n2i === N - 1 && !out.tir) {
+          const sp = Math.hypot(vx, vy) || 1;
+          const i = Math.asin(Math.min(1, Math.abs(vx) / sp));
+          out = {
+            vx,
+            vy: Math.abs(vy),
+            tir: true,
+            i,
+            r: i,
+            c: Math.asin(Math.min(1, n2 / n1)),
+            refracted: false,
+          };
         }
 
-        function drawEye(L, t) {
-            const x = L.eyeX;
-            const y = clampEyeY(L);
-            ctx.fillStyle = '#1c1917';
-            ctx.beginPath();
-            ctx.ellipse(x, y, 15, 10, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#f8fafc';
-            ctx.beginPath();
-            ctx.ellipse(x - 2, y, 8, 7, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#0ea5e9';
-            ctx.beginPath();
-            ctx.arc(x - 3, y, 3.2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = '#1c1917';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText(t.eye, x - 12, y - 16);
-            return { x, y };
+        vx = out.vx;
+        vy = out.vy;
+
+        kinkPts.push({ x, y, tir: out.tir });
+
+        if (out.tir) {
+          if (!tir) {
+            tir = { x, y };
+            iAtTir = out.i;
+            rAtTir = out.r;
+            cAtTir = out.c;
+          }
+          y += Math.sign(vy || 1) * 1e-5;
+        } else {
+          if (!tir) {
+            bendsBeforeTir += 1;
+            if (!hitTop) downBends += 1;
+          }
+          y += (hitTop ? 1 : -1) * 1e-5;
         }
+      }
 
-        function drawArrow(x0, y0, x1, y1, color) {
-            const ang = Math.atan2(y1 - y0, x1 - x0);
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x1 - 9 * Math.cos(ang - 0.4), y1 - 9 * Math.sin(ang - 0.4));
-            ctx.lineTo(x1 - 9 * Math.cos(ang + 0.4), y1 - 9 * Math.sin(ang + 0.4));
-            ctx.closePath();
-            ctx.fill();
+      const last = pts[pts.length - 1];
+      if (last && last.x < xRight - 0.05) finishToRight(pts, last.x, last.y, Math.max(vx, 0.2), vy, xRight);
+
+      return { pts, kinkPts, tir, iAtTir, rAtTir, cAtTir, maxY, bendsBeforeTir, downBends };
+    }
+
+    function eyeHit(pts, personX, eyeY) {
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1];
+        const b = pts[i];
+        if ((a.x - personX) * (b.x - personX) > 0) continue;
+        const u = Math.abs(b.x - a.x) < 1e-9 ? 0 : (personX - a.x) / (b.x - a.x);
+        const yy = a.y + u * (b.y - a.y);
+        if (Math.abs(yy - eyeY) < Math.max(0.12, CAR.roofY * 0.8)) return true;
+      }
+      return false;
+    }
+
+    function rayYAtX(pts, xq) {
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1];
+        const b = pts[i];
+        if ((a.x - xq) * (b.x - xq) > 0) continue;
+        const u = Math.abs(b.x - a.x) < 1e-9 ? 0 : (xq - a.x) / (b.x - a.x);
+        return a.y + u * (b.y - a.y);
+      }
+      return pts.length ? pts[pts.length - 1].y : CAR.roofY;
+    }
+
+    /** Prefer refraction, then TIR in the air (not on the road), then the right edge. */
+    function refitLaunchFromAtmosphere() {
+      const nArr = buildN();
+      const xRight = worldBox().w;
+      const layerH = atmHeight() / nArr.length;
+      const yMinAir = layerH * 0.85;
+      let best = null;
+      let bestScore = -Infinity;
+      for (let a = -0.15; a >= -10; a -= 0.08) {
+        const tr = castRay(a, nArr);
+        if (!tr.tir || tr.tir.y < yMinAir) continue;
+        const lastX = tr.pts.length ? tr.pts[tr.pts.length - 1].x : 0;
+        const layersAboveFloor = tr.tir.y / layerH;
+        const score =
+          (lastX >= xRight - 1 ? 50 : lastX * 0.3) +
+          tr.downBends * 6 +
+          tr.bendsBeforeTir * 2 -
+          Math.abs(layersAboveFloor - 1.5) * 10 -
+          Math.abs(rayYAtX(tr.pts, xRight) - CAR.roofY) * 4;
+        if (score > bestScore) {
+          bestScore = score;
+          best = a;
         }
-
-        function drawOptics(L, eye, t) {
-            const iDeg = incidenceDeg();
-            const tc = criticalAngleDeg();
-            const tir = iDeg > tc;
-            const iRad = (iDeg * Math.PI) / 180;
-            const hitY = L.interfaceY;
-
-            // Hit point so the reflected ray (law of reflection) aims at the eye
-            let hitX = eye.x - (eye.y - hitY) * Math.tan(iRad);
-            hitX = Math.max(L.w * 0.22, Math.min(L.w * 0.72, hitX));
-
-            // Incident from sky (upper-left)
-            const srcLen = Math.min(170, hitY - 24);
-            const srcX = hitX - Math.sin(iRad) * srcLen;
-            const srcY = hitY - Math.cos(iRad) * srcLen;
-
-            // Sky marker
-            ctx.fillStyle = '#fff';
-            ctx.beginPath();
-            ctx.arc(srcX, srcY, 7, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#0284c7';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-            ctx.fillStyle = '#0369a1';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText(t.sky, srcX + 10, srcY + 4);
-
-            // Incident ray
-            ctx.strokeStyle = '#0284c7';
-            ctx.lineWidth = 2.8;
-            ctx.beginPath();
-            ctx.moveTo(srcX, srcY);
-            ctx.lineTo(hitX, hitY);
-            ctx.stroke();
-            drawArrow(hitX - Math.sin(iRad) * 16, hitY - Math.cos(iRad) * 16, hitX, hitY, '#0284c7');
-
-            // Normal
-            ctx.strokeStyle = 'rgba(42,36,28,0.4)';
-            ctx.setLineDash([3, 3]);
-            ctx.lineWidth = 1.2;
-            ctx.beginPath();
-            ctx.moveTo(hitX, hitY - 48);
-            ctx.lineTo(hitX, hitY + 36);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.fillStyle = 'rgba(42,36,28,0.55)';
-            ctx.font = 'bold 10px sans-serif';
-            ctx.fillText('N', hitX + 5, hitY - 50);
-
-            // θ₁ arc
-            ctx.strokeStyle = '#0369a1';
-            ctx.lineWidth = 1.6;
-            ctx.beginPath();
-            ctx.arc(hitX, hitY, 30, -Math.PI / 2, -Math.PI / 2 + iRad, false);
-            ctx.stroke();
-            ctx.fillStyle = '#0369a1';
-            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-            ctx.fillText('θ₁', hitX + 34, hitY - 10);
-
-            // θc guide (dashed cone)
-            const tcRad = (tc * Math.PI) / 180;
-            ctx.strokeStyle = 'rgba(134, 46, 156, 0.45)';
-            ctx.setLineDash([4, 4]);
-            ctx.lineWidth = 1.3;
-            ctx.beginPath();
-            ctx.moveTo(hitX, hitY);
-            ctx.lineTo(hitX - Math.sin(tcRad) * 70, hitY - Math.cos(tcRad) * 70);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.fillStyle = 'rgba(134, 46, 156, 0.75)';
-            ctx.font = 'bold 10px "Noto Sans TC", sans-serif';
-            ctx.fillText('θc', hitX - Math.sin(tcRad) * 78 - 8, hitY - Math.cos(tcRad) * 70);
-
-            // Compare badge
-            ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-            const cmp = t.compare(iDeg.toFixed(1), tc.toFixed(1));
-            const cw = ctx.measureText(cmp).width;
-            ctx.fillStyle = tir ? 'rgba(236, 253, 245, 0.95)' : 'rgba(255, 247, 237, 0.95)';
-            ctx.strokeStyle = tir ? '#6ee7b7' : '#fdba74';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            roundRectPath(L.w / 2 - cw / 2 - 10, 8, cw + 20, 24, 8);
-            ctx.fill();
-            ctx.stroke();
-            ctx.fillStyle = tir ? '#0f766e' : '#c2410c';
-            ctx.fillText(cmp, L.w / 2 - cw / 2, 25);
-
-            if (tir) {
-                // Reflected ray to eye (same angle other side of normal)
-                ctx.strokeStyle = '#0f766e';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(hitX, hitY);
-                ctx.lineTo(eye.x, eye.y);
-                ctx.stroke();
-                drawArrow(eye.x - Math.sin(iRad) * 14, eye.y + Math.cos(iRad) * 14, eye.x, eye.y, '#0f766e');
-
-                ctx.fillStyle = '#0f766e';
-                ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-                ctx.fillText(t.tirRay, hitX + 12, hitY + 18);
-                ctx.fillText(t.toEye, (hitX + eye.x) / 2 + 8, (hitY + eye.y) / 2 - 6);
-
-                // Virtual image (mirror of sky under interface)
-                const virtX = srcX;
-                const virtY = hitY + (hitY - srcY);
-                const vY = Math.min(L.roadTop - 10, virtY);
-                ctx.save();
-                ctx.globalAlpha = 0.5;
-                ctx.fillStyle = '#38bdf8';
-                ctx.beginPath();
-                ctx.arc(virtX, vY, 7, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-                ctx.strokeStyle = 'rgba(14,165,233,0.55)';
-                ctx.setLineDash([5, 4]);
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(virtX, vY);
-                ctx.lineTo(hitX, hitY);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                ctx.fillStyle = '#0369a1';
-                ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-                ctx.fillText(t.virtual, virtX + 10, vY + 4);
-
-                drawWaterPatch(L, hitX, t);
-            } else {
-                // Refract into hot layer (n2 < n1 → away from normal)
-                const s = (N_COLD / nHot()) * Math.sin(iRad);
-                const rRad = s >= 1 ? Math.PI / 2 - 0.02 : Math.asin(s);
-                const len = 95;
-                const endX = hitX + Math.sin(rRad) * len;
-                const endY = Math.min(L.roadTop - 6, hitY + Math.cos(rRad) * len);
-                ctx.strokeStyle = '#c2410c';
-                ctx.lineWidth = 2.8;
-                ctx.beginPath();
-                ctx.moveTo(hitX, hitY);
-                ctx.lineTo(endX, endY);
-                ctx.stroke();
-                drawArrow(endX - Math.sin(rRad) * 12, endY - Math.cos(rRad) * 12, endX, endY, '#c2410c');
-                ctx.fillStyle = '#c2410c';
-                ctx.font = 'bold 12px "Noto Sans TC", sans-serif';
-                ctx.fillText(t.refrRay + ' θ₂', hitX + 14, hitY + 26);
-
-                // Ghost path to eye (not received)
-                ctx.strokeStyle = 'rgba(148,163,184,0.55)';
-                ctx.setLineDash([5, 5]);
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(hitX, hitY);
-                ctx.lineTo(eye.x, eye.y);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
+      }
+      if (best == null) {
+        for (let a = -0.2; a >= -12; a -= 0.1) {
+          const tr = castRay(a, nArr);
+          if (tr.tir && tr.tir.y >= yMinAir && tr.pts[tr.pts.length - 1].x >= xRight - 1) {
+            best = a;
+            break;
+          }
         }
+      }
+      if (best != null) state.launchDeg = best;
+    }
 
-        function roundRectPath(x, y, w, h, r) {
-            ctx.moveTo(x + r, y);
-            ctx.arcTo(x + w, y, x + w, y + h, r);
-            ctx.arcTo(x + w, y + h, x, y + h, r);
-            ctx.arcTo(x, y + h, x, y, r);
-            ctx.arcTo(x, y, x + w, y, r);
-            ctx.closePath();
+    function syncUI() {
+      state.layers = +document.getElementById('layers').value;
+      state.distance = +document.getElementById('distance').value;
+      document.getElementById('layersVal').textContent = String(state.layers);
+      document.getElementById('distVal').textContent = state.distance + ' m';
+    }
+
+    function fitRay() {
+      syncUI();
+      refitLaunchFromAtmosphere();
+      draw();
+    }
+
+    function reset() {
+      Object.assign(state, DEFAULTS);
+      state.launchDeg = -4;
+      document.getElementById('layers').value = DEFAULTS.layers;
+      document.getElementById('distance').value = DEFAULTS.distance;
+      fitRay();
+    }
+
+    /** Move the person only (keep layers) so the rising ray after TIR hits the eye. */
+    function adjustPersonPosition() {
+      const layersEl = document.getElementById('layers');
+      const distEl = document.getElementById('distance');
+      const keepLayers = +layersEl.value;
+      state.layers = keepLayers;
+      const maxD = +distEl.max || 75;
+      const minD = +distEl.min || 0;
+      const tr = castRay(state.launchDeg, buildN());
+      const base = personBaseX();
+      const eyeY = PERSON_H;
+      const tirX = tr.tir ? tr.tir.x : -Infinity;
+      let hitX = null;
+      for (let i = 1; i < tr.pts.length; i++) {
+        const a = tr.pts[i - 1];
+        const b = tr.pts[i];
+        if (b.y < a.y - 1e-9) continue;
+        const dy = b.y - a.y;
+        if (Math.abs(dy) < 1e-12) continue;
+        const u = (eyeY - a.y) / dy;
+        if (u < -1e-6 || u > 1 + 1e-6) continue;
+        const x = a.x + u * (b.x - a.x);
+        if (x < tirX) continue;
+        hitX = x;
+        break;
+      }
+      let bestD = minD;
+      if (hitX != null) {
+        bestD = Math.round(hitX - base);
+      } else {
+        let bestErr = Infinity;
+        for (let d = minD; d <= maxD; d++) {
+          const x = base + d;
+          if (x < tirX) continue;
+          const err = Math.abs(rayYAtX(tr.pts, x) - eyeY);
+          if (err < bestErr) {
+            bestErr = err;
+            bestD = d;
+          }
         }
+      }
+      bestD = Math.max(minD, Math.min(maxD, bestD));
+      distEl.value = bestD;
+      layersEl.value = keepLayers;
+      syncUI();
+      draw();
+    }
 
-        function drawWaterPatch(L, hitX, t) {
-            const y = L.roadTop + 10;
-            const g = ctx.createRadialGradient(hitX, y, 4, hitX, y, 100);
-            g.addColorStop(0, 'rgba(125, 211, 252, 0.6)');
-            g.addColorStop(0.55, 'rgba(56, 189, 248, 0.28)');
-            g.addColorStop(1, 'rgba(56, 189, 248, 0)');
-            ctx.fillStyle = g;
-            ctx.beginPath();
-            ctx.ellipse(hitX, y, 105, 15, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-            ctx.lineWidth = 1;
-            for (let i = -2; i <= 2; i++) {
-                ctx.beginPath();
-                ctx.moveTo(hitX - 55, y + i * 3 + Math.sin(shimmerT * 0.07 + i));
-                ctx.quadraticCurveTo(hitX, y + i * 2, hitX + 55, y + i * 3 + Math.cos(shimmerT * 0.07 + i));
-                ctx.stroke();
-            }
-            ctx.fillStyle = 'rgba(224, 242, 254, 0.95)';
-            ctx.font = 'bold 11px "Noto Sans TC", sans-serif';
-            ctx.fillText(t.water, hitX - 22, y - 12);
-        }
+    function map(x, y, W, H, pad) {
+      const box = worldBox();
+      const gw = W - pad.l - pad.r;
+      const gh = H - pad.t - pad.b;
+      const span = box.yMax - box.yMin;
+      return {
+        x: pad.l + (x / box.w) * gw,
+        y: pad.t + gh - ((y - box.yMin) / span) * gh,
+      };
+    }
 
-        function draw() {
-            const L = layout();
-            const t = dict[currentLang];
-            ctx.clearRect(0, 0, L.w, L.h);
-            drawScene(L, t);
-            const eye = drawEye(L, t);
-            drawOptics(L, eye, t);
-        }
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
 
-        function resize() {
-            const parent = canvas.parentElement;
-            canvas.width = Math.max(640, parent.clientWidth - 28);
-            canvas.height = 400;
-            draw();
-        }
+    function drawSun(ctx, cx, cy, r) {
+      ctx.fillStyle = '#facc15';
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#facc15';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(a) * (r + 3), cy + Math.sin(a) * (r + 3));
+        ctx.lineTo(cx + Math.cos(a) * (r + 10), cy + Math.sin(a) * (r + 10));
+        ctx.stroke();
+      }
+    }
 
-        tempSlider.addEventListener('input', () => { updateReadouts(); draw(); });
-        angleSlider.addEventListener('input', () => { updateReadouts(); draw(); });
+    function drawPuddle(ctx, cx, cy, carScale) {
+      const rw = Math.max(36, 40 * carScale);
+      const rh = Math.max(7, 8.5 * carScale);
+      ctx.save();
+      const water = ctx.createLinearGradient(cx, cy - rh, cx, cy + rh);
+      water.addColorStop(0, 'rgba(186, 230, 253, 0.88)');
+      water.addColorStop(0.35, 'rgba(56, 189, 248, 0.82)');
+      water.addColorStop(0.7, 'rgba(14, 165, 233, 0.78)');
+      water.addColorStop(1, 'rgba(12, 74, 110, 0.55)');
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rw, rh, 0, 0, Math.PI * 2);
+      ctx.fillStyle = water;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(7, 89, 133, 0.55)';
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(cx - rw * 0.22, cy - rh * 0.35, rw * 0.42, rh * 0.22, -0.25, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.38)';
+      ctx.fill();
+      ctx.restore();
+    }
 
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const sx = canvas.width / rect.width;
-            const sy = canvas.height / rect.height;
-            const x = (e.clientX - rect.left) * sx;
-            const y = (e.clientY - rect.top) * sy;
-            const L = layout();
-            if (Math.hypot(x - L.eyeX, y - eyeY) < 40) draggingEye = true;
+    function drawObjectCarOnRoad(ctx, roofTipX, roofTipY, wheelY) {
+      const s = (wheelY - roofTipY) / CAR_LOCAL_H;
+      ctx.save();
+      ctx.translate(roofTipX, roofTipY);
+      ctx.scale(s, s);
+      ctx.fillStyle = '#22c55e';
+      ctx.strokeStyle = '#15803d';
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, -14, 0, 28, 14, 3);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#4ade80';
+      roundRect(ctx, -26, 12, 52, 16, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#bae6fd';
+      ctx.fillRect(-10, 3, 9, 9);
+      ctx.fillRect(1, 3, 9, 9);
+      ctx.fillStyle = '#111827';
+      ctx.beginPath();
+      ctx.arc(-14, 28, 5.5, 0, Math.PI * 2);
+      ctx.arc(14, 28, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#9ca3af';
+      ctx.beginPath();
+      ctx.arc(-14, 28, 2.2, 0, Math.PI * 2);
+      ctx.arc(14, 28, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      return s;
+    }
+
+    function drawImageCar(ctx, tipX, tipY, scale) {
+      ctx.save();
+      ctx.translate(tipX, tipY);
+      ctx.scale(scale, -scale);
+      ctx.globalAlpha = 0.55;
+      ctx.fillStyle = '#22c55e';
+      ctx.strokeStyle = '#15803d';
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, -14, 0, 28, 14, 3);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#4ade80';
+      roundRect(ctx, -26, 12, 52, 16, 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#bae6fd';
+      ctx.fillRect(-10, 3, 9, 9);
+      ctx.fillRect(1, 3, 9, 9);
+      ctx.fillStyle = '#111827';
+      ctx.beginPath();
+      ctx.arc(-14, 28, 5.5, 0, Math.PI * 2);
+      ctx.arc(14, 28, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#9ca3af';
+      ctx.beginPath();
+      ctx.arc(-14, 28, 2.2, 0, Math.PI * 2);
+      ctx.arc(14, 28, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    /** Stick figure sized in world units (feet on the road, head at PERSON_H). */
+    function drawPersonWorld(ctx, feet, head) {
+      const pixH = Math.max(40, feet.y - head.y);
+      const s = pixH / 43;
+      ctx.save();
+      ctx.translate(feet.x, feet.y);
+      ctx.scale(s, s);
+      ctx.strokeStyle = '#2563eb';
+      ctx.fillStyle = '#2563eb';
+      ctx.lineWidth = 4.2 / s;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.shadowColor = 'rgba(37, 99, 235, 0.35)';
+      ctx.shadowBlur = 8 / s;
+      ctx.beginPath();
+      ctx.arc(0, -36, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(0, -28);
+      ctx.lineTo(0, -8);
+      ctx.moveTo(-14, -22);
+      ctx.lineTo(0, -16);
+      ctx.lineTo(14, -22);
+      ctx.moveTo(0, -8);
+      ctx.lineTo(-9, 0);
+      ctx.moveTo(0, -8);
+      ctx.lineTo(9, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      const canvas = document.getElementById('mirageCanvas');
+      const host = canvas.parentElement;
+      const dpr = window.devicePixelRatio || 1;
+      const W = Math.max(360, host.clientWidth);
+      const H = Math.min(480, Math.max(420, host.clientHeight));
+      canvas.width = Math.floor(W * dpr);
+      canvas.height = Math.floor(H * dpr);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const pad = { l: 18, r: 18, t: 36, b: 28 };
+      const nArr = buildN();
+      const N = nArr.length;
+      const atmH = atmHeight();
+      const layerH = atmH / N;
+      const box = worldBox();
+
+      const tr = castRay(state.launchDeg, nArr);
+      const personX = personFeetX();
+      const eyeY = CAR.roofY;
+
+      const sky = ctx.createLinearGradient(0, 0, 0, H);
+      sky.addColorStop(0, '#ffffff');
+      sky.addColorStop(0.42, '#fff7ed');
+      sky.addColorStop(0.72, '#ffedd5');
+      sky.addColorStop(1, '#fdba74');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, W, H);
+
+      for (let i = 0; i < N; i++) {
+        const yTop = atmH - i * layerH;
+        const yBot = atmH - (i + 1) * layerH;
+        const a = map(0, yTop, W, H, pad);
+        const b = map(box.w, yBot, W, H, pad);
+        const heat = i / Math.max(1, N - 1);
+        ctx.fillStyle = `rgba(251, 146, 60, ${0.04 + heat * 0.16})`;
+        ctx.fillRect(pad.l, a.y, W - pad.l - pad.r, b.y - a.y);
+        ctx.strokeStyle = `rgba(148, 163, 184, ${0.35 + heat * 0.25})`;
+        ctx.setLineDash([3, 5]);
+        ctx.beginPath();
+        ctx.moveTo(pad.l, b.y);
+        ctx.lineTo(W - pad.r, b.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      const sunX = pad.l + 34;
+      const sunY = pad.t + 40;
+      const sunR = 16;
+      drawSun(ctx, sunX, sunY, sunR);
+
+      ctx.font = '700 15px "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif';
+      ctx.fillStyle = '#2563eb';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      const coldParts = t('cold').split(' / ');
+      coldParts.forEach((part, i) => {
+        ctx.fillText(part, sunX, sunY + sunR + 12 + i * 17);
+      });
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+
+      const roadTop = map(0, 0, W, H, pad);
+      const roadBot = map(0, box.yMin, W, H, pad);
+      ctx.fillStyle = '#4b5563';
+      ctx.fillRect(0, roadTop.y, W, H - roadTop.y + 2);
+      ctx.fillStyle = '#374151';
+      ctx.fillRect(pad.l, roadTop.y, W - pad.l - pad.r, Math.max(8, roadBot.y - roadTop.y));
+      const roadMidY = roadTop.y + Math.max(8, roadBot.y - roadTop.y) * 0.5;
+      ctx.strokeStyle = '#f3f4f6';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([14, 12]);
+      ctx.beginPath();
+      ctx.moveTo(pad.l + 8, roadMidY);
+      ctx.lineTo(W - pad.r - 8, roadMidY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const objectTip = map(CAR.x, CAR.roofY, W, H, pad);
+      const rayStart = map(carRayStartX(), CAR.roofY, W, H, pad);
+      const carScale = (roadTop.y - objectTip.y) / CAR_LOCAL_H;
+      const imageTip = map(CAR.x, -(CAR.roofY + IMAGE_GAP), W, H, pad);
+      const imageWheelY = imageTip.y - 28 * carScale;
+      const puddleCx = objectTip.x;
+      const puddleCy = (roadTop.y + imageWheelY) * 0.5;
+      const puddleRw = Math.max(36, 40 * carScale);
+      drawPuddle(ctx, puddleCx, puddleCy, carScale);
+
+      ctx.font = '700 15px "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif';
+      ctx.textBaseline = 'middle';
+      const waterLabel = t('water');
+      const waterW = ctx.measureText(waterLabel).width;
+      const waterX = Math.max(pad.l + 4, puddleCx - puddleRw - waterW - 8);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(15, 23, 42, 0.45)';
+      ctx.strokeText(waterLabel, waterX, puddleCy);
+      ctx.fillStyle = '#7dd3fc';
+      ctx.fillText(waterLabel, waterX, puddleCy);
+      ctx.textBaseline = 'alphabetic';
+      drawObjectCarOnRoad(ctx, objectTip.x, objectTip.y, roadTop.y);
+
+      ctx.font = '700 15px "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif';
+      ctx.fillStyle = '#dc2626';
+      const hotLabel = t('hot');
+      const hotW = ctx.measureText(hotLabel).width;
+      const carLeft = objectTip.x - 26 * carScale;
+      ctx.fillText(hotLabel, Math.max(pad.l + 6, carLeft - hotW - 10), roadTop.y - 14);
+
+      // Inverted image: wheels kiss the object wheels at the road, no overlap.
+      drawImageCar(ctx, imageTip.x, imageTip.y, carScale);
+      // Right wheel of the inverted image (local +14, 28 after vertical flip)
+      const imageRightWheel = {
+        x: imageTip.x + 14 * carScale,
+        y: imageTip.y - 28 * carScale,
+      };
+
+      const persFeet = map(personX, 0, W, H, pad);
+      const persHead = map(personX, PERSON_H, W, H, pad);
+      drawPersonWorld(ctx, persFeet, persHead);
+
+      ctx.strokeStyle = '#14532d';
+      ctx.lineWidth = 2.8;
+      ctx.lineJoin = 'miter';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(rayStart.x, rayStart.y);
+      tr.pts.forEach((p, idx) => {
+        if (idx === 0) return;
+        const c = map(p.x, p.y, W, H, pad);
+        ctx.lineTo(c.x, c.y);
+      });
+      ctx.stroke();
+
+      (tr.kinkPts || []).forEach((p) => {
+        const c = map(p.x, p.y, W, H, pad);
+        ctx.fillStyle = p.tir ? '#dc2626' : '#16a34a';
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = '#14532d';
+      ctx.beginPath();
+      ctx.arc(rayStart.x, rayStart.y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (tr.tir) {
+        const tirC = map(tr.tir.x, tr.tir.y, W, H, pad);
+
+        ctx.strokeStyle = '#ea580c';
+        ctx.lineWidth = 2.4;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(imageRightWheel.x, imageRightWheel.y);
+        ctx.lineTo(tirC.x, tirC.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.arc(imageRightWheel.x, imageRightWheel.y, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 3.2;
+        ctx.beginPath();
+        ctx.moveTo(tirC.x - 9, tirC.y - 9);
+        ctx.lineTo(tirC.x + 9, tirC.y + 9);
+        ctx.moveTo(tirC.x + 9, tirC.y - 9);
+        ctx.lineTo(tirC.x - 9, tirC.y + 9);
+        ctx.stroke();
+
+        ctx.strokeStyle = 'rgba(51, 65, 85, 0.95)';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.setLineDash([10, 7]);
+        const normalTop = tirC.y - 56;
+        const normalBot = tirC.y + 42;
+        ctx.beginPath();
+        ctx.moveTo(tirC.x, normalTop);
+        ctx.lineTo(tirC.x, normalBot);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#b91c1c';
+        ctx.font = '800 22px "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif';
+        const tirLabel = t('tir');
+        const tw = ctx.measureText(tirLabel).width;
+        ctx.fillText(
+          tirLabel,
+          Math.min(W - pad.r - tw, Math.max(pad.l, tirC.x - tw / 2)),
+          Math.max(pad.t + 18, normalTop - 10)
+        );
+      }
+
+      const rayAtPerson = rayYAtX(tr.pts, personX);
+      const slack = 0.02;
+      const headAboveRay = rayAtPerson < PERSON_H - slack;
+      const headUnderRay = rayAtPerson > PERSON_H + slack;
+      let status = t('statusOk');
+      let boxClass = 'mt-auto rounded-xl border px-3.5 py-3.5 border-emerald-600 bg-emerald-500';
+      let textClass = 'text-lg font-bold leading-snug text-white';
+      if (headAboveRay) {
+        status = t('statusFar');
+        boxClass = 'mt-auto rounded-xl border px-3.5 py-3.5 border-yellow-500 bg-yellow-400';
+        textClass = 'text-lg font-bold leading-snug text-slate-900';
+      } else if (headUnderRay) {
+        status = t('statusNear');
+        boxClass = 'mt-auto rounded-xl border px-3.5 py-3.5 border-red-600 bg-red-500';
+        textClass = 'text-lg font-bold leading-snug text-white';
+      }
+      document.getElementById('hudStatus').textContent = status;
+      document.getElementById('hudStatus').className = textClass;
+      document.getElementById('statusBox').className = boxClass;
+      if (tr.iAtTir != null) {
+        document.getElementById('hudI').textContent =
+          'i = ' + ((tr.iAtTir * 180) / Math.PI).toFixed(1) +
+          '°  ·  r = ' + ((tr.rAtTir * 180) / Math.PI).toFixed(1) + '°';
+      } else {
+        document.getElementById('hudI').textContent = 'i = —  ·  r = —';
+      }
+      document.getElementById('hudC').textContent =
+        'c = ' + (tr.cAtTir != null ? ((tr.cAtTir * 180) / Math.PI).toFixed(2) + '°' : '—');
+      document.getElementById('hudLayers').textContent =
+        'layers = ' + N + '  ·  bends = ' + (tr.downBends || 0);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('distance').addEventListener('input', () => {
+        syncUI();
+        draw();
+      });
+      ['layers'].forEach((id) => {
+        document.getElementById(id).addEventListener('input', () => {
+          syncUI();
+          const trial = castRay(state.launchDeg, buildN());
+          const lastX = trial.pts.length ? trial.pts[trial.pts.length - 1].x : 0;
+          const layerH = atmHeight() / state.layers;
+          if (!trial.tir || trial.tir.y < layerH * 0.85 || lastX < worldBox().w - 1) {
+            refitLaunchFromAtmosphere();
+          }
+          draw();
         });
-        window.addEventListener('mousemove', (e) => {
-            if (!draggingEye) return;
-            const rect = canvas.getBoundingClientRect();
-            const sy = canvas.height / rect.height;
-            const L = layout();
-            eyeY = (e.clientY - rect.top) * sy;
-            clampEyeY(L);
-            draw();
-        });
-        window.addEventListener('mouseup', () => { draggingEye = false; });
+      });
+      document.getElementById('adjustManBtn').addEventListener('click', adjustPersonPosition);
+      document.getElementById('resetBtn').addEventListener('click', reset);
+      document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', () => {
+        syncFullscreenLabel();
+        draw();
+      });
+      document.addEventListener('webkitfullscreenchange', () => {
+        syncFullscreenLabel();
+        draw();
+      });
+      window.addEventListener('resize', draw);
 
-        document.getElementById('lang-toggle').addEventListener('click', () => {
-            currentLang = currentLang === 'zh' ? 'en' : 'zh';
-            updateLanguageUI();
-        });
-        window.addEventListener('message', (ev) => {
-            if (ev.data?.type !== 's3phy:lang') return;
-            currentLang = hubLangToLocal(ev.data.lang);
-            updateLanguageUI();
-        });
-        window.addEventListener('resize', resize);
-
-        function animate() {
-            shimmerT += 1;
-            draw();
-            requestAnimationFrame(animate);
-        }
-
-        updateLanguageUI();
-        resize();
-        animate();
-    </script>
+      const params = new URLSearchParams(location.search);
+      applyLang(params.get('lang') || 'en');
+      if (window.lucide) window.lucide.createIcons();
+    });
+  </script>
 </body>
 </html>

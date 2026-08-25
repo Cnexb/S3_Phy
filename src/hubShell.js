@@ -1,7 +1,7 @@
 import { t, getLang, setLang } from './i18n.js';
 import { initHubNavResize } from './hubNavResize.js';
 
-export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary', 'comics'];
+export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary'];
 
 const NAV_LABELS = {
   notes: 'nav.notes',
@@ -17,16 +17,17 @@ const NAV_LABELS = {
  * Restore a saved hub section, or fall back when the stored value is missing or retired (e.g. "topics").
  * @param {string | null} stored
  * @param {string} [fallback]
+ * @param {string[]} [sections]
  */
-export function resolveHubSection(stored, fallback = 'notes') {
-  return HUB_SECTIONS.includes(stored) ? stored : fallback;
+export function resolveHubSection(stored, fallback = 'notes', sections = HUB_SECTIONS) {
+  return sections.includes(stored) ? stored : fallback;
 }
 
 /**
  * @param {HTMLElement} root
- * @param {{ subtitleKey: string, activeSection: string, onSection: (id: string) => void, onLang: () => void }} opts
+ * @param {{ subtitleKey: string, activeSection: string, sections?: string[], onSection: (id: string) => void, onLang: () => void }} opts
  */
-export function mountHubShell(root, { subtitleKey, activeSection, onSection, onLang }) {
+export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB_SECTIONS, onSection, onLang }) {
   root.innerHTML = `
     <header class="site-header site-header--hub">
       <div class="site-header__brand">
@@ -59,7 +60,7 @@ export function mountHubShell(root, { subtitleKey, activeSection, onSection, onL
 
   function paintNav(sec) {
     currentSection = sec;
-    nav.innerHTML = HUB_SECTIONS.map((id, i) => {
+    nav.innerHTML = sections.map((id, i) => {
       const active = sec === id ? 'active' : '';
       const label = `${i + 1}. ${t(NAV_LABELS[id])}`;
       return `<button type="button" class="${active}" data-sec="${id}">${label}</button>`;

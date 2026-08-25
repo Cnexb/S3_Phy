@@ -200,6 +200,7 @@ export const zhHant = {
   'summary.item.convex': '\u51f8\u900f\u93e1',
   'summary.item.concave': '\u51f9\u900f\u93e1',
   'summary.item.em': '\u96fb\u78c1\u6ce2',
+  'summary.item.initialD': '\u982d\u6587\u5b57 D\uff1a\u6392\u6c34\u6e9d\u904e\u5f4e \u2014 \u53cd\u5c04\u8207\u6298\u5c04',
   // Heat translations
   'topic.thermometer': '\u6eab\u5ea6\u8a08',
   'topic.heatInternalEnergy': '\u71b1\u8207\u5167\u80fd',

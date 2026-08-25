@@ -200,6 +200,7 @@ export const en = {
   'summary.item.convex': 'Convex lens',
   'summary.item.concave': 'Concave lens',
   'summary.item.em': 'Electromagnetic waves',
+  'summary.item.initialD': 'Initial D: Gutter Run — Reflection & Refraction',
   // Heat translations
   'topic.thermometer': 'Thermometer',
   'topic.heatInternalEnergy': 'Heat and internal energy',

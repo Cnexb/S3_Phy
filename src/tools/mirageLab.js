@@ -6,6 +6,6 @@ export function createMirageLab(t) {
     slug: 'mirage',
     titleKey: 'tools.mirage.title',
     className: 'tool-mirage-lab',
-    extraParams: () => '&v=20260723_mirage_v3',
+    extraParams: () => '&v=20260825_mirage_v4',
   });
 }
