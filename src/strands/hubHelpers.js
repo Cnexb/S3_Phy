@@ -173,20 +173,38 @@ export async function hydrateComicCards(root, rows, { version = '' } = {}) {
       const card = root.querySelector(`[data-comic-card="${r.key}"]`);
       if (!card) return;
       const body = card.querySelector('[data-comic-body]');
+      const title = t(`summary.item.${r.key}`);
       const file = r.fileEn && r.fileZh ? (lk === 'zhHant' ? r.fileZh : r.fileEn) : r.file;
+      const pages = Array.isArray(r.pages) ? r.pages.filter(Boolean) : [];
       const isPdf = r.type === 'pdf' || (file && String(file).toLowerCase().endsWith('.pdf'));
+
+      if (pages.length) {
+        const images = pages
+          .map((pageFile, idx) => {
+            const src = `${import.meta.env.BASE_URL}comics/${pageFile}${versionSuffix}`;
+            const safeTitle = title.replace(/"/g, '&quot;');
+            return `<img class="comic-page" src="${src}" alt="${safeTitle} (${idx + 1}/${pages.length})" loading="${idx === 0 ? 'eager' : 'lazy'}" />`;
+          })
+          .join('');
+        const pdfUrl = isPdf ? `${import.meta.env.BASE_URL}comics/${file}${versionSuffix}` : '';
+        const pdfLink = pdfUrl
+          ? `<p class="note-preview-link"><a href="${pdfUrl}" target="_blank" rel="noopener">${t('comics.openPdf')}</a></p>`
+          : '';
+        body.innerHTML = `<div class="comic-pages">${images}</div>${pdfLink}`;
+        return;
+      }
+
       const ok = await assetExists('comics', file);
-      const baseUrl = `${import.meta.env.BASE_URL}comics/${file}`;
-      const url = `${baseUrl}${versionSuffix}`;
+      const url = `${import.meta.env.BASE_URL}comics/${file}${versionSuffix}`;
       if (!ok) {
         body.innerHTML = `<p class="lead">${t('comics.missing')}</p>`;
         return;
       }
       if (isPdf) {
-        body.innerHTML = renderPdfPreviewBlock(t(`summary.item.${r.key}`), url, t('comics.openPdf'));
+        body.innerHTML = renderPdfPreviewBlock(title, url, t('comics.openPdf'));
       } else {
         body.innerHTML = `
-          <img class="summary-thumb" src="${url}" alt="${t(`summary.item.${r.key}`)}" loading="lazy" />
+          <img class="summary-thumb" src="${url}" alt="${title}" loading="lazy" />
           <p style="margin-top:8px"><a href="${url}" target="_blank" rel="noopener">${t('comics.viewImage')}</a></p>`;
       }
     }),

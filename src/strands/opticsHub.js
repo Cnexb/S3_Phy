@@ -8,7 +8,7 @@ import {
   renderComicsShell,
   saveToolId,
 } from './hubHelpers.js';
-import { mountHubShell, resolveHubSection } from '../hubShell.js';
+import { mountHubShell, resolveHubSection, OPTICS_HUB_SECTIONS } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
@@ -17,11 +17,19 @@ const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refract
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
-const COMICS_ASSET_VERSION = '20260825-initial-d-v1';
-const OPTICS_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'comics', 'summary'];
+const COMICS_ASSET_VERSION = '20260825-initial-d-v2';
 
 const OPTICS_COMIC_ROWS = [
-  { key: 'initialD', type: 'pdf', file: 'initial-d-gutter-run.pdf' },
+  {
+    key: 'initialD',
+    type: 'pages',
+    pages: [
+      'initial-d-gutter-run-1.webp',
+      'initial-d-gutter-run-2.webp',
+      'initial-d-gutter-run-3.webp',
+    ],
+    file: 'initial-d-gutter-run.pdf',
+  },
 ];
 
 const OPTICS_NOTE_ROWS = [
@@ -83,7 +91,7 @@ function worksheetLabel(id) {
 }
 
 export function mountOpticsHub(root) {
-  let section = resolveHubSection(sessionStorage.getItem('s3phy.optics.section'), 'notes', OPTICS_SECTIONS);
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.optics.section'), 'notes', OPTICS_HUB_SECTIONS);
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'rotatingMirror');
   let worksheetId = 'lightLens';
   let lensDefaultKind = 'convex';
@@ -192,7 +200,7 @@ export function mountOpticsHub(root) {
         buildDeck: (key) => buildOpticsDeck(key, getLang()),
       });
     } else if (section === 'comics') {
-      el.main.innerHTML = renderComicsShell(t, OPTICS_COMIC_ROWS, 'cols-2');
+      el.main.innerHTML = renderComicsShell(t, OPTICS_COMIC_ROWS, 'cols-1');
     } else if (section === 'summary') el.main.innerHTML = renderSummary();
 
     if (section === 'notes') void hydrateNotes();
@@ -226,7 +234,7 @@ export function mountOpticsHub(root) {
     shell = mountHubShell(root, {
       subtitleKey: 'strand.optics.subtitle',
       activeSection: section,
-      sections: OPTICS_SECTIONS,
+      sections: OPTICS_HUB_SECTIONS,
       onSection: (id) => {
         if (section === 'tools' && id !== 'tools') {
           cleanupActiveLab();

@@ -89,7 +89,7 @@ function toolLabel(id) {
 }
 
 export function mountHeatHub(root) {
-  let section = resolveHubSection(sessionStorage.getItem('s3phy.heat.section'), 'tools');
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.heat.section'), 'notes');
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'liquid');
 
   let shell = null;

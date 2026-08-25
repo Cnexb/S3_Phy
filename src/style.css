@@ -533,6 +533,10 @@ button.brand-logo-wrap:hover .brand-logo-img {
   gap: 12px;
 }
 
+.grid.cols-1 {
+  grid-template-columns: 1fr;
+}
+
 .grid.cols-2 {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
@@ -1371,9 +1375,25 @@ iframe.note-preview {
 }
 
 .card [data-note-body],
-.card [data-summary-body] {
+.card [data-summary-body],
+.card [data-comic-body] {
   min-width: 0;
   max-width: 100%;
+}
+
+.comic-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comic-page {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: #111;
+  border: 1px solid var(--border);
 }
 
 .note-preview-link {

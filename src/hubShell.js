@@ -2,6 +2,7 @@ import { t, getLang, setLang } from './i18n.js';
 import { initHubNavResize } from './hubNavResize.js';
 
 export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary'];
+export const OPTICS_HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'comics', 'summary'];
 
 const NAV_LABELS = {
   notes: 'nav.notes',

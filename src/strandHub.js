@@ -57,6 +57,11 @@ export function mountStrandHub(root) {
     root.querySelectorAll('[data-strand]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const id = btn.getAttribute('data-strand');
+        try {
+          sessionStorage.setItem(`s3phy.${id}.section`, 'notes');
+        } catch {
+          /* ignore */
+        }
         window.dispatchEvent(new CustomEvent('s3phy:strand', { detail: id }));
       });
     });
