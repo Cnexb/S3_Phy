@@ -1,6 +1,6 @@
 import { t } from '../i18n.js';
 import { hydrateNoteCards } from './hubHelpers.js';
-import { mountHubShell } from '../hubShell.js';
+import { mountHubShell, resolveHubSection } from '../hubShell.js';
 
 const GAS_TOPICS = [
   {
@@ -18,16 +18,14 @@ const GAS_TOPICS = [
 ];
 
 export function mountGasHub(root) {
-  let section = sessionStorage.getItem('s3phy.gas.section') || 'topics';
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.gas.section'));
   let shell = null;
   let el = { main: null };
 
   function renderMain() {
     if (!el.main) return;
 
-    if (section === 'topics') {
-      el.main.innerHTML = renderTopics();
-    } else if (section === 'notes') {
+    if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
     } else {
@@ -65,24 +63,6 @@ export function mountGasHub(root) {
     renderMain();
   }
 
-  function renderTopics() {
-    return `
-      <section class="panel panel--topic-hub">
-        <h2>${t('topics.title')}</h2>
-        <p class="lead">${t('topics.intro')}</p>
-        <div class="grid cols-2 topic-hub-grid">
-          ${GAS_TOPICS.map(
-            (topic) => `
-            <div class="card">
-              <h3>${t(topic.titleKey)}</h3>
-              <button class="btn primary" type="button" data-go-section="notes">${t('topic.viewNotes')}</button>
-            </div>`,
-          ).join('')}
-        </div>
-      </section>
-    `;
-  }
-
   function renderNotesShell() {
     return `
       <section class="panel">
@@ -110,24 +90,12 @@ export function mountGasHub(root) {
     await hydrateNoteCards(root, rows);
   }
 
-  function onMainClick(ev) {
-    const notesBtn = ev.target.closest('[data-go-section]');
-    if (notesBtn?.getAttribute('data-go-section') === 'notes') {
-      section = 'notes';
-      sessionStorage.setItem('s3phy.gas.section', 'notes');
-      shell.updateSection(section);
-      renderMain();
-    }
-  }
-
   window.addEventListener('s3phy:lang', onLangChange);
-  root.addEventListener('click', onMainClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
-    root.removeEventListener('click', onMainClick);
     shell?.destroy();
   };
 }

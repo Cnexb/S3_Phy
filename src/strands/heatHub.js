@@ -1,6 +1,6 @@
 import { t, getLang } from '../i18n.js';
 import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
-import { mountHubShell } from '../hubShell.js';
+import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildHeatDeck } from '../flashcards/flashcardDeck.js';
@@ -89,7 +89,7 @@ function toolLabel(id) {
 }
 
 export function mountHeatHub(root) {
-  let section = sessionStorage.getItem('s3phy.heat.section') || 'tools';
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.heat.section'), 'tools');
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'liquid');
 
   let shell = null;
@@ -153,8 +153,7 @@ export function mountHeatHub(root) {
     destroyWorksheet?.();
     destroyWorksheet = null;
 
-    if (section === 'topics') el.main.innerHTML = renderTopics();
-    else if (section === 'notes') el.main.innerHTML = renderNotesShell();
+    if (section === 'notes') el.main.innerHTML = renderNotesShell();
     else if (section === 'tools') {
       el.main.innerHTML = renderToolsShell({
         toolOrder: TOOL_ORDER,
@@ -225,51 +224,6 @@ export function mountHeatHub(root) {
     renderMain();
   }
 
-  function renderTopics() {
-    return `
-      <section class="panel panel--topic-hub">
-        <h2>${t('topics.title')}</h2>
-        <p class="lead">${t('topics.intro')}</p>
-        <div class="grid cols-2 topic-hub-grid">
-          ${HEAT_TOPICS.map((topic) => {
-            const btn = topic.tool
-              ? `<button class="btn primary" type="button" data-go-tool="${topic.tool}">${t('topic.openTool')}</button>`
-              : `<button class="btn primary" type="button" data-go-section="notes">${t('topic.viewNotes')}</button>`;
-            return `
-            <div class="card">
-              <h3>${t(topic.titleKey)}</h3>
-              ${btn}
-            </div>`;
-          }).join('')}
-        </div>
-      </section>`;
-  }
-
-  function onMainClick(ev) {
-    const toolBtn = ev.target.closest('[data-go-tool]');
-    if (toolBtn) {
-      const targetTool = toolBtn.getAttribute('data-go-tool');
-      if (TOOL_ORDER.includes(targetTool)) {
-        toolId = targetTool;
-      } else {
-        toolId = 'liquid';
-      }
-      saveToolId(TOOL_STORAGE_KEY, toolId);
-      section = 'tools';
-      sessionStorage.setItem('s3phy.heat.section', 'tools');
-      shell.updateSection(section);
-      renderMain();
-      return;
-    }
-    const notesBtn = ev.target.closest('[data-go-section]');
-    if (notesBtn?.getAttribute('data-go-section') === 'notes') {
-      section = 'notes';
-      sessionStorage.setItem('s3phy.heat.section', 'notes');
-      shell.updateSection(section);
-      renderMain();
-    }
-  }
-
   function renderNotesShell() {
     return `
       <section class="panel">
@@ -320,16 +274,13 @@ export function mountHeatHub(root) {
   }
 
   const onLang = onLangChange;
-  const onClick = (ev) => onMainClick(ev);
 
   window.addEventListener('s3phy:lang', onLang);
-  root.addEventListener('click', onClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLang);
-    root.removeEventListener('click', onClick);
     destroyFlashcards?.();
     cleanupActiveLab();
     shell?.destroy();

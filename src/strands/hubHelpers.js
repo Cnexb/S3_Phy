@@ -140,3 +140,55 @@ export async function hydrateSummaryCards(root, rows, { version = '' } = {}) {
     }),
   );
 }
+
+/**
+ * @param {Function} t
+ * @param {{ key: string }[]} rows
+ * @param {string} [gridClass]
+ */
+export function renderComicsShell(t, rows, gridClass = 'cols-2') {
+  return `
+      <section class="panel">
+        <h2>${t('comics.title')}</h2>
+        <p class="lead">${t('comics.intro')}</p>
+        <div class="grid ${gridClass}" data-comics-grid>
+          ${rows
+            .map(
+              (it) => `
+            <div class="card" data-comic-card="${it.key}">
+              <h3>${t(`summary.item.${it.key}`)}</h3>
+              <div data-comic-body></div>
+            </div>`,
+            )
+            .join('')}
+        </div>
+      </section>`;
+}
+
+export async function hydrateComicCards(root, rows, { version = '' } = {}) {
+  const lk = langKey();
+  const versionSuffix = version ? `?v=${version}` : '';
+  await Promise.all(
+    rows.map(async (r) => {
+      const card = root.querySelector(`[data-comic-card="${r.key}"]`);
+      if (!card) return;
+      const body = card.querySelector('[data-comic-body]');
+      const file = r.fileEn && r.fileZh ? (lk === 'zhHant' ? r.fileZh : r.fileEn) : r.file;
+      const isPdf = r.type === 'pdf' || (file && String(file).toLowerCase().endsWith('.pdf'));
+      const ok = await assetExists('comics', file);
+      const baseUrl = `${import.meta.env.BASE_URL}comics/${file}`;
+      const url = `${baseUrl}${versionSuffix}`;
+      if (!ok) {
+        body.innerHTML = `<p class="lead">${t('comics.missing')}</p>`;
+        return;
+      }
+      if (isPdf) {
+        body.innerHTML = renderPdfPreviewBlock(t(`summary.item.${r.key}`), url, t('comics.openPdf'));
+      } else {
+        body.innerHTML = `
+          <img class="summary-thumb" src="${url}" alt="${t(`summary.item.${r.key}`)}" loading="lazy" />
+          <p style="margin-top:8px"><a href="${url}" target="_blank" rel="noopener">${t('comics.viewImage')}</a></p>`;
+      }
+    }),
+  );
+}

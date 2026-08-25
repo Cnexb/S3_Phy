@@ -1,6 +1,6 @@
 import { t } from '../i18n.js';
 import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
-import { mountHubShell } from '../hubShell.js';
+import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 
 const TOOL_STORAGE_KEY = 's3phy.mechanics.tool';
@@ -139,7 +139,7 @@ function toolLabel(id) {
 }
 
 export function mountMechanicsHub(root) {
-  let section = sessionStorage.getItem('s3phy.mechanics.section') || 'topics';
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.mechanics.section'));
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'projectileMotion');
 
   let shell = null;
@@ -165,9 +165,7 @@ export function mountMechanicsHub(root) {
   function renderMain() {
     if (!el.main) return;
 
-    if (section === 'topics') {
-      el.main.innerHTML = renderTopics();
-    } else if (section === 'notes') {
+    if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
     } else if (section === 'tools') {
       el.main.innerHTML = renderToolsShell({
@@ -243,49 +241,6 @@ export function mountMechanicsHub(root) {
     renderMain();
   }
 
-  function renderTopics() {
-    return `
-      <section class="panel panel--topic-hub">
-        <h2>${t('topics.title')}</h2>
-        <p class="lead">${t('topics.intro')}</p>
-        <div class="grid cols-2 topic-hub-grid">
-          ${MECHANICS_TOPICS.map((topic) => {
-            const btn = topic.tool
-              ? `<button class="btn primary" type="button" data-go-tool="${topic.tool}">${t('topic.openTool')}</button>`
-              : `<button class="btn primary" type="button" data-go-section="notes">${t('topic.viewNotes')}</button>`;
-            return `
-            <div class="card">
-              <h3>${t(topic.titleKey)}</h3>
-              ${btn}
-            </div>`;
-          }).join('')}
-        </div>
-      </section>`;
-  }
-
-  function onMainClick(ev) {
-    const toolBtn = ev.target.closest('[data-go-tool]');
-    if (toolBtn) {
-      const targetTool = toolBtn.getAttribute('data-go-tool');
-      if (TOOL_ORDER.includes(targetTool)) {
-        toolId = targetTool;
-        saveToolId(TOOL_STORAGE_KEY, toolId);
-      }
-      section = 'tools';
-      sessionStorage.setItem('s3phy.mechanics.section', 'tools');
-      shell.updateSection(section);
-      renderMain();
-      return;
-    }
-    const notesBtn = ev.target.closest('[data-go-section]');
-    if (notesBtn?.getAttribute('data-go-section') === 'notes') {
-      section = 'notes';
-      sessionStorage.setItem('s3phy.mechanics.section', 'notes');
-      shell.updateSection(section);
-      renderMain();
-    }
-  }
-
   function renderNotesShell() {
     return `
       <section class="panel">
@@ -334,13 +289,11 @@ export function mountMechanicsHub(root) {
   }
 
   window.addEventListener('s3phy:lang', onLangChange);
-  root.addEventListener('click', onMainClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
-    root.removeEventListener('click', onMainClick);
     cleanupActiveLab();
     shell?.destroy();
   };

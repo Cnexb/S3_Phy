@@ -1,6 +1,6 @@
 import { t, getLang } from '../i18n.js';
 import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
-import { mountHubShell } from '../hubShell.js';
+import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
@@ -46,7 +46,7 @@ function worksheetLabel(id) {
 }
 
 export function mountRefractionHub(root) {
-  let section = sessionStorage.getItem('s3phy.refraction.section') || 'topics';
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.refraction.section'));
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'refraction');
   let worksheetId = 'lightLens';
 
@@ -112,8 +112,7 @@ export function mountRefractionHub(root) {
     destroyWorksheet?.();
     destroyWorksheet = null;
 
-    if (section === 'topics') el.main.innerHTML = renderTopics();
-    else if (section === 'notes') el.main.innerHTML = renderNotesShell();
+    if (section === 'notes') el.main.innerHTML = renderNotesShell();
     else if (section === 'tools') {
       el.main.innerHTML = renderToolsShell({
         toolOrder: TOOL_ORDER,
@@ -180,29 +179,6 @@ export function mountRefractionHub(root) {
     renderMain();
   }
 
-  function renderTopics() {
-    const cards = [
-      ['refraction', 'topic.refractionSnell'],
-      ['refractionTir', 'topic.refractionTir'],
-    ];
-    return `
-      <section class="panel panel--topic-hub">
-        <h2>${t('topics.title')}</h2>
-        <p class="lead">${t('topics.intro')}</p>
-        <div class="grid cols-3 topic-hub-grid">
-          ${cards
-            .map(([id, key]) => {
-              return `
-            <div class="card">
-              <h3>${t(key)}</h3>
-              <button class="btn primary" type="button" data-go-tool="${id}">${t('topic.openTool')}</button>
-            </div>`;
-            })
-            .join('')}
-        </div>
-      </section>`;
-  }
-
   function onMainClick(ev) {
     const ws = ev.target.closest('[data-worksheet]');
     if (ws && section === 'worksheets') {
@@ -211,17 +187,7 @@ export function mountRefractionHub(root) {
         worksheetId = id;
         renderMain();
       }
-      return;
     }
-
-    const b = ev.target.closest('[data-go-tool]');
-    if (!b) return;
-    section = 'tools';
-    sessionStorage.setItem('s3phy.refraction.section', 'tools');
-    toolId = b.getAttribute('data-go-tool');
-    saveToolId(TOOL_STORAGE_KEY, toolId);
-    shell.updateSection(section);
-    renderMain();
   }
 
   function renderNotesShell() {

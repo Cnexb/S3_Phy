@@ -1,11 +1,11 @@
 import { t, getLang, setLang } from './i18n.js';
 
 const STRANDS = [
-  { id: 'optics', titleKey: 'strand.optics.title', descKey: 'strand.optics.desc' },
-  { id: 'heat', titleKey: 'strand.heat.title', descKey: 'strand.heat.desc' },
-  { id: 'mechanics', titleKey: 'strand.mechanics.title', descKey: 'strand.mechanics.desc' },
-  { id: 'gas', titleKey: 'strand.gas.title', descKey: 'strand.gas.desc' },
-  { id: 'waves', titleKey: 'strand.waves.title', descKey: 'strand.waves.desc' },
+  { id: 'optics', titleKey: 'strand.optics.title', descKey: 'strand.optics.desc', ready: true },
+  { id: 'heat', titleKey: 'strand.heat.title', descKey: 'strand.heat.desc', ready: true },
+  { id: 'mechanics', titleKey: 'strand.mechanics.title', descKey: 'strand.mechanics.desc', ready: false },
+  { id: 'gas', titleKey: 'strand.gas.title', descKey: 'strand.gas.desc', ready: false },
+  { id: 'waves', titleKey: 'strand.waves.title', descKey: 'strand.waves.desc', ready: false },
 ];
 
 export function mountStrandHub(root) {
@@ -29,14 +29,18 @@ export function mountStrandHub(root) {
         <h2>${t('strands.title')}</h2>
         <p class="lead">${t('strands.intro')}</p>
         <div class="grid cols-2 topic-hub-grid strand-hub-grid">
-          ${STRANDS.map(
-            ({ id, titleKey, descKey }) => `
-            <div class="card">
-              <h3>${t(titleKey)}</h3>
+          ${STRANDS.map(({ id, titleKey, descKey, ready }) => {
+            const badge = ready ? '' : ` <span class="strand-soon-badge">${t('strand.comingSoon')}</span>`;
+            const btn = ready
+              ? `<button class="btn primary" type="button" data-strand="${id}">${t('strand.open')}</button>`
+              : `<button class="btn" type="button" disabled aria-disabled="true">${t('strand.notReady')}</button>`;
+            return `
+            <div class="card${ready ? '' : ' card--coming-soon'}">
+              <h3>${t(titleKey)}${badge}</h3>
               <p>${t(descKey)}</p>
-              <button class="btn primary" type="button" data-strand="${id}">${t('strand.open')}</button>
-            </div>`,
-          ).join('')}
+              ${btn}
+            </div>`;
+          }).join('')}
         </div>
       </section>
     `;

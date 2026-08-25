@@ -1,17 +1,26 @@
 import { t, getLang, setLang } from './i18n.js';
 import { initHubNavResize } from './hubNavResize.js';
 
-export const HUB_SECTIONS = ['topics', 'notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary'];
+export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary', 'comics'];
 
 const NAV_LABELS = {
-  topics: 'nav.topics',
   notes: 'nav.notes',
   tools: 'nav.tools',
   worksheets: 'nav.worksheets',
   quiz: 'nav.quiz',
   flashcards: 'nav.flashcards',
   summary: 'nav.summary',
+  comics: 'nav.comics',
 };
+
+/**
+ * Restore a saved hub section, or fall back when the stored value is missing or retired (e.g. "topics").
+ * @param {string | null} stored
+ * @param {string} [fallback]
+ */
+export function resolveHubSection(stored, fallback = 'notes') {
+  return HUB_SECTIONS.includes(stored) ? stored : fallback;
+}
 
 /**
  * @param {HTMLElement} root

@@ -1,5 +1,5 @@
 import { t } from '../i18n.js';
-import { mountHubShell } from '../hubShell.js';
+import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { cleanupLabInstance, hydrateNoteCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 
@@ -89,7 +89,7 @@ function toolLabel(id) {
 }
 
 export function mountWavesHub(root) {
-  let section = sessionStorage.getItem('s3phy.waves.section') || 'topics';
+  let section = resolveHubSection(sessionStorage.getItem('s3phy.waves.section'));
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'waveMotion');
   let shell = null;
   let el = { main: null };
@@ -114,9 +114,7 @@ export function mountWavesHub(root) {
   function renderMain() {
     if (!el.main) return;
 
-    if (section === 'topics') {
-      el.main.innerHTML = renderTopics();
-    } else if (section === 'notes') {
+    if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
     } else if (section === 'tools') {
@@ -176,27 +174,6 @@ export function mountWavesHub(root) {
     renderMain();
   }
 
-  function renderTopics() {
-    return `
-      <section class="panel panel--topic-hub">
-        <h2>${t('topics.title')}</h2>
-        <p class="lead">${t('topics.intro')}</p>
-        <div class="grid cols-3 topic-hub-grid">
-          ${WAVES_TOPICS.map((topic) => {
-            const btn = topic.tool
-              ? `<button class="btn primary" type="button" data-go-tool="${topic.tool}">${t('topic.openTool')}</button>`
-              : `<button class="btn primary" type="button" disabled>${t('topic.openTool')}</button>`;
-            return `
-            <div class="card">
-              <h3>${t(topic.titleKey)}</h3>
-              ${btn}
-            </div>`;
-          }).join('')}
-        </div>
-      </section>
-    `;
-  }
-
   function renderNotesShell() {
     return `
       <section class="panel">
@@ -224,36 +201,11 @@ export function mountWavesHub(root) {
     await hydrateNoteCards(root, rows);
   }
 
-  function onMainClick(ev) {
-    const toolBtn = ev.target.closest('[data-go-tool]');
-    if (toolBtn) {
-      const targetTool = toolBtn.getAttribute('data-go-tool');
-      if (TOOL_ORDER.includes(targetTool)) {
-        toolId = targetTool;
-        saveToolId(TOOL_STORAGE_KEY, toolId);
-      }
-      section = 'tools';
-      sessionStorage.setItem('s3phy.waves.section', 'tools');
-      shell.updateSection(section);
-      renderMain();
-      return;
-    }
-    const notesBtn = ev.target.closest('[data-go-section]');
-    if (notesBtn?.getAttribute('data-go-section') === 'notes') {
-      section = 'notes';
-      sessionStorage.setItem('s3phy.waves.section', 'notes');
-      shell.updateSection(section);
-      renderMain();
-    }
-  }
-
-  root.addEventListener('click', onMainClick);
   window.addEventListener('s3phy:lang', onLangChange);
 
   render();
 
   return () => {
-    root.removeEventListener('click', onMainClick);
     window.removeEventListener('s3phy:lang', onLangChange);
     cleanupActiveLab();
     shell?.destroy();

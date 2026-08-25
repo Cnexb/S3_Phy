@@ -8,6 +8,7 @@ initI18n();
 const unmountHubScale = initHubScale();
 
 const SPLASH_KEY = 's3phy_splash_seen';
+const STRAND_STORAGE_KEY = 's3phy.strand';
 
 const STRAND_LOADERS = {
   optics: () => import('./strands/opticsHub.js').then((m) => m.mountOpticsHub),
@@ -22,10 +23,32 @@ let unmountActive = null;
 let unmountPicker = null;
 let splashTimers = [];
 
+function isKnownStrand(id) {
+  return typeof id === 'string' && Object.prototype.hasOwnProperty.call(STRAND_LOADERS, id);
+}
+
 function parseStrandFromHash() {
   const m = location.hash.match(/^#\/(\w+)/);
   const id = m?.[1];
-  return id && Object.prototype.hasOwnProperty.call(STRAND_LOADERS, id) ? id : null;
+  return isKnownStrand(id) ? id : null;
+}
+
+function saveStrand(id) {
+  try {
+    if (id) sessionStorage.setItem(STRAND_STORAGE_KEY, id);
+    else sessionStorage.removeItem(STRAND_STORAGE_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
+function loadSavedStrand() {
+  try {
+    const id = sessionStorage.getItem(STRAND_STORAGE_KEY);
+    return isKnownStrand(id) ? id : null;
+  } catch {
+    return null;
+  }
 }
 
 function clearHash() {
@@ -43,24 +66,27 @@ async function navigateStrand(id) {
   if (!app) return;
   app.innerHTML = '';
 
-  if (!id) {
+  const strandId = isKnownStrand(id) ? id : null;
+  saveStrand(strandId);
+
+  if (!strandId) {
     if (location.hash) clearHash();
     unmountPicker = mountStrandHub(app);
     return;
   }
 
-  const targetHash = `#/${id}`;
-  if (location.hash !== targetHash) {
+  const targetHash = `#/${strandId}`;
+  if (location.hash !== targetHash && !location.hash.startsWith(`${targetHash}/`)) {
     location.hash = targetHash;
     return;
   }
 
-  const mount = await STRAND_LOADERS[id]();
+  const mount = await STRAND_LOADERS[strandId]();
   unmountActive = mount(app) ?? null;
 }
 
 function routeStrand() {
-  void navigateStrand(parseStrandFromHash());
+  void navigateStrand(parseStrandFromHash() || loadSavedStrand());
 }
 
 function logoSrc() {
