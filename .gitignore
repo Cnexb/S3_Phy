@@ -7,3 +7,10 @@ scripts/__pycache__/
 scripts/_lab-i18n-extract.json
 scripts/_lab-gen-output.json
 labs/plane-mirror-lab/js/bundle.js
+
+# Local promo / screen-recording work — keep off GitHub
+promo-video/
+scripts/build-s3-bio-promo.mjs
+scripts/capture-s3-bio-promo.mjs
+scripts/capture-s3-bio-jsdelivr.mjs
+scripts/record-ai-class-promo.mjs

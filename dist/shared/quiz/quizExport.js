@@ -180,9 +180,10 @@ function buildDocBody(questions, answersMode) {
 
 function buildPrintDocument(titleEn, bodyHtml) {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <title>${escHtml(titleEn)}</title>
 <style>${PRINT_DOC_STYLE}</style>
 </head>
@@ -227,8 +228,8 @@ export function createQuizExport(meta) {
     const titleZh = answersMode ? titleZhAnswers : titleZhQuestions;
     const body = buildDocBody(questions, answersMode);
     const html =
-      '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
-      `<head><meta charset="utf-8"><title>${escHtml(titleEn)}</title>${EXPORT_HEAD_STYLE}</head><body>` +
+      '<html translate="no" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+      `<head><meta charset="utf-8"><meta name="google" content="notranslate"><title>${escHtml(titleEn)}</title>${EXPORT_HEAD_STYLE}</head><body>` +
       `<h1>${escHtml(titleEn)}</h1><h2 style="font-size:14pt">${escHtml(titleZh)}</h2>${body}</body></html>`;
     const blob = new Blob(["\ufeff", html], { type: "application/msword" });
     const a = document.createElement("a");

@@ -32,7 +32,7 @@ const HEAT_TOPICS = [
     titleKey: 'topic.heatTransfer',
     fileEn: 'heat-transfer-en.pdf',
     fileZh: 'heat-transfer-zhHant.pdf',
-    tool: 'heatTransfer',
+    tool: 'heatFlow',
   },
 ];
 
@@ -55,7 +55,7 @@ const HEAT_SUMMARY_ROWS = HEAT_TOPICS.map((r) => {
 
 const TOOL_ORDER = [
   'liquid', 'resistance', 'thermistor', 'faultyCalibration',
-  'specificHeat', 'thermalMixing', 'changeOfState', 'heatTransfer'
+  'boilingWater', 'specificHeat', 'thermalMixing', 'changeOfState', 'heatFlow', 'heatTransfer'
 ];
 const TOOL_STORAGE_KEY = 's3phy.heat.tool';
 
@@ -64,9 +64,11 @@ const TOOL_LOADERS = {
   liquid: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
   resistance: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
   thermistor: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
+  boilingWater: () => import('../tools/boilingWaterLab.js').then((m) => m.createBoilingWaterLab),
   specificHeat: () => import('../tools/specificHeatLab.js').then((m) => m.createSpecificHeatLab),
   thermalMixing: () => import('../tools/thermalMixingLab.js').then((m) => m.createThermalMixingLab),
   changeOfState: () => import('../tools/changeOfStateLab.js').then((m) => m.createChangeOfStateLab),
+  heatFlow: () => import('../tools/heatFlowLab.js').then((m) => m.createHeatFlowLab),
   heatTransfer: () => import('../tools/heatTransferLab.js').then((m) => m.createHeatTransferLab),
 };
 
@@ -76,9 +78,11 @@ function toolLabel(id) {
     liquid: 'tools.thermometerLab.liquid.title',
     resistance: 'tools.thermometerLab.resistance.title',
     thermistor: 'tools.thermometerLab.thermistor.title',
+    boilingWater: 'tools.boilingWater.title',
     specificHeat: 'tools.specificHeat.title',
     thermalMixing: 'tools.thermalMixing.title',
     changeOfState: 'tools.changeOfState.title',
+    heatFlow: 'tools.heatFlow.title',
     heatTransfer: 'tools.heatTransfer.title',
   };
   return t(map[id] || id);

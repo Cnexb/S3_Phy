@@ -1,0 +1,20 @@
+---
+description: Always sync heat-transfer/lab HTML to Desktop and request Smart Mode approval
+alwaysApply: true
+---
+
+# Lab desktop sync — always approve
+
+When updating `labs/heat-transfer/index.html` (or related single-file labs the user opens from Desktop):
+
+1. Always sync to all of:
+   - `public/heat-transfer/index.html` (or matching lab path)
+   - `dist/heat-transfer/index.html` (or matching lab path)
+   - `exports/heat-transfer-lab.html` (or matching export)
+   - `C:\Users\wongy\OneDrive\Desktop\heat-transfer-lab.html` (or the Desktop single-file the user uses)
+
+2. For any Shell `Copy-Item` that writes to Desktop or `exports/`, always call with:
+   - `request_smart_mode_approval: true`
+   - `smart_mode_block_reason` set to the exact Auto-review block reason when retrying after a block
+
+3. The user has given standing approval for these Desktop/export syncs — still request the native approval card when Auto-review requires it; do not skip the Desktop copy.

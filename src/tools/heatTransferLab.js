@@ -6,6 +6,6 @@ export function createHeatTransferLab(t) {
     slug: 'heat-transfer',
     titleKey: 'tools.heatTransfer.title',
     className: 'tool-heat-transfer',
-    extraParams: () => '&v=11',
+    extraParams: () => '&v=33',
   });
 }

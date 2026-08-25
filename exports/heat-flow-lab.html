@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="zh-HK" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>熱能流動與熱平衡 — Heat Flow Lab</title>
+  <style>
+/* S3_Phy embed mode — shared chrome for iframe labs inside Hub */
+
+html.s3phy-embed {
+  font-family: var(--s3-font);
+  font-size: var(--s3-font-size-base);
+  line-height: var(--s3-line-height);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+html.s3phy-embed:has(.lab-section) {
+  height: 100%;
+}
+
+html.s3phy-embed body {
+  font-family: var(--s3-font);
+  font-size: max(var(--s3-font-min), 1rem);
+  line-height: var(--s3-line-height);
+  margin: 0;
+}
+
+/* Interactive lab iframe — flex fill (not quiz/worksheet) */
+html.s3phy-embed body:has(.lab-section),
+html.s3phy-embed body.embed-mode:has(.sim-main-col),
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(.lab-section) > main,
+html.s3phy-embed body.embed-mode main.flex-grow,
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Quiz / worksheet iframe — preserve two-column grid */
+html.s3phy-embed body:has(#quiz-layout) {
+  height: auto;
+  min-height: 100%;
+  display: block;
+  overflow: auto;
+}
+
+html.s3phy-embed #quiz-layout {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: none !important;
+  width: 100%;
+  margin: 0;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1101px) {
+  html.s3phy-embed #quiz-layout {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  html.s3phy-embed #quiz-layout > aside#settings-panel {
+    position: static;
+    max-height: min(42dvh, 420px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+html.s3phy-embed #quiz-layout > aside#settings-panel {
+  position: sticky;
+  top: 0.5rem;
+  align-self: start;
+  max-height: calc(100dvh - 1rem);
+  overflow-y: auto;
+}
+
+html.s3phy-embed #quiz-layout > .min-w-0 {
+  min-width: 0;
+  width: 100%;
+}
+
+html.s3phy-embed .lab-section {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+html.s3phy-embed .lab-viz,
+html.s3phy-embed .lab-steps {
+  height: 100% !important;
+  min-height: 0;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-viz {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .lab-viz-canvas {
+  flex: 1 1 auto;
+  min-height: 200px;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-steps {
+  overflow-y: auto;
+}
+
+html.s3phy-embed .lab-viz.lab-viz-dual {
+  display: grid !important;
+  height: 100% !important;
+}
+
+html.s3phy-embed .lab-viz-dual {
+  max-height: none !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  align-content: stretch;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel:first-child .lab-viz-canvas {
+  flex: 1 1 auto !important;
+  min-height: 120px !important;
+  max-height: none !important;
+  aspect-ratio: unset;
+  height: auto;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart .lab-viz-chart-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  margin-top: 0;
+  aspect-ratio: unset;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed header,
+html.s3phy-embed footer {
+  flex-shrink: 0;
+}
+
+html.s3phy-embed .max-w-7xl {
+  max-width: none;
+  width: 100%;
+}
+
+html.s3phy-embed .sim-main-col,
+html.s3phy-embed .glass-panel.flex-grow {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .canvas-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none;
+}
+
+html.s3phy-embed .main-container,
+html.s3phy-embed .lab-wrap,
+html.s3phy-embed .dashboard,
+html.s3phy-embed .app-root {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+/* Floating controls panel (heat labs + shared script) */
+.lab-section {
+  position: relative;
+  min-height: 0;
+}
+
+@media (min-width: 768px) {
+  /* Keep grid items as 2 parallel columns at >= 768px */
+  html.s3phy-embed .lab-section,
+  html.s3phy-embed .main-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .main-grid .sim-main-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-steps,
+  html.s3phy-embed .main-grid .tab-sidebar-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  /* Specially for heat transfer conduction / convection / radiation simulation */
+  html.s3phy-embed .main-grid > div:first-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .main-grid > div:last-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    position: absolute !important;
+    z-index: 50 !important;
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .lab-section.controls-floating .lab-steps {
+    grid-column: 1 / -1;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: none;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.lab-controls.lab-controls-float {
+  position: absolute;
+  z-index: 40;
+  width: var(--s3-float-panel-w);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.lab-controls-body {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls-desc {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls.controls-collapsed .lab-controls-body,
+.lab-controls.controls-collapsed .lab-controls-desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-body {
+  max-height: min(70vh, 520px);
+  opacity: 1;
+  overflow-y: auto;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-desc {
+  opacity: 1;
+  max-height: 4rem;
+}
+
+.lab-controls.controls-collapsed .lab-controls-title-text {
+  display: none;
+}
+
+.lab-controls-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lab-controls-actions {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.lab-controls-actions button {
+  padding: 0.625rem 0.75rem;
+  justify-content: center;
+}
+
+.lab-controls-actions button:not(.flex-1) {
+  flex-shrink: 0;
+}
+
+.lab-controls-actions button.flex-1 {
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.lab-controls-drag-handle {
+  display: none;
+  cursor: grab;
+  touch-action: none;
+  color: #94a3b8;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+
+@media (min-width: 900px) {
+  .lab-controls.lab-controls-float .lab-controls-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lab-controls-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Hub iframe — standalone labs (rotating-mirror, rgb, thermometer) */
+html.s3phy-embed:has(#app > .rml),
+html.s3phy-embed:has(#app > .rgb-mixer),
+html.s3phy-embed:has(#app > .tl-wrap) {
+  height: 100%;
+}
+
+html.s3phy-embed body:has(#app > .rml),
+html.s3phy-embed body:has(#app > .rgb-mixer),
+html.s3phy-embed body:has(#app > .tl-wrap) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(#app > .rml) #app,
+html.s3phy-embed body:has(#app > .rgb-mixer) #app,
+html.s3phy-embed body:has(#app > .tl-wrap) #app {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+html.s3phy-embed .rml,
+html.s3phy-embed .rgb-mixer,
+html.s3phy-embed .tl-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+html.s3phy-embed .rml .rml-head,
+html.s3phy-embed .tl-wrap .tl-head {
+  display: none;
+}
+
+html.s3phy-embed .rml {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rml .rml-dash {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+html.s3phy-embed .rml .rml-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rml .rml-canvas {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  flex: 1;
+  object-fit: contain;
+}
+
+html.s3phy-embed .rml .rml-controls {
+  flex: 0 0 auto;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+html.s3phy-embed .tl-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .tl-wrap .tl-dash,
+html.s3phy-embed .tl-wrap .tl-dash--faulty {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-dash--faulty {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  grid-template-rows: 1fr;
+  align-items: stretch;
+  gap: 14px;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-live {
+  grid-column: 2;
+  grid-row: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-controls {
+  grid-column: 1 / -1;
+}
+
+html.s3phy-embed .rgb-mixer {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rgb-mixer-body {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto;
+  max-height: none;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rgb-mixer-stage {
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-controls {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Lens simulator embed compact chrome */
+html.s3phy-embed .controls-panel,
+html.s3phy-embed .control-panel {
+  width: var(--s3-float-panel-w) !important;
+  max-width: var(--s3-float-panel-w) !important;
+}
+
+/* Minimum readable text in embed controls */
+html.s3phy-embed label,
+html.s3phy-embed .control label,
+html.s3phy-embed button,
+html.s3phy-embed input,
+html.s3phy-embed select {
+  font-size: max(var(--s3-font-min), 0.875rem);
+}
+
+/* Height adaptive scaling for compact/low-height viewports (height < 720px) */
+@media (max-height: 720px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 13.5px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 11px), 0.85rem) !important;
+  }
+  
+  /* Compact paddings and gaps */
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.5rem 0.625rem !important;
+  }
+  html.s3phy-embed .px-4,
+  html.s3phy-embed .px-5 {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+  html.s3phy-embed .py-4,
+  html.s3phy-embed .py-5,
+  html.s3phy-embed .py-6 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Compact header & tabs */
+  html.s3phy-embed header {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  html.s3phy-embed header h1 {
+    font-size: 1.1rem !important;
+  }
+  
+  /* KaTeX mathematical formulas scaling and tight margins */
+  html.s3phy-embed .lab-steps .katex {
+    font-size: 0.95em !important;
+  }
+  html.s3phy-embed .lab-steps .katex-display {
+    margin: 0.25em 0 !important;
+  }
+  
+  /* Shrink canvas and containers to prevent overflow */
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 120px !important;
+    flex: 1 1 auto !important;
+  }
+  
+  /* Compact parameters/controls — keep panel wide enough for action buttons */
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+    padding: 0.5rem !important;
+  }
+  html.s3phy-embed .lab-controls-body {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .lab-controls-body select,
+  html.s3phy-embed .lab-controls-body input,
+  html.s3phy-embed .lab-controls-body button {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-height: 600px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 12px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 10px), 0.75rem) !important;
+  }
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 100px !important;
+  }
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.375rem 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.25rem !important;
+  }
+}
+
+
+:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #fff; color: #1f2937; }
+body { padding: 8px; }
+#app { min-height: calc(100vh - 16px); }
+
+.hf-wrap {
+  --hf-border: #e4e4e7;
+  --hf-panel: #f8fafc;
+  --hf-text: #1f2937;
+  --hf-muted: #64748b;
+  --hf-primary: #6366f1;
+  --hf-hot: #ef4444;
+  --hf-cold: #0ea5e9;
+  width: 100%;
+  min-height: calc(100vh - 16px);
+  padding: 16px;
+  font-size: clamp(18px, 1.15vw, 22px);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+}
+
+.hf-head {
+  position: relative;
+  max-width: 1800px;
+  margin: 0 auto 16px;
+  padding-inline: 80px;
+  text-align: center;
+}
+
+.hf-head h1 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  font-weight: 850;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #ef4444, #6366f1 55%, #0ea5e9);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hf-head p { margin: 5px 0 0; color: var(--hf-muted); font-size: 0.88rem; }
+.hf-language {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  padding: 6px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #334155;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.hf-language:hover { border-color: var(--hf-primary); color: var(--hf-primary); background: #eef2ff; }
+.hf-language:focus-visible,
+.hf-wrap button:focus-visible,
+.hf-wrap input:focus-visible,
+.hf-wrap select:focus-visible { outline: 3px solid rgba(99, 102, 241, 0.28); outline-offset: 2px; }
+
+.hf-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(500px, 0.9fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  align-items: stretch;
+  transition: grid-template-columns 0.3s ease;
+}
+
+.hf-wrap.controls-collapsed .hf-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hf-main { display: flex; min-width: 0; }
+.hf-stage,
+.hf-chart-card,
+.hf-sidebar > section,
+.hf-control-card {
+  border: 1px solid var(--hf-border);
+  border-radius: 15px;
+  background: var(--hf-panel);
+}
+
+.hf-stage {
+  position: relative;
+  width: 100%;
+  min-height: 560px;
+  padding: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 44%, rgba(239, 68, 68, 0.08), transparent 28%),
+    radial-gradient(circle at 80% 44%, rgba(14, 165, 233, 0.08), transparent 28%),
+    #f8fafc;
+}
+
+.hf-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 28px;
+  padding: 13px 20px;
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.94);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
+  text-align: left;
+}
+
+.hf-status-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: var(--hf-primary);
+  font-weight: 900;
+}
+
+.hf-status strong { display: block; font-size: 1.12rem; line-height: 1.2; }
+.hf-status small { display: block; margin-top: 3px; color: var(--hf-muted); font-size: 0.9rem; }
+.hf-objects {
+  display: flex;
+  min-height: 360px;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.hf-object-wrap {
+  display: flex;
+  width: var(--mass-width, 272px);
+  flex: 0 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 15px;
+  text-align: center;
+  transition: width 0.3s ease;
+}
+
+.hf-wrap.controls-collapsed .hf-object-wrap {
+  width: var(--mass-width-collapsed, 332px);
+}
+
+.hf-wrap.controls-collapsed .hf-object {
+  height: var(--mass-height-collapsed, 317px);
+}
+
+.hf-wrap.controls-collapsed .hf-objects {
+  min-height: 405px;
+}
+
+.hf-wrap.controls-collapsed .hf-flow {
+  margin-top: 115px;
+}
+
+.hf-object {
+  --object-colour: #ef4444;
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: var(--mass-height, 277px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid color-mix(in srgb, var(--object-colour), #fff 25%);
+  border-radius: 19px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.8), rgba(255,255,255,0.25)),
+    color-mix(in srgb, var(--object-colour), #fff 72%);
+  box-shadow:
+    0 12px 28px color-mix(in srgb, var(--object-colour), transparent 78%),
+    inset 0 0 24px rgba(255,255,255,0.6);
+  transition: height 0.3s ease, transform 0.7s cubic-bezier(.2,.8,.2,1), border-radius 0.7s ease, background 0.4s;
+  will-change: transform;
+  z-index: 2;
+}
+
+.hf-object--hot { transform: translateX(-34px); }
+.hf-object--cold { transform: translateX(34px); }
+.is-contacting .hf-object--hot { transform: translateX(0); border-radius: 19px 4px 4px 19px; }
+.is-contacting .hf-object--cold { transform: translateX(0); border-radius: 4px 19px 19px 4px; }
+.hf-object-symbol { font-size: 3.2rem; font-weight: 900; color: color-mix(in srgb, var(--object-colour), #0f172a 30%); }
+.hf-object strong {
+  margin-top: 7px;
+  color: #0f172a;
+  font-size: clamp(1.75rem, 2.3vw, 2.25rem);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+.hf-object strong sub,
+.hf-temperature-change strong sub {
+  font-size: 0.65em;
+}
+.hf-object.is-role-hot strong { color: #b91c1c; }
+.hf-object.is-role-cold strong { color: #0369a1; }
+.hf-object.is-role-equal strong { color: #15803d; }
+.hf-object-label {
+  display: block;
+  width: 100%;
+  min-height: 1.4em;
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+}
+.hf-object--hot + .hf-object-label { color: #dc2626; }
+.hf-object--cold + .hf-object-label { color: #0284c7; }
+.hf-object.is-role-hot + .hf-object-label { color: #dc2626; }
+.hf-object.is-role-cold + .hf-object-label { color: #0284c7; }
+.hf-object.is-role-equal + .hf-object-label { color: #15803d; }
+.hf-initial-temp {
+  display: block;
+  margin-top: -8px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #64748b;
+}
+.hf-initial-temp.is-initial-hot { color: #dc2626; }
+.hf-initial-temp.is-initial-cold { color: #0284c7; }
+.hf-initial-temp.is-initial-equal { color: #111827; }
+
+.hf-thermometer {
+  position: absolute;
+  left: 18px;
+  bottom: 28px;
+  width: 17px;
+  height: 185px;
+  overflow: hidden;
+  border: 2px solid rgba(15,23,42,0.24);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.7);
+}
+
+.hf-thermometer span { position: absolute; inset: auto 0 0; min-height: 5%; transition: height 0.25s, background 0.25s; }
+.hf-flow {
+  position: relative;
+  width: clamp(88px, 14%, 140px);
+  height: 100px;
+  margin-top: 95px;
+  flex: 0 0 auto;
+  text-align: center;
+  z-index: 3;
+  transition: width 0.7s cubic-bezier(.2,.8,.2,1);
+}
+.is-contacting .hf-flow { width: 0; }
+.hf-temperature-change {
+  position: relative;
+  display: grid;
+  width: min(100%, 250px);
+  max-width: 100%;
+  min-height: 52px;
+  margin: -4px auto 0;
+  padding: 8px 13px;
+  border: 2px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #475569;
+  text-align: center;
+  transition:
+    border-color 0.65s ease,
+    background 0.65s ease,
+    color 0.65s ease;
+}
+.is-equilibrium .hf-temperature-change {
+  border-color: currentColor;
+  background: rgba(255, 255, 255, 0.92);
+}
+.hf-temperature-change--hot { color: #b91c1c; }
+.hf-temperature-change--cold { color: #0369a1; }
+.hf-temperature-change--equal { color: #15803d; }
+.hf-stage:not(.is-equilibrium) .hf-temperature-change { color: #475569; }
+.hf-final-question {
+  align-self: center;
+  font-size: 0.95rem;
+  font-weight: 850;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.hf-delta-result {
+  position: absolute;
+  inset: 6px 8px;
+  display: grid;
+  align-content: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.is-equilibrium .hf-final-question {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+.is-equilibrium .hf-delta-result {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hf-delta-result span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.hf-delta-result strong {
+  margin-top: 3px;
+  font-size: 1.12rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.hf-flow-track {
+  position: absolute;
+  top: -22px;
+  left: calc(50% - 155px);
+  width: 310px;
+  height: 145px;
+  overflow: visible;
+  pointer-events: none;
+}
+.hf-flow-track i {
+  --delay: calc(var(--i) * -0.075s);
+  position: absolute;
+  top: calc(8px + var(--row) * 18px);
+  left: 0;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background: var(--hf-hot);
+  opacity: 0;
+  box-shadow: 0 0 9px rgba(239, 68, 68, 0.55);
+  will-change: transform, opacity;
+}
+
+.is-flowing .hf-flow-track i {
+  animation: hf-energy var(--particle-duration, 1.3s) linear var(--delay) infinite;
+}
+.is-flowing.is-flow-reverse .hf-flow-track i { animation-direction: reverse; }
+.hf-flow-indicator {
+  display: flex;
+  min-height: 90px;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 4px;
+  color: #111827;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
+.hf-flow-indicator .hf-arrow {
+  color: #111827;
+  font-size: clamp(5rem, 8vw, 7rem);
+  font-weight: 950;
+  line-height: 1;
+}
+.hf-flow-indicator strong {
+  font-size: 1.45rem;
+  font-weight: 950;
+  letter-spacing: 0.01em;
+}
+.hf-flow-hot {
+  color: var(--hf-hot);
+  text-transform: uppercase;
+}
+.hf-flow-cold {
+  color: var(--hf-cold);
+  text-transform: uppercase;
+}
+.is-flowing .hf-flow-indicator,
+.is-equilibrium .hf-flow-indicator {
+  opacity: 1;
+  visibility: visible;
+}
+.is-flowing .hf-flow-indicator .hf-arrow {
+  animation: hf-pulse 0.9s ease-in-out infinite alternate;
+}
+.is-flowing.is-flow-reverse .hf-flow-indicator .hf-arrow {
+  animation-name: hf-pulse-left;
+}
+@keyframes hf-energy {
+  0% { transform: translateX(0) scale(0.65); opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(300px) scale(1); opacity: 0; }
+}
+@keyframes hf-pulse { to { transform: translateX(4px); } }
+@keyframes hf-pulse-left { to { transform: translateX(-4px); } }
+
+.hf-readouts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 240px));
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.hf-readouts div { padding: 13px 8px; border: 1px solid #e2e8f0; border-radius: 12px; background: rgba(255,255,255,0.9); text-align: center; }
+.hf-readouts span { display: block; color: var(--hf-muted); font-size: 1em; font-weight: 750; }
+.hf-readouts strong { display: block; margin-top: 4px; font-size: 1.55em; font-variant-numeric: tabular-nums; }
+
+.hf-chart-card { min-height: 190px; padding: 11px 14px 8px; background: #fff; overflow: hidden; }
+.hf-section-title { display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; }
+.hf-legend { display: flex; gap: 15px; font-size: 0.67rem; font-weight: 750; }
+.hf-legend span::before { content: ""; display: inline-block; width: 17px; height: 3px; margin-right: 5px; border-radius: 4px; vertical-align: middle; }
+.hf-legend .hot::before { background: var(--hf-hot); }
+.hf-legend .cold::before { background: var(--hf-cold); }
+.hf-chart { display: block; width: 100%; height: calc(100% - 20px); min-height: 150px; overflow: visible; }
+.hf-grid line { stroke: #e2e8f0; stroke-width: 1; }
+.hf-grid line:first-child,
+.hf-grid line:nth-child(2) { stroke: #94a3b8; }
+.hf-axis-labels text,
+.hf-x-end { fill: #64748b; font-size: 10px; }
+.hf-line { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.hf-line--hot { stroke: var(--hf-hot); }
+.hf-line--cold { stroke: var(--hf-cold); }
+.hf-point--hot { fill: var(--hf-hot); }
+.hf-point--cold { fill: var(--hf-cold); }
+.hf-equilibrium-line { stroke: #10b981; stroke-width: 1.5; stroke-dasharray: 5 5; opacity: 0.5; }
+
+.hf-sidebar { display: flex; min-height: 0; flex-direction: column; gap: 10px; }
+.hf-panel-toggle {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 2px solid #c7d2fe;
+  border-radius: 12px;
+  background: #eef2ff;
+  color: #3730a3;
+  font: inherit;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+.hf-panel-toggle span { font-size: 1.3em; }
+.hf-panel-toggle strong { line-height: 1.15; }
+.hf-panel-toggle:hover { border-color: #6366f1; background: #e0e7ff; }
+.hf-fullscreen {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 20;
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 2px solid #bae6fd;
+  border-radius: 12px;
+  background: rgba(240, 249, 255, 0.96);
+  color: #075985;
+  font: inherit;
+  font-size: 0.86rem;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+.hf-fullscreen:hover { border-color: #0ea5e9; background: #e0f2fe; }
+.hf-fullscreen[aria-pressed="true"] { border-color: #6366f1; color: #4338ca; background: #eef2ff; }
+.hf-fullscreen span { font-size: 1.2rem; line-height: 1; }
+.hf-panel-toggle--overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  min-height: 48px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+}
+.hf-stage-actions {
+  position: absolute;
+  top: 78px;
+  right: 16px;
+  z-index: 19;
+  display: none;
+  width: 132px;
+  flex-direction: column;
+  gap: 8px;
+}
+.hf-wrap.controls-collapsed .hf-stage-actions { display: flex; }
+.hf-stage-actions button {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 2px solid #cbd5e1;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #334155;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.hf-stage-actions button span { font-size: 1.05rem; line-height: 1; }
+.hf-stage-actions button strong { line-height: 1.1; }
+.hf-stage-actions .hf-stage-play {
+  border-color: transparent;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: #fff;
+}
+.hf-stage-actions button:hover:not(:disabled) { transform: translateY(-1px); }
+.hf-stage-actions .hf-stage-reset:hover { border-color: #6366f1; color: #4338ca; }
+.hf-stage-actions button:disabled { opacity: 0.55; cursor: wait; }
+.hf-wrap.controls-collapsed .hf-sidebar { display: none; }
+.hf-control-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.hf-control-card { min-width: 0; padding: 16px; background: #fff; }
+.hf-control-card--hot { border-top: 3px solid var(--hf-hot); }
+.hf-control-card--cold { border-top: 3px solid var(--hf-cold); }
+.hf-control-title { display: flex; align-items: center; gap: 8px; margin-bottom: 13px; font-size: 1.2em; font-weight: 850; }
+.hf-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--hf-hot); box-shadow: 0 0 0 3px #fee2e2; }
+.hf-control-card--cold .hf-dot { background: var(--hf-cold); box-shadow: 0 0 0 3px #e0f2fe; }
+.hf-control-card.is-role-hot { border-top-color: var(--hf-hot); }
+.hf-control-card.is-role-hot .hf-dot { background: var(--hf-hot); box-shadow: 0 0 0 3px #fee2e2; }
+.hf-control-card.is-role-cold { border-top-color: var(--hf-cold); }
+.hf-control-card.is-role-cold .hf-dot { background: var(--hf-cold); box-shadow: 0 0 0 3px #e0f2fe; }
+.hf-control-card.is-role-equal { border-top-color: #16a34a; }
+.hf-control-card.is-role-equal .hf-dot { background: #16a34a; box-shadow: 0 0 0 3px #dcfce7; }
+.hf-control-card.is-role-hot [data-output$="Initial"],
+.hf-control-card.is-role-hot [data-field$="Initial"] { color: #b91c1c; }
+.hf-control-card.is-role-cold [data-output$="Initial"],
+.hf-control-card.is-role-cold [data-field$="Initial"] { color: #0369a1; }
+.hf-control-card.is-role-equal [data-output$="Initial"],
+.hf-control-card.is-role-equal [data-field$="Initial"] { color: #15803d; }
+.hf-control-card.is-role-hot input[type="range"][data-field$="Initial"] { accent-color: #dc2626; }
+.hf-control-card.is-role-cold input[type="range"][data-field$="Initial"] { accent-color: #0284c7; }
+.hf-control-card.is-role-equal input[type="range"][data-field$="Initial"] { accent-color: #16a34a; }
+
+.hf-wrap label { display: block; margin-top: 8px; }
+.hf-wrap label > span { display: flex; justify-content: space-between; gap: 7px; color: #475569; font-size: 1em; font-weight: 750; }
+.hf-wrap output { color: var(--hf-text); font-weight: 850; font-variant-numeric: tabular-nums; }
+.hf-wrap select {
+  width: 100%;
+  margin-top: 4px;
+  padding: 9px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--hf-text);
+  font: inherit;
+  font-size: 1em;
+}
+.hf-slider-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 82px;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+}
+.hf-wrap input[type="range"] {
+  width: 100%;
+  height: 30px;
+  margin: 0;
+  accent-color: var(--hf-primary);
+  cursor: pointer;
+}
+.hf-number {
+  width: 82px;
+  min-height: 42px;
+  padding: 6px 7px;
+  border: 2px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 1em;
+  font-weight: 850;
+  text-align: center;
+}
+.hf-wrap input:disabled,
+.hf-wrap select:disabled { cursor: not-allowed; opacity: 0.58; }
+.hf-capacity { display: flex; justify-content: space-between; gap: 6px; margin-top: 7px; padding-top: 7px; border-top: 1px dashed #e2e8f0; color: var(--hf-muted); font-size: 0.62rem; }
+.hf-capacity strong { color: #334155; font-variant-numeric: tabular-nums; }
+
+.hf-contact-control { padding: 14px 16px; background: #fff !important; }
+.hf-contact-control label { margin: 0; }
+.hf-range-ends { display: flex; justify-content: space-between; margin-top: 1px; padding-right: 92px; color: #64748b; font-size: 0.9em; font-weight: 700; }
+.hf-contact-control p { margin: 9px 0 0; color: var(--hf-muted); font-size: 1em; line-height: 1.4; }
+.hf-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hf-actions button {
+  min-height: 58px;
+  padding: 11px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  background: #fff;
+  color: #334155;
+  font: inherit;
+  font-size: 1em;
+  font-weight: 800;
+  cursor: pointer;
+}
+.hf-actions button:hover:not(:disabled) { border-color: var(--hf-primary); color: var(--hf-primary); background: #eef2ff; }
+.hf-actions .hf-primary { border-color: transparent; background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; box-shadow: 0 5px 12px rgba(239,68,68,0.2); }
+.hf-actions .hf-primary:hover:not(:disabled) { border-color: transparent; background: linear-gradient(135deg, #ea580c, #dc2626); color: #fff; }
+.hf-actions .hf-default { border: 2px solid #6366f1; color: #4338ca; background: #eef2ff; }
+.hf-actions .hf-preset {
+  grid-column: 1 / -1;
+  border: 2px solid #0ea5e9;
+  background: #f0f9ff;
+  color: #075985;
+}
+.hf-actions .hf-preset:hover:not(:disabled) {
+  border-color: #0284c7;
+  background: #e0f2fe;
+  color: #0c4a6e;
+}
+.hf-actions button:disabled { opacity: 0.45; cursor: not-allowed; }
+.hf-concepts { flex: 1; min-height: 0; padding: 14px; background: linear-gradient(145deg, #f5f3ff, #eff6ff) !important; overflow-y: auto; }
+.hf-concepts h2 { margin: 0 0 10px; color: #4338ca; font-size: 1rem; }
+.hf-concepts ol { margin: 0; padding-left: 18px; color: #475569; font-size: 0.65rem; line-height: 1.48; }
+.hf-concepts li + li { margin-top: 3px; }
+.hf-formula { margin-top: 8px; padding: 7px 6px; border: 1px solid #c7d2fe; border-radius: 8px; background: rgba(255,255,255,0.76); color: #312e81; text-align: center; font-family: Cambria, Georgia, serif; font-size: 0.78rem; font-weight: 700; }
+.hf-story { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.hf-story div {
+  position: relative;
+  display: flex;
+  min-height: 82px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 4px;
+  border: 1px solid #c7d2fe;
+  border-radius: 11px;
+  background: rgba(255,255,255,0.82);
+  text-align: center;
+}
+.hf-story b {
+  position: absolute;
+  top: 5px;
+  left: 7px;
+  color: #818cf8;
+  font-size: 0.7rem;
+}
+.hf-story span { font-size: 1.5rem; line-height: 1; }
+.hf-story strong { margin-top: 6px; color: #3730a3; font-size: 0.72rem; line-height: 1.2; }
+
+html.s3phy-embed,
+html.s3phy-embed body { height: 100%; overflow: hidden; }
+html.s3phy-embed body { padding: 4px; }
+html.s3phy-embed #app { height: 100%; min-height: 0; }
+html.s3phy-embed .hf-wrap { height: 100%; min-height: 0; padding: 8px; overflow: auto; }
+html.s3phy-embed .hf-head { display: none; }
+html.s3phy-embed .hf-layout { min-height: 100%; height: 100%; }
+html.s3phy-embed .hf-main,
+html.s3phy-embed .hf-stage { height: 100%; }
+
+html:fullscreen,
+html:fullscreen body,
+html:fullscreen #app { width: 100%; height: 100%; overflow: hidden; }
+html:fullscreen body { padding: 0; }
+html:fullscreen .hf-wrap { width: 100%; height: 100%; max-width: none; border-radius: 0; overflow: auto; }
+html:fullscreen .hf-layout { min-height: 100%; }
+
+@media (min-width: 981px) and (max-height: 720px) {
+  .hf-main { grid-template-rows: minmax(300px, 1.5fr) minmax(160px, 0.7fr); }
+  .hf-stage { min-height: 520px; padding: 12px; }
+  .hf-status { margin-bottom: 8px; padding-block: 6px; }
+  .hf-objects { min-height: 235px; }
+  .hf-object { height: var(--mass-height-compact, 179px); }
+  .hf-object-symbol { font-size: 2.2rem; }
+  .hf-object strong { font-size: 1.9rem; }
+  .hf-thermometer { height: 115px; }
+  .hf-flow { margin-top: 40px; }
+  .hf-object-label { font-size: 1.2rem; }
+  .hf-wrap.controls-collapsed .hf-object-wrap { width: var(--mass-width-compact, 293px); }
+  .hf-wrap.controls-collapsed .hf-object { height: var(--mass-height-compact-collapsed, 213px); }
+  .hf-wrap.controls-collapsed .hf-objects { min-height: 275px; }
+  .hf-wrap.controls-collapsed .hf-flow { margin-top: 60px; }
+  .hf-readouts { margin-top: 7px; }
+  .hf-control-card { padding: 8px; }
+  .hf-wrap label { margin-top: 5px; }
+  .hf-concepts { padding-block: 8px; }
+}
+
+@media (max-width: 980px) {
+  html.s3phy-embed,
+  html.s3phy-embed body { height: auto; overflow: auto; }
+  .hf-layout { grid-template-columns: 1fr; }
+  .hf-wrap.controls-collapsed .hf-layout { grid-template-columns: 1fr; }
+  .hf-wrap.controls-collapsed .hf-panel-toggle { min-height: 54px; flex-direction: row; }
+  .hf-sidebar { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+  .hf-control-grid { grid-column: 1 / -1; }
+  .hf-actions { grid-column: 1 / -1; }
+  .hf-concepts { min-height: 130px; }
+}
+
+@media (max-width: 620px) {
+  body { padding: 4px; }
+  .hf-wrap { padding: 8px; border-radius: 10px; }
+  .hf-head { padding-inline: 0; padding-top: 38px; }
+  .hf-language { top: 0; transform: none; }
+  .hf-fullscreen strong { display: none; }
+  .hf-fullscreen { min-width: 48px; padding-inline: 9px; }
+  .hf-stage-actions { top: 70px; right: 7px; width: 48px; }
+  .hf-stage-actions button { width: 48px; padding: 7px; }
+  .hf-stage-actions button strong { display: none; }
+  .hf-main { grid-template-rows: auto auto; }
+  .hf-stage { min-height: 355px; padding: 10px 7px; }
+  .hf-status { border-radius: 12px; }
+  .hf-status small { max-width: 250px; }
+  .hf-object-wrap { width: var(--mass-width-mobile, 122px); }
+  .hf-object { width: 100%; height: var(--mass-height-mobile, 131px); }
+  .hf-wrap.controls-collapsed .hf-object-wrap { width: var(--mass-width-mobile, 122px); }
+  .hf-wrap.controls-collapsed .hf-object { height: var(--mass-height-mobile, 131px); }
+  .hf-object-symbol { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+  .hf-object strong { font-size: clamp(1.15rem, 5.2vw, 1.55rem); }
+  .hf-thermometer {
+    left: 8px;
+    bottom: 18px;
+    width: 12px;
+    height: max(62px, calc(var(--mass-height-mobile, 131px) - 48px));
+  }
+  .hf-wrap.controls-collapsed .hf-objects { min-height: 205px; }
+  .hf-object--hot { transform: translateX(-8px); }
+  .hf-object--cold { transform: translateX(8px); }
+  .hf-flow { width: 42px; margin-top: 16px; }
+  .hf-wrap.controls-collapsed .hf-flow { margin-top: 16px; }
+  .hf-temperature-change { min-height: 48px; padding: 6px; }
+  .hf-final-question { font-size: 0.78rem; }
+  .hf-delta-result span { font-size: 0.62rem; }
+  .hf-delta-result strong { font-size: 0.82rem; }
+  .hf-object-label { font-size: 1rem; }
+  .hf-readouts { grid-template-columns: 1fr 1fr; }
+  .hf-sidebar { grid-template-columns: 1fr; }
+  .hf-control-grid,
+  .hf-actions { grid-column: auto; }
+  .hf-control-grid { grid-template-columns: 1fr; }
+  .hf-actions { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-wrap *, .hf-wrap *::before, .hf-wrap *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+  </style>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('embed') === '1' || params.get('embed') === 'true') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+(() => {
+  // labs/heat-flow/js/lab.js
+  var MATERIALS = {
+    aluminium: { c: 900, symbol: "Al" },
+    copper: { c: 390, symbol: "Cu" },
+    iron: { c: 450, symbol: "Fe" },
+    glass: { c: 840, symbol: "SiO\u2082" },
+    water: { c: 4200, symbol: "H\u2082O" }
+  };
+  var DEFAULTS = {
+    hotMaterial: "water",
+    coldMaterial: "water",
+    hotMass: 1,
+    coldMass: 1,
+    hotInitial: 100,
+    coldInitial: 0,
+    conductance: 100
+  };
+  var MASS_TEMPERATURE_PRESET = {
+    hotMass: 2,
+    coldMass: 1,
+    hotInitial: 80,
+    coldInitial: 20
+  };
+  var clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  var format = (value, digits = 1) => Number(value).toFixed(digits);
+  function materialOptions(t, selected) {
+    return Object.keys(MATERIALS).map(
+      (id) => `<option value="${id}"${id === selected ? " selected" : ""}>${t(id)} \xB7 ${MATERIALS[id].c} J kg\u207B\xB9 \xB0C\u207B\xB9</option>`
+    ).join("");
+  }
+  function controlCard(t, side, state) {
+    const isHot = side === "hot";
+    const title = isHot ? t("hotObject") : t("coldObject");
+    const material = isHot ? state.hotMaterial : state.coldMaterial;
+    const mass = isHot ? state.hotMass : state.coldMass;
+    const temp = isHot ? state.hotInitial : state.coldInitial;
+    const tempMin = 0;
+    const tempMax = 100;
+    return `
+    <section class="hf-control-card hf-control-card--${side}">
+      <div class="hf-control-title"><span class="hf-dot"></span><strong data-role-label="${side}">${title}</strong></div>
+      <label>
+        <span>${t("material")}</span>
+        <select data-field="${side}Material">${materialOptions(t, material)}</select>
+      </label>
+      <label>
+        <span>${t("mass")} <output data-output="${side}Mass">${format(mass)} kg</output></span>
+        <div class="hf-slider-row">
+          <input data-field="${side}Mass" type="range" min="0.1" max="2" step="0.1" value="${mass}">
+          <input class="hf-number" data-field="${side}Mass" type="number" min="0.1" max="2" step="0.1" value="${mass}" aria-label="${t("mass")}">
+        </div>
+      </label>
+      <label>
+        <span>${t("initialTemp")} <output data-output="${side}Initial">${format(temp, 0)} \xB0C</output></span>
+        <div class="hf-slider-row">
+          <input data-field="${side}Initial" type="range" min="${tempMin}" max="${tempMax}" step="1" value="${temp}">
+          <input class="hf-number" data-field="${side}Initial" type="number" min="${tempMin}" max="${tempMax}" step="1" value="${temp}" aria-label="${t("initialTemp")}">
+        </div>
+      </label>
+    </section>`;
+  }
+  function particleMarkup() {
+    return Array.from(
+      { length: 28 },
+      (_, index) => `<i style="--i:${index};--row:${index % 7};--size:${7 + index % 3 * 2}px" aria-hidden="true"></i>`
+    ).join("");
+  }
+  function createHeatFlowLab(t, options = {}) {
+    const root2 = document.createElement("main");
+    root2.className = "hf-wrap";
+    const state = { ...DEFAULTS };
+    let phase = "separated";
+    let hotTemp = state.hotInitial;
+    let coldTemp = state.coldInitial;
+    let equilibrium = 0;
+    let elapsed = 0;
+    let lastFrame = 0;
+    let lastVisualFrame = 0;
+    let lastFlowTextMode = "";
+    let lastSyncedPhase = "";
+    let animationFrame = 0;
+    let joinTimer = 0;
+    let controlsCollapsed = true;
+    root2.innerHTML = `
+    <header class="hf-head">
+      <div>
+        <h1>${t("title")}</h1>
+        <p>${t("subtitle")}</p>
+      </div>
+      <button class="hf-language" type="button" data-action="language">${t("language")}</button>
+    </header>
+
+    <div class="hf-layout">
+      <div class="hf-main">
+        <section class="hf-stage" data-stage>
+          <button class="hf-fullscreen" type="button" data-action="fullscreen" aria-pressed="false">
+            <span data-fullscreen-icon aria-hidden="true">\u26F6</span>
+            <strong data-fullscreen-label>${t("fullscreen")}</strong>
+          </button>
+          <button class="hf-panel-toggle hf-panel-toggle--overlay" type="button" data-action="toggleControls" aria-expanded="false">
+            <span aria-hidden="true">\u2699</span>
+            <strong data-panel-toggle-text>${t("showControls")}</strong>
+          </button>
+          <div class="hf-stage-actions" aria-label="${t("animationControls")}">
+            <button class="hf-stage-play" type="button" data-action="stagePlay">
+              <span aria-hidden="true" data-stage-play-icon>\u25B6</span>
+              <strong data-stage-play-text>${t("startAnimation")}</strong>
+            </button>
+            <button class="hf-stage-reset" type="button" data-action="reset">
+              <span aria-hidden="true">\u21BB</span>
+              <strong>${t("reset")}</strong>
+            </button>
+          </div>
+          <div class="hf-status" role="status" aria-live="polite">
+            <span class="hf-status-icon" data-status-icon>\u2194</span>
+            <div><strong data-status-title></strong><small data-status-detail></small></div>
+          </div>
+
+          <div class="hf-objects">
+            <div class="hf-object-wrap">
+              <article class="hf-object hf-object--hot" data-object="hot">
+                <div class="hf-thermometer" aria-hidden="true"><span data-thermo="hot"></span></div>
+                <div class="hf-object-symbol" data-symbol="hot">Al</div>
+                <strong data-temp="hot">80.0 \xB0C</strong>
+              </article>
+              <strong class="hf-object-label" data-role-label="hot">${t("hotObject")}</strong>
+              <small class="hf-initial-temp" data-initial-temp="hot"></small>
+              <div class="hf-temperature-change">
+                <span class="hf-final-question">${t("finalTemperatureQuestion")}</span>
+                <div class="hf-delta-result">
+                  <span data-temperature-change-label="hot"></span>
+                  <strong data-temperature-change="hot"></strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="hf-flow" data-flow aria-hidden="true">
+              <div class="hf-flow-track" aria-hidden="true">${particleMarkup()}</div>
+            </div>
+
+            <div class="hf-object-wrap">
+              <article class="hf-object hf-object--cold" data-object="cold">
+                <div class="hf-thermometer" aria-hidden="true"><span data-thermo="cold"></span></div>
+                <div class="hf-object-symbol" data-symbol="cold">H\u2082O</div>
+                <strong data-temp="cold">20.0 \xB0C</strong>
+              </article>
+              <strong class="hf-object-label" data-role-label="cold">${t("coldObject")}</strong>
+              <small class="hf-initial-temp" data-initial-temp="cold"></small>
+              <div class="hf-temperature-change">
+                <span class="hf-final-question">${t("finalTemperatureQuestion")}</span>
+                <div class="hf-delta-result">
+                  <span data-temperature-change-label="cold"></span>
+                  <strong data-temperature-change="cold"></strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hf-flow-indicator" aria-live="polite">
+            <span class="hf-arrow" data-flow-arrow aria-hidden="true">\u2192</span>
+            <strong data-flow-text>${t("flowIndicator")}</strong>
+          </div>
+
+          <div class="hf-readouts">
+            <div><span>${t("predictedFinal")}</span><strong data-readout="final">\u2014</strong></div>
+            <div><span>${t("elapsed")}</span><strong data-readout="time">0.0 s</strong></div>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="hf-sidebar">
+        <div class="hf-control-grid">
+          ${controlCard(t, "hot", state)}
+          ${controlCard(t, "cold", state)}
+        </div>
+        <section class="hf-contact-control">
+          <label>
+            <span>${t("conductivity")} <output data-output="conductance">100%</output></span>
+            <div class="hf-slider-row">
+              <input data-field="conductance" type="range" min="10" max="100" step="5" value="${state.conductance}">
+              <input class="hf-number" data-field="conductance" type="number" min="10" max="100" step="5" value="${state.conductance}" aria-label="${t("conductivity")}">
+            </div>
+          </label>
+          <div class="hf-range-ends"><span>${t("poor")}</span><span>${t("good")}</span></div>
+          <p>${t("conductivityHint")}</p>
+        </section>
+        <div class="hf-actions">
+          <button class="hf-primary" type="button" data-action="contact">${t("contact")}</button>
+          <button type="button" data-action="pause" disabled>${t("pause")}</button>
+          <button type="button" data-action="reset">${t("reset")}</button>
+          <button class="hf-default" type="button" data-action="default">${t("default")}</button>
+          <button class="hf-preset" type="button" data-action="massTemperaturePreset">${t("massTemperaturePreset")}</button>
+        </div>
+      </aside>
+    </div>`;
+    const query = (selector) => root2.querySelector(selector);
+    const queryAll = (selector) => [...root2.querySelectorAll(selector)];
+    function isFullscreen() {
+      return Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+    function updateFullscreenButton() {
+      const active = isFullscreen();
+      const button = query('[data-action="fullscreen"]');
+      if (!button) return;
+      button.setAttribute("aria-pressed", String(active));
+      button.setAttribute("aria-label", active ? t("exitFullscreen") : t("fullscreen"));
+      query("[data-fullscreen-label]").textContent = active ? t("exitFullscreen") : t("fullscreen");
+      query("[data-fullscreen-icon]").textContent = active ? "\u2715" : "\u26F6";
+    }
+    async function toggleFullscreen() {
+      try {
+        if (!isFullscreen()) {
+          const request = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+          await request?.call(document.documentElement);
+        } else {
+          const exit = document.exitFullscreen || document.webkitExitFullscreen;
+          await exit?.call(document);
+        }
+      } catch {
+      }
+      updateFullscreenButton();
+    }
+    function capacities() {
+      return {
+        hot: state.hotMass * MATERIALS[state.hotMaterial].c,
+        cold: state.coldMass * MATERIALS[state.coldMaterial].c
+      };
+    }
+    function calculateEquilibrium() {
+      const capacity = capacities();
+      return (capacity.hot * state.hotInitial + capacity.cold * state.coldInitial) / (capacity.hot + capacity.cold);
+    }
+    function temperatureColour(role, temp) {
+      if (phase === "equilibrium" || role === "equal") return "hsl(145 70% 43%)";
+      const heat = clamp(temp / 100, 0, 1);
+      if (role === "hot") {
+        return `hsl(2 ${72 + heat * 24}% ${76 - heat * 34}%)`;
+      }
+      const coldness = 1 - heat;
+      return `hsl(210 ${70 + coldness * 25}% ${75 - coldness * 30}%)`;
+    }
+    function statusCopy() {
+      if (phase === "running") return [t("flowing"), t("flowingExplain"), "\u2192"];
+      if (phase === "joining") return [t("joining"), t("joiningExplain"), "\u25CB"];
+      if (phase === "paused") return [t("paused"), t("flowingExplain"), "\u2161"];
+      if (phase === "equilibrium") return [t("equilibrium"), t("equilibriumExplain"), "\u2713"];
+      return [t("separated"), t("separatedExplain"), "\u25CB"];
+    }
+    function renderFlowText(noHeatFlow) {
+      const mode = noHeatFlow ? "no-flow" : "flow";
+      if (lastFlowTextMode === mode) return;
+      lastFlowTextMode = mode;
+      const flowText = query("[data-flow-text]");
+      if (noHeatFlow) {
+        flowText.textContent = t("noFlow");
+        return;
+      }
+      const hot = document.createElement("span");
+      hot.className = "hf-flow-hot";
+      hot.textContent = t("hotShort");
+      const cold = document.createElement("span");
+      cold.className = "hf-flow-cold";
+      cold.textContent = t("coldShort");
+      flowText.replaceChildren(
+        document.createTextNode(t("flowPrefix")),
+        hot,
+        document.createTextNode(t("flowConnector")),
+        cold
+      );
+    }
+    function syncControls() {
+      queryAll("[data-field]").forEach((input) => {
+        const field = input.dataset.field;
+        input.disabled = phase !== "separated";
+        input.value = state[field];
+      });
+      query('[data-output="hotMass"]').textContent = `${format(state.hotMass)} kg`;
+      query('[data-output="coldMass"]').textContent = `${format(state.coldMass)} kg`;
+      query('[data-output="hotInitial"]').textContent = `${format(state.hotInitial, 0)} \xB0C`;
+      query('[data-output="coldInitial"]').textContent = `${format(state.coldInitial, 0)} \xB0C`;
+      query('[data-output="conductance"]').textContent = `${state.conductance}%`;
+      query('[data-symbol="hot"]').textContent = MATERIALS[state.hotMaterial].symbol;
+      query('[data-symbol="cold"]').textContent = MATERIALS[state.coldMaterial].symbol;
+    }
+    function render() {
+      const [statusTitle, statusDetail, statusIcon] = statusCopy();
+      const stage = query("[data-stage]");
+      const temperatureDifference = hotTemp - coldTemp;
+      const roles = Math.abs(temperatureDifference) < 0.05 ? { hot: "equal", cold: "equal" } : temperatureDifference > 0 ? { hot: "hot", cold: "cold" } : { hot: "cold", cold: "hot" };
+      const initialDifference = state.hotInitial - state.coldInitial;
+      const initialRoles = Math.abs(initialDifference) < 0.05 ? { hot: "equal", cold: "equal" } : initialDifference > 0 ? { hot: "hot", cold: "cold" } : { hot: "cold", cold: "hot" };
+      stage.classList.toggle("is-contacting", phase !== "separated");
+      stage.classList.toggle("is-flowing", phase === "running");
+      stage.classList.toggle("is-equilibrium", phase === "equilibrium");
+      stage.classList.toggle("is-flow-reverse", phase === "running" && temperatureDifference < 0);
+      root2.classList.toggle("controls-collapsed", controlsCollapsed);
+      const panelToggle = query('[data-action="toggleControls"]');
+      panelToggle.setAttribute("aria-expanded", String(!controlsCollapsed));
+      query("[data-panel-toggle-text]").textContent = controlsCollapsed ? t("showControls") : t("hideControls");
+      const speedRatio = state.conductance / 100;
+      stage.style.setProperty("--particle-duration", `${3 - speedRatio * 1.7}s`);
+      query("[data-status-title]").textContent = statusTitle;
+      query("[data-status-detail]").textContent = statusDetail;
+      query("[data-status-icon]").textContent = statusIcon;
+      ["hot", "cold"].forEach((side) => {
+        const value = side === "hot" ? hotTemp : coldTemp;
+        const role = roles[side];
+        const notationRole = initialRoles[side];
+        const colour = temperatureColour(role, value);
+        const roleLabel = role === "hot" ? t("hotObject") : role === "cold" ? t("coldObject") : t("sameTempObject");
+        const object = query(`[data-object="${side}"]`);
+        const objectWrap = object.closest(".hf-object-wrap");
+        const controlCard2 = query(`.hf-control-card--${side}`);
+        const mass = side === "hot" ? state.hotMass : state.coldMass;
+        const massRatio = clamp((mass - 0.1) / 1.9, 0, 1);
+        const variable = phase === "equilibrium" ? "f" : notationRole === "hot" ? "h" : notationRole === "cold" ? "c" : "";
+        query(`[data-temp="${side}"]`).innerHTML = `T${variable ? `<sub>${variable}</sub>` : ""} = ${format(value)} \xB0C`;
+        objectWrap.style.setProperty("--mass-width", `${220 + massRatio * 110}px`);
+        objectWrap.style.setProperty("--mass-height", `${230 + massRatio * 100}px`);
+        objectWrap.style.setProperty("--mass-width-collapsed", `${280 + massRatio * 110}px`);
+        objectWrap.style.setProperty("--mass-height-collapsed", `${270 + massRatio * 100}px`);
+        objectWrap.style.setProperty("--mass-width-compact", `${250 + massRatio * 90}px`);
+        objectWrap.style.setProperty("--mass-height-compact", `${155 + massRatio * 50}px`);
+        objectWrap.style.setProperty("--mass-height-compact-collapsed", `${185 + massRatio * 60}px`);
+        objectWrap.style.setProperty("--mass-width-mobile", `${105 + massRatio * 35}px`);
+        objectWrap.style.setProperty("--mass-height-mobile", `${110 + massRatio * 45}px`);
+        object.style.setProperty("--object-colour", colour);
+        ["hot", "cold", "equal"].forEach((name) => {
+          object.classList.toggle(`is-role-${name}`, role === name);
+          controlCard2.classList.toggle(`is-role-${name}`, initialRoles[side] === name);
+        });
+        queryAll(`[data-role-label="${side}"]`).forEach((label) => {
+          label.textContent = roleLabel;
+        });
+        const initial = side === "hot" ? state.hotInitial : state.coldInitial;
+        const initialLabel = query(`[data-initial-temp="${side}"]`);
+        const temperatureChange = query(`[data-temperature-change="${side}"]`);
+        const temperatureChangeBox = temperatureChange.closest(".hf-temperature-change");
+        const temperatureChangeLabel = query(`[data-temperature-change-label="${side}"]`);
+        initialLabel.textContent = t("initialTempLabel").replace("{n}", format(initial, 0));
+        ["hot", "cold", "equal"].forEach((name) => {
+          initialLabel.classList.toggle(`is-initial-${name}`, initialRoles[side] === name);
+          temperatureChangeBox.classList.toggle(`hf-temperature-change--${name}`, notationRole === name);
+        });
+        if (notationRole === "hot") {
+          temperatureChangeLabel.textContent = t("temperatureFall");
+          temperatureChange.innerHTML = `\u0394T = T<sub>h</sub> \u2212 T<sub>f</sub> = ${format(initial - equilibrium)} \xB0C`;
+        } else if (notationRole === "cold") {
+          temperatureChangeLabel.textContent = t("temperatureRise");
+          temperatureChange.innerHTML = `\u0394T = T<sub>f</sub> \u2212 T<sub>c</sub> = ${format(equilibrium - initial)} \xB0C`;
+        } else {
+          temperatureChangeLabel.textContent = t("noTemperatureChange");
+          temperatureChange.innerHTML = `\u0394T = 0.0 \xB0C`;
+        }
+        query(`[data-thermo="${side}"]`).style.height = `${clamp(value, 5, 100)}%`;
+        query(`[data-thermo="${side}"]`).style.background = colour;
+      });
+      const reverseFlow = temperatureDifference < 0;
+      const noHeatFlow = phase === "equilibrium";
+      const flowArrow = query("[data-flow-arrow]");
+      flowArrow.hidden = noHeatFlow;
+      flowArrow.textContent = reverseFlow ? "\u2190" : "\u2192";
+      renderFlowText(noHeatFlow);
+      query('[data-readout="final"]').innerHTML = phase === "equilibrium" ? `T<sub>f</sub> = ${format(equilibrium)} \xB0C` : `T<sub>f</sub> = ?`;
+      query('[data-readout="time"]').textContent = `${format(elapsed)} s`;
+      const contactButton = query('.hf-actions [data-action="contact"]');
+      const pauseButton = query('[data-action="pause"]');
+      const stagePlayButton = query('[data-action="stagePlay"]');
+      const stagePlayText = query("[data-stage-play-text]");
+      const stagePlayIcon = query("[data-stage-play-icon]");
+      contactButton.hidden = phase !== "separated";
+      pauseButton.disabled = phase !== "running" && phase !== "paused";
+      pauseButton.textContent = phase === "paused" ? t("resume") : t("pause");
+      stagePlayButton.disabled = phase === "joining";
+      if (phase === "running") {
+        stagePlayText.textContent = t("pause");
+        stagePlayIcon.textContent = "\u2161";
+      } else if (phase === "paused") {
+        stagePlayText.textContent = t("resume");
+        stagePlayIcon.textContent = "\u25B6";
+      } else if (phase === "equilibrium") {
+        stagePlayText.textContent = t("replay");
+        stagePlayIcon.textContent = "\u21BB";
+      } else {
+        stagePlayText.textContent = t("startAnimation");
+        stagePlayIcon.textContent = "\u25B6";
+      }
+      if (phase === "separated" || lastSyncedPhase !== phase) {
+        syncControls();
+        lastSyncedPhase = phase;
+      }
+    }
+    function reset() {
+      cancelAnimationFrame(animationFrame);
+      clearTimeout(joinTimer);
+      phase = "separated";
+      hotTemp = state.hotInitial;
+      coldTemp = state.coldInitial;
+      equilibrium = calculateEquilibrium();
+      elapsed = 0;
+      lastFrame = 0;
+      lastVisualFrame = 0;
+      render();
+    }
+    function tick(now) {
+      if (phase !== "running") return;
+      if (!lastFrame) lastFrame = now;
+      const realDelta = Math.min((now - lastFrame) / 1e3, 0.05);
+      lastFrame = now;
+      const simulatedDelta = realDelta * 20;
+      const capacity = capacities();
+      const decayRate = state.conductance * (1 / capacity.hot + 1 / capacity.cold);
+      const oldDifference = hotTemp - coldTemp;
+      const newDifference = oldDifference * Math.exp(-decayRate * simulatedDelta);
+      hotTemp = equilibrium + capacity.cold / (capacity.hot + capacity.cold) * newDifference;
+      coldTemp = equilibrium - capacity.hot / (capacity.hot + capacity.cold) * newDifference;
+      elapsed += simulatedDelta;
+      if (Math.abs(newDifference) <= 0.5) {
+        hotTemp = equilibrium;
+        coldTemp = equilibrium;
+        phase = "equilibrium";
+        render();
+        return;
+      }
+      if (!lastVisualFrame || now - lastVisualFrame >= 33) {
+        render();
+        lastVisualFrame = now;
+      }
+      animationFrame = requestAnimationFrame(tick);
+    }
+    function start() {
+      if (phase === "separated") {
+        equilibrium = calculateEquilibrium();
+        phase = "joining";
+        render();
+        joinTimer = window.setTimeout(() => {
+          phase = Math.abs(hotTemp - coldTemp) <= 0.5 ? "equilibrium" : "running";
+          lastFrame = 0;
+          render();
+          if (phase === "running") animationFrame = requestAnimationFrame(tick);
+        }, 760);
+        return;
+      } else if (phase === "paused") {
+        phase = "running";
+      }
+      lastFrame = 0;
+      lastVisualFrame = 0;
+      render();
+      animationFrame = requestAnimationFrame(tick);
+    }
+    function onInput(event) {
+      const input = event.target.closest("[data-field]");
+      if (!input || phase !== "separated") return;
+      if (input.type === "number" && event.type === "input") return;
+      const field = input.dataset.field;
+      if (input.tagName === "SELECT") {
+        state[field] = input.value;
+      } else {
+        if (input.value === "") return;
+        const min = Number(input.min);
+        const max = Number(input.max);
+        state[field] = clamp(Number(input.value), min, max);
+      }
+      reset();
+    }
+    function onClick(event) {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+      const action = button.dataset.action;
+      if (action === "contact") start();
+      if (action === "pause" || action === "stagePlay") {
+        if (phase === "running") {
+          phase = "paused";
+          cancelAnimationFrame(animationFrame);
+          render();
+        } else if (phase === "paused") {
+          start();
+        } else if (action === "stagePlay" && phase === "separated") {
+          start();
+        } else if (action === "stagePlay" && phase === "equilibrium") {
+          reset();
+          start();
+        }
+      }
+      if (action === "reset") reset();
+      if (action === "default") {
+        Object.assign(state, DEFAULTS);
+        reset();
+      }
+      if (action === "massTemperaturePreset") {
+        Object.assign(state, MASS_TEMPERATURE_PRESET);
+        reset();
+      }
+      if (action === "toggleControls") {
+        controlsCollapsed = !controlsCollapsed;
+        render();
+      }
+      if (action === "fullscreen") void toggleFullscreen();
+      if (action === "language") options.onLanguageToggle?.();
+    }
+    root2.addEventListener("input", onInput);
+    root2.addEventListener("change", onInput);
+    root2.addEventListener("click", onClick);
+    document.addEventListener("fullscreenchange", updateFullscreenButton);
+    document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
+    reset();
+    updateFullscreenButton();
+    root2.destroy = () => {
+      cancelAnimationFrame(animationFrame);
+      clearTimeout(joinTimer);
+      root2.removeEventListener("input", onInput);
+      root2.removeEventListener("change", onInput);
+      root2.removeEventListener("click", onClick);
+      document.removeEventListener("fullscreenchange", updateFullscreenButton);
+      document.removeEventListener("webkitfullscreenchange", updateFullscreenButton);
+    };
+    return root2;
+  }
+
+  // labs/heat-flow/js/i18n.js
+  var currentLang = "en";
+  var STRINGS = {
+    en: {
+      title: "Heat Flow & Thermal Equilibrium",
+      subtitle: "Put a hot object and a cold object in contact. Track energy transfer until both reach the same temperature.",
+      hotObject: "Hot object",
+      coldObject: "Cold object",
+      sameTempObject: "Same-temperature object",
+      material: "Material",
+      mass: "Mass",
+      initialTemp: "Initial temperature",
+      initialTempLabel: "Initial temperature: {n} \xB0C",
+      conductivity: "Animation speed",
+      conductivityHint: "Move the slider to make the animation slower or faster.",
+      poor: "Slower",
+      good: "Faster",
+      aluminium: "Aluminium",
+      copper: "Copper",
+      iron: "Iron",
+      glass: "Glass",
+      water: "Water",
+      separated: "Objects are separated",
+      separatedExplain: "No contact \u2192 no heat transfer",
+      joining: "Putting the objects together\u2026",
+      joiningExplain: "Heat flow starts only after they touch.",
+      flowing: "Thermal energy is flowing from hot to cold",
+      flowingExplain: "The larger the temperature difference, the faster the energy transfer.",
+      paused: "Simulation paused",
+      equilibrium: "Thermal equilibrium reached",
+      equilibriumExplain: "Same temperature \u2192 no net heat flow",
+      flowIndicator: "Heat flows from HOT to COLD",
+      flowIndicatorReverse: "Heat flows from HOT to COLD",
+      flowPrefix: "Heat flows from ",
+      flowConnector: " to ",
+      contact: "Put objects together",
+      animationControls: "Animation controls",
+      startAnimation: "Start animation",
+      replay: "Replay",
+      pause: "Pause",
+      resume: "Resume",
+      reset: "Reset",
+      default: "100\xB0C / 0\xB0C default",
+      massTemperaturePreset: "Preset: hot 2 kg at 80\xB0C \xB7 cold 1 kg at 20\xB0C",
+      energyTransferred: "Energy moved",
+      heatFlowRate: "Energy moving now",
+      predictedFinal: "Final temperature",
+      finalTemperatureQuestion: "Final temperature = ?",
+      elapsed: "Time passed",
+      temperatureFall: "Temperature decrease",
+      temperatureRise: "Temperature increase",
+      noTemperatureChange: "No temperature change",
+      graphTitle: "Temperature\u2013time graph",
+      temperature: "Temperature / \xB0C",
+      time: "Time / s",
+      hotShort: "Hot",
+      coldShort: "Cold",
+      conceptTitle: "HKDSE key ideas",
+      concept1: "Thermal energy transfers spontaneously from a hotter object to a colder object.",
+      concept2: "The transfer continues until both objects have the same temperature.",
+      concept3: "For an isolated system: energy lost by hot object = energy gained by cold object.",
+      formula: "m\u2095c\u2095(T\u2095 \u2212 T) = m\u{1D68C}c\u{1D68C}(T \u2212 T\u{1D68C})",
+      storyHot: "Hot and cold",
+      storyMove: "Energy moves",
+      storySame: "Same temperature",
+      heatCapacity: "Heat capacity",
+      noFlow: "There is no heat flow",
+      language: "\u4E2D\u6587",
+      showControls: "Show controls",
+      hideControls: "Hide controls",
+      fullscreen: "Full screen",
+      exitFullscreen: "Exit full screen"
+    },
+    zh: {
+      title: "\u71B1\u80FD\u6D41\u52D5\u8207\u71B1\u5E73\u8861",
+      subtitle: "\u5C07\u9AD8\u6EAB\u7269\u9AD4\u8207\u4F4E\u6EAB\u7269\u9AD4\u63A5\u89F8\uFF0C\u89C0\u5BDF\u71B1\u80FD\u8F49\u79FB\uFF0C\u76F4\u81F3\u5169\u8005\u6EAB\u5EA6\u76F8\u540C\u3002",
+      hotObject: "\u9AD8\u6EAB\u7269\u9AD4",
+      coldObject: "\u4F4E\u6EAB\u7269\u9AD4",
+      sameTempObject: "\u540C\u6EAB\u7269\u9AD4",
+      material: "\u7269\u6599",
+      mass: "\u8CEA\u91CF",
+      initialTemp: "\u521D\u59CB\u6EAB\u5EA6",
+      initialTempLabel: "\u521D\u59CB\u6EAB\u5EA6\uFF1A{n} \xB0C",
+      conductivity: "\u52D5\u756B\u901F\u5EA6",
+      conductivityHint: "\u79FB\u52D5\u6ED1\u687F\uFF0C\u8ABF\u6574\u52D5\u756B\u5FEB\u6162\u3002",
+      poor: "\u8F03\u6162",
+      good: "\u8F03\u5FEB",
+      aluminium: "\u92C1",
+      copper: "\u9285",
+      iron: "\u9435",
+      glass: "\u73BB\u7483",
+      water: "\u6C34",
+      separated: "\u5169\u7269\u9AD4\u5C1A\u672A\u63A5\u89F8",
+      separatedExplain: "\u6C92\u6709\u63A5\u89F8 \u2192 \u6C92\u6709\u71B1\u80FD\u8F49\u79FB",
+      joining: "\u6B63\u5728\u5C07\u5169\u7269\u9AD4\u653E\u5728\u4E00\u8D77\u2026\u2026",
+      joiningExplain: "\u63A5\u89F8\u5F8C\uFF0C\u71B1\u80FD\u624D\u958B\u59CB\u6D41\u52D5\u3002",
+      flowing: "\u71B1\u80FD\u6B63\u7531\u9AD8\u6EAB\u7269\u9AD4\u6D41\u5411\u4F4E\u6EAB\u7269\u9AD4",
+      flowingExplain: "\u6EAB\u5DEE\u8D8A\u5927\uFF0C\u71B1\u80FD\u8F49\u79FB\u901F\u7387\u8D8A\u9AD8\u3002",
+      paused: "\u6A21\u64EC\u5DF2\u66AB\u505C",
+      equilibrium: "\u5DF2\u9054\u81F3\u71B1\u5E73\u8861",
+      equilibriumExplain: "\u6EAB\u5EA6\u76F8\u540C \u2192 \u6C92\u6709\u6DE8\u71B1\u80FD\u6D41\u52D5",
+      flowIndicator: "\u71B1\u80FD\u7531\u9AD8\u6EAB\u6D41\u5411\u4F4E\u6EAB",
+      flowIndicatorReverse: "\u71B1\u80FD\u7531\u9AD8\u6EAB\u6D41\u5411\u4F4E\u6EAB",
+      flowPrefix: "\u71B1\u80FD\u7531",
+      flowConnector: "\u6D41\u5411",
+      contact: "\u5C07\u7269\u9AD4\u653E\u5728\u4E00\u8D77",
+      animationControls: "\u52D5\u756B\u63A7\u5236",
+      startAnimation: "\u958B\u59CB\u52D5\u756B",
+      replay: "\u91CD\u64AD",
+      pause: "\u66AB\u505C",
+      resume: "\u7E7C\u7E8C",
+      reset: "\u91CD\u8A2D",
+      default: "100\xB0C\uFF0F0\xB0C \u9810\u8A2D",
+      massTemperaturePreset: "\u9810\u8A2D\uFF1A\u9AD8\u6EAB 2 kg\u300180\xB0C \xB7 \u4F4E\u6EAB 1 kg\u300120\xB0C",
+      energyTransferred: "\u5DF2\u79FB\u52D5\u7684\u71B1\u80FD",
+      heatFlowRate: "\u71B1\u80FD\u73FE\u5728\u6D41\u52D5\u901F\u5EA6",
+      predictedFinal: "\u6700\u7D42\u6EAB\u5EA6",
+      finalTemperatureQuestion: "\u6700\u7D42\u6EAB\u5EA6 = ?",
+      elapsed: "\u7D93\u904E\u6642\u9593",
+      temperatureFall: "\u6EAB\u5EA6\u4E0B\u964D",
+      temperatureRise: "\u6EAB\u5EA6\u4E0A\u5347",
+      noTemperatureChange: "\u6EAB\u5EA6\u4E0D\u8B8A",
+      graphTitle: "\u6EAB\u5EA6\u2014\u6642\u9593\u5716",
+      temperature: "\u6EAB\u5EA6 / \xB0C",
+      time: "\u6642\u9593 / s",
+      hotShort: "\u9AD8\u6EAB",
+      coldShort: "\u4F4E\u6EAB",
+      conceptTitle: "HKDSE \u91CD\u9EDE",
+      concept1: "\u71B1\u80FD\u6703\u81EA\u767C\u5730\u7531\u8F03\u9AD8\u6EAB\u7269\u9AD4\u8F49\u79FB\u81F3\u8F03\u4F4E\u6EAB\u7269\u9AD4\u3002",
+      concept2: "\u71B1\u80FD\u6301\u7E8C\u8F49\u79FB\uFF0C\u76F4\u81F3\u5169\u7269\u9AD4\u6EAB\u5EA6\u76F8\u540C\u3002",
+      concept3: "\u5728\u9694\u71B1\u7CFB\u7D71\u4E2D\uFF1A\u9AD8\u6EAB\u7269\u9AD4\u5931\u53BB\u7684\u71B1\u80FD = \u4F4E\u6EAB\u7269\u9AD4\u5438\u6536\u7684\u71B1\u80FD\u3002",
+      formula: "m\u2095c\u2095(T\u2095 \u2212 T) = m\u{1D68C}c\u{1D68C}(T \u2212 T\u{1D68C})",
+      storyHot: "\u4E00\u71B1\u4E00\u51B7",
+      storyMove: "\u71B1\u80FD\u79FB\u52D5",
+      storySame: "\u6EAB\u5EA6\u76F8\u540C",
+      heatCapacity: "\u71B1\u5BB9\u91CF",
+      noFlow: "\u6C92\u6709\u71B1\u80FD\u6D41\u52D5",
+      language: "English",
+      showControls: "\u986F\u793A\u63A7\u5236",
+      hideControls: "\u6536\u8D77\u63A7\u5236",
+      fullscreen: "\u5168\u87A2\u5E55",
+      exitFullscreen: "\u9000\u51FA\u5168\u87A2\u5E55"
+    }
+  };
+  function hubLangToLocal(lang) {
+    return lang === "zh" || lang === "zh-Hant" ? "zh" : "en";
+  }
+  function initLangFromUrl() {
+    const lang = new URLSearchParams(location.search).get("lang");
+    if (lang) currentLang = hubLangToLocal(lang);
+  }
+  function setLang(lang) {
+    currentLang = lang === "en" ? "en" : "zh";
+    document.documentElement.lang = currentLang === "zh" ? "zh-HK" : "en";
+  }
+  function getLang() {
+    return currentLang;
+  }
+  function createT(lang = currentLang) {
+    const strings = STRINGS[lang === "en" ? "en" : "zh"];
+    return (key) => strings[key] ?? key;
+  }
+
+  // labs/heat-flow/js/boot.js
+  var root = document.getElementById("app");
+  var cleanup = null;
+  function mount() {
+    cleanup?.();
+    root.replaceChildren();
+    const lab = createHeatFlowLab(createT(getLang()), {
+      lang: getLang(),
+      onLanguageToggle: () => {
+        setLang(getLang() === "zh" ? "en" : "zh");
+        mount();
+      }
+    });
+    root.appendChild(lab);
+    cleanup = lab.destroy;
+  }
+  initLangFromUrl();
+  setLang(getLang());
+  mount();
+  window.addEventListener("message", (event) => {
+    if (event.data?.type !== "s3phy:lang") return;
+    const next = hubLangToLocal(event.data.lang);
+    if (next === getLang()) return;
+    setLang(next);
+    mount();
+  });
+})();
+
+  </script>
+</body>
+</html>

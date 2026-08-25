@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-HK" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>溫度計設計 — Thermometer Design Lab</title>
   <style>
@@ -635,6 +636,64 @@ html:has(.tl-wrap--design-simple) body {
   overflow: hidden;
   background: #ffffff;
 }
+
+/* Liquid thermometer design — collapsible controls */
+.tl-wrap--design-simple .tl-design-controls-toggle {
+  display: flex;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  background: #eef2ff;
+  color: #4338ca;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.tl-wrap--design-simple .tl-design-controls-toggle:hover {
+  border-color: #6366f1;
+  background: #e0e7ff;
+}
+
+.tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed,
+html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.tl-wrap--design-simple .tl-design-simple-side.is-collapsed > :not(.tl-design-controls-toggle) {
+  display: none;
+}
+
+.tl-wrap--design-simple .tl-design-simple-side.is-collapsed {
+  display: none;
+}
+
+.tl-wrap--design-simple .tl-design-simple-side.is-collapsed .tl-design-controls-toggle {
+  min-height: 110px;
+  flex-direction: column;
+  padding-inline: 6px;
+}
+
+@media (max-width: 900px) {
+  .tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed,
+  html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(300px, 1fr);
+  }
+
+  .tl-wrap--design-simple .tl-design-simple-side.is-collapsed .tl-design-controls-toggle {
+    min-height: 42px;
+    flex-direction: row;
+  }
+}
 html.s3phy-embed #app,
 html:has(.tl-wrap--design-simple) #app {
   padding: 4px;
@@ -667,9 +726,87 @@ html:has(.tl-wrap--design-simple) #app {
   max-width: 100%;
   box-sizing: border-box;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 .tl-wrap * { box-sizing: border-box; }
-.tl-wrap .tl-head { text-align: center; margin: 0 0 20px; }
+.tl-wrap .tl-fullscreen-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 40;
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1px solid #bae6fd;
+  border-radius: 999px;
+  background: rgba(240, 249, 255, 0.96);
+  color: #075985;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.1);
+}
+.tl-wrap .tl-fullscreen-btn:hover {
+  border-color: #0ea5e9;
+  background: #e0f2fe;
+}
+.tl-wrap .tl-fullscreen-btn[aria-pressed="true"] {
+  border-color: var(--tl-primary);
+  color: #4338ca;
+  background: #eef2ff;
+}
+.tl-wrap .tl-fullscreen-btn span { font-size: 1.05rem; line-height: 1; }
+html.s3phy-embed .tl-wrap--design-simple .tl-fullscreen-btn { top: 48px; }
+
+html:fullscreen,
+html:fullscreen body,
+html:fullscreen #app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+html:fullscreen #app { padding: 4px; }
+html:fullscreen .tl-wrap {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border-radius: 0;
+  overflow: auto;
+}
+.tl-wrap .tl-head {
+  position: relative;
+  text-align: center;
+  margin: 0 0 20px;
+  padding-inline: 76px;
+}
+.tl-wrap .tl-language-btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 12px;
+  background: #ffffff;
+  color: #334155;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.tl-wrap .tl-language-btn:hover {
+  border-color: var(--tl-primary);
+  color: var(--tl-primary);
+  background: #eef2ff;
+}
+.tl-wrap .tl-language-btn:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.3);
+  outline-offset: 2px;
+}
 .tl-wrap .tl-title {
   margin: 0;
   font-weight: 850;
@@ -1346,6 +1483,7 @@ html:has(.tl-wrap--design-simple) #app {
 }
 .tl-wrap--design-simple .tl-part-tab {
   display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -1356,6 +1494,10 @@ html:has(.tl-wrap--design-simple) #app {
   padding: 7px 6px;
   font-weight: 800;
   font-size: 0.82rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: center;
+  white-space: normal;
   cursor: pointer;
   transition: 0.15s ease;
 }
@@ -1434,7 +1576,15 @@ html:has(.tl-wrap--design-simple) #app {
   max-width: none;
   width: 100%;
   min-height: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  container-type: inline-size;
+}
+.tl-wrap--design-simple .tl-design-simple-side > *,
+.tl-wrap--design-simple .tl-focus-card > *,
+.tl-wrap--design-simple .tl-bath-bar--simple > * {
+  min-width: 0;
+  max-width: 100%;
 }
 @media (max-width: 900px) {
   .tl-wrap--design-simple .tl-dash--design-simple {
@@ -1458,6 +1608,7 @@ html:has(.tl-wrap--design-simple) #app {
 }
 .tl-wrap--design-simple .tl-reset-part-btn {
   flex-shrink: 0;
+  max-width: 48%;
   font-size: 0.78rem;
   font-weight: 700;
   padding: 6px 10px;
@@ -1466,6 +1617,9 @@ html:has(.tl-wrap--design-simple) #app {
   background: #f8fafc;
   color: #334155;
   cursor: pointer;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .tl-wrap--design-simple .tl-reset-part-btn:hover {
   background: #e2e8f0;
@@ -1488,6 +1642,7 @@ html:has(.tl-wrap--design-simple) #app {
   border-color: #fb923c;
 }
 .tl-wrap--design-simple .tl-focus-card {
+  flex: 0 0 auto;
   background: #fff;
   border: 2px solid #e2e8f0;
   border-radius: 14px;
@@ -1495,6 +1650,7 @@ html:has(.tl-wrap--design-simple) #app {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-width: 100%;
   min-height: 0;
 }
 .tl-wrap--design-simple .tl-focus-card[data-focus="bulb"] { border-color: #fdba74; }
@@ -1505,10 +1661,14 @@ html:has(.tl-wrap--design-simple) #app {
   align-self: flex-start;
   font-weight: 800;
   font-size: 0.82rem;
+  max-width: 100%;
   padding: 4px 10px;
   border-radius: 999px;
   background: #f1f5f9;
   color: #334155;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 .tl-wrap--design-simple .tl-focus-card[data-focus="bulb"] .tl-focus-badge { background: #ffedd5; color: #c2410c; }
 .tl-wrap--design-simple .tl-focus-card[data-focus="bore"] .tl-focus-badge { background: #f3e8ff; color: #7e22ce; }
@@ -1522,8 +1682,9 @@ html:has(.tl-wrap--design-simple) #app {
 }
 .tl-wrap--design-simple .tl-focus-effect {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 10px;
   padding: 8px 10px;
   border-radius: 10px;
@@ -1531,18 +1692,94 @@ html:has(.tl-wrap--design-simple) #app {
   border: 1px dashed #cbd5e1;
 }
 .tl-wrap--design-simple .tl-focus-effect-k {
+  min-width: 0;
+  flex: 1 1 110px;
   font-size: 0.78rem;
   font-weight: 700;
   color: #64748b;
+  overflow-wrap: anywhere;
 }
 .tl-wrap--design-simple .tl-focus-effect-v {
+  min-width: 0;
+  max-width: 100%;
   font-size: 1.05rem;
   color: #0f766e;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.tl-wrap--design-simple .tl-focus-card[data-focus="wall"] .tl-focus-effect {
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  border: 2px solid #38bdf8;
+  background: #f0f9ff;
+}
+.tl-wrap--design-simple .tl-focus-card[data-focus="wall"] .tl-focus-effect-k {
+  flex: 0 1 auto;
+}
+.tl-wrap--design-simple .tl-focus-card[data-focus="wall"] .tl-focus-effect-v {
+  color: #075985;
+  font-size: 1.2rem;
+  font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+.tl-wrap--design-simple .tl-design-grid--mini {
+  display: none;
+  grid-template-columns: minmax(0, 1fr);
+}
+.tl-wrap--design-simple .tl-design-grid--mini .tl-design-stat[hidden] { display: none; }
+.tl-wrap--design-simple .tl-design-grid--mini .tl-design-stat:last-child {
+  grid-column: 1 / -1;
 }
 .tl-wrap--design-simple .tl-design-grid--mini .tl-design-stat {
+  min-width: 0;
   opacity: 0.55;
   transition: 0.15s ease;
+}
+.tl-wrap--design-simple .tl-design-grid--mini .tl-design-k,
+.tl-wrap--design-simple .tl-design-grid--mini .tl-design-v,
+.tl-wrap--design-simple .tl-focus-explain,
+.tl-wrap--design-simple .tl-design-cue,
+.tl-wrap--design-simple .tl-hint {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.tl-wrap--design-simple .tl-design-grid--mini .tl-design-k {
+  line-height: 1.2;
+}
+.tl-wrap--design-simple .tl-design-grid--mini .tl-design-v {
+  display: block;
+  line-height: 1.2;
+}
+.tl-wrap--design-simple .tl-focus-control .tl-lr {
+  align-items: flex-start;
+  gap: 8px;
+}
+.tl-wrap--design-simple .tl-focus-control .tl-lr > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.tl-wrap--design-simple .tl-focus-control .tl-param-num {
+  flex: 0 0 80px;
+  max-width: 42%;
+}
+@container (max-width: 420px) {
+  .tl-wrap--design-simple .tl-design-grid--mini {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tl-wrap--design-simple .tl-design-grid--mini .tl-design-stat:last-child {
+    grid-column: 1 / -1;
+  }
+}
+@container (max-width: 280px) {
+  .tl-wrap--design-simple .tl-design-grid--mini {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tl-wrap--design-simple .tl-design-grid--mini .tl-design-stat:last-child {
+    grid-column: auto;
+  }
 }
 .tl-wrap--design-simple .tl-design-grid--mini .tl-design-stat.is-focus {
   opacity: 1;
@@ -1550,6 +1787,7 @@ html:has(.tl-wrap--design-simple) #app {
   box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.12);
 }
 .tl-wrap--design-simple .tl-bath-bar--simple {
+  flex: 0 0 auto;
   background: #fff;
   border: 1px solid var(--tl-border);
   border-radius: 12px;
@@ -1558,6 +1796,46 @@ html:has(.tl-wrap--design-simple) #app {
   flex-direction: column;
   gap: 6px;
   min-height: 0;
+}
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-beaker-overlay {
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-beaker-overlay > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-beaker-overlay > span:first-child {
+  flex: 1 1 160px;
+}
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-btn-group {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-preset-btn,
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-seg-btn {
+  min-width: 0;
+  height: auto;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+@container (max-width: 360px) {
+  .tl-wrap--design-simple .tl-reset-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tl-wrap--design-simple .tl-reset-part-btn {
+    width: 100%;
+    max-width: none;
+  }
+  .tl-wrap--design-simple .tl-focus-control .tl-lr {
+    flex-wrap: wrap;
+  }
+}
+@container (max-width: 280px) {
+  .tl-wrap--design-simple .tl-bath-bar--simple .tl-btn-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 .tl-wrap--design-simple .tl-design-cue {
   margin: 0;
@@ -2058,6 +2336,23 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
   }
 }
 
+/* Keep liquid-design collapsed layout above later embed grid rules. */
+.tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed,
+html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 900px) {
+  .tl-wrap .tl-fullscreen-btn strong { display: none; }
+  .tl-wrap .tl-fullscreen-btn { min-width: 40px; padding-inline: 8px; }
+
+  .tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed,
+  html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collapsed {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(300px, 1fr);
+  }
+}
+
   </style>
   <script>
     (function () {
@@ -2216,6 +2511,48 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     window.addEventListener("resize", refreshMode);
     return { setCollapsed, refreshMode, isCollapsed: () => collapsed };
   }
+  function attachFullscreenControl(wrap, t) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "tl-fullscreen-btn";
+    button.innerHTML = `
+    <span data-fullscreen-icon aria-hidden="true">\u26F6</span>
+    <strong data-fullscreen-label>${t("tools.fullscreen")}</strong>
+  `;
+    wrap.appendChild(button);
+    const isFullscreen = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+    const update = () => {
+      const active = isFullscreen();
+      const label = active ? t("tools.exitFullscreen") : t("tools.fullscreen");
+      button.setAttribute("aria-pressed", String(active));
+      button.setAttribute("aria-label", label);
+      button.querySelector("[data-fullscreen-label]").textContent = label;
+      button.querySelector("[data-fullscreen-icon]").textContent = active ? "\u2715" : "\u26F6";
+      requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
+    };
+    const toggle = async () => {
+      try {
+        if (!isFullscreen()) {
+          const request = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+          await request?.call(document.documentElement);
+        } else {
+          const exit = document.exitFullscreen || document.webkitExitFullscreen;
+          await exit?.call(document);
+        }
+      } catch {
+      }
+      update();
+    };
+    button.addEventListener("click", toggle);
+    document.addEventListener("fullscreenchange", update);
+    document.addEventListener("webkitfullscreenchange", update);
+    update();
+    return () => {
+      button.removeEventListener("click", toggle);
+      document.removeEventListener("fullscreenchange", update);
+      document.removeEventListener("webkitfullscreenchange", update);
+    };
+  }
   function createThermometerLab(t, options = {}) {
     const defaultType = options.type || "liquid";
     let title = t("tools.thermometerLab.title");
@@ -2254,6 +2591,10 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     </div>
     <div class="tl-dash tl-dash--design-simple">
       <div class="tl-viz-phys tl-viz-phys--large">
+        <button type="button" class="tl-design-controls-toggle" id="tl-design-controls-toggle" aria-expanded="true">
+          <span aria-hidden="true">\u2699</span>
+          <strong data-design-toggle-text>${t("tools.floatingControls.hideParams")}</strong>
+        </button>
         <canvas class="tl-canvas-phys" id="tl-thermometerCanvas" width="720" height="720"></canvas>
       </div>
 
@@ -2265,16 +2606,16 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
             <span class="tl-focus-effect-k" id="tl-focus-effect-k"></span>
             <b class="tl-focus-effect-v" id="tl-focus-effect-v"></b>
           </div>
-          <div class="tl-design-grid tl-design-grid--mini">
-            <div class="tl-design-stat" data-stat="sensitivity">
+          <div class="tl-design-grid tl-design-grid--mini" hidden>
+            <div class="tl-design-stat" data-stat="sensitivity" hidden>
               <span class="tl-design-k">${t("tools.thermometerLab.design.sensitivity")}</span>
               <b class="tl-design-v" id="tl-val-sensitivity">0.100 cm/\xB0C</b>
             </div>
-            <div class="tl-design-stat" data-stat="range">
+            <div class="tl-design-stat is-focus" data-stat="range">
               <span class="tl-design-k">${t("tools.thermometerLab.design.range")}</span>
               <b class="tl-design-v" id="tl-val-range">180 \xB0C</b>
             </div>
-            <div class="tl-design-stat" data-stat="response">
+            <div class="tl-design-stat" data-stat="response" hidden>
               <span class="tl-design-k">${t("tools.thermometerLab.design.response")}</span>
               <b class="tl-design-v" id="tl-val-response-time">0.65 s</b>
             </div>
@@ -2319,7 +2660,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
 
         <div class="tl-bath-bar tl-bath-bar--simple">
           <div class="tl-beaker-overlay">
-            <span>${t("tools.thermometerLab.design.bath")}: <b id="tl-bath-state">Water</b></span>
+            <span>${t("tools.thermometerLab.design.bath")}: <b id="tl-bath-state">${t("tools.thermometerLab.design.bathStateWater")}</b></span>
             <span><b class="tl-temp-badge" id="tl-bath-temp-display">25.0\xB0C</b></span>
           </div>
           <div class="tl-lr">
@@ -2336,8 +2677,8 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
           <div class="tl-cg" style="margin-top:6px">
             <span class="tl-section-label">${t("tools.thermometerLab.design.liquid")}</span>
             <div class="tl-seg" role="group">
-              <button type="button" class="tl-seg-btn active-mercury" id="tl-card-mercury">Hg</button>
-              <button type="button" class="tl-seg-btn" id="tl-card-alcohol">Alcohol</button>
+              <button type="button" class="tl-seg-btn" id="tl-card-mercury">Hg</button>
+              <button type="button" class="tl-seg-btn active-alcohol" id="tl-card-alcohol">Alcohol</button>
             </div>
           </div>
           <div class="tl-warning-banner" id="tl-alcohol-boiling-warning">
@@ -2391,7 +2732,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       <div class="tl-bath-bar tl-bath-bar--full-width">
         <div class="tl-bath-bar-top">
           <div class="tl-beaker-overlay">
-            <span>Liquid: <b id="tl-bath-state">Water</b></span>
+            <span>${t("tools.thermometerLab.design.liquid")}: <b id="tl-bath-state">${t("tools.thermometerLab.design.bathStateWater")}</b></span>
             <span><b class="tl-temp-badge" id="tl-bath-temp-display">25.0\xB0C</b></span>
           </div>
           <div class="tl-bath-slider-wrap">
@@ -2403,10 +2744,10 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
           </div>
         </div>
         <div class="tl-btn-group">
-          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice">Ice 0\xB0C</button>
-          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room">Room 25\xB0C</button>
-          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam">Steam 100\xB0C</button>
-          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil">Oil 150\xB0C</button>
+          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice">${t("tools.thermometerLab.design.presetIce")}</button>
+          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room">${t("tools.thermometerLab.design.presetRoom")}</button>
+          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam">${t("tools.thermometerLab.design.presetSteam")}</button>
+          <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil">${t("tools.thermometerLab.design.presetOil")}</button>
         </div>
       </div>
 
@@ -2541,6 +2882,21 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       </div>
     </div>
   `;
+    const isEnglish = document.documentElement.lang === "en";
+    const languageButton = document.createElement("button");
+    languageButton.type = "button";
+    languageButton.className = "tl-language-btn";
+    languageButton.textContent = isEnglish ? "\u4E2D\u6587" : "English";
+    languageButton.setAttribute(
+      "aria-label",
+      isEnglish ? "\u5207\u63DB\u81F3\u4E2D\u6587" : "Switch to English"
+    );
+    languageButton.addEventListener("click", () => {
+      const url = new URL(window.location.href);
+      url.searchParams.set("lang", isEnglish ? "zh-Hant" : "en");
+      window.location.href = url.href;
+    });
+    wrap.querySelector(".tl-head")?.appendChild(languageButton);
     let initialBathTemp = 25;
     try {
       const saved = sessionStorage.getItem("s3phy.thermometer.bathTemp");
@@ -2553,7 +2909,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     } catch (err) {
     }
     const state = {
-      liquidType: "mercury",
+      liquidType: "alcohol",
       thermometerType: defaultType,
       bulbVolume: 200,
       wallThickness: 0.5,
@@ -2845,6 +3201,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       wrap.querySelectorAll(".tl-design-stat").forEach((el) => {
         const key = el.dataset.stat;
         const highlight = part === "bulb" && key === "range" || part === "bore" && key === "sensitivity" || part === "wall" && key === "response";
+        el.hidden = !highlight;
         el.classList.toggle("is-focus", highlight);
       });
       const badge = wrap.querySelector("#tl-focus-badge");
@@ -2870,7 +3227,8 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       const rangeC = getDesignRangeC();
       const tau = getResponseTimeConstant();
       if (state.focusPart === "wall") {
-        effectV.textContent = `${tau.toFixed(2)} s`;
+        const speed = getResponseSpeed(tau);
+        effectV.textContent = `${speed.label} \xB7 ${tau.toFixed(1)} s`;
       } else if (state.focusPart === "bore") {
         effectV.textContent = `${S.toFixed(3)} cm/\xB0C`;
       } else {
@@ -3016,6 +3374,12 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       if (state.thermometerType === "resistance" || state.thermometerType === "thermistor") {
         return 0.35;
       }
+      if (isLiquidDesign) {
+        if (state.focusPart !== "wall") return 0.12;
+        const wallRatio = Math.min(1, Math.max(0, (design.wallThickness - 0.05) / 2.95));
+        const liquidFactor = liquidType === "mercury" ? 1 : 1.2;
+        return (0.12 + Math.pow(wallRatio, 1.2) * 7) * liquidFactor;
+      }
       const conductivityFactor = liquidType === "mercury" ? 1 : 8;
       const thicknessFactor = 0.15 + design.wallThickness * 1.8;
       const volumeFactor = 0.55 + design.bulbVolume * 25e-4;
@@ -3027,6 +3391,21 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
     }
     function getReferenceResponseTimeConstant() {
       return getResponseTimeConstantFor(getReferenceDesign());
+    }
+    function getResponseSpeed(tau) {
+      if (tau < 0.4) {
+        return { emoji: "\u26A1", label: t("tools.thermometerLab.design.responseVeryFast") };
+      }
+      if (tau < 1.2) {
+        return { emoji: "\u{1F3C3}", label: t("tools.thermometerLab.design.responseFast") };
+      }
+      if (tau < 3) {
+        return { emoji: "\u25CF", label: t("tools.thermometerLab.design.responseMedium") };
+      }
+      if (tau < 6) {
+        return { emoji: "\u{1F40C}", label: t("tools.thermometerLab.design.responseSlow") };
+      }
+      return { emoji: "\u{1F422}", label: t("tools.thermometerLab.design.responseVerySlow") };
     }
     function updateParticles(dt) {
       const { beakerX, beakerW } = getPhysLayout();
@@ -3319,7 +3698,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       const x = layout.thermometerX;
       const sceneW = layout.sceneW || activeSceneW || SCENE_WIDTH;
       const isCompare = design.role === "reference" || design.role === "current";
-      const stemTop = isLiquidDesign ? isCompare ? 56 : 14 : 20;
+      const stemTop = isLiquidDesign ? isCompare ? 72 : 14 : 20;
       const bulbScale = isLiquidDesign ? isCompare ? 3.2 : 4.4 : 1;
       const bulbRadius = getBulbVisualRadiusFor(design.bulbVolume) * bulbScale;
       const bulbCenterY = isLiquidDesign ? 520 + Math.max(0, bulbRadius - BULB_RADIUS_REF * bulbScale) * 0.15 : 250 + Math.max(0, bulbRadius - BULB_RADIUS_REF) * 0.35;
@@ -3366,21 +3745,29 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       ctx.fill();
       ctx.stroke();
       ctx.restore();
-      const boreWidth = isLiquidDesign ? Math.max(8, Math.min(glassWidth * 0.62, 8 + design.capillaryBore * 18)) : Math.min(glassWidth * 0.72, 0.8 + design.capillaryBore * 4.5);
+      const boreSetting = Math.min(1, Math.max(0, (design.capillaryBore - 0.05) / (2 - 0.05)));
+      const minBoreWidth = 4;
+      const maxBoreWidth = glassWidth * 0.82;
+      const boreWidth = isLiquidDesign ? minBoreWidth + (maxBoreWidth - minBoreWidth) * Math.pow(boreSetting, 0.9) : Math.min(glassWidth * 0.72, 0.8 + design.capillaryBore * 4.5);
       ctx.save();
       ctx.globalAlpha = dim("bore");
       if (focus === "bore") {
         ctx.strokeStyle = "#a855f7";
-        ctx.lineWidth = isLiquidDesign ? 5 : 4;
-        ctx.strokeRect(x - boreWidth / 2 - 3, stemTop + 6, boreWidth + 6, stemBottom - stemTop - 6);
+        ctx.lineWidth = isLiquidDesign ? 1.5 : 2;
+        ctx.shadowColor = "rgba(168, 85, 247, 0.8)";
+        ctx.shadowBlur = isLiquidDesign ? 8 : 4;
+        ctx.setLineDash(isLiquidDesign ? [4, 4] : []);
+        ctx.strokeRect(x - boreWidth / 2, stemTop + 8, boreWidth, stemBottom - stemTop - 8);
+        ctx.setLineDash([]);
+        ctx.shadowBlur = 0;
       }
-      ctx.fillStyle = isLiquidDesign ? "#fee2e2" : focus === "bore" ? "#3b0764" : "#1e1b4b";
+      const isMercury = state.liquidType === "mercury";
+      ctx.fillStyle = isLiquidDesign ? isMercury ? "#f1f5f9" : "#fee2e2" : focus === "bore" ? "#3b0764" : "#1e1b4b";
       ctx.fillRect(x - boreWidth / 2, stemTop + 8, boreWidth, stemBottom - stemTop - 8);
       ctx.restore();
-      const isMercury = state.liquidType === "mercury";
-      const color = isLiquidDesign ? "#dc2626" : isMercury ? "#94a3b8" : "#ef4444";
-      const colorHi = isLiquidDesign ? "#f87171" : "#ffffff";
-      const colorDeep = isLiquidDesign ? "#991b1b" : isMercury ? "#64748b" : "#b91c1c";
+      const color = isMercury ? "#94a3b8" : "#dc2626";
+      const colorHi = isMercury ? "#ffffff" : "#f87171";
+      const colorDeep = isMercury ? "#334155" : "#991b1b";
       const S = getDesignSensitivityFor(design.capillaryBore);
       const rangeC = getDesignRangeCFor(design.bulbVolume, design.capillaryBore);
       const zeroY = isLiquidDesign ? 420 : 210;
@@ -3402,10 +3789,10 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         atTop = design.thermometerTemp > rangeC + 0.5;
       }
       ctx.save();
-      ctx.globalAlpha = dim("bore") * 0.98 + 0.02;
+      ctx.globalAlpha = isMercury ? 1 : dim("bore") * 0.98 + 0.02;
       if (isLiquidDesign) {
-        ctx.shadowColor = "rgba(220, 38, 38, 0.65)";
-        ctx.shadowBlur = 14;
+        ctx.shadowColor = isMercury ? "rgba(15, 23, 42, 0.9)" : "rgba(220, 38, 38, 0.65)";
+        ctx.shadowBlur = isMercury ? 10 : 14;
       }
       const colGrad = ctx.createLinearGradient(x - boreWidth / 2, currentY, x + boreWidth / 2, currentY);
       colGrad.addColorStop(0, colorDeep);
@@ -3414,12 +3801,18 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       colGrad.addColorStop(1, colorDeep);
       ctx.fillStyle = colGrad;
       ctx.fillRect(x - boreWidth / 2, currentY, boreWidth, stemBottom - currentY);
+      if (isMercury) {
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x - boreWidth / 2, currentY, boreWidth, stemBottom - currentY);
+      }
       ctx.shadowBlur = 0;
       ctx.beginPath();
       ctx.ellipse(x, currentY, boreWidth / 2, isLiquidDesign ? 4.5 : 1.8, 0, 0, Math.PI * 2);
       ctx.fill();
+      if (isMercury) ctx.stroke();
       if (isLiquidDesign) {
-        ctx.fillStyle = "rgba(254, 202, 202, 0.85)";
+        ctx.fillStyle = isMercury ? "rgba(255, 255, 255, 0.8)" : "rgba(254, 202, 202, 0.85)";
         ctx.fillRect(x - boreWidth * 0.18, currentY + 2, boreWidth * 0.28, Math.max(0, stemBottom - currentY - 4));
       } else {
         ctx.fillStyle = "#ffffff";
@@ -3449,15 +3842,15 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         bulbGrad.addColorStop(1, "rgba(2, 132, 199, 0.75)");
       } else if (isLiquidDesign) {
         bulbGrad.addColorStop(0, "rgba(255, 255, 255, 0.55)");
-        bulbGrad.addColorStop(0.55, "rgba(254, 226, 226, 0.35)");
-        bulbGrad.addColorStop(1, "rgba(252, 165, 165, 0.55)");
+        bulbGrad.addColorStop(0.55, isMercury ? "rgba(226, 232, 240, 0.35)" : "rgba(254, 226, 226, 0.35)");
+        bulbGrad.addColorStop(1, isMercury ? "rgba(148, 163, 184, 0.55)" : "rgba(252, 165, 165, 0.55)");
       } else {
         bulbGrad.addColorStop(0, "#fffbeb");
         bulbGrad.addColorStop(0.5, "#fcd34d");
         bulbGrad.addColorStop(1, "#f59e0b");
       }
       ctx.fillStyle = bulbGrad;
-      ctx.strokeStyle = focus === "bulb" ? "#c2410c" : focus === "wall" ? "#0369a1" : isLiquidDesign ? "#f87171" : "#d97706";
+      ctx.strokeStyle = focus === "bulb" ? "#c2410c" : focus === "wall" ? "#0369a1" : isLiquidDesign ? isMercury ? "#94a3b8" : "#f87171" : "#d97706";
       ctx.lineWidth = focus === "wall" ? 2.8 + design.wallThickness : focus === "bulb" ? 4 : isLiquidDesign ? 3 : 1.5;
       ctx.beginPath();
       ctx.arc(x, bulbCenterY, bulbOuter, 0, Math.PI * 2);
@@ -3465,7 +3858,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       ctx.stroke();
       ctx.restore();
       ctx.save();
-      ctx.globalAlpha = dim("bulb");
+      ctx.globalAlpha = isMercury ? 1 : dim("bulb");
       const bulbCoreRadius = bulbRadius * (isLiquidDesign ? 0.9 : 0.88);
       const liquidBulbGrad = ctx.createRadialGradient(
         x - bulbCoreRadius * 0.25,
@@ -3475,27 +3868,33 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         bulbCenterY,
         bulbCoreRadius
       );
-      if (isLiquidDesign || !isMercury) {
+      if (!isMercury) {
         liquidBulbGrad.addColorStop(0, "#fecaca");
         liquidBulbGrad.addColorStop(0.35, "#ef4444");
         liquidBulbGrad.addColorStop(0.7, "#dc2626");
         liquidBulbGrad.addColorStop(1, "#7f1d1d");
       } else {
         liquidBulbGrad.addColorStop(0, "#ffffff");
-        liquidBulbGrad.addColorStop(0.35, "#cbd5e1");
-        liquidBulbGrad.addColorStop(1, "#64748b");
+        liquidBulbGrad.addColorStop(0.3, "#cbd5e1");
+        liquidBulbGrad.addColorStop(0.65, "#94a3b8");
+        liquidBulbGrad.addColorStop(1, "#334155");
       }
       if (isLiquidDesign) {
-        ctx.shadowColor = "rgba(220, 38, 38, 0.55)";
+        ctx.shadowColor = isMercury ? "rgba(15, 23, 42, 0.8)" : "rgba(220, 38, 38, 0.55)";
         ctx.shadowBlur = 18;
       }
       ctx.fillStyle = liquidBulbGrad;
       ctx.beginPath();
       ctx.arc(x, bulbCenterY, bulbCoreRadius, 0, Math.PI * 2);
       ctx.fill();
+      if (isMercury) {
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
       ctx.shadowBlur = 0;
       if (isLiquidDesign) {
-        ctx.fillStyle = "rgba(254, 226, 226, 0.55)";
+        ctx.fillStyle = isMercury ? "rgba(255, 255, 255, 0.65)" : "rgba(254, 226, 226, 0.55)";
         ctx.beginPath();
         ctx.ellipse(x - bulbCoreRadius * 0.28, bulbCenterY - bulbCoreRadius * 0.32, bulbCoreRadius * 0.28, bulbCoreRadius * 0.18, -0.4, 0, Math.PI * 2);
         ctx.fill();
@@ -3578,10 +3977,6 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
           ctx.arc(x, bulbCenterY, bulbOuter + 6, 0, Math.PI * 2);
           ctx.stroke();
           ctx.setLineDash([]);
-        } else if (design.role === "current" && focus === "bore") {
-          ctx.strokeStyle = "#a855f7";
-          ctx.lineWidth = 3;
-          ctx.strokeRect(x - boreWidth / 2 - 2, stemTop + 6, boreWidth + 4, stemBottom - stemTop - 6);
         } else if (design.role === "current" && focus === "wall") {
           ctx.strokeStyle = "#0284c7";
           ctx.lineWidth = 2.5;
@@ -3954,16 +4349,17 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         return `${t("tools.thermometerLab.design.sensitivity")} ${S.toFixed(3)} cm/\xB0C`;
       }
       if (state.focusPart === "wall") {
-        return `${t("tools.thermometerLab.design.response")} ${tau.toFixed(2)} s`;
+        const speed = getResponseSpeed(tau);
+        return `${speed.emoji} ${speed.label} \xB7 \u03C4 ${tau.toFixed(1)} s`;
       }
       return `${t("tools.thermometerLab.design.range")} \u2248 ${rangeC.toFixed(0)} \xB0C`;
     }
-    function drawCompareCaption(ctx, x, y, title2, metric, accent) {
+    function drawCompareCaption(ctx, x, y, title2, metric, temperature, accent) {
       ctx.save();
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       const boxW = 200;
-      const boxH = 44;
+      const boxH = 60;
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = accent;
       ctx.lineWidth = 2;
@@ -3973,10 +4369,13 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       ctx.stroke();
       ctx.fillStyle = accent;
       ctx.font = 'bold 14px "Noto Sans TC", Arial, sans-serif';
-      ctx.fillText(title2, x, y - 9);
+      ctx.fillText(title2, x, y - 17);
       ctx.fillStyle = "#334155";
       ctx.font = '12px "Noto Sans TC", Arial, sans-serif';
-      ctx.fillText(metric, x, y + 11);
+      ctx.fillText(metric, x, y + 1);
+      ctx.fillStyle = "#0f766e";
+      ctx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
+      ctx.fillText(`T = ${temperature.toFixed(1)} \xB0C`, x, y + 19);
       ctx.restore();
     }
     function drawVisuals() {
@@ -4028,26 +4427,21 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         drawCompareCaption(
           physCtx,
           physLayout2.leftThermometerX,
-          28,
+          34,
           t("tools.thermometerLab.design.compareRef"),
           getCompareMetricLine(refDesign),
+          refTemp,
           "#64748b"
         );
         drawCompareCaption(
           physCtx,
           physLayout2.rightThermometerX,
-          28,
+          34,
           t("tools.thermometerLab.design.compareCurrent"),
           getCompareMetricLine(curDesign),
+          curTemp,
           state.focusPart === "bore" ? "#9333ea" : state.focusPart === "wall" ? "#0284c7" : "#ea580c"
         );
-        physCtx.save();
-        physCtx.textAlign = "center";
-        physCtx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
-        physCtx.fillStyle = "#0f766e";
-        physCtx.fillText(`T = ${refTemp.toFixed(1)} \xB0C`, physLayout2.leftThermometerX, 448);
-        physCtx.fillText(`T = ${curTemp.toFixed(1)} \xB0C`, physLayout2.rightThermometerX, 448);
-        physCtx.restore();
         return;
       }
       physCtx.clearRect(0, 0, PHYS_WIDTH, PHYS_HEIGHT);
@@ -4260,13 +4654,13 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       const stateEl = wrap.querySelector("#tl-bath-state");
       if (stateEl) {
         if (state.bathTemp <= 0) {
-          stateEl.textContent = "Melting Ice Bath";
+          stateEl.textContent = t("tools.thermometerLab.design.bathStateIce");
         } else if (state.bathTemp === 150) {
-          stateEl.textContent = "Hot Cooking Oil";
+          stateEl.textContent = t("tools.thermometerLab.design.bathStateOil");
         } else if (state.bathTemp >= 100) {
-          stateEl.textContent = "Boiling Water/Steam";
+          stateEl.textContent = t("tools.thermometerLab.design.bathStateSteam");
         } else {
-          stateEl.textContent = "Liquid Water";
+          stateEl.textContent = t("tools.thermometerLab.design.bathStateWater");
         }
       }
       const responseEl = wrap.querySelector("#tl-val-response-time");
@@ -4769,6 +5163,27 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         onLayoutChange: () => drawVisuals()
       });
     }
+    if (isLiquidDesign && dash) {
+      const designSide = wrap.querySelector(".tl-design-simple-side");
+      const designToggle = wrap.querySelector("#tl-design-controls-toggle");
+      const designToggleText = wrap.querySelector("[data-design-toggle-text]");
+      let designCollapsed = sessionStorage.getItem("s3phy-thermometer-liquid-controls-collapsed") === "true";
+      const applyDesignControlsState = () => {
+        dash.classList.toggle("controls-collapsed", designCollapsed);
+        designSide?.classList.toggle("is-collapsed", designCollapsed);
+        designToggle?.setAttribute("aria-expanded", String(!designCollapsed));
+        if (designToggleText) {
+          designToggleText.textContent = designCollapsed ? t("tools.floatingControls.showParams") : t("tools.floatingControls.hideParams");
+        }
+        requestAnimationFrame(() => drawVisuals());
+      };
+      designToggle?.addEventListener("click", () => {
+        designCollapsed = !designCollapsed;
+        sessionStorage.setItem("s3phy-thermometer-liquid-controls-collapsed", String(designCollapsed));
+        applyDesignControlsState();
+      });
+      applyDesignControlsState();
+    }
     if (typeof ResizeObserver !== "undefined" && dash) {
       const vizHost = wrap.querySelector(".tl-viz-phys--large") || dash;
       const ro = new ResizeObserver(() => drawVisuals());
@@ -4785,6 +5200,12 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
       };
     }
+    const cleanupLab = wrap._thermometerLabCleanup;
+    const cleanupFullscreen = attachFullscreenControl(wrap, t);
+    wrap._thermometerLabCleanup = () => {
+      cleanupLab();
+      cleanupFullscreen();
+    };
     animationFrameId = requestAnimationFrame(simulationLoop);
     return wrap;
   }
@@ -5023,8 +5444,7 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       });
     }
     updateFaultySolver();
-    wrap._thermometerLabCleanup = () => {
-    };
+    wrap._thermometerLabCleanup = attachFullscreenControl(wrap, t);
     return wrap;
   }
 
@@ -5065,10 +5485,23 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       "tools.thermometerLab.design.controlsTitle": "Adjust bulb, capillary & glass wall",
       "tools.thermometerLab.design.sensitivity": "Sensitivity S",
       "tools.thermometerLab.design.range": "Range",
-      "tools.thermometerLab.design.response": "Response \u03C4",
+      "tools.thermometerLab.design.response": "Response time",
+      "tools.thermometerLab.design.responseVeryFast": "Very fast",
+      "tools.thermometerLab.design.responseFast": "Fast",
+      "tools.thermometerLab.design.responseMedium": "Medium",
+      "tools.thermometerLab.design.responseSlow": "Slow",
+      "tools.thermometerLab.design.responseVerySlow": "Very slow",
       "tools.thermometerLab.design.sensitivityRange": "Sensitivity & range",
       "tools.thermometerLab.design.bath": "Bath",
       "tools.thermometerLab.design.liquid": "Liquid",
+      "tools.thermometerLab.design.bathStateIce": "Melting ice bath",
+      "tools.thermometerLab.design.bathStateOil": "Hot cooking oil",
+      "tools.thermometerLab.design.bathStateSteam": "Boiling water / steam",
+      "tools.thermometerLab.design.bathStateWater": "Liquid water",
+      "tools.thermometerLab.design.presetIce": "Ice 0\xB0C",
+      "tools.thermometerLab.design.presetRoom": "Room 25\xB0C",
+      "tools.thermometerLab.design.presetSteam": "Steam 100\xB0C",
+      "tools.thermometerLab.design.presetOil": "Oil 150\xB0C",
       "tools.thermometerLab.design.tabBulb": "Glass bulb",
       "tools.thermometerLab.design.tabBore": "Capillary tube",
       "tools.thermometerLab.design.tabWall": "Glass wall",
@@ -5110,6 +5543,8 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       "tools.thermometerLab.faulty.trueScale": "True Scale (\xB0C)",
       "tools.thermometerLab.faulty.faultyScale": "Faulty Scale (\xB0C)",
       "tools.thermometerLab.paramSettings": "Parameter settings",
+      "tools.fullscreen": "Full screen",
+      "tools.exitFullscreen": "Exit full screen",
       "tools.floatingControls.dragHint": "Drag to move",
       "tools.floatingControls.showParams": "Show parameters",
       "tools.floatingControls.hideParams": "Hide parameters",
@@ -5155,10 +5590,23 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       "tools.thermometerLab.design.controlsTitle": "\u8ABF\u8F03\u73BB\u7483\u6CE1\u3001\u6BDB\u7D30\u7BA1\u3001\u73BB\u7483\u58C1",
       "tools.thermometerLab.design.sensitivity": "\u9748\u654F\u5EA6 S",
       "tools.thermometerLab.design.range": "\u91CF\u7A0B",
-      "tools.thermometerLab.design.response": "\u53CD\u61C9\u6642\u9593 \u03C4",
+      "tools.thermometerLab.design.response": "\u53CD\u61C9\u6642\u9593",
+      "tools.thermometerLab.design.responseVeryFast": "\u975E\u5E38\u5FEB",
+      "tools.thermometerLab.design.responseFast": "\u5FEB",
+      "tools.thermometerLab.design.responseMedium": "\u4E2D\u7B49",
+      "tools.thermometerLab.design.responseSlow": "\u6162",
+      "tools.thermometerLab.design.responseVerySlow": "\u975E\u5E38\u6162",
       "tools.thermometerLab.design.sensitivityRange": "\u9748\u654F\u5EA6\u540C\u91CF\u7A0B",
       "tools.thermometerLab.design.bath": "\u6C34\u6D74",
       "tools.thermometerLab.design.liquid": "\u6E2C\u6EAB\u6DB2\u9AD4",
+      "tools.thermometerLab.design.bathStateIce": "\u878D\u51B0\u6C34\u6D74",
+      "tools.thermometerLab.design.bathStateOil": "\u71B1\u98DF\u6CB9",
+      "tools.thermometerLab.design.bathStateSteam": "\u6CB8\u6C34\uFF0F\u84B8\u6C23",
+      "tools.thermometerLab.design.bathStateWater": "\u6DB2\u614B\u6C34",
+      "tools.thermometerLab.design.presetIce": "\u51B0 0\xB0C",
+      "tools.thermometerLab.design.presetRoom": "\u5BA4\u6EAB 25\xB0C",
+      "tools.thermometerLab.design.presetSteam": "\u84B8\u6C23 100\xB0C",
+      "tools.thermometerLab.design.presetOil": "\u98DF\u6CB9 150\xB0C",
       "tools.thermometerLab.design.tabBulb": "\u73BB\u7483\u6CE1",
       "tools.thermometerLab.design.tabBore": "\u6BDB\u7D30\u7BA1",
       "tools.thermometerLab.design.tabWall": "\u73BB\u7483\u58C1",
@@ -5192,6 +5640,8 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
       "tools.thermometerLab.faulty.trueScale": "\u6A19\u6E96\u6EAB\u6A19 (\xB0C)",
       "tools.thermometerLab.faulty.faultyScale": "\u504F\u5DEE\u6EAB\u6A19 (\xB0C)",
       "tools.thermometerLab.paramSettings": "\u53C3\u6578\u8A2D\u5B9A",
+      "tools.fullscreen": "\u5168\u87A2\u5E55",
+      "tools.exitFullscreen": "\u9000\u51FA\u5168\u87A2\u5E55",
       "tools.floatingControls.dragHint": "\u62D6\u66F3\u4EE5\u79FB\u52D5",
       "tools.floatingControls.showParams": "\u986F\u793A\u53C3\u6578",
       "tools.floatingControls.hideParams": "\u96B1\u85CF\u53C3\u6578",
@@ -5220,17 +5670,20 @@ html.s3phy-embed .tl-wrap .tl-live-calculations .tl-worked-solution.tl-dual-dire
   // labs/thermometer/js/boot.js
   var root = document.getElementById("app");
   var MODES = /* @__PURE__ */ new Set(["liquid", "resistance", "thermistor", "faulty"]);
+  var mountedLab = null;
   function modeFromUrl() {
     const mode = new URLSearchParams(location.search).get("mode") || "liquid";
     return MODES.has(mode) ? mode : "liquid";
   }
   function mount() {
     if (!root) return;
+    mountedLab?._thermometerLabCleanup?.();
     root.replaceChildren();
     const t = createT(getLang());
     const mode = modeFromUrl();
     const lab = mode === "faulty" ? createFaultyScaleCalibrationLab(t) : createThermometerLab(t, { type: mode });
     root.appendChild(lab);
+    mountedLab = lab;
   }
   function applyLang(lang) {
     setLang(lang);

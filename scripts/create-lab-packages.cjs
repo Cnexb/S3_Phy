@@ -227,9 +227,10 @@ window.addEventListener('message', (ev) => {
 
 function htmlShell(title) {
   return `<!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-HK" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
   <link rel="stylesheet" href="../shared/s3phy-embed.css">

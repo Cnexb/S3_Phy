@@ -1,0 +1,3604 @@
+<!DOCTYPE html>
+<html lang="zh-HK" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>煲水實驗 — Water Heating Lab</title>
+  <style>
+/* S3_Phy embed mode — shared chrome for iframe labs inside Hub */
+
+html.s3phy-embed {
+  font-family: var(--s3-font);
+  font-size: var(--s3-font-size-base);
+  line-height: var(--s3-line-height);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+html.s3phy-embed:has(.lab-section) {
+  height: 100%;
+}
+
+html.s3phy-embed body {
+  font-family: var(--s3-font);
+  font-size: max(var(--s3-font-min), 1rem);
+  line-height: var(--s3-line-height);
+  margin: 0;
+}
+
+/* Interactive lab iframe — flex fill (not quiz/worksheet) */
+html.s3phy-embed body:has(.lab-section),
+html.s3phy-embed body.embed-mode:has(.sim-main-col),
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(.lab-section) > main,
+html.s3phy-embed body.embed-mode main.flex-grow,
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Quiz / worksheet iframe — preserve two-column grid */
+html.s3phy-embed body:has(#quiz-layout) {
+  height: auto;
+  min-height: 100%;
+  display: block;
+  overflow: auto;
+}
+
+html.s3phy-embed #quiz-layout {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: none !important;
+  width: 100%;
+  margin: 0;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1101px) {
+  html.s3phy-embed #quiz-layout {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  html.s3phy-embed #quiz-layout > aside#settings-panel {
+    position: static;
+    max-height: min(42dvh, 420px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+html.s3phy-embed #quiz-layout > aside#settings-panel {
+  position: sticky;
+  top: 0.5rem;
+  align-self: start;
+  max-height: calc(100dvh - 1rem);
+  overflow-y: auto;
+}
+
+html.s3phy-embed #quiz-layout > .min-w-0 {
+  min-width: 0;
+  width: 100%;
+}
+
+html.s3phy-embed .lab-section {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+html.s3phy-embed .lab-viz,
+html.s3phy-embed .lab-steps {
+  height: 100% !important;
+  min-height: 0;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-viz {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .lab-viz-canvas {
+  flex: 1 1 auto;
+  min-height: 200px;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-steps {
+  overflow-y: auto;
+}
+
+html.s3phy-embed .lab-viz.lab-viz-dual {
+  display: grid !important;
+  height: 100% !important;
+}
+
+html.s3phy-embed .lab-viz-dual {
+  max-height: none !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  align-content: stretch;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel:first-child .lab-viz-canvas {
+  flex: 1 1 auto !important;
+  min-height: 120px !important;
+  max-height: none !important;
+  aspect-ratio: unset;
+  height: auto;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart .lab-viz-chart-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  margin-top: 0;
+  aspect-ratio: unset;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed header,
+html.s3phy-embed footer {
+  flex-shrink: 0;
+}
+
+html.s3phy-embed .max-w-7xl {
+  max-width: none;
+  width: 100%;
+}
+
+html.s3phy-embed .sim-main-col,
+html.s3phy-embed .glass-panel.flex-grow {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .canvas-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none;
+}
+
+html.s3phy-embed .main-container,
+html.s3phy-embed .lab-wrap,
+html.s3phy-embed .dashboard,
+html.s3phy-embed .app-root {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+/* Floating controls panel (heat labs + shared script) */
+.lab-section {
+  position: relative;
+  min-height: 0;
+}
+
+@media (min-width: 768px) {
+  /* Keep grid items as 2 parallel columns at >= 768px */
+  html.s3phy-embed .lab-section,
+  html.s3phy-embed .main-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .main-grid .sim-main-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-steps,
+  html.s3phy-embed .main-grid .tab-sidebar-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  /* Specially for heat transfer conduction / convection / radiation simulation */
+  html.s3phy-embed .main-grid > div:first-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .main-grid > div:last-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    position: absolute !important;
+    z-index: 50 !important;
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .lab-section.controls-floating .lab-steps {
+    grid-column: 1 / -1;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: none;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.lab-controls.lab-controls-float {
+  position: absolute;
+  z-index: 40;
+  width: var(--s3-float-panel-w);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.lab-controls-body {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls-desc {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls.controls-collapsed .lab-controls-body,
+.lab-controls.controls-collapsed .lab-controls-desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-body {
+  max-height: min(70vh, 520px);
+  opacity: 1;
+  overflow-y: auto;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-desc {
+  opacity: 1;
+  max-height: 4rem;
+}
+
+.lab-controls.controls-collapsed .lab-controls-title-text {
+  display: none;
+}
+
+.lab-controls-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lab-controls-actions {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.lab-controls-actions button {
+  padding: 0.625rem 0.75rem;
+  justify-content: center;
+}
+
+.lab-controls-actions button:not(.flex-1) {
+  flex-shrink: 0;
+}
+
+.lab-controls-actions button.flex-1 {
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.lab-controls-drag-handle {
+  display: none;
+  cursor: grab;
+  touch-action: none;
+  color: #94a3b8;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+
+@media (min-width: 900px) {
+  .lab-controls.lab-controls-float .lab-controls-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lab-controls-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Hub iframe — standalone labs (rotating-mirror, rgb, thermometer) */
+html.s3phy-embed:has(#app > .rml),
+html.s3phy-embed:has(#app > .rgb-mixer),
+html.s3phy-embed:has(#app > .tl-wrap) {
+  height: 100%;
+}
+
+html.s3phy-embed body:has(#app > .rml),
+html.s3phy-embed body:has(#app > .rgb-mixer),
+html.s3phy-embed body:has(#app > .tl-wrap) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(#app > .rml) #app,
+html.s3phy-embed body:has(#app > .rgb-mixer) #app,
+html.s3phy-embed body:has(#app > .tl-wrap) #app {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+html.s3phy-embed .rml,
+html.s3phy-embed .rgb-mixer,
+html.s3phy-embed .tl-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+html.s3phy-embed .rml .rml-head,
+html.s3phy-embed .tl-wrap .tl-head {
+  display: none;
+}
+
+html.s3phy-embed .rml {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rml .rml-dash {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+html.s3phy-embed .rml .rml-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rml .rml-canvas {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  flex: 1;
+  object-fit: contain;
+}
+
+html.s3phy-embed .rml .rml-controls {
+  flex: 0 0 auto;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+html.s3phy-embed .tl-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .tl-wrap .tl-dash,
+html.s3phy-embed .tl-wrap .tl-dash--faulty {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-dash--faulty {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  grid-template-rows: 1fr;
+  align-items: stretch;
+  gap: 14px;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-live {
+  grid-column: 2;
+  grid-row: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-controls {
+  grid-column: 1 / -1;
+}
+
+html.s3phy-embed .rgb-mixer {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rgb-mixer-body {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto;
+  max-height: none;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rgb-mixer-stage {
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-controls {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Lens simulator embed compact chrome */
+html.s3phy-embed .controls-panel,
+html.s3phy-embed .control-panel {
+  width: var(--s3-float-panel-w) !important;
+  max-width: var(--s3-float-panel-w) !important;
+}
+
+/* Minimum readable text in embed controls */
+html.s3phy-embed label,
+html.s3phy-embed .control label,
+html.s3phy-embed button,
+html.s3phy-embed input,
+html.s3phy-embed select {
+  font-size: max(var(--s3-font-min), 0.875rem);
+}
+
+/* Height adaptive scaling for compact/low-height viewports (height < 720px) */
+@media (max-height: 720px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 13.5px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 11px), 0.85rem) !important;
+  }
+  
+  /* Compact paddings and gaps */
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.5rem 0.625rem !important;
+  }
+  html.s3phy-embed .px-4,
+  html.s3phy-embed .px-5 {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+  html.s3phy-embed .py-4,
+  html.s3phy-embed .py-5,
+  html.s3phy-embed .py-6 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Compact header & tabs */
+  html.s3phy-embed header {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  html.s3phy-embed header h1 {
+    font-size: 1.1rem !important;
+  }
+  
+  /* KaTeX mathematical formulas scaling and tight margins */
+  html.s3phy-embed .lab-steps .katex {
+    font-size: 0.95em !important;
+  }
+  html.s3phy-embed .lab-steps .katex-display {
+    margin: 0.25em 0 !important;
+  }
+  
+  /* Shrink canvas and containers to prevent overflow */
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 120px !important;
+    flex: 1 1 auto !important;
+  }
+  
+  /* Compact parameters/controls — keep panel wide enough for action buttons */
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+    padding: 0.5rem !important;
+  }
+  html.s3phy-embed .lab-controls-body {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .lab-controls-body select,
+  html.s3phy-embed .lab-controls-body input,
+  html.s3phy-embed .lab-controls-body button {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-height: 600px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 12px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 10px), 0.75rem) !important;
+  }
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 100px !important;
+  }
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.375rem 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.25rem !important;
+  }
+}
+
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #ffffff;
+}
+
+#app {
+  padding: 8px;
+}
+
+html.s3phy-embed,
+html.s3phy-embed body {
+  height: 100%;
+  overflow: hidden;
+}
+
+html.s3phy-embed #app {
+  height: 100%;
+  min-height: 0;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+html:fullscreen,
+html:fullscreen body,
+html:fullscreen #app {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+html:fullscreen #app { padding: 0; }
+html:fullscreen .bw-wrap {
+  width: 100%;
+  max-width: none;
+  min-height: 100%;
+  border-radius: 0;
+}
+
+.bw-wrap {
+  --bw-bg: #ffffff;
+  --bw-panel: #f8f9fa;
+  --bw-border: #e4e4e7;
+  --bw-green: #10b981;
+  --bw-cyan: #0891b2;
+  --bw-yellow: #d97706;
+  --bw-red: #ef4444;
+  --bw-text: #1f2937;
+  --bw-muted: #6b7280;
+  --bw-primary: #6366f1;
+  --bw-primary-hover: #4f46e5;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--bw-text);
+  background: var(--bw-bg);
+  border-radius: 16px;
+  padding: 14px;
+  max-width: 1500px;
+  min-height: calc(100vh - 16px);
+  margin: 0 auto;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.bw-wrap * {
+  box-sizing: border-box;
+}
+
+.bw-head {
+  position: relative;
+  text-align: center;
+  margin-bottom: 12px;
+  padding-inline: 220px;
+  flex: 0 0 auto;
+}
+
+.bw-title {
+  margin: 0;
+  font-weight: 850;
+  font-size: clamp(1.55rem, 2.7vw, 2.35rem);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #0891b2, #6366f1, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.025em;
+}
+
+.bw-subtitle {
+  color: var(--bw-muted);
+  font-size: clamp(0.82rem, 1.25vw, 1.05rem);
+  margin: 5px 0 0;
+  font-weight: 600;
+}
+
+.bw-head-actions {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 7px;
+}
+
+.bw-head-btn {
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 7px 13px;
+  background: #ffffff;
+  color: #334155;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bw-head-btn:hover {
+  border-color: var(--bw-primary);
+  color: var(--bw-primary);
+  background: #eef2ff;
+}
+
+.bw-fullscreen-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.bw-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: min(760px, 100%);
+  margin: 0 auto 10px;
+  padding: 4px;
+  border: 1px solid var(--bw-border);
+  border-radius: 12px;
+  background: #f1f3f5;
+  flex: 0 0 auto;
+}
+
+.bw-tab {
+  border: 1px solid transparent;
+  border-radius: 9px;
+  padding: 8px 12px;
+  background: transparent;
+  color: var(--bw-muted);
+  font: inherit;
+  font-size: clamp(0.78rem, 1.1vw, 0.92rem);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bw-tab:hover {
+  color: var(--bw-primary);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.bw-tab.is-active {
+  border-color: #c7d2fe;
+  background: #ffffff;
+  color: var(--bw-primary);
+  box-shadow: 0 2px 7px rgba(99, 102, 241, 0.1);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.bw-dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 270px);
+  grid-template-rows: minmax(360px, 1fr) auto;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.bw-viz,
+.bw-parallel-demo {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.bw-card {
+  min-width: 0;
+  background: var(--bw-panel);
+  border: 1px solid var(--bw-border);
+  border-radius: 16px;
+}
+
+.bw-viz {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.9fr) minmax(250px, 1.1fr);
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #ecfeff 0%, #f8f9fa 48%, #eef2ff 100%);
+}
+
+.bw-bottle-stage {
+  position: relative;
+  height: min(55vh, 540px);
+  min-height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bw-bottle {
+  position: relative;
+  z-index: 3;
+  width: min(220px, 75%);
+  height: 82%;
+  min-height: 280px;
+  border: 5px solid #94a3b8;
+  border-radius: 42px 42px 52px 52px;
+  background: rgba(255, 255, 255, 0.56);
+  box-shadow: inset 10px 0 20px rgba(255, 255, 255, 0.75), 0 16px 28px rgba(15, 23, 42, 0.1);
+  overflow: visible;
+}
+
+.is-boiling .bw-bottle {
+  animation: bw-bottle-boil 0.32s ease-in-out infinite alternate;
+}
+
+.bw-bottle::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  left: 31%;
+  top: -45px;
+  width: 38%;
+  height: 48px;
+  border: 5px solid #94a3b8;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.bw-bottle::after {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  left: 27%;
+  top: -53px;
+  width: 46%;
+  height: 10px;
+  border-radius: 6px;
+  background: #64748b;
+}
+
+.bw-water-clip {
+  position: absolute;
+  inset: 0;
+  border-radius: 36px 36px 46px 46px;
+  overflow: hidden;
+}
+
+.bw-water {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 68%;
+  background: linear-gradient(180deg, rgba(103, 232, 249, 0.62), rgba(14, 165, 233, 0.84));
+  background-size: 100% 165%;
+  transition: background 0.35s ease, filter 0.35s ease;
+}
+
+.bw-water::before {
+  content: "";
+  position: absolute;
+  left: -8%;
+  top: -9px;
+  width: 116%;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(207, 250, 254, 0.9);
+  animation: bw-wave var(--water-speed, 2.2s) ease-in-out infinite;
+}
+
+.bw-water.is-warm {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.72), rgba(8, 145, 178, 0.9));
+  background-size: 100% 180%;
+  animation: bw-water-flow calc(var(--water-speed, 1.8s) * 1.4) ease-in-out infinite alternate;
+}
+
+.bw-water.is-hot {
+  background: linear-gradient(180deg, rgba(125, 211, 252, 0.78), rgba(14, 116, 144, 0.92));
+  background-size: 100% 210%;
+  filter: saturate(1.18) brightness(1.04);
+}
+
+.bw-water.is-boiling {
+  background: linear-gradient(180deg, rgba(103, 232, 249, 0.72), rgba(14, 165, 233, 0.88));
+  animation: bw-water-pulse 0.65s ease-in-out infinite alternate;
+}
+
+.is-boiling .bw-water::before {
+  height: 25px;
+  top: -12px;
+  animation-duration: 0.42s;
+}
+
+.bw-convection {
+  position: absolute;
+  inset: 12% 12% 5%;
+  opacity: calc(var(--temp-level) * 0.72);
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.bw-convection span {
+  position: absolute;
+  bottom: 0;
+  width: 28%;
+  height: 76%;
+  border-left: 4px solid rgba(207, 250, 254, 0.42);
+  border-radius: 50%;
+  filter: blur(0.4px);
+  animation: bw-convection-rise calc(var(--water-speed, 1.8s) * 2.1) ease-in-out infinite;
+}
+
+.bw-convection span:nth-child(1) { left: 7%; animation-delay: -0.4s; }
+.bw-convection span:nth-child(2) { left: 38%; height: 92%; animation-delay: -1.2s; }
+.bw-convection span:nth-child(3) { left: 70%; height: 68%; animation-delay: -2s; }
+
+.bw-bubbles {
+  position: absolute;
+  inset: 4% 7% 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bw-bubbles span {
+  position: absolute;
+  bottom: -14px;
+  left: var(--bubble-left);
+  width: var(--bubble-size);
+  height: var(--bubble-size);
+  border: 2px solid rgba(224, 247, 255, 0.82);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  opacity: 0;
+}
+
+.is-near-boiling .bw-bubbles span:nth-child(-n + 6) {
+  animation: bw-bubble-rise 2.35s ease-in infinite;
+}
+
+.is-almost-boiling .bw-bubbles span:nth-child(-n + 12) {
+  animation: bw-bubble-rise 1.65s ease-in infinite;
+}
+
+.is-boiling .bw-bubbles span {
+  animation: bw-bubble-rise 1.05s ease-in infinite;
+}
+
+.bw-bubbles span:nth-child(1) { --bubble-left: 9%; --bubble-size: 9px; animation-delay: -0.2s !important; }
+.bw-bubbles span:nth-child(2) { --bubble-left: 27%; --bubble-size: 14px; animation-delay: -1.15s !important; }
+.bw-bubbles span:nth-child(3) { --bubble-left: 45%; --bubble-size: 8px; animation-delay: -0.65s !important; }
+.bw-bubbles span:nth-child(4) { --bubble-left: 66%; --bubble-size: 12px; animation-delay: -1.7s !important; }
+.bw-bubbles span:nth-child(5) { --bubble-left: 82%; --bubble-size: 7px; animation-delay: -0.95s !important; }
+.bw-bubbles span:nth-child(6) { --bubble-left: 56%; --bubble-size: 16px; animation-delay: -2.1s !important; }
+.bw-bubbles span:nth-child(7) { --bubble-left: 17%; --bubble-size: 6px; animation-delay: -0.35s !important; }
+.bw-bubbles span:nth-child(8) { --bubble-left: 36%; --bubble-size: 11px; animation-delay: -1.4s !important; }
+.bw-bubbles span:nth-child(9) { --bubble-left: 74%; --bubble-size: 9px; animation-delay: -0.75s !important; }
+.bw-bubbles span:nth-child(10) { --bubble-left: 91%; --bubble-size: 13px; animation-delay: -1.9s !important; }
+.bw-bubbles span:nth-child(11) { --bubble-left: 4%; --bubble-size: 7px; animation-delay: -1.05s !important; }
+.bw-bubbles span:nth-child(12) { --bubble-left: 51%; --bubble-size: 10px; animation-delay: -0.5s !important; }
+.bw-bubbles span:nth-child(13) { --bubble-left: 22%; --bubble-size: 8px; animation-delay: -0.9s !important; }
+.bw-bubbles span:nth-child(14) { --bubble-left: 61%; --bubble-size: 6px; animation-delay: -0.15s !important; }
+.bw-bubbles span:nth-child(15) { --bubble-left: 87%; --bubble-size: 10px; animation-delay: -0.7s !important; }
+.bw-bubbles span:nth-child(16) { --bubble-left: 40%; --bubble-size: 13px; animation-delay: -1.25s !important; }
+.bw-bubbles span:nth-child(17) { --bubble-left: 13%; --bubble-size: 11px; animation-delay: -0.45s !important; }
+.bw-bubbles span:nth-child(18) { --bubble-left: 70%; --bubble-size: 7px; animation-delay: -1.55s !important; }
+
+.bw-splash {
+  position: absolute;
+  z-index: 8;
+  top: -82px;
+  left: 50%;
+  width: 150px;
+  height: 90px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bw-splash span {
+  position: absolute;
+  bottom: 4px;
+  width: 9px;
+  height: 15px;
+  border-radius: 50% 50% 55% 55%;
+  background: #38bdf8;
+  opacity: 0;
+}
+
+.is-boiling .bw-splash span {
+  animation: bw-splash 1.05s ease-out infinite;
+}
+
+.bw-splash span:nth-child(1) { left: 34px; --splash-x: -32px; animation-delay: 0.1s; }
+.bw-splash span:nth-child(2) { left: 55px; --splash-x: -15px; animation-delay: 0.48s; }
+.bw-splash span:nth-child(3) { left: 72px; --splash-x: 2px; animation-delay: 0.72s; }
+.bw-splash span:nth-child(4) { left: 88px; --splash-x: 18px; animation-delay: 0.3s; }
+.bw-splash span:nth-child(5) { left: 105px; --splash-x: 34px; animation-delay: 0.86s; }
+
+.bw-fire {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 4%;
+  width: min(290px, 94%);
+  height: calc(30px + 118px * var(--power-level));
+  transform: translateX(-50%);
+  transform-origin: bottom;
+  opacity: calc(0.16 + var(--power-level) * 0.84);
+  filter:
+    drop-shadow(0 0 calc(10px + 28px * var(--power-level)) rgba(249, 115, 22, 0.95))
+    drop-shadow(0 -12px 28px rgba(239, 68, 68, 0.45));
+  pointer-events: none;
+}
+
+.bw-fire::after {
+  content: "";
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  bottom: -3px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #fef08a 0 22%, #fb923c 45%, rgba(239, 68, 68, 0) 76%);
+  opacity: 0.95;
+  filter: blur(2px);
+}
+
+.bw-fire span {
+  --flame-height: calc((42px + var(--flame-extra, 28px)) * (0.48 + var(--power-level) * 1.05));
+  position: absolute;
+  bottom: 0;
+  left: var(--flame-left);
+  width: calc(27px + 18px * var(--power-level));
+  height: var(--flame-height);
+  border-radius: 52% 48% 60% 40% / 70% 62% 38% 30%;
+  background: linear-gradient(0deg, #fef08a 0 16%, #facc15 30%, #f97316 55%, #ef4444 82%, rgba(239, 68, 68, 0) 100%);
+  transform: rotate(45deg) scaleY(0.9);
+  transform-origin: 50% 100%;
+  animation: bw-flame calc(0.42s - var(--power-level) * 0.16s) ease-in-out infinite alternate;
+}
+
+.bw-fire span:nth-child(1) { --flame-left: 1%; --flame-extra: 18px; animation-delay: -0.1s; }
+.bw-fire span:nth-child(2) { --flame-left: 15%; --flame-extra: 42px; animation-delay: -0.34s; }
+.bw-fire span:nth-child(3) { --flame-left: 30%; --flame-extra: 27px; animation-delay: -0.2s; }
+.bw-fire span:nth-child(4) { --flame-left: 45%; --flame-extra: 58px; animation-delay: -0.4s; }
+.bw-fire span:nth-child(5) { --flame-left: 60%; --flame-extra: 34px; animation-delay: -0.15s; }
+.bw-fire span:nth-child(6) { --flame-left: 75%; --flame-extra: 49px; animation-delay: -0.28s; }
+.bw-fire span:nth-child(7) { --flame-left: 89%; --flame-extra: 20px; animation-delay: -0.05s; }
+
+.bw-bottle-stage:not(.is-heating) .bw-fire {
+  height: 0;
+  opacity: 0;
+}
+
+.bw-heater {
+  position: absolute;
+  z-index: 4;
+  width: min(300px, 96%);
+  height: 34px;
+  bottom: 2%;
+  border-radius: 50%;
+  background: #334155;
+  box-shadow: 0 6px 0 #0f172a, 0 8px 20px rgba(15, 23, 42, 0.28);
+}
+
+.bw-heater::after {
+  content: "";
+  position: absolute;
+  inset: 8px 24px;
+  border-radius: 50%;
+  background: #64748b;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.is-heating .bw-heater::after {
+  background: #f97316;
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.8);
+}
+
+.bw-heater-label {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-size: clamp(0.68rem, 0.9vw, 0.82rem);
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(15, 23, 42, 0.9);
+}
+
+.bw-steam {
+  position: absolute;
+  z-index: 7;
+  top: -118px;
+  left: 50%;
+  width: 120px;
+  height: 80px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bw-steam span {
+  position: absolute;
+  bottom: 0;
+  width: 9px;
+  height: 54px;
+  border-radius: 50%;
+  border-left: 6px solid rgba(148, 163, 184, 0.7);
+  opacity: 0;
+}
+
+.is-boiling .bw-steam span {
+  animation: bw-steam-rise 1.6s ease-out infinite;
+}
+
+.bw-steam span:nth-child(1) { left: 22px; animation-delay: 0s; }
+.bw-steam span:nth-child(2) { left: 54px; animation-delay: 0.45s; }
+.bw-steam span:nth-child(3) { left: 84px; animation-delay: 0.9s; }
+
+.bw-viz-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: stretch;
+  justify-content: center;
+  padding-bottom: 68px;
+}
+
+.bw-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.bw-power-hero {
+  margin-left: auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 7px 12px;
+  border-radius: 11px;
+  border: 1px solid #fed7aa;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  color: #9a3412;
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.1);
+}
+
+.bw-power-hero span {
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.bw-power-hero strong {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: clamp(1.05rem, 2vw, 1.5rem);
+  line-height: 1.05;
+}
+
+.bw-heater-power-callout {
+  position: absolute;
+  z-index: 9;
+  left: calc(100% + 16px);
+  right: auto;
+  bottom: 2%;
+  margin-left: 0;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.bw-heater-power-callout::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 24px;
+  height: 3px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ea580c, #fb923c);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.45);
+}
+
+.bw-heater-power-callout::after {
+  content: "";
+  position: absolute;
+  right: calc(100% + 20px);
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translateY(-50%);
+  border: 2px solid #fff7ed;
+  border-radius: 50%;
+  background: #ea580c;
+  box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.2);
+}
+
+.bw-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: #ffffff;
+  border: 1px solid var(--bw-border);
+  color: var(--bw-cyan);
+  font-weight: 800;
+  font-size: clamp(0.78rem, 1.2vw, 0.95rem);
+}
+
+.bw-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.bw-status[data-state="heating"] { color: var(--bw-yellow); }
+.bw-status[data-state="boiling"] { color: var(--bw-red); }
+.bw-status[data-state="finished"] { color: var(--bw-green); }
+
+.bw-temp {
+  font-size: clamp(3rem, 6.2vw, 6rem);
+  line-height: 0.95;
+  font-weight: 850;
+  color: var(--bw-cyan);
+  letter-spacing: -0.06em;
+  text-shadow: 0 0 24px rgba(8, 145, 178, 0.12);
+}
+
+.bw-temp small {
+  font-size: 0.34em;
+  letter-spacing: 0;
+}
+
+.bw-energy-meter {
+  background: #ffffff;
+  border: 1px solid var(--bw-border);
+  border-radius: 12px;
+  padding: 11px 13px;
+}
+
+.bw-meter-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  font-size: clamp(0.75rem, 1.1vw, 0.92rem);
+  font-weight: 750;
+}
+
+.bw-meter-label span:last-child {
+  color: var(--bw-cyan);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+}
+
+.bw-meter-reading {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.bw-meter-reading i {
+  color: var(--bw-muted);
+  font-style: normal;
+}
+
+.bw-meter-track {
+  position: relative;
+  height: 12px;
+  overflow: visible;
+  border-radius: 999px;
+  background: #e4e4e7;
+}
+
+.bw-meter-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--bw-cyan), var(--bw-primary), var(--bw-green));
+  transition: width 0.12s linear;
+}
+
+.bw-meter-target-marker {
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: var(--target-position);
+  right: auto;
+  width: 4px;
+  height: 22px;
+  transform: translateX(-50%);
+  border: 1px solid #ffffff;
+  border-radius: 999px;
+  background: var(--bw-red);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.14), 0 0 10px rgba(220, 38, 38, 0.35);
+}
+
+.bw-meter-target-marker > span {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: clamp(0.59rem, 0.82vw, 0.7rem);
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.bw-meter-scale {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(76px, auto);
+  align-items: start;
+  gap: 6px;
+  margin-top: 32px;
+  color: var(--bw-muted);
+  font-size: clamp(0.62rem, 0.9vw, 0.75rem);
+  font-weight: 700;
+}
+
+.bw-meter-scale > strong {
+  justify-self: center;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #c2410c;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bw-meter-scale > strong b {
+  font-family: ui-monospace, "Cascadia Code", monospace;
+}
+
+.bw-meter-scale > span:last-child {
+  color: var(--bw-muted);
+  text-align: right;
+}
+
+.bw-threshold-note {
+  margin: 0;
+  color: var(--bw-muted);
+  font-size: clamp(0.72rem, 1vw, 0.86rem);
+  font-weight: 600;
+}
+
+.bw-controls {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: 100%;
+  max-width: 270px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  overflow: auto;
+}
+
+.bw-dashboard.controls-collapsed {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.bw-controls-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bw-controls-toggle {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border: 1px solid #c7d2fe;
+  border-radius: 9px;
+  background: #eef2ff;
+  color: #4338ca;
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.bw-controls-toggle:hover {
+  border-color: #6366f1;
+  background: #e0e7ff;
+}
+
+.bw-viz,
+.bw-parallel-demo {
+  position: relative;
+}
+
+.bw-controls-toggle--overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20;
+  min-height: 42px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+}
+
+.bw-controls.is-collapsed {
+  display: none;
+}
+
+.bw-controls.is-collapsed > :not(.bw-controls-heading) {
+  display: none;
+}
+
+.bw-controls.is-collapsed .bw-controls-heading {
+  height: 100%;
+  justify-content: center;
+}
+
+.bw-controls.is-collapsed .bw-card-title {
+  display: none;
+}
+
+.bw-controls.is-collapsed .bw-controls-toggle {
+  min-height: 110px;
+  flex-direction: column;
+  padding-inline: 5px;
+  text-align: center;
+}
+
+.bw-controls .bw-card-title {
+  font-size: clamp(0.94rem, 1.2vw, 1.08rem);
+}
+
+.bw-controls .bw-control-group {
+  gap: 4px;
+}
+
+.bw-controls .bw-control-label {
+  gap: 7px;
+  font-size: clamp(0.76rem, 1vw, 0.88rem);
+}
+
+.bw-controls .bw-badge {
+  padding: 3px 7px;
+  font-size: 0.92em;
+}
+
+.bw-controls input[type="range"] {
+  height: 28px;
+  margin: 0;
+}
+
+.bw-controls .bw-slider-row {
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  gap: 5px;
+}
+
+.bw-controls .bw-step-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 1.15rem;
+}
+
+.bw-controls .bw-prediction {
+  gap: 6px 9px;
+  padding: 8px 9px;
+}
+
+.bw-controls .bw-prediction-value {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+.bw-controls .bw-prediction-result {
+  padding-top: 5px;
+  font-size: 0.8rem;
+}
+
+.bw-controls .bw-btn {
+  padding: 8px 9px;
+  font-size: 0.82rem;
+}
+
+.bw-card-title {
+  margin: 0;
+  font-size: clamp(1rem, 1.45vw, 1.25rem);
+  font-weight: 850;
+}
+
+.bw-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.bw-control-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: clamp(0.82rem, 1.12vw, 0.98rem);
+  font-weight: 700;
+}
+
+.bw-badge {
+  padding: 4px 10px;
+  border: 1px solid var(--bw-border);
+  border-radius: 7px;
+  background: #ffffff;
+  color: var(--bw-primary);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 1.03em;
+  white-space: nowrap;
+}
+
+.bw-wrap input[type="range"] {
+  appearance: none;
+  width: 100%;
+  height: 34px;
+  margin: 2px 0;
+  background: transparent;
+  min-width: 0;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.bw-wrap input[type="range"]::-webkit-slider-runnable-track {
+  height: 7px;
+  cursor: pointer;
+  background: #e4e4e7;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  border-radius: 4px;
+}
+
+.bw-wrap input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -10px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.bw-wrap input[type="range"]::-moz-range-track {
+  height: 7px;
+  background: #e4e4e7;
+  border-radius: 4px;
+}
+
+.bw-wrap input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.bw-slider-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 8px;
+}
+
+.bw-step-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--bw-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--bw-primary);
+  font: inherit;
+  font-size: 1.35rem;
+  font-weight: 850;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.bw-step-btn:hover {
+  border-color: var(--bw-primary);
+  background: #eef2ff;
+}
+
+.bw-wrap input[type="range"]:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.25);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+.bw-prediction {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 11px 13px;
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+.bw-prediction-label {
+  color: var(--bw-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.bw-prediction-value {
+  color: var(--bw-cyan);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-weight: 850;
+}
+
+.bw-prediction-result {
+  grid-column: 1 / -1;
+  padding-top: 7px;
+  border-top: 1px solid var(--bw-border);
+  color: var(--bw-green);
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.bw-prediction-result.will-not-boil {
+  color: var(--bw-yellow);
+}
+
+.bw-actions {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.bw-btn {
+  border: 1px solid var(--bw-border);
+  border-radius: 10px;
+  padding: 11px 12px;
+  background: #f1f3f5;
+  color: var(--bw-text);
+  font: inherit;
+  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bw-btn:hover {
+  transform: translateY(-1px);
+  background: #e4e4e7;
+}
+
+.bw-btn.primary {
+  border-color: var(--bw-primary);
+  background: var(--bw-primary);
+  color: #ffffff;
+}
+
+.bw-btn.primary:hover {
+  background: var(--bw-primary-hover);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.18);
+}
+
+.bw-preset-grid {
+  display: grid;
+  gap: 6px;
+}
+
+.bw-preset {
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.bw-no-boil-preset {
+  border-color: #fcd34d;
+  background: #fffbeb;
+  color: #92400e;
+  font-weight: 850;
+}
+
+.bw-no-boil-preset:hover {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.bw-boil-preset {
+  border-color: #86efac;
+  background: #f0fdf4;
+  color: #166534;
+  font-weight: 850;
+}
+
+.bw-boil-preset:hover {
+  border-color: #22c55e;
+  background: #dcfce7;
+}
+
+.bw-select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--bw-border);
+  border-radius: 10px;
+  padding: 8px 11px;
+  background: #ffffff;
+  color: var(--bw-text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bw-select:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, 0.25);
+  outline-offset: 2px;
+}
+
+.bw-parallel-demo {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  background: linear-gradient(150deg, #ecfeff 0%, #f8f9fa 48%, #fff7ed 100%);
+}
+
+.bw-parallel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 9px clamp(145px, 18vw, 175px) 9px 12px;
+  border: 1px solid #c7d2fe;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.bw-parallel-heading span {
+  color: var(--bw-primary);
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  font-weight: 850;
+}
+
+.bw-parallel-heading strong {
+  color: #3730a3;
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  text-align: right;
+}
+
+.bw-material-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+.bw-material-card {
+  --card-heat: 0;
+  min-width: 0;
+  padding: 9px 8px;
+  border: 2px solid color-mix(in srgb, var(--card-color), #e2e8f0 65%);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.bw-material-card.is-heating {
+  box-shadow: 0 0 calc(8px + 18px * var(--card-heat)) rgba(249, 115, 22, 0.24);
+}
+
+.bw-material-card-head {
+  text-align: center;
+}
+
+.bw-material-card-head strong {
+  display: block;
+  color: #1f2937;
+  font-size: clamp(0.82rem, 1.05vw, 0.98rem);
+}
+
+.bw-material-card-head small {
+  display: block;
+  margin-top: 3px;
+  color: var(--bw-muted);
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bw-material-card-head span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  margin-top: 4px;
+  padding: 5px 4px;
+  border: 1px solid color-mix(in srgb, var(--card-color), #cbd5e1 58%);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--card-color), #ffffff 91%);
+  color: #334155;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  line-height: 1.1;
+}
+
+.bw-material-card-head span b {
+  color: color-mix(in srgb, var(--card-color), #0f172a 38%);
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.bw-material-card-head span em {
+  color: #475569;
+  font-size: clamp(0.8rem, 1.05vw, 0.98rem);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.bw-parallel-stage {
+  position: relative;
+  flex: 1;
+  min-height: 185px;
+}
+
+.bw-demo-sample {
+  position: absolute;
+  z-index: 3;
+  left: 43%;
+  bottom: 31px;
+  width: 66px;
+  height: 62px;
+  transform: translateX(-50%);
+  border: 4px solid color-mix(in srgb, var(--card-color), #334155 28%);
+  border-radius: 13px;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.76), transparent 25%),
+    var(--card-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 8px 14px rgba(15, 23, 42, 0.17),
+    0 0 calc(4px + 18px * var(--card-heat)) rgba(249, 115, 22, calc(var(--card-heat) * 0.6));
+}
+
+.bw-demo-sample b {
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 1.05rem;
+  text-shadow: 0 2px 4px rgba(15, 23, 42, 0.3);
+}
+
+.bw-demo-liquid {
+  display: none;
+}
+
+.bw-demo-sample.is-water {
+  overflow: hidden;
+  border-top-width: 2px;
+  border-radius: 7px 7px 14px 14px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.bw-demo-sample.is-water .bw-demo-liquid {
+  display: block;
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 68%;
+  border-radius: 3px 3px 9px 9px;
+  background: linear-gradient(#67e8f9, #0ea5e9);
+}
+
+.bw-demo-sample.is-water .bw-demo-liquid::before {
+  content: "";
+  position: absolute;
+  left: -8%;
+  top: -4px;
+  width: 116%;
+  height: 8px;
+  border-radius: 50%;
+  background: #cffafe;
+  animation: bw-mini-wave 1s ease-in-out infinite;
+}
+
+.bw-demo-heater {
+  position: absolute;
+  z-index: 4;
+  left: 43%;
+  bottom: 19px;
+  width: 86px;
+  height: 15px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #334155;
+  box-shadow: 0 4px 0 #0f172a;
+}
+
+.bw-demo-heater::after {
+  content: "";
+  position: absolute;
+  inset: 4px 12px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #ef4444 calc(var(--card-heat) * 100%), #64748b);
+  box-shadow: 0 0 calc(2px + 12px * var(--card-heat)) rgba(239, 68, 68, 0.78);
+}
+
+.bw-parallel-heat {
+  position: absolute;
+  z-index: 2;
+  left: 43%;
+  bottom: 92px;
+  width: 86px;
+  height: 55px;
+  transform: translateX(-50%);
+  opacity: calc(var(--card-heat) * 0.9);
+}
+
+.bw-parallel-heat i {
+  position: absolute;
+  bottom: 0;
+  width: 7px;
+  height: 42px;
+  border-left: 5px solid rgba(249, 115, 22, 0.62);
+  border-radius: 50%;
+  animation: bw-mini-heat 0.85s ease-in-out infinite;
+}
+
+.bw-parallel-heat i:nth-child(1) { left: 20%; animation-delay: -0.2s; }
+.bw-parallel-heat i:nth-child(2) { left: 48%; animation-delay: -0.55s; }
+.bw-parallel-heat i:nth-child(3) { left: 76%; animation-delay: -0.35s; }
+
+.bw-demo-thermometer {
+  position: absolute;
+  right: 4px;
+  bottom: 20px;
+  width: 16px;
+  height: 112px;
+  overflow: hidden;
+  border: 3px solid #94a3b8;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.bw-demo-thermometer-fill {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  height: 8%;
+  border-radius: 999px;
+  background: linear-gradient(0deg, #ef4444, #f97316);
+  transition: height 0.08s linear;
+}
+
+.bw-material-rise {
+  color: #111827;
+  font-size: clamp(1.2rem, 2vw, 1.75rem);
+  font-weight: 850;
+  text-align: center;
+}
+
+.bw-material-rise strong {
+  color: #dc2626;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 1.15em;
+}
+
+.bw-c-unit {
+  margin-top: 3px;
+  color: var(--bw-muted);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  font-weight: 800;
+}
+
+.bw-heat-viz {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: minmax(360px, 1.25fr) minmax(230px, 0.75fr);
+  gap: 14px;
+  overflow: hidden;
+  background: linear-gradient(150deg, #fff7ed 0%, #f8f9fa 48%, #eef2ff 100%);
+}
+
+.bw-shc-chart {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--bw-border);
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bw-chart-head h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: clamp(1.05rem, 1.7vw, 1.4rem);
+}
+
+.bw-chart-head p {
+  margin: 5px 0 9px;
+  color: var(--bw-muted);
+  font-size: clamp(0.72rem, 1vw, 0.86rem);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.bw-comparison-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 4px;
+  margin-bottom: 8px;
+  border: 1px solid var(--bw-border);
+  border-radius: 10px;
+  background: #f1f3f5;
+}
+
+.bw-comparison-modes button {
+  border: 1px solid transparent;
+  border-radius: 7px;
+  padding: 7px 8px;
+  background: transparent;
+  color: var(--bw-muted);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bw-comparison-modes button.is-active {
+  border-color: #c7d2fe;
+  background: #ffffff;
+  color: var(--bw-primary);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.09);
+}
+
+.bw-concept-insight {
+  margin-bottom: 8px;
+  padding: 7px 9px;
+  border-left: 4px solid var(--bw-primary);
+  border-radius: 7px;
+  background: #eef2ff;
+  color: #3730a3;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.bw-chart-axis {
+  display: grid;
+  grid-template-columns: minmax(76px, 0.28fr) minmax(180px, 1fr) 58px;
+  align-items: center;
+  gap: 9px;
+  color: #94a3b8;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+.bw-chart-axis span:nth-child(2) {
+  text-align: center;
+  border-bottom: 1px solid #cbd5e1;
+  padding-bottom: 3px;
+}
+
+.bw-chart-axis span:last-child {
+  text-align: right;
+}
+
+.bw-chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 7px;
+}
+
+.bw-chart-row {
+  display: grid;
+  grid-template-columns: minmax(76px, 0.28fr) minmax(180px, 1fr) 58px;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 7px 8px;
+  background: transparent;
+  color: var(--bw-text);
+  font: inherit;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.bw-chart-row:hover {
+  background: #f8fafc;
+}
+
+.bw-chart-row.is-selected {
+  border-color: #a5b4fc;
+  background: #eef2ff;
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.1);
+}
+
+.bw-chart-label {
+  text-align: left;
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.bw-chart-label small {
+  display: block;
+  margin-top: 2px;
+  color: var(--bw-muted);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.63rem;
+  font-weight: 700;
+}
+
+.bw-chart-track {
+  position: relative;
+  height: 27px;
+  overflow: hidden;
+  border-radius: 7px;
+  background:
+    linear-gradient(90deg, transparent 24.5%, rgba(148, 163, 184, 0.22) 25%, transparent 25.5%),
+    linear-gradient(90deg, transparent 49.5%, rgba(148, 163, 184, 0.22) 50%, transparent 50.5%),
+    linear-gradient(90deg, transparent 74.5%, rgba(148, 163, 184, 0.22) 75%, transparent 75.5%),
+    #f1f5f9;
+}
+
+.bw-chart-fill {
+  display: block;
+  min-width: 12px;
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left;
+  animation: bw-bar-grow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.bw-chart-fill.is-water { background: linear-gradient(90deg, #0891b2, #22d3ee); }
+.bw-chart-fill.is-aluminium { background: linear-gradient(90deg, #64748b, #cbd5e1); }
+.bw-chart-fill.is-glass { background: linear-gradient(90deg, #2563eb, #a5f3fc); }
+.bw-chart-fill.is-copper { background: linear-gradient(90deg, #b45309, #fb923c); }
+
+.bw-chart-row > strong {
+  text-align: right;
+  color: #334155;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: clamp(0.8rem, 1vw, 0.94rem);
+}
+
+.bw-material-scene {
+  --material-color: #0ea5e9;
+  --heat-level: 0.75;
+  --mass-scale: 1;
+  position: relative;
+  min-height: 330px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bw-material-sample {
+  position: relative;
+  z-index: 3;
+  width: 180px;
+  height: 180px;
+  border: 5px solid color-mix(in srgb, var(--material-color), #334155 30%);
+  border-radius: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.76), transparent 27%),
+    var(--material-color);
+  color: #ffffff;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 2.35rem;
+  font-weight: 900;
+  text-shadow: 0 2px 8px rgba(15, 23, 42, 0.28);
+  transform: translateY(58px) scale(var(--mass-scale));
+  transform-origin: bottom;
+  box-shadow:
+    inset 10px 10px 28px rgba(255, 255, 255, 0.24),
+    0 18px 32px rgba(15, 23, 42, 0.16),
+    0 0 calc(8px + 35px * var(--heat-level)) rgba(249, 115, 22, calc(var(--heat-level) * 0.44));
+  filter: sepia(calc(var(--heat-level) * 0.22)) saturate(calc(1 + var(--heat-level) * 0.42));
+  transition: 0.3s ease;
+}
+
+.bw-heat-rays {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 7%;
+  width: 240px;
+  height: 190px;
+  transform: translateX(-50%);
+  opacity: calc(0.08 + var(--heat-level) * 0.82);
+}
+
+.bw-heat-rays span {
+  position: absolute;
+  bottom: 0;
+  width: 9px;
+  height: calc(48px + 72px * var(--heat-level));
+  border-left: 6px solid rgba(249, 115, 22, 0.56);
+  border-radius: 50%;
+  animation: bw-heat-ray 1.35s ease-in-out infinite;
+}
+
+.bw-heat-rays span:nth-child(1) { left: 19%; animation-delay: -0.2s; }
+.bw-heat-rays span:nth-child(2) { left: 40%; animation-delay: -0.7s; }
+.bw-heat-rays span:nth-child(3) { left: 61%; animation-delay: -1.05s; }
+.bw-heat-rays span:nth-child(4) { left: 80%; animation-delay: -0.48s; }
+
+.bw-mass-platform {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 16%;
+  width: 260px;
+  height: 48px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #334155;
+  box-shadow: 0 8px 0 #0f172a, 0 14px 24px rgba(15, 23, 42, 0.24);
+}
+
+.bw-scale-screen {
+  position: absolute;
+  left: 50%;
+  top: 19px;
+  transform: translateX(-50%);
+  min-width: 88px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  background: #d9f99d;
+  color: #365314;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: inset 0 0 8px rgba(54, 83, 20, 0.2);
+}
+
+.bw-thermometer {
+  position: absolute;
+  z-index: 5;
+  right: 4%;
+  top: 12%;
+  width: 62px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+}
+
+.bw-thermometer-track {
+  position: relative;
+  width: 20px;
+  height: 174px;
+  overflow: hidden;
+  border: 4px solid #94a3b8;
+  border-radius: 999px 999px 4px 4px;
+  background: #ffffff;
+}
+
+.bw-thermometer-fill {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 0;
+  height: 70%;
+  border-radius: 999px;
+  background: linear-gradient(0deg, #ef4444, #f97316);
+  transition: height 0.25s ease;
+}
+
+.bw-thermometer-bulb {
+  position: absolute;
+  top: 157px;
+  width: 42px;
+  height: 42px;
+  border: 4px solid #94a3b8;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.bw-thermometer strong {
+  position: absolute;
+  top: 202px;
+  white-space: nowrap;
+  color: #dc2626;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 1rem;
+}
+
+.bw-heat-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bw-medium-animation {
+  --sample-color: #0ea5e9;
+  --sample-heat: 0.75;
+  --sample-scale: 0.93;
+  position: relative;
+  min-height: 142px;
+  overflow: hidden;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #ffffff, #fff7ed);
+}
+
+.bw-animation-label {
+  position: absolute;
+  z-index: 8;
+  top: 7px;
+  left: 10px;
+  color: var(--bw-muted);
+  font-size: 0.65rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.bw-animation-stage {
+  position: absolute;
+  inset: 24px 6px 5px;
+}
+
+.bw-heating-sample {
+  position: absolute;
+  z-index: 4;
+  left: 50%;
+  bottom: 26px;
+  width: 82px;
+  height: 68px;
+  transform: translateX(-50%) scale(var(--sample-scale));
+  transform-origin: bottom;
+  border: 4px solid color-mix(in srgb, var(--sample-color), #334155 32%);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.72), transparent 26%),
+    var(--sample-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 8px 16px rgba(15, 23, 42, 0.16),
+    0 0 calc(5px + 20px * var(--sample-heat)) rgba(249, 115, 22, calc(var(--sample-heat) * 0.65));
+  animation: bw-sample-warm calc(1.3s - 0.55s * var(--sample-heat)) ease-in-out infinite alternate;
+  transition: 0.3s ease;
+}
+
+.bw-heating-sample strong {
+  position: relative;
+  z-index: 3;
+  color: #ffffff;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 1.25rem;
+  font-weight: 900;
+  text-shadow: 0 2px 5px rgba(15, 23, 42, 0.32);
+}
+
+.bw-sample-liquid {
+  display: none;
+}
+
+.bw-medium-animation.is-water .bw-heating-sample {
+  height: 74px;
+  border-top-width: 2px;
+  border-radius: 8px 8px 17px 17px;
+  background: rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+}
+
+.bw-medium-animation.is-water .bw-sample-liquid {
+  display: block;
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  height: 67%;
+  border-radius: 4px 4px 11px 11px;
+  background: linear-gradient(180deg, #67e8f9, #0ea5e9);
+}
+
+.bw-medium-animation.is-water .bw-sample-liquid::before {
+  content: "";
+  position: absolute;
+  left: -8%;
+  top: -4px;
+  width: 116%;
+  height: 9px;
+  border-radius: 50%;
+  background: #cffafe;
+  animation: bw-mini-wave calc(1.5s - 0.7s * var(--sample-heat)) ease-in-out infinite;
+}
+
+.bw-sample-heat-waves {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 78px;
+  width: 120px;
+  height: 44px;
+  transform: translateX(-50%);
+  opacity: calc(0.14 + var(--sample-heat) * 0.86);
+}
+
+.bw-sample-heat-waves i {
+  position: absolute;
+  bottom: 0;
+  width: 8px;
+  height: calc(22px + 18px * var(--sample-heat));
+  border-left: 5px solid rgba(249, 115, 22, 0.62);
+  border-radius: 50%;
+  animation: bw-mini-heat 0.85s ease-in-out infinite;
+}
+
+.bw-sample-heat-waves i:nth-child(1) { left: 25%; animation-delay: -0.2s; }
+.bw-sample-heat-waves i:nth-child(2) { left: 50%; animation-delay: -0.55s; }
+.bw-sample-heat-waves i:nth-child(3) { left: 75%; animation-delay: -0.36s; }
+
+.bw-mini-hotplate {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 12px;
+  width: 128px;
+  height: 20px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #334155;
+  box-shadow: 0 5px 0 #0f172a, 0 7px 12px rgba(15, 23, 42, 0.22);
+}
+
+.bw-mini-hotplate span {
+  position: absolute;
+  inset: 5px 15px;
+  border-radius: 50%;
+  background: color-mix(in srgb, #ef4444 calc(20% + var(--sample-heat) * 80%), #64748b);
+  box-shadow: 0 0 calc(3px + 15px * var(--sample-heat)) rgba(239, 68, 68, 0.8);
+}
+
+.bw-heat-energy {
+  padding: 11px 13px;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bw-heat-energy > span {
+  color: var(--bw-muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bw-heat-energy strong {
+  color: #ea580c;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: clamp(1.8rem, 3.4vw, 3rem);
+  line-height: 1.05;
+}
+
+.bw-heat-energy small {
+  color: var(--bw-green);
+  font-weight: 800;
+}
+
+.bw-heat-energy small.is-high {
+  color: var(--bw-yellow);
+}
+
+.bw-property-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.bw-property-grid > div {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--bw-border);
+  border-radius: 11px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.bw-property-grid span {
+  color: var(--bw-muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.bw-property-grid strong {
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+}
+
+.bw-formula-card {
+  grid-column: 1 / -1;
+  padding: 12px 16px;
+  display: grid;
+  grid-template-columns: minmax(270px, 0.75fr) minmax(420px, 1.25fr);
+  align-items: center;
+  gap: 14px;
+}
+
+.bw-formula-heading {
+  margin: 0 0 3px;
+  color: var(--bw-muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.bw-formula-main {
+  color: var(--bw-primary);
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: clamp(1.65rem, 3vw, 3rem);
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.bw-worked {
+  padding: 11px 14px;
+  background: #ffffff;
+  border: 1px solid var(--bw-border);
+  border-radius: 12px;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: clamp(1rem, 1.9vw, 1.65rem);
+  font-weight: 800;
+  text-align: center;
+  color: #334155;
+}
+
+.bw-worked strong {
+  color: var(--bw-cyan);
+}
+
+@keyframes bw-wave {
+  0%, 100% { transform: translateX(-2%) rotate(-1deg); }
+  50% { transform: translateX(2%) rotate(1deg); }
+}
+
+@keyframes bw-water-flow {
+  from { background-position: 50% 0%; }
+  to { background-position: 50% 100%; }
+}
+
+@keyframes bw-convection-rise {
+  0%, 100% { transform: translateY(16px) skewX(-8deg); opacity: 0.18; }
+  50% { transform: translateY(-22px) skewX(10deg); opacity: 0.8; }
+}
+
+@keyframes bw-bubble-rise {
+  0% { transform: translate(0, 10px) scale(0.55); opacity: 0; }
+  14% { opacity: 0.88; }
+  70% { opacity: 0.72; }
+  100% { transform: translate(9px, -190px) scale(1.12); opacity: 0; }
+}
+
+@keyframes bw-steam-rise {
+  0% { transform: translateY(18px) scale(0.7); opacity: 0; }
+  25% { opacity: 0.65; }
+  100% { transform: translateY(-35px) translateX(10px) scale(1.25); opacity: 0; }
+}
+
+@keyframes bw-heat-ray {
+  0%, 100% { transform: translateY(10px) skewX(-9deg); opacity: 0.28; }
+  50% { transform: translateY(-18px) skewX(10deg); opacity: 0.88; }
+}
+
+@keyframes bw-bar-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes bw-sample-warm {
+  from { filter: saturate(1) brightness(1); }
+  to { filter: saturate(calc(1 + var(--sample-heat) * 0.4)) brightness(calc(1 + var(--sample-heat) * 0.08)); }
+}
+
+@keyframes bw-mini-wave {
+  0%, 100% { transform: translateX(-3%) rotate(-2deg); }
+  50% { transform: translateX(3%) rotate(2deg); }
+}
+
+@keyframes bw-mini-heat {
+  0%, 100% { transform: translateY(5px) skewX(-9deg); opacity: 0.25; }
+  50% { transform: translateY(-10px) skewX(10deg); opacity: 0.9; }
+}
+
+@keyframes bw-water-pulse {
+  from { filter: saturate(1); }
+  to { filter: saturate(1.28) brightness(1.05); }
+}
+
+@keyframes bw-flame {
+  from { transform: rotate(42deg) scaleX(0.9) scaleY(0.88); }
+  to { transform: rotate(48deg) translateY(-5px) scaleX(1.08) scaleY(1.14); }
+}
+
+@keyframes bw-bottle-boil {
+  from { transform: translateX(-1px) rotate(-0.18deg); }
+  to { transform: translateX(1px) rotate(0.18deg); }
+}
+
+@keyframes bw-splash {
+  0% { transform: translate(0, 8px) scale(0.5); opacity: 0; }
+  18% { opacity: 0.9; }
+  100% { transform: translate(var(--splash-x), -66px) rotate(120deg) scale(1); opacity: 0; }
+}
+
+html.s3phy-embed .bw-wrap {
+  height: 100%;
+  min-height: 0;
+  padding: 8px;
+  overflow: hidden;
+}
+
+html.s3phy-embed .bw-head {
+  margin-bottom: 7px;
+}
+
+html.s3phy-embed .bw-dashboard {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+html.s3phy-embed .bw-bottle-stage {
+  height: 100%;
+  min-height: 260px;
+}
+
+@media (max-width: 850px) {
+  html,
+  body,
+  html.s3phy-embed,
+  html.s3phy-embed body {
+    height: auto;
+    overflow: auto;
+  }
+
+  html.s3phy-embed #app {
+    height: auto;
+  }
+
+  .bw-wrap,
+  html.s3phy-embed .bw-wrap {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .bw-dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .bw-dashboard.controls-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-controls.is-collapsed {
+    max-width: none;
+  }
+
+  .bw-controls.is-collapsed .bw-controls-heading {
+    height: auto;
+  }
+
+  .bw-controls.is-collapsed .bw-controls-toggle {
+    min-height: 42px;
+    flex-direction: row;
+  }
+
+  .bw-viz,
+  .bw-controls,
+  .bw-formula-card {
+    grid-column: 1;
+  }
+
+  .bw-viz,
+  .bw-parallel-demo,
+  .bw-controls {
+    grid-row: auto;
+  }
+
+  .bw-controls {
+    justify-self: stretch;
+    max-width: none;
+  }
+
+  .bw-viz {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bw-heat-viz {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .bw-material-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bw-formula-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .bw-wrap {
+    padding: 9px;
+  }
+
+  .bw-head {
+    text-align: left;
+    padding-inline: 0;
+    padding-top: 50px;
+  }
+
+  .bw-head-actions {
+    top: 0;
+    transform: none;
+  }
+
+  .bw-viz {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-heat-viz {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-parallel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 0;
+    padding: 54px 12px 9px;
+  }
+
+  .bw-parallel-heading strong {
+    text-align: left;
+  }
+
+  .bw-property-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bw-bottle-stage {
+    height: 330px;
+  }
+
+  .bw-viz-info {
+    padding-bottom: 0;
+  }
+
+  .bw-bottle {
+    width: min(220px, 60%);
+    transform: translateX(-10%);
+  }
+
+  .bw-fire,
+  .bw-heater {
+    left: 34%;
+    width: min(190px, 60%);
+  }
+
+  .bw-heater {
+    transform: translateX(-50%);
+  }
+
+  .bw-heater-power-callout {
+    left: auto;
+    right: 0;
+    bottom: 2%;
+  }
+
+  .bw-temp {
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bw-wrap *,
+  .bw-wrap *::before,
+  .bw-wrap *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+    .share-open {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+    .share-open h1 {
+      margin: 0 0 12px;
+      font-size: 1.8rem;
+    }
+    .share-open p {
+      margin: 0 0 24px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    .share-open a {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 800;
+      text-decoration: none;
+    }
+    .share-open a:hover { background: #1d4ed8; }
+    html:not(.lab-open) #app { display: none; }
+    html.lab-open .share-open { display: none; }
+  </style>
+</head>
+<body>
+  <section class="share-open">
+    <h1>煲水實驗 · Water Heating Lab</h1>
+    <p>將呢個檔案傳送俾朋友。對方開啟檔案後，撳下面連結就可以開始實驗。</p>
+    <p>Send this file to a friend. After opening it, click the link below to start the lab.</p>
+    <a href="#lab" id="open-lab-link">開啟實驗 · Open the lab</a>
+  </section>
+  <div id="app"></div>
+  <script>
+    (function () {
+      function openLab() {
+        document.documentElement.classList.add('lab-open');
+        if (location.hash !== '#lab') {
+          history.replaceState(null, '', location.pathname + location.search + '#lab');
+        }
+      }
+      document.getElementById('open-lab-link').addEventListener('click', function (event) {
+        event.preventDefault();
+        openLab();
+      });
+      if (location.hash === '#lab') openLab();
+    })();
+  </script>
+  <script>
+(() => {
+  // labs/boiling-water/app.js
+  var BOILING_THRESHOLD_J = 15e4;
+  var ENERGY_METER_MAX_J = 4e5;
+  var NON_BOIL_POWER_W = 1e3;
+  var JUST_BOIL_POWER_W = 1500;
+  var PRESET_DURATION_S = 100;
+  var SIMULATION_SPEED = 30;
+  var MEDIA = {
+    water: { c: 4200, color: "#0ea5e9", symbol: "H\u2082O", kind: "water" },
+    aluminium: { c: 900, color: "#94a3b8", symbol: "Al", kind: "solid" },
+    copper: { c: 390, color: "#d97706", symbol: "Cu", kind: "solid" },
+    glass: { c: 670, color: "#67e8f9", symbol: "SiO\u2082", kind: "solid" }
+  };
+  var STRINGS = {
+    en: {
+      title: "Heating Energy Labs",
+      subtitle: "Explore energy transfer through interactive heating experiments.",
+      tabPowerTime: "Boiling water",
+      tabHeatCapacity: "Heating materials",
+      switchLanguage: "\u7E41\u9AD4\u4E2D\u6587",
+      fullscreen: "Fullscreen",
+      exitFullscreen: "Exit fullscreen",
+      statusReady: "Ready",
+      statusHeating: "Heating",
+      statusBoiling: "Boiling",
+      statusFinished: "Experiment complete",
+      statusBoiled: "Water boiled",
+      temperature: "Illustrative water temperature",
+      energyProgress: "Energy towards boiling",
+      energyRemaining: "Remaining",
+      boilingTarget: "needed to boil",
+      controls: "Experiment controls",
+      showControls: "Show controls",
+      hideControls: "Hide controls",
+      power: "Heater power, P",
+      powerLevel: "POWER",
+      time: "Heating time, t",
+      predictedEnergy: "Predicted energy",
+      willBoil: "Enough energy: the water will boil.",
+      willNotBoil: "Not enough energy: increase power or time.",
+      setNoBoil: "Default: Does not boil (1000 W \xD7 100 s)",
+      setJustEnough: "Boil water (1500 W \xD7 100 s)",
+      heater: "Heater",
+      start: "Start experiment",
+      pause: "Pause",
+      continue: "Continue",
+      replay: "Run again",
+      reset: "Reset",
+      seconds: "s",
+      watts: "W",
+      joules: "J",
+      kilojoules: "kJ",
+      heatCapacityControls: "Material heating controls",
+      mass: "Mass, m",
+      medium: "Material / medium",
+      initialTemperature: "Initial temperature",
+      finalTemperature: "Final temperature, T\u2082",
+      temperatureChange: "Temperature change, \u0394T",
+      specificHeat: "Specific heat capacity, c",
+      requiredEnergy: "Energy required",
+      heatCapacityNote: "The model assumes no change of state and no energy loss.",
+      comparisonTitle: "Compare specific heat capacities",
+      comparisonSubtitle: "Compare all materials under the same conditions. Click a row to inspect its calculation.",
+      heatingPreview: "Heating animation",
+      sameEnergyMode: "Same energy",
+      sameTemperatureMode: "Same temperature rise",
+      compareTemperatureRise: "Same energy \u2192 compare temperature rise",
+      compareEnergyRequired: "Same temperature rise \u2192 compare energy required",
+      sameEnergyInsight: "Lower c gives a larger temperature rise for the same energy.",
+      sameTemperatureInsight: "Higher c needs more energy for the same temperature rise.",
+      inputEnergy: "Energy supplied, E",
+      selectedTemperatureRise: "Selected temperature rise",
+      selectedEnergyRequired: "Selected energy required",
+      temperatureRise: "Temperature rise, \u0394T",
+      energySupplied: "Energy supplied",
+      commonConditions: "Same mass \xB7 Same energy supplied",
+      coreRelationship: "Smaller c \u2192 larger \u0394T",
+      heatAll: "Heat all materials",
+      pauseHeating: "Pause heating",
+      replayHeating: "Heat again",
+      resetHeating: "Reset",
+      currentTemperature: "Temperature",
+      kilograms: "kg",
+      mediumWater: "Water",
+      mediumAluminium: "Aluminium",
+      mediumCopper: "Copper",
+      mediumGlass: "Glass",
+      energyDemandLow: "Lower energy needed",
+      energyDemandHigh: "Higher energy needed"
+    },
+    zh: {
+      title: "\u52A0\u71B1\u80FD\u91CF\u5BE6\u9A57\u5BA4",
+      subtitle: "\u900F\u904E\u4E92\u52D5\u52A0\u71B1\u5BE6\u9A57\u63A2\u7D22\u80FD\u91CF\u50B3\u9001\u3002",
+      tabPowerTime: "\u7172\u6C34",
+      tabHeatCapacity: "\u52A0\u71B1\u7269\u6599",
+      switchLanguage: "English",
+      fullscreen: "\u5168\u87A2\u5E55",
+      exitFullscreen: "\u9000\u51FA\u5168\u87A2\u5E55",
+      statusReady: "\u6E96\u5099\u5C31\u7DD2",
+      statusHeating: "\u52A0\u71B1\u4E2D",
+      statusBoiling: "\u6CB8\u9A30\u4E2D",
+      statusFinished: "\u5BE6\u9A57\u5B8C\u6210",
+      statusBoiled: "\u6C34\u5DF2\u7172\u6EFE",
+      temperature: "\u793A\u610F\u6C34\u6EAB",
+      energyProgress: "\u9054\u81F3\u6CB8\u9A30\u6240\u9700\u80FD\u91CF",
+      energyRemaining: "\u5C1A\u6B20",
+      boilingTarget: "\u716E\u6CB8\u6240\u9700",
+      controls: "\u5BE6\u9A57\u63A7\u5236",
+      showControls: "\u986F\u793A\u63A7\u5236",
+      hideControls: "\u6536\u8D77\u63A7\u5236",
+      power: "\u767C\u71B1\u5668\u529F\u7387 P",
+      powerLevel: "\u529F\u7387",
+      time: "\u52A0\u71B1\u6642\u9593 t",
+      predictedEnergy: "\u9810\u8A08\u7E3D\u80FD\u91CF",
+      willBoil: "\u80FD\u91CF\u8DB3\u5920\uFF1A\u6C34\u6703\u6CB8\u9A30\u3002",
+      willNotBoil: "\u80FD\u91CF\u4E0D\u8DB3\uFF1A\u8ACB\u589E\u52A0\u529F\u7387\u6216\u6642\u9593\u3002",
+      setNoBoil: "\u9810\u8A2D\uFF1A\u4E0D\u6703\u716E\u6CB8\uFF081000 W \xD7 100 s\uFF09",
+      setJustEnough: "\u716E\u6CB8\u6C34\uFF081500 W \xD7 100 s\uFF09",
+      heater: "\u767C\u71B1\u5668",
+      start: "\u958B\u59CB\u5BE6\u9A57",
+      pause: "\u66AB\u505C",
+      continue: "\u7E7C\u7E8C",
+      replay: "\u518D\u505A\u4E00\u6B21",
+      reset: "\u91CD\u8A2D",
+      seconds: "s",
+      watts: "W",
+      joules: "J",
+      kilojoules: "kJ",
+      heatCapacityControls: "\u7269\u6599\u52A0\u71B1\u63A7\u5236",
+      mass: "\u8CEA\u91CF m",
+      medium: "\u7269\u6599\uFF0F\u4ECB\u8CEA",
+      initialTemperature: "\u521D\u59CB\u6EAB\u5EA6",
+      finalTemperature: "\u6700\u7D42\u6EAB\u5EA6 T\u2082",
+      temperatureChange: "\u6EAB\u5EA6\u8B8A\u5316 \u0394T",
+      specificHeat: "\u6BD4\u71B1\u5BB9\u91CF c",
+      requiredEnergy: "\u6240\u9700\u80FD\u91CF",
+      heatCapacityNote: "\u6A21\u578B\u5047\u8A2D\u6C92\u6709\u7269\u614B\u8B8A\u5316\u53CA\u6C92\u6709\u80FD\u91CF\u640D\u5931\u3002",
+      comparisonTitle: "\u6BD4\u8F03\u4E0D\u540C\u7269\u6599\u7684\u6BD4\u71B1\u5BB9\u91CF",
+      comparisonSubtitle: "\u5728\u76F8\u540C\u689D\u4EF6\u4E0B\u540C\u6642\u6BD4\u8F03\u6240\u6709\u7269\u6599\uFF1B\u9EDE\u64CA\u6A6B\u5217\u53EF\u67E5\u770B\u500B\u5225\u8A08\u7B97\u3002",
+      heatingPreview: "\u52A0\u71B1\u52D5\u756B",
+      sameEnergyMode: "\u76F8\u540C\u80FD\u91CF",
+      sameTemperatureMode: "\u76F8\u540C\u5347\u6EAB",
+      compareTemperatureRise: "\u76F8\u540C\u80FD\u91CF \u2192 \u6BD4\u8F03\u5347\u6EAB\u5E45\u5EA6",
+      compareEnergyRequired: "\u76F8\u540C\u5347\u6EAB \u2192 \u6BD4\u8F03\u6240\u9700\u80FD\u91CF",
+      sameEnergyInsight: "\u8F38\u5165\u80FD\u91CF\u76F8\u540C\u6642\uFF0Cc \u6108\u5C0F\uFF0C\u5347\u6EAB\u5E45\u5EA6\u6108\u5927\u3002",
+      sameTemperatureInsight: "\u5347\u6EAB\u5E45\u5EA6\u76F8\u540C\u6642\uFF0Cc \u6108\u5927\uFF0C\u6240\u9700\u80FD\u91CF\u6108\u591A\u3002",
+      inputEnergy: "\u8F38\u5165\u80FD\u91CF E",
+      selectedTemperatureRise: "\u6240\u9078\u7269\u6599\u7684\u5347\u6EAB",
+      selectedEnergyRequired: "\u6240\u9078\u7269\u6599\u6240\u9700\u80FD\u91CF",
+      temperatureRise: "\u6EAB\u5EA6\u5347\u5E45 \u0394T",
+      energySupplied: "\u8F38\u5165\u80FD\u91CF",
+      commonConditions: "\u76F8\u540C\u8CEA\u91CF \xB7 \u8F38\u5165\u76F8\u540C\u80FD\u91CF",
+      coreRelationship: "c \u6108\u5C0F \u2192 \u0394T \u6108\u5927",
+      heatAll: "\u540C\u6642\u52A0\u71B1",
+      pauseHeating: "\u66AB\u505C\u52A0\u71B1",
+      replayHeating: "\u518D\u6B21\u52A0\u71B1",
+      resetHeating: "\u91CD\u8A2D",
+      currentTemperature: "\u6EAB\u5EA6",
+      kilograms: "kg",
+      mediumWater: "\u6C34",
+      mediumAluminium: "\u92C1",
+      mediumCopper: "\u9285",
+      mediumGlass: "\u73BB\u7483",
+      energyDemandLow: "\u6240\u9700\u80FD\u91CF\u8F03\u4F4E",
+      energyDemandHigh: "\u6240\u9700\u80FD\u91CF\u8F03\u9AD8"
+    }
+  };
+  var root = document.getElementById("app");
+  var lang = new URLSearchParams(location.search).get("lang") === "en" ? "en" : "zh";
+  var power = 0;
+  var duration = 0;
+  var elapsed = 0;
+  var running = false;
+  var animationFrame = 0;
+  var lastFrame = 0;
+  var activeTab = "powerTime";
+  var controlsCollapsed = sessionStorage.getItem("s3phy-boiling-water-controls-collapsed") === "true";
+  var mass = 1;
+  var inputEnergyJ = 2e4;
+  var shcProgress = 0;
+  var shcRunning = false;
+  var shcAnimationFrame = 0;
+  var shcLastFrame = 0;
+  function t(key) {
+    return STRINGS[lang][key] ?? key;
+  }
+  function formatEnergy(joules) {
+    if (joules >= 1e3) {
+      const digits = joules >= 1e5 ? 0 : 1;
+      return `${(joules / 1e3).toFixed(digits)} ${t("kilojoules")}`;
+    }
+    return `${Math.round(joules)} ${t("joules")}`;
+  }
+  function renderMaterialCard(key, label) {
+    const material = MEDIA[key];
+    return `
+    <article class="bw-material-card" data-material-card="${key}" style="--card-color:${material.color}">
+      <div class="bw-material-card-head">
+        <strong>${label}</strong>
+        <small>${t("specificHeat")}</small>
+        <span><b>c = ${material.c}</b><em>J kg\u207B\xB9 \xB0C\u207B\xB9</em></span>
+      </div>
+      <div class="bw-parallel-stage">
+        <div class="bw-parallel-heat" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="bw-demo-sample ${material.kind === "water" ? "is-water" : ""}">
+          <div class="bw-demo-liquid"></div>
+          <b>${material.symbol}</b>
+        </div>
+        <div class="bw-demo-heater"></div>
+        <div class="bw-demo-thermometer">
+          <div class="bw-demo-thermometer-fill" data-material-temp-fill="${key}"></div>
+        </div>
+      </div>
+      <div class="bw-material-rise">\u0394T = <strong data-material-rise="${key}">0.0\xB0C</strong></div>
+    </article>`;
+  }
+  function render() {
+    if (!root) return;
+    document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
+    root.innerHTML = `
+    <main class="bw-wrap">
+      <header class="bw-head">
+        <h1 class="bw-title">${t("title")}</h1>
+        <p class="bw-subtitle">${t("subtitle")}</p>
+        <div class="bw-head-actions">
+          <button class="bw-head-btn" type="button" data-fullscreen aria-pressed="false">
+            <span class="bw-fullscreen-icon" aria-hidden="true">\u26F6</span>
+            <span data-fullscreen-label>${t("fullscreen")}</span>
+          </button>
+          <button class="bw-head-btn" type="button" data-language>${t("switchLanguage")}</button>
+        </div>
+      </header>
+
+      <nav class="bw-tabs" aria-label="Energy labs">
+        <button class="bw-tab ${activeTab === "powerTime" ? "is-active" : ""}" type="button" data-tab="powerTime">
+          ${t("tabPowerTime")}
+        </button>
+        <button class="bw-tab ${activeTab === "heatCapacity" ? "is-active" : ""}" type="button" data-tab="heatCapacity">
+          ${t("tabHeatCapacity")}
+        </button>
+      </nav>
+
+      <section class="bw-dashboard ${controlsCollapsed ? "controls-collapsed" : ""} ${activeTab === "powerTime" ? "" : "is-hidden"}" data-panel="powerTime">
+        <div class="bw-card bw-viz">
+          <button class="bw-controls-toggle bw-controls-toggle--overlay" type="button" data-toggle-controls aria-expanded="${String(!controlsCollapsed)}">
+            <span aria-hidden="true">\u2699</span>
+            <strong>${controlsCollapsed ? t("showControls") : t("hideControls")}</strong>
+          </button>
+          <div class="bw-bottle-stage" data-stage>
+            <div class="bw-bottle" data-bottle>
+              <div class="bw-steam" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="bw-splash" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+              <div class="bw-water-clip">
+                <div class="bw-water" data-water>
+                  <div class="bw-convection" aria-hidden="true"><span></span><span></span><span></span></div>
+                  <div class="bw-bubbles" aria-hidden="true">
+                    ${Array.from({ length: 18 }, () => "<span></span>").join("")}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bw-fire" data-fire aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="bw-heater" aria-hidden="true">
+              <span class="bw-heater-label">${t("heater")}</span>
+            </div>
+            <div class="bw-power-hero bw-heater-power-callout">
+              <span>${t("powerLevel")}</span>
+              <strong data-power-hero>${power} ${t("watts")}</strong>
+            </div>
+          </div>
+
+          <div class="bw-viz-info">
+            <div class="bw-status-row">
+              <div class="bw-status" data-status data-state="ready">
+                <span class="bw-status-dot"></span>
+                <span data-status-label>${t("statusReady")}</span>
+              </div>
+            </div>
+            <div class="bw-energy-meter">
+              <div class="bw-meter-label">
+                <span>${t("energyProgress")}</span>
+                <span class="bw-meter-reading">
+                  <strong data-live-energy>0 ${t("kilojoules")}</strong>
+                  <i>/</i>
+                  <span>${formatEnergy(ENERGY_METER_MAX_J)}</span>
+                </span>
+              </div>
+              <div class="bw-meter-track" role="progressbar" aria-valuemin="0" aria-valuemax="${ENERGY_METER_MAX_J / 1e3}" aria-valuenow="0" data-progress>
+                <div class="bw-meter-fill" data-progress-fill></div>
+                <span class="bw-meter-target-marker" style="--target-position:${BOILING_THRESHOLD_J / ENERGY_METER_MAX_J * 100}%">
+                  <span>${formatEnergy(BOILING_THRESHOLD_J)} ${t("boilingTarget")}</span>
+                </span>
+              </div>
+              <div class="bw-meter-scale">
+                <span>0 ${t("kilojoules")}</span>
+                <strong><span>${t("energyRemaining")}</span> <b data-energy-remaining>${formatEnergy(BOILING_THRESHOLD_J)}</b></strong>
+                <span>${formatEnergy(ENERGY_METER_MAX_J)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="bw-card bw-controls ${controlsCollapsed ? "is-collapsed" : ""}">
+          <h2 class="bw-card-title">${t("controls")}</h2>
+          <div class="bw-control-group">
+            <label class="bw-control-label" for="power">
+              <span>${t("power")}</span>
+              <output class="bw-badge" data-power-output>${power} ${t("watts")}</output>
+            </label>
+            <div class="bw-slider-row">
+              <button class="bw-step-btn" type="button" data-step="power" data-delta="-100" aria-label="-100 W">\u2212</button>
+              <input id="power" data-power type="range" min="0" max="3000" step="100" value="${power}">
+              <button class="bw-step-btn" type="button" data-step="power" data-delta="100" aria-label="+100 W">+</button>
+            </div>
+          </div>
+          <div class="bw-control-group">
+            <label class="bw-control-label" for="duration">
+              <span>${t("time")}</span>
+              <output class="bw-badge" data-duration-output>${duration} ${t("seconds")}</output>
+            </label>
+            <div class="bw-slider-row">
+              <button class="bw-step-btn" type="button" data-step="duration" data-delta="-10" aria-label="-10 s">\u2212</button>
+              <input id="duration" data-duration type="range" min="0" max="300" step="10" value="${duration}">
+              <button class="bw-step-btn" type="button" data-step="duration" data-delta="10" aria-label="+10 s">+</button>
+            </div>
+          </div>
+
+          <div class="bw-prediction">
+            <span class="bw-prediction-label">${t("predictedEnergy")}</span>
+            <strong class="bw-prediction-value" data-predicted-energy></strong>
+            <div class="bw-prediction-result" data-prediction-result></div>
+          </div>
+
+          <div class="bw-preset-grid">
+            <button class="bw-btn bw-preset bw-no-boil-preset" type="button" data-no-boil-preset>${t("setNoBoil")}</button>
+            <button class="bw-btn bw-preset bw-boil-preset" type="button" data-boil-preset>${t("setJustEnough")}</button>
+          </div>
+          <div class="bw-actions">
+            <button class="bw-btn primary" type="button" data-start>${t("start")}</button>
+            <button class="bw-btn" type="button" data-reset>${t("reset")}</button>
+          </div>
+        </aside>
+
+      </section>
+
+      <section class="bw-dashboard bw-heat-dashboard ${controlsCollapsed ? "controls-collapsed" : ""} ${activeTab === "heatCapacity" ? "" : "is-hidden"}" data-panel="heatCapacity">
+        <div class="bw-card bw-parallel-demo">
+          <button class="bw-controls-toggle bw-controls-toggle--overlay" type="button" data-toggle-controls aria-expanded="${String(!controlsCollapsed)}">
+            <span aria-hidden="true">\u2699</span>
+            <strong>${controlsCollapsed ? t("showControls") : t("hideControls")}</strong>
+          </button>
+          <div class="bw-parallel-heading">
+            <span>${t("commonConditions")}</span>
+            <strong>${t("coreRelationship")}</strong>
+          </div>
+          <div class="bw-material-grid">
+            ${renderMaterialCard("water", t("mediumWater"))}
+            ${renderMaterialCard("aluminium", t("mediumAluminium"))}
+            ${renderMaterialCard("glass", t("mediumGlass"))}
+            ${renderMaterialCard("copper", t("mediumCopper"))}
+          </div>
+        </div>
+
+        <aside class="bw-card bw-controls bw-heat-controls ${controlsCollapsed ? "is-collapsed" : ""}">
+          <h2 class="bw-card-title">${t("heatCapacityControls")}</h2>
+          <div class="bw-control-group">
+            <label class="bw-control-label" for="mass">
+              <span>${t("mass")}</span>
+              <output class="bw-badge" data-mass-output>${mass.toFixed(1)} ${t("kilograms")}</output>
+            </label>
+            <div class="bw-slider-row">
+              <button class="bw-step-btn" type="button" data-heat-step="mass" data-delta="-0.1">\u2212</button>
+              <input id="mass" data-mass type="range" min="0.1" max="2" step="0.1" value="${mass}">
+              <button class="bw-step-btn" type="button" data-heat-step="mass" data-delta="0.1">+</button>
+            </div>
+          </div>
+
+          <div class="bw-control-group">
+            <label class="bw-control-label" for="input-energy">
+              <span>${t("inputEnergy")}</span>
+              <output class="bw-badge" data-input-energy-output>${formatEnergy(inputEnergyJ)}</output>
+            </label>
+            <div class="bw-slider-row">
+              <button class="bw-step-btn" type="button" data-heat-step="energy" data-delta="-5000">\u2212</button>
+              <input id="input-energy" data-input-energy type="range" min="5000" max="50000" step="5000" value="${inputEnergyJ}">
+              <button class="bw-step-btn" type="button" data-heat-step="energy" data-delta="5000">+</button>
+            </div>
+          </div>
+          <div class="bw-actions">
+            <button class="bw-btn primary" type="button" data-shc-start>${t("heatAll")}</button>
+            <button class="bw-btn" type="button" data-shc-reset>${t("resetHeating")}</button>
+          </div>
+          <p class="bw-threshold-note">${t("heatCapacityNote")}</p>
+        </aside>
+
+      </section>
+    </main>`;
+    bindEvents();
+    updateDisplay();
+    updateHeatCapacityDisplay();
+  }
+  function bindEvents() {
+    root.querySelectorAll("[data-tab]").forEach((button) => {
+      button.addEventListener("click", () => {
+        activeTab = button.dataset.tab;
+        running = false;
+        shcRunning = false;
+        cancelAnimationFrame(animationFrame);
+        cancelAnimationFrame(shcAnimationFrame);
+        render();
+      });
+    });
+    root.querySelector("[data-language]")?.addEventListener("click", () => {
+      lang = lang === "en" ? "zh" : "en";
+      render();
+    });
+    root.querySelector("[data-fullscreen]")?.addEventListener("click", toggleFullscreen);
+    root.querySelectorAll("[data-toggle-controls]").forEach((button) => {
+      button.addEventListener("click", () => {
+        controlsCollapsed = !controlsCollapsed;
+        sessionStorage.setItem("s3phy-boiling-water-controls-collapsed", String(controlsCollapsed));
+        render();
+      });
+    });
+    root.querySelector("[data-power]")?.addEventListener("input", (event) => {
+      power = Number(event.target.value);
+      if (!running) elapsed = 0;
+      updateDisplay();
+    });
+    root.querySelector("[data-duration]")?.addEventListener("input", (event) => {
+      duration = Number(event.target.value);
+      if (elapsed > duration) elapsed = duration;
+      if (!running) elapsed = 0;
+      updateDisplay();
+    });
+    root.querySelectorAll("[data-step]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.step;
+        const delta = Number(button.dataset.delta);
+        if (target === "power") power = Math.max(0, Math.min(3e3, power + delta));
+        if (target === "duration") duration = Math.max(0, Math.min(300, duration + delta));
+        if (!running) elapsed = 0;
+        updateDisplay();
+      });
+    });
+    root.querySelector("[data-no-boil-preset]")?.addEventListener("click", setNoBoilPreset);
+    root.querySelector("[data-boil-preset]")?.addEventListener("click", setJustEnoughToBoil);
+    root.querySelector("[data-start]")?.addEventListener("click", toggleRunning);
+    root.querySelector("[data-reset]")?.addEventListener("click", resetExperiment);
+    root.querySelector("[data-mass]")?.addEventListener("input", (event) => {
+      mass = Number(event.target.value);
+      shcProgress = 0;
+      updateHeatCapacityDisplay();
+    });
+    root.querySelector("[data-input-energy]")?.addEventListener("input", (event) => {
+      inputEnergyJ = Number(event.target.value);
+      shcProgress = 0;
+      updateHeatCapacityDisplay();
+    });
+    root.querySelectorAll("[data-heat-step]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = button.dataset.heatStep;
+        const delta = Number(button.dataset.delta);
+        if (target === "mass") mass = Math.max(0.1, Math.min(2, Number((mass + delta).toFixed(1))));
+        if (target === "energy") inputEnergyJ = Math.max(5e3, Math.min(5e4, inputEnergyJ + delta));
+        shcProgress = 0;
+        updateHeatCapacityDisplay();
+      });
+    });
+    root.querySelector("[data-shc-start]")?.addEventListener("click", toggleShcHeating);
+    root.querySelector("[data-shc-reset]")?.addEventListener("click", resetShcHeating);
+  }
+  async function toggleFullscreen() {
+    try {
+      const active = document.fullscreenElement || document.webkitFullscreenElement;
+      if (!active) {
+        const request = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+        await request?.call(document.documentElement);
+      } else {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        await exit?.call(document);
+      }
+    } catch {
+    }
+    updateFullscreenButton();
+  }
+  function updateFullscreenButton() {
+    const active = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+    const button = root?.querySelector("[data-fullscreen]");
+    const label = root?.querySelector("[data-fullscreen-label]");
+    const text = active ? t("exitFullscreen") : t("fullscreen");
+    if (button) {
+      button.setAttribute("aria-pressed", String(active));
+      button.setAttribute("aria-label", text);
+    }
+    if (label) label.textContent = text;
+  }
+  function toggleRunning() {
+    if (elapsed >= duration) elapsed = 0;
+    running = !running;
+    lastFrame = performance.now();
+    if (running) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(step);
+    } else {
+      cancelAnimationFrame(animationFrame);
+    }
+    updateDisplay();
+  }
+  function resetExperiment() {
+    running = false;
+    power = 0;
+    duration = 0;
+    elapsed = 0;
+    lastFrame = 0;
+    cancelAnimationFrame(animationFrame);
+    updateDisplay();
+  }
+  function applyPowerTimePreset(nextPower, nextDuration) {
+    running = false;
+    power = nextPower;
+    duration = nextDuration;
+    elapsed = 0;
+    lastFrame = 0;
+    cancelAnimationFrame(animationFrame);
+    updateDisplay();
+  }
+  function setNoBoilPreset() {
+    applyPowerTimePreset(NON_BOIL_POWER_W, PRESET_DURATION_S);
+  }
+  function setJustEnoughToBoil() {
+    applyPowerTimePreset(JUST_BOIL_POWER_W, PRESET_DURATION_S);
+  }
+  function step(now) {
+    if (!running) return;
+    const deltaSeconds = Math.min((now - lastFrame) / 1e3, 0.1) * SIMULATION_SPEED;
+    lastFrame = now;
+    elapsed = Math.min(duration, elapsed + deltaSeconds);
+    if (elapsed >= duration) running = false;
+    updateDisplay();
+    if (running) animationFrame = requestAnimationFrame(step);
+  }
+  function toggleShcHeating() {
+    if (shcProgress >= 1) shcProgress = 0;
+    shcRunning = !shcRunning;
+    shcLastFrame = performance.now();
+    if (shcRunning) {
+      cancelAnimationFrame(shcAnimationFrame);
+      shcAnimationFrame = requestAnimationFrame(stepShcHeating);
+    } else {
+      cancelAnimationFrame(shcAnimationFrame);
+    }
+    updateHeatCapacityDisplay();
+  }
+  function resetShcHeating() {
+    shcRunning = false;
+    shcProgress = 0;
+    shcLastFrame = 0;
+    cancelAnimationFrame(shcAnimationFrame);
+    updateHeatCapacityDisplay();
+  }
+  function stepShcHeating(now) {
+    if (!shcRunning) return;
+    const delta = Math.min((now - shcLastFrame) / 4e3, 0.04);
+    shcLastFrame = now;
+    shcProgress = Math.min(1, shcProgress + delta);
+    if (shcProgress >= 1) shcRunning = false;
+    updateHeatCapacityDisplay();
+    if (shcRunning) shcAnimationFrame = requestAnimationFrame(stepShcHeating);
+  }
+  function updateDisplay() {
+    if (!root) return;
+    const energy = power * elapsed;
+    const predictedEnergy = power * duration;
+    const boilingProgress = Math.min(energy / BOILING_THRESHOLD_J, 1);
+    const meterProgress = Math.min(energy / ENERGY_METER_MAX_J, 1);
+    const remainingEnergy = Math.max(BOILING_THRESHOLD_J - energy, 0);
+    const hasBoiled = energy >= BOILING_THRESHOLD_J;
+    const finished = elapsed >= duration && duration > 0;
+    const stage = root.querySelector("[data-stage]");
+    const water = root.querySelector("[data-water]");
+    const status = root.querySelector("[data-status]");
+    const statusLabel = root.querySelector("[data-status-label]");
+    const startButton = root.querySelector("[data-start]");
+    root.querySelector("[data-power-output]").textContent = `${power} ${t("watts")}`;
+    root.querySelector("[data-power-hero]").textContent = `${power} ${t("watts")}`;
+    root.querySelector("[data-duration-output]").textContent = `${duration} ${t("seconds")}`;
+    root.querySelector("[data-power]").value = String(power);
+    root.querySelector("[data-duration]").value = String(duration);
+    root.querySelector("[data-predicted-energy]").textContent = formatEnergy(predictedEnergy);
+    root.querySelector("[data-live-energy]").textContent = formatEnergy(energy);
+    root.querySelector("[data-energy-remaining]").textContent = formatEnergy(remainingEnergy);
+    const progressPercent = meterProgress * 100;
+    const progressBar = root.querySelector("[data-progress]");
+    progressBar.setAttribute("aria-valuenow", String(Math.round(Math.min(energy, ENERGY_METER_MAX_J) / 1e3)));
+    root.querySelector("[data-progress-fill]").style.width = `${progressPercent}%`;
+    const predictionResult = root.querySelector("[data-prediction-result]");
+    const predictedToBoil = predictedEnergy >= BOILING_THRESHOLD_J;
+    predictionResult.textContent = predictedToBoil ? t("willBoil") : t("willNotBoil");
+    predictionResult.classList.toggle("will-not-boil", !predictedToBoil);
+    stage.classList.toggle("is-heating", running && power > 0);
+    stage.classList.toggle("is-near-boiling", boilingProgress >= 0.72);
+    stage.classList.toggle("is-almost-boiling", boilingProgress >= 0.88);
+    stage.classList.toggle("is-boiling", hasBoiled);
+    stage.style.setProperty("--heat", boilingProgress.toFixed(2));
+    stage.style.setProperty("--temp-level", boilingProgress.toFixed(3));
+    stage.style.setProperty("--water-speed", `${Math.max(0.38, 2.2 - boilingProgress * 1.75).toFixed(2)}s`);
+    stage.style.setProperty("--power-level", (power / 3e3).toFixed(3));
+    water.classList.toggle("is-warm", boilingProgress >= 0.2);
+    water.classList.toggle("is-hot", boilingProgress >= 0.45);
+    water.classList.toggle("is-boiling", hasBoiled);
+    let state = "ready";
+    let statusText = t("statusReady");
+    if (finished) {
+      state = "finished";
+      statusText = hasBoiled ? t("statusBoiled") : t("statusFinished");
+    } else if (running && hasBoiled) {
+      state = "boiling";
+      statusText = t("statusBoiling");
+    } else if (running || elapsed > 0) {
+      state = "heating";
+      statusText = t("statusHeating");
+    }
+    status.dataset.state = state;
+    statusLabel.textContent = statusText;
+    if (running) startButton.textContent = t("pause");
+    else if (finished) startButton.textContent = t("replay");
+    else if (elapsed > 0) startButton.textContent = t("continue");
+    else startButton.textContent = t("start");
+    updateFullscreenButton();
+  }
+  function updateHeatCapacityDisplay() {
+    if (!root) return;
+    const deliveredEnergy = inputEnergyJ * shcProgress;
+    const maximumTargetRise = inputEnergyJ / (mass * MEDIA.copper.c);
+    root.querySelector("[data-mass]").value = String(mass);
+    root.querySelector("[data-input-energy]").value = String(inputEnergyJ);
+    root.querySelector("[data-mass-output]").textContent = `${mass.toFixed(1)} ${t("kilograms")}`;
+    root.querySelector("[data-input-energy-output]").textContent = formatEnergy(inputEnergyJ);
+    Object.entries(MEDIA).forEach(([key, item]) => {
+      const rise = deliveredEnergy / (mass * item.c);
+      const relativeRise = maximumTargetRise > 0 ? rise / maximumTargetRise : 0;
+      root.querySelector(`[data-material-rise="${key}"]`).textContent = `${rise.toFixed(1)}\xB0C`;
+      root.querySelector(`[data-material-temp-fill="${key}"]`).style.height = `${8 + relativeRise * 88}%`;
+      const card = root.querySelector(`[data-material-card="${key}"]`);
+      card.style.setProperty("--card-heat", shcProgress.toFixed(3));
+      card.classList.toggle("is-heating", shcRunning);
+    });
+    const startButton = root.querySelector("[data-shc-start]");
+    if (shcRunning) startButton.textContent = t("pauseHeating");
+    else if (shcProgress >= 1) startButton.textContent = t("replayHeating");
+    else startButton.textContent = t("heatAll");
+  }
+  window.addEventListener("message", (event) => {
+    if (event.data?.type !== "s3phy:lang") return;
+    const next = event.data.lang === "en" ? "en" : "zh";
+    if (next === lang) return;
+    lang = next;
+    render();
+  });
+  document.addEventListener("fullscreenchange", updateFullscreenButton);
+  document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
+  render();
+})();
+
+  </script>
+</body>
+</html>

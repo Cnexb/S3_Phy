@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
+  <meta name="google" content="notranslate">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heat Transfer Laboratory (HKDSE Physics)</title>
@@ -400,12 +401,80 @@
         }
 
         #dull-black-block {
-            background-color: #1a1c2c !important; /* Original dark theme s3-navy */
-            border-color: #3d4254 !important;
+            /* Matte dull black stays black; heat is shown only via #glow-black red filter. */
+            background-color: #0c0c0e !important;
+            background-image: none !important;
+            border-color: #2a2a30;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: border-color 0.45s ease, box-shadow 0.45s ease;
+            overflow: hidden;
         }
         #dull-black-block span.text-slate-400,
         #dull-black-block span.text-slate-500 {
             color: #9ca3af !important; /* Original dark theme muted grey for legibility on black */
+        }
+        #shiny-silver-block {
+            /* Shiny silver base stays metallic; heat is shown only via #glow-shiny red filter. */
+            background-color: #e8edf3 !important;
+            background-image: linear-gradient(135deg, #ffffff 0%, #dbe3ec 22%, #c5ced9 48%, #eef2f6 72%, #b8c2ce 100%) !important;
+            border-color: #94a3b8;
+            transition: border-color 0.45s ease, box-shadow 0.45s ease;
+            overflow: hidden;
+        }
+        #shiny-silver-block::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-radius: inherit;
+            background: linear-gradient(118deg,
+                rgba(255, 255, 255, 0.72) 0%,
+                rgba(255, 255, 255, 0.08) 23%,
+                rgba(255, 255, 255, 0) 42%,
+                rgba(255, 255, 255, 0.50) 58%,
+                rgba(148, 163, 184, 0.16) 76%,
+                rgba(255, 255, 255, 0.55) 100%);
+            pointer-events: none;
+        }
+        #glow-black,
+        #glow-shiny {
+            z-index: 2;
+            border-radius: inherit;
+            transition: opacity 0.25s ease, background 0.25s ease;
+        }
+        /* Red heat tint over fixed materials (normal blend so black still shows warmth). */
+        #glow-black {
+            mix-blend-mode: normal;
+        }
+        #glow-shiny {
+            mix-blend-mode: color;
+        }
+        .radiation-surface-label,
+        .radiation-surface-temp,
+        .radiation-surface-rate {
+            position: relative;
+            z-index: 3;
+        }
+        .radiation-surface-label {
+            align-self: center;
+            padding: 2px 6px;
+            border-radius: 999px;
+        }
+        #dull-black-block .radiation-surface-label {
+            color: #f8fafc !important;
+            background: rgba(2, 6, 23, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.32);
+        }
+        #shiny-silver-block .radiation-surface-label {
+            color: #1e293b !important;
+            background: rgba(255, 255, 255, 0.80);
+            border: 1px solid rgba(100, 116, 139, 0.45);
+        }
+        #dull-black-block .radiation-surface-rate {
+            color: #e2e8f0 !important;
+        }
+        #shiny-silver-block .radiation-surface-rate {
+            color: #334155 !important;
         }
         #ir-heater:not(.border-rose-500) {
             background-color: #1a1c2c !important; /* Keep heater physically black when inactive */
@@ -609,9 +678,9 @@
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col gap-6">
 
         <!-- ================== CONDUCTION SECTION ================== -->
-        <section id="sec-conduction" class="tab-content main-grid grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Left Panel: Interactive Simulation Area -->
-            <div class="lg:col-span-7 sim-main-col tab-sim-col flex flex-col gap-6">
+        <section id="sec-conduction" class="tab-content main-grid grid grid-cols-1 gap-6">
+            <!-- Full-width Interactive Simulation Area -->
+            <div class="sim-main-col tab-sim-col flex flex-col gap-6">
                 <!-- Simulation Box -->
                 <div class="glass-panel sim-panel-fill rounded-2xl p-5 flex flex-col flex-grow relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
@@ -658,9 +727,8 @@
                                 <rect x="0" y="0" width="72" height="18" rx="4" fill="rgba(15,23,42,0.9)" stroke="#6366f1" stroke-width="1"/>
                                 <text x="36" y="12" text-anchor="middle" fill="#f8fafc" font-size="8" font-weight="800">10cm: <tspan id="cond-probe-svg-temp" class="live-value">20.0</tspan>°C</text>
                             </g>
-                            <text id="cond-cold-end-label" x="95%" y="18" text-anchor="end" fill="#3b82f6" font-size="8" font-weight="800" data-i18n="conduction.coldEnd">Cold End ~20°C</text>
                         </svg>
-                        <div class="h-5 bg-gradient-to-r from-red-600 via-amber-500 via-emerald-600 to-blue-600 flex justify-between px-4 items-center text-[9px] text-white font-black tracking-widest uppercase select-none">
+                        <div id="cond-heat-progress" class="h-5 bg-gradient-to-r from-red-600 via-amber-500 via-emerald-600 to-blue-600 flex justify-between px-4 items-center text-[9px] text-white font-black tracking-widest uppercase select-none">
                             <span id="cond-bar-hot">Hot End (~150°C)</span>
                             <span id="cond-bar-mid">Molecular Collisions & e⁻ Drift</span>
                             <span id="cond-bar-cold">Cold End (~20°C)</span>
@@ -693,44 +761,6 @@
                             </div>
                             <input type="range" id="cond-speed-slider" min="0.2" max="2" step="0.1" value="1" oninput="updateConductionSpeed(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer">
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Panel: Core Physics, Curriculum, & Interactive Experiment -->
-            <div class="lg:col-span-5 tab-sidebar-col flex flex-col gap-6">
-                <!-- Syllabus Information Panel -->
-                <div class="glass-panel sidebar-concept rounded-2xl p-5 border-l-4 border-l-indigo-500">
-                    <span class="text-[10px] font-black tracking-widest text-indigo-400 uppercase" data-i18n="common.curriculumConcept">Curriculum Concept</span>
-                    <h3 class="font-black text-lg text-white mt-0.5" data-i18n="conduction.title">Conduction</h3>
-                    <p class="text-slate-300 text-xs leading-relaxed mt-2" data-i18n="conduction.concept">
-                        How does heat flow along a solid? Atoms at the heated end gain kinetic energy and vibrate more violently, colliding with neighbours. In metals, free electrons also drift rapidly to transfer energy.
-                    </p>
-                    <div class="grid grid-cols-2 gap-2 mt-4">
-                        <div class="glass-panel-light p-2.5 rounded-xl border border-slate-800">
-                            <span class="text-[9px] text-indigo-400 font-bold uppercase block" data-i18n="conduction.lattice">Atomic Lattice</span>
-                            <span class="text-xs text-slate-100 font-semibold block mt-0.5" id="cond-amp-stat">Heavy Vibration</span>
-                        </div>
-                        <div class="glass-panel-light p-2.5 rounded-xl border border-slate-800">
-                            <span class="text-[9px] text-indigo-400 font-bold uppercase block" data-i18n="conduction.freeElectron">Free Electrons e⁻</span>
-                            <span class="text-xs text-slate-100 font-semibold block mt-0.5" id="cond-elec-stat">80 e⁻ Drifting</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Real-Time Analytical Graph placed elegantly under Concept Panel -->
-                <div class="glass-panel rounded-2xl p-5 flex flex-col chart-panel flex-1 min-h-0">
-                    <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <h4 class="font-bold text-sm text-slate-200" data-i18n="conduction.graphTitle">Real-time Conduction Comparison</h4>
-                            <p class="text-[10px] text-slate-400 mt-0.5" data-i18n="conduction.graphDesc">Temperature at 10 cm probe (synced with simulation)</p>
-                        </div>
-                        <button onclick="resetComparisonGraph()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1">
-                            <i data-lucide="refresh-cw" class="w-3 h-3"></i><span data-i18n="common.clearGraph">Clear Graph</span>
-                        </button>
-                    </div>
-                    <div class="flex-grow min-h-0">
-                        <canvas id="conductionChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -811,9 +841,9 @@
 
 
         <!-- ================== RADIATION SECTION ================== -->
-        <section id="sec-radiation" class="tab-content main-grid grid grid-cols-1 lg:grid-cols-12 gap-6 hidden">
-            <!-- Left Panel: Interactive Simulation Area -->
-            <div class="lg:col-span-7 sim-main-col flex flex-col gap-6">
+        <section id="sec-radiation" class="tab-content main-grid grid grid-cols-1 gap-6 hidden">
+            <!-- Full-width Interactive Simulation Area -->
+            <div class="sim-main-col flex flex-col gap-6">
                 <div class="glass-panel rounded-2xl p-5 flex flex-col flex-grow relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
                         <div class="flex items-center gap-2.5">
@@ -837,10 +867,10 @@
                             
                             <!-- Dull Black Block -->
                             <div id="dull-black-block" class="w-28 h-28 bg-slate-900 rounded-2xl border border-slate-850 flex flex-col justify-between p-3 text-center text-white relative z-10 shadow-lg">
-                                <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase" data-i18n="radiation.dullBlack">Dull Black</span>
-                                <div class="text-2xl font-black text-red-500" id="temp-black">20.0 C</div>
-                                <span class="text-[9px] text-slate-400" id="rate-black">Room Temp</span>
-                                <div id="glow-black" class="absolute inset-0 bg-red-500/10 rounded-2xl opacity-0 transition-all duration-300 pointer-events-none"></div>
+                                <span class="radiation-surface-label text-[9px] font-black tracking-widest text-slate-400 uppercase" data-i18n="radiation.dullBlack">Dull Black</span>
+                                <div class="radiation-surface-temp text-2xl font-black text-red-500" id="temp-black">20.0 C</div>
+                                <span class="radiation-surface-rate text-[9px] text-slate-400" id="rate-black">Room Temp</span>
+                                <div id="glow-black" class="absolute inset-0 rounded-2xl opacity-0 pointer-events-none" aria-hidden="true"></div>
                             </div>
 
                             <!-- Central Infrared Heater -->
@@ -852,11 +882,11 @@
                             </div>
 
                             <!-- Shiny Silver Block -->
-                            <div class="w-28 h-28 bg-slate-100 rounded-2xl border-2 border-slate-300 flex flex-col justify-between p-3 text-center text-slate-800 relative z-10 shadow-lg">
-                                <span class="text-[9px] font-black tracking-widest text-slate-500 uppercase" data-i18n="radiation.shinySilver">Shiny Silver</span>
-                                <div class="text-2xl font-black text-indigo-600" id="temp-shiny">20.0 C</div>
-                                <span class="text-[9px] text-slate-500" id="rate-shiny">Room Temp</span>
-                                <div id="glow-shiny" class="absolute inset-0 bg-indigo-500/10 rounded-2xl opacity-0 transition-all duration-300 pointer-events-none"></div>
+                            <div id="shiny-silver-block" class="w-28 h-28 bg-slate-100 rounded-2xl border-2 border-slate-300 flex flex-col justify-between p-3 text-center text-slate-800 relative z-10 shadow-lg">
+                                <span class="radiation-surface-label text-[9px] font-black tracking-widest text-slate-500 uppercase" data-i18n="radiation.shinySilver">Shiny Silver</span>
+                                <div class="radiation-surface-temp text-2xl font-black text-indigo-600" id="temp-shiny">20.0 C</div>
+                                <span class="radiation-surface-rate text-[9px] text-slate-500" id="rate-shiny">Room Temp</span>
+                                <div id="glow-shiny" class="absolute inset-0 rounded-2xl opacity-0 pointer-events-none" aria-hidden="true"></div>
                             </div>
 
                             <canvas id="radiationWaveCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
@@ -889,31 +919,6 @@
                         </div>
                     </div>
 
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Panel: Core Physics, Curriculum, & Vacuum Flask -->
-            <div class="lg:col-span-5 flex flex-col gap-6">
-                <!-- Syllabus Information Panel -->
-                <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-rose-500">
-                    <span class="text-[10px] font-black tracking-widest text-rose-400 uppercase" data-i18n="common.curriculumConcept">Curriculum Concept</span>
-                    <h3 class="font-black text-lg text-white mt-0.5" data-i18n="radiation.title">Radiation</h3>
-                    <p class="text-slate-300 text-xs leading-relaxed mt-2" data-i18n="radiation.concept">
-                        Radiation transfers heat by IR electromagnetic waves — no medium required, works in vacuum. Dull black surfaces absorb and emit well; shiny silver surfaces reflect IR and absorb poorly.
-                    </p>
-                </div>
-
-                <!-- Real-Time Analytical Graph placed elegantly under Concept Panel -->
-                <div class="glass-panel rounded-2xl p-5 flex flex-col h-80 lg:h-[390px] xl:h-[430px]">
-                    <div class="flex justify-between items-center mb-3">
-                        <div>
-                            <h4 class="font-bold text-sm text-slate-200" data-i18n="radiation.graphTitle">Real-time Radiation Comparison</h4>
-                            <p class="text-[10px] text-slate-400 mt-0.5" data-i18n="radiation.graphDesc">Temperature of Black & Silver blocks (synced with simulation)</p>
-                        </div>
-                    </div>
-                    <div class="flex-grow min-h-0">
-                        <canvas id="radiationChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -1616,18 +1621,59 @@
         const MATERIAL_K = { metal: 385, iron: 80, glass: 1.0, wood: 0.15 };
         const MATERIAL_KE = { metal: 0.09, iron: 0.04, glass: 0, wood: 0 };
         const PROBE_COL = 3;
+        // Fixed absolute colour scale so a colder heat source never looks hotter than a hotter one.
+        const COND_COLOR_TMIN = 20;
+        const COND_COLOR_TMAX = 300;
+        const MATERIAL_LOOK = {
+            metal: {
+                cold: { r: 176, g: 96, b: 42 },
+                mid: { r: 212, g: 132, b: 58 },
+                atomR: 7.4,
+                gloss: 0.55,
+                slabAlpha: 0.94
+            },
+            iron: {
+                cold: { r: 92, g: 100, b: 112 },
+                mid: { r: 156, g: 163, b: 175 },
+                atomR: 7.2,
+                gloss: 0.28,
+                slabAlpha: 0.94
+            },
+            glass: {
+                cold: { r: 56, g: 120, b: 168 },
+                mid: { r: 125, g: 211, b: 252 },
+                atomR: 5.6,
+                gloss: 0.8,
+                slabAlpha: 0.55
+            },
+            wood: {
+                cold: { r: 78, g: 48, b: 26 },
+                mid: { r: 148, g: 96, b: 52 },
+                atomR: 6.4,
+                gloss: 0.08,
+                slabAlpha: 0.96
+            }
+        };
 
         /**
          * 溫度→RGB 統一映射 · Unified temperature color mapping
          * 紅=熱、藍=冷，Canvas 與圖表共用
          */
         function tempToRGB(temp, tMin = 20, tMax = 150) {
-            const t = Math.max(tMin, Math.min(tMax, temp));
-            const ratio = (t - tMin) / (tMax - tMin);
-            const r = Math.floor(ratio * 255);
-            const b = Math.floor((1 - ratio) * 240);
-            const g = Math.floor(Math.max(0, 100 - Math.abs(t - (tMin + tMax) / 2) * 1.2));
+            const span = Math.max(1e-6, tMax - tMin);
+            let ratio = Math.max(0, Math.min(1, (temp - tMin) / span));
+            // Push warm particles toward vivid red and cool particles toward vivid blue.
+            ratio = ratio < 0.5
+                ? Math.pow(ratio * 2, 1.7) * 0.5
+                : 1 - Math.pow((1 - ratio) * 2, 1.7) * 0.5;
+            const r = Math.round(2 + ratio * 237);
+            const g = Math.round(90 + ratio * (28 - 90));
+            const b = Math.round(230 + ratio * (28 - 230));
             return { r, g, b, css: `rgb(${r}, ${g}, ${b})` };
+        }
+
+        function tempToCSS(temp, tMin = 20, tMax = 150) {
+            return tempToRGB(temp, tMin, tMax).css;
         }
 
         /** 統一 Canvas DPR 設定 · Unified canvas resolution setup */
@@ -1651,14 +1697,15 @@
         function updateConductionAnnotations() {
             if (!condCanvas) return;
             const probeX = startX + PROBE_COL * spacingX;
+            const bar = getMaterialBar();
             const line = document.getElementById('cond-probe-line');
             const badge = document.getElementById('cond-probe-badge');
             const legend = document.getElementById('cond-legend-metal');
             if (line) {
                 line.setAttribute('x1', probeX);
                 line.setAttribute('x2', probeX);
-                line.setAttribute('y1', 8);
-                line.setAttribute('y2', 232); // Using virtual height (240 - 8)
+                line.setAttribute('y1', Math.max(8, bar.y - 8));
+                line.setAttribute('y2', Math.min(232, bar.y + bar.h + 8));
             }
             if (badge) badge.setAttribute('transform', `translate(${probeX - 36}, 6)`);
             if (legend) legend.style.display = (condMaterial === 'metal' || condMaterial === 'iron') ? '' : 'none';
@@ -1696,8 +1743,7 @@
                     }
                 }
             } else if (convScenario === 'breeze') {
-                const dir = breezeTime === 'day' ? -1 : 1;
-                svg += `<line x1="${w/2+dir*60}" y1="${h-50}" x2="${w/2-dir*60}" y2="${h-50}" stroke="#94a3b8" stroke-width="2" opacity="${op}"/><polygon points="${w/2-dir*70},${h-50} ${w/2-dir*55},${h-55} ${w/2-dir*55},${h-45}" fill="#94a3b8" opacity="${op}"/>`;
+                // Live sea/land-breeze cell is drawn on the canvas each frame.
             }
             g.innerHTML = svg;
         }
@@ -1976,9 +2022,6 @@
             // Initialize free electrons (only for metals)
             initElectrons();
 
-            // Setup chart
-            initConductionChart();
-
             // Start loop if not already running
             if (!condIsRunning) {
                 condIsRunning = true;
@@ -1988,9 +2031,7 @@
                 animateConduction();
             }
 
-            startChartTracking();
             updateConductionAnnotations();
-            highlightConductionChartMaterial();
         }
 
         const CHART_MATERIAL_COLORS = ['#e11d48', '#f97316', '#06b6d4', '#84cc16'];
@@ -2009,7 +2050,7 @@
         function initElectrons() {
             electrons = [];
             if (condMaterial === 'metal' || condMaterial === 'iron') {
-                const count = condMaterial === 'metal' ? 80 : 30;
+                const count = condMaterial === 'metal' ? 160 : 60;
                 for (let i = 0; i < count; i++) {
                     electrons.push({
                         x: startX + Math.random() * (cols * spacingX),
@@ -2064,7 +2105,6 @@
             physicsState.conduction.sourceTemp = condSourceTemp;
             document.getElementById('cond-temp-val').innerText = val + '°C';
             updateConductionBarLabels();
-            updateConductionChartYScale();
         }
 
         function updateConductionSpeed(val) {
@@ -2077,27 +2117,245 @@
             condMaterial = document.getElementById('cond-material').value;
             physicsState.conduction.material = condMaterial;
             physicsState.conduction.k = MATERIAL_K[condMaterial];
-            materialProbeTemps[condMaterial] = getProbeTemp10cm();
+            atoms.forEach(atom => { atom.temp = 20; });
+            materialProbeTemps[condMaterial] = 20;
             initElectrons();
 
             const ampStat = document.getElementById('cond-amp-stat');
             const elecStat = document.getElementById('cond-elec-stat');
 
-            if (condMaterial === 'metal') {
-                ampStat.innerText = t('conduction.ampHeavy');
-                elecStat.innerText = t('conduction.elecDrift80');
-            } else if (condMaterial === 'iron') {
-                ampStat.innerText = t('conduction.ampModerate');
-                elecStat.innerText = t('conduction.elecDrift30');
-            } else if (condMaterial === 'glass') {
-                ampStat.innerText = t('conduction.ampSlow');
-                elecStat.innerText = t('conduction.elecNone');
-            } else if (condMaterial === 'wood') {
-                ampStat.innerText = t('conduction.ampDampened');
-                elecStat.innerText = t('conduction.elecNone');
+            if (ampStat && elecStat) {
+                if (condMaterial === 'metal') {
+                    ampStat.innerText = t('conduction.ampHeavy');
+                    elecStat.innerText = t('conduction.elecDrift80');
+                } else if (condMaterial === 'iron') {
+                    ampStat.innerText = t('conduction.ampModerate');
+                    elecStat.innerText = t('conduction.elecDrift30');
+                } else if (condMaterial === 'glass') {
+                    ampStat.innerText = t('conduction.ampSlow');
+                    elecStat.innerText = t('conduction.elecNone');
+                } else if (condMaterial === 'wood') {
+                    ampStat.innerText = t('conduction.ampDampened');
+                    elecStat.innerText = t('conduction.elecNone');
+                }
             }
             updateConductionAnnotations();
-            highlightConductionChartMaterial();
+        }
+
+        function getColumnTemp(c) {
+            const colAtoms = atoms.filter(a => a.col === c);
+            if (!colAtoms.length) return 20;
+            return colAtoms.reduce((s, a) => s + a.temp, 0) / colAtoms.length;
+        }
+
+        function mixMaterialHeatColor(avgT) {
+            const look = MATERIAL_LOOK[condMaterial] || MATERIAL_LOOK.metal;
+            const ratio = Math.max(0, Math.min(1, (avgT - COND_COLOR_TMIN) / (COND_COLOR_TMAX - COND_COLOR_TMIN)));
+            const heat = tempToRGB(avgT, COND_COLOR_TMIN, COND_COLOR_TMAX);
+            const wave = Math.pow(ratio, 0.62);
+            return {
+                r: Math.round(look.cold.r * (1 - wave) + heat.r * wave),
+                g: Math.round(look.cold.g * (1 - wave) + heat.g * wave),
+                b: Math.round(look.cold.b * (1 - wave) + heat.b * wave)
+            };
+        }
+
+        /** Material body always wraps the atom lattice so particles stay inside the solid. */
+        function getMaterialBar() {
+            const padX = 22;
+            const padY = 20;
+            const x = startX - padX;
+            const y = startY - padY;
+            const w = (cols - 1) * spacingX + padX * 2;
+            const h = (rows - 1) * spacingY + padY * 2;
+            const rr = condMaterial === 'metal' ? Math.min(h / 2, 48)
+                : condMaterial === 'iron' ? 6
+                : condMaterial === 'glass' ? 10
+                : 12;
+            return { x, y, w, h, rr };
+        }
+
+        function getLatticeBounds() {
+            return {
+                minX: startX,
+                maxX: startX + (cols - 1) * spacingX,
+                minY: startY,
+                maxY: startY + (rows - 1) * spacingY
+            };
+        }
+
+        function roundRectPath(x, y, w, h, rr) {
+            condCtx.beginPath();
+            condCtx.moveTo(x + rr, y);
+            condCtx.arcTo(x + w, y, x + w, y + h, rr);
+            condCtx.arcTo(x + w, y + h, x, y + h, rr);
+            condCtx.arcTo(x, y + h, x, y, rr);
+            condCtx.arcTo(x, y, x + w, y, rr);
+            condCtx.closePath();
+        }
+
+        function drawHeatWash(bar) {
+            const stripW = bar.w / cols;
+            for (let c = 0; c < cols; c++) {
+                const { r, g, b } = mixMaterialHeatColor(getColumnTemp(c));
+                condCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                condCtx.fillRect(bar.x + c * stripW - 0.5, bar.y, stripW + 1, bar.h);
+            }
+        }
+
+        function updateLiveEndTemps() {
+            const leftT = getColumnTemp(0);
+            const rightT = getColumnTemp(cols - 1);
+            const barHot = document.getElementById('cond-bar-hot');
+            const barCold = document.getElementById('cond-bar-cold');
+            const progress = document.getElementById('cond-heat-progress');
+            if (barHot) barHot.textContent = `${leftT.toFixed(0)}°C`;
+            if (barCold) {
+                barCold.textContent = `${rightT.toFixed(0)}°C`;
+            }
+            if (progress) {
+                const stops = [];
+                for (let c = 0; c < cols; c++) {
+                    const { r, g, b } = tempToRGB(getColumnTemp(c), COND_COLOR_TMIN, COND_COLOR_TMAX);
+                    stops.push(`rgb(${r}, ${g}, ${b}) ${(c / Math.max(1, cols - 1) * 100).toFixed(1)}%`);
+                }
+                progress.style.background = `linear-gradient(90deg, ${stops.join(',')})`;
+            }
+        }
+
+        function drawConductionMaterialSlab(w, h) {
+            const bar = getMaterialBar();
+
+            if (condMaterial === 'glass') {
+                for (let gy = 20; gy < h - 10; gy += 16) {
+                    for (let gx = 20; gx < w - 10; gx += 16) {
+                        condCtx.fillStyle = ((gx + gy) / 16) % 2 === 0 ? 'rgba(51, 65, 85, 0.35)' : 'rgba(15, 23, 42, 0.2)';
+                        condCtx.fillRect(gx, gy, 16, 16);
+                    }
+                }
+            }
+
+            condCtx.save();
+            roundRectPath(bar.x, bar.y, bar.w, bar.h, bar.rr);
+            condCtx.clip();
+            drawHeatWash(bar);
+            condCtx.globalCompositeOperation = 'multiply';
+
+            if (condMaterial === 'metal') {
+                const body = condCtx.createLinearGradient(bar.x, bar.y, bar.x, bar.y + bar.h);
+                body.addColorStop(0, '#fbbf24');
+                body.addColorStop(0.22, '#d97706');
+                body.addColorStop(0.5, '#b45309');
+                body.addColorStop(0.78, '#d97706');
+                body.addColorStop(1, '#78350f');
+                condCtx.globalAlpha = 0.42;
+                condCtx.fillStyle = body;
+                condCtx.fillRect(bar.x, bar.y, bar.w, bar.h);
+                condCtx.globalAlpha = 1;
+                condCtx.globalCompositeOperation = 'source-over';
+                condCtx.fillStyle = 'rgba(254, 243, 199, 0.22)';
+                condCtx.fillRect(bar.x, bar.y + 12, bar.w, 10);
+            } else if (condMaterial === 'iron') {
+                condCtx.globalAlpha = 0.38;
+                condCtx.fillStyle = '#64748b';
+                condCtx.fillRect(bar.x, bar.y, bar.w, bar.h);
+                condCtx.globalAlpha = 1;
+                for (let i = 0; i < 14; i++) {
+                    condCtx.fillStyle = i % 2 ? 'rgba(15, 23, 42, 0.18)' : 'rgba(226, 232, 240, 0.08)';
+                    condCtx.fillRect(bar.x, bar.y + 8 + i * ((bar.h - 16) / 13), bar.w, 4);
+                }
+                condCtx.fillStyle = '#334155';
+                condCtx.fillRect(bar.x, bar.y, bar.w, 8);
+                condCtx.fillRect(bar.x, bar.y + bar.h - 8, bar.w, 8);
+                const boltCount = 5;
+                for (let i = 0; i < boltCount; i++) {
+                    const bx = bar.x + 40 + i * ((bar.w - 80) / Math.max(1, boltCount - 1));
+                    [bar.y + 16, bar.y + bar.h - 16].forEach(by => {
+                        condCtx.fillStyle = '#94a3b8';
+                        condCtx.beginPath();
+                        condCtx.arc(bx, by, 5, 0, Math.PI * 2);
+                        condCtx.fill();
+                        condCtx.fillStyle = '#1e293b';
+                        condCtx.beginPath();
+                        condCtx.arc(bx, by, 2, 0, Math.PI * 2);
+                        condCtx.fill();
+                    });
+                }
+                condCtx.globalCompositeOperation = 'source-over';
+            } else if (condMaterial === 'glass') {
+                condCtx.globalCompositeOperation = 'source-over';
+                condCtx.fillStyle = 'rgba(255,255,255,0.28)';
+                condCtx.fillRect(bar.x + 14, bar.y + 8, 18, bar.h - 16);
+                condCtx.fillRect(bar.x + bar.w - 40, bar.y + 14, 8, bar.h - 28);
+            } else {
+                condCtx.globalAlpha = 0.40;
+                condCtx.fillStyle = '#92400e';
+                condCtx.fillRect(bar.x, bar.y, bar.w, bar.h);
+                condCtx.globalAlpha = 1;
+                for (let i = 0; i < 9; i++) {
+                    condCtx.strokeStyle = i % 2 ? 'rgba(69, 26, 3, 0.55)' : 'rgba(180, 83, 9, 0.35)';
+                    condCtx.lineWidth = 2.5;
+                    const y = bar.y + 10 + i * (bar.h - 20) / 8;
+                    condCtx.beginPath();
+                    condCtx.moveTo(bar.x, y);
+                    for (let x = bar.x; x <= bar.x + bar.w; x += 14) {
+                        condCtx.lineTo(x, y + Math.sin((x / 22) + i * 0.8) * 4);
+                    }
+                    condCtx.stroke();
+                }
+                [[0.22, 0.32, 10], [0.48, 0.62, 8], [0.74, 0.28, 11]].forEach(([fx, fy, kr]) => {
+                    const kx = bar.x + bar.w * fx;
+                    const ky = bar.y + bar.h * fy;
+                    condCtx.fillStyle = 'rgba(69, 26, 3, 0.45)';
+                    condCtx.beginPath();
+                    condCtx.arc(kx, ky, kr, 0, Math.PI * 2);
+                    condCtx.fill();
+                    condCtx.strokeStyle = 'rgba(120, 53, 15, 0.75)';
+                    condCtx.beginPath();
+                    condCtx.arc(kx, ky, kr * 0.4, 0, Math.PI * 2);
+                    condCtx.stroke();
+                });
+            }
+
+            condCtx.globalCompositeOperation = 'source-over';
+            condCtx.globalAlpha = 1;
+            condCtx.restore();
+
+            if (condMaterial === 'metal') {
+                const cy = bar.y + bar.h / 2;
+                const rx = Math.min(18, bar.rr * 0.45);
+                const ry = bar.h / 2 - 2;
+                const capHeat = mixMaterialHeatColor(getColumnTemp(0));
+                const cap = condCtx.createLinearGradient(bar.x - rx, bar.y, bar.x + rx, bar.y + bar.h);
+                cap.addColorStop(0, `rgb(${Math.min(255, capHeat.r + 40)}, ${Math.min(255, capHeat.g + 20)}, ${capHeat.b})`);
+                cap.addColorStop(1, `rgb(${capHeat.r}, ${capHeat.g}, ${capHeat.b})`);
+                condCtx.fillStyle = cap;
+                condCtx.beginPath();
+                condCtx.ellipse(bar.x + 4, cy, rx, ry, 0, 0, Math.PI * 2);
+                condCtx.fill();
+                condCtx.strokeStyle = 'rgba(253, 230, 138, 0.8)';
+                condCtx.lineWidth = 2;
+                condCtx.stroke();
+            } else if (condMaterial === 'wood') {
+                condCtx.fillStyle = '#78350f';
+                condCtx.fillRect(bar.x - 12, bar.y + 4, 14, bar.h - 8);
+                condCtx.strokeStyle = 'rgba(255, 237, 213, 0.25)';
+                for (let i = 1; i <= 3; i++) {
+                    condCtx.beginPath();
+                    condCtx.ellipse(bar.x - 5, bar.y + bar.h / 2, 5, 8 + i * 7, 0, 0, Math.PI * 2);
+                    condCtx.stroke();
+                }
+            }
+
+            condCtx.save();
+            condCtx.strokeStyle = condMaterial === 'wood' ? '#451a03'
+                : condMaterial === 'glass' ? 'rgba(224, 242, 254, 0.95)'
+                : condMaterial === 'iron' ? '#cbd5e1'
+                : '#fbbf24';
+            condCtx.lineWidth = condMaterial === 'glass' ? 4 : 3;
+            roundRectPath(bar.x, bar.y, bar.w, bar.h, bar.rr);
+            condCtx.stroke();
+            condCtx.restore();
         }
 
         /**
@@ -2126,20 +2384,26 @@
             condCtx.save();
             condCtx.translate(offsetX, offsetY);
             condCtx.scale(s, s);
+            condCtx.fillStyle = condMaterial === 'wood' ? '#1c1008'
+                : condMaterial === 'glass' ? '#0b1220'
+                : condMaterial === 'iron' ? '#111827'
+                : '#1a1208';
+            condCtx.fillRect(0, 0, w, h);
 
             // 1. Heat Source Interaction at Left End (col = 0)
             atoms.forEach(atom => {
                 if (atom.col === 0) {
-                    atom.temp += (condSourceTemp - atom.temp) * 0.1 * condSpeed;
+                    atom.temp += (condSourceTemp - atom.temp) * 0.55 * condSpeed;
                 }
             });
 
             // 2. Conduction Physics: Heat diffusion between adjacent atoms
             let nextTemps = atoms.map(a => a.temp);
             
-            let k_lattice = 0.025; // Base lattice vibration transfer rate
-            if (condMaterial === 'glass') k_lattice = 0.007;
-            if (condMaterial === 'wood') k_lattice = 0.0015;
+            let k_lattice = 0.14;
+            if (condMaterial === 'iron') k_lattice = 0.072;
+            if (condMaterial === 'glass') k_lattice = 0.032;
+            if (condMaterial === 'wood') k_lattice = 0.014;
 
             atoms.forEach((atom, idx) => {
                 let neighbors = atoms.filter(other => 
@@ -2151,9 +2415,7 @@
                 neighbors.forEach(n => {
                     heatExchange += (n.temp - atom.temp) * k_lattice * condSpeed;
                 });
-
-                let cooling = (atom.temp - 20) * 0.001 * condSpeed;
-                nextTemps[idx] += heatExchange - cooling;
+                nextTemps[idx] += heatExchange;
             });
 
             // Apply next temperatures
@@ -2163,16 +2425,17 @@
 
             // 3. Electron Physics (if present)
             if (condMaterial === 'metal' || condMaterial === 'iron') {
-                let k_electron = condMaterial === 'metal' ? 0.09 : 0.04;
+                let k_electron = condMaterial === 'metal' ? 0.22 : 0.10;
 
                 electrons.forEach(e => {
                     e.x += e.vx * condSpeed;
                     e.y += e.vy * condSpeed;
 
-                    const minX = startX;
-                    const maxX = startX + (cols - 1) * spacingX;
-                    const minY = startY;
-                    const maxY = startY + (rows - 1) * spacingY;
+                    const bounds = getLatticeBounds();
+                    const minX = bounds.minX;
+                    const maxX = bounds.maxX;
+                    const minY = bounds.minY;
+                    const maxY = bounds.maxY;
 
                     if (e.x < minX) { e.x = minX; e.vx *= -1; }
                     if (e.x > maxX) { e.x = maxX; e.vx *= -1; }
@@ -2183,17 +2446,22 @@
                         e.temp += (condSourceTemp - e.temp) * 0.1 * condSpeed;
                     }
 
+                    let nearest = null;
+                    let nearestDist = 16;
                     atoms.forEach(atom => {
-                        let dist = Math.hypot(e.x - atom.x, e.y - atom.y);
-                        if (dist < 15) {
-                            let avgTemp = (e.temp + atom.temp) / 2;
-                            e.temp += (avgTemp - e.temp) * k_electron * condSpeed;
-                            atom.temp += (avgTemp - atom.temp) * k_electron * condSpeed;
-                            
-                            e.vx += (Math.random() - 0.5) * 0.5;
-                            e.vy += (Math.random() - 0.5) * 0.5;
+                        const dist = Math.hypot(e.x - atom.x, e.y - atom.y);
+                        if (dist < nearestDist) {
+                            nearestDist = dist;
+                            nearest = atom;
                         }
                     });
+                    if (nearest) {
+                        const avgTemp = (e.temp + nearest.temp) / 2;
+                        e.temp += (avgTemp - e.temp) * k_electron * condSpeed;
+                        nearest.temp += (avgTemp - nearest.temp) * k_electron * condSpeed;
+                        e.vx += (Math.random() - 0.5) * 0.5;
+                        e.vy += (Math.random() - 0.5) * 0.5;
+                    }
 
                     let speedFactor = Math.sqrt(e.temp / 20);
                     let currentSpeed = Math.hypot(e.vx, e.vy);
@@ -2204,46 +2472,38 @@
                 });
             }
 
-            // --- 3a. Continuous Thermal Background Map (Fourier Fields) ---
-            let bgGrad = condCtx.createLinearGradient(0, 0, w, 0);
-            bgGrad.addColorStop(0, `rgba(${tempToRGB(condSourceTemp, 20, condSourceTemp).r}, 0, 0, 0.2)`);
-            for (let c = 0; c < cols; c++) {
-                let colAtoms = atoms.filter(a => a.col === c);
-                if (colAtoms.length > 0) {
-                    let avgT = colAtoms.reduce((sum, a) => sum + a.temp, 0) / colAtoms.length;
-                    let { r, g, b } = tempToRGB(avgT, 20, condSourceTemp);
-                    let posX = (startX + c * spacingX) / w;
-                    if (posX >= 0 && posX <= 1) {
-                        bgGrad.addColorStop(posX, `rgba(${r}, ${g}, ${b}, 0.12)`);
-                    }
-                }
-            }
-            bgGrad.addColorStop(1, 'rgba(59, 130, 246, 0.05)');
-            condCtx.fillStyle = bgGrad;
-            condCtx.fillRect(startX - 20, startY - 20, cols * spacingX + 40, rows * spacingY + 20);
+            drawConductionMaterialSlab(w, h);
 
-            // 4. Draw Connections (Glowing chemical bonds)
+            // Lattice bonds for every solid so matter sits inside the material body
             atoms.forEach(atom => {
                 let right = atoms.find(other => other.col === atom.col + 1 && other.row === atom.row);
                 if (right) {
                     let avgT = (atom.temp + right.temp) / 2;
-                    let { r, g, b } = tempToRGB(avgT, 20, condSourceTemp);
+                    let { r, g, b } = mixMaterialHeatColor(avgT);
+                    const heatAmt = (avgT - COND_COLOR_TMIN) / (COND_COLOR_TMAX - COND_COLOR_TMIN);
+                    const alpha = condMaterial === 'glass' ? 0.22 + heatAmt * 0.35
+                        : condMaterial === 'wood' ? 0.18 + heatAmt * 0.35
+                        : 0.28 + heatAmt * 0.5;
                     condCtx.beginPath();
                     condCtx.moveTo(atom.x, atom.y);
                     condCtx.lineTo(right.x, right.y);
-                    condCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.2 + (avgT - 20) / (condSourceTemp - 20) * 0.65})`;
-                    condCtx.lineWidth = 1.5 + (avgT - 20) / (condSourceTemp - 20) * 2.5;
+                    condCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    condCtx.lineWidth = (condMaterial === 'wood' ? 2.0 : 1.3) + heatAmt * 1.8;
                     condCtx.stroke();
                 }
                 let down = atoms.find(other => other.row === atom.row + 1 && other.col === atom.col);
                 if (down) {
                     let avgT = (atom.temp + down.temp) / 2;
-                    let { r, g, b } = tempToRGB(avgT, 20, condSourceTemp);
+                    let { r, g, b } = mixMaterialHeatColor(avgT);
+                    const heatAmt = (avgT - COND_COLOR_TMIN) / (COND_COLOR_TMAX - COND_COLOR_TMIN);
+                    const alpha = condMaterial === 'glass' ? 0.22 + heatAmt * 0.35
+                        : condMaterial === 'wood' ? 0.18 + heatAmt * 0.35
+                        : 0.28 + heatAmt * 0.5;
                     condCtx.beginPath();
                     condCtx.moveTo(atom.x, atom.y);
                     condCtx.lineTo(down.x, down.y);
-                    condCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${0.2 + (avgT - 20) / (condSourceTemp - 20) * 0.65})`;
-                    condCtx.lineWidth = 1.5 + (avgT - 20) / (condSourceTemp - 20) * 2.5;
+                    condCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    condCtx.lineWidth = (condMaterial === 'wood' ? 2.0 : 1.3) + heatAmt * 1.8;
                     condCtx.stroke();
                 }
             });
@@ -2253,47 +2513,74 @@
             physicsState.conduction.probeTemp10cm = probeTemp;
             physicsState.conduction.heatFlux = MATERIAL_K[condMaterial] * 0.01 * (condSourceTemp - probeTemp);
             setText('cond-probe-svg-temp', probeTemp.toFixed(1));
+            updateLiveEndTemps();
 
-            // 5. Draw 3D Shaded Atoms (radial gradient)
+            // Draw atoms / matter particles for every material, clipped to the solid body
+            const bar = getMaterialBar();
+            condCtx.save();
+            roundRectPath(bar.x, bar.y, bar.w, bar.h, bar.rr);
+            condCtx.clip();
+
             atoms.forEach(atom => {
-                let amp = (atom.temp - 20) * 0.05;
-                let offsetX = (Math.random() - 0.5) * amp;
-                let offsetY = (Math.random() - 0.5) * amp;
+                const ampScale = condMaterial === 'glass' ? 0.015
+                    : condMaterial === 'wood' ? 0.01
+                    : 0.05;
+                let amp = (atom.temp - 20) * ampScale;
+                atom.x = atom.baseX + (Math.random() - 0.5) * amp;
+                atom.y = atom.baseY + (Math.random() - 0.5) * amp;
 
-                atom.x = atom.baseX + offsetX;
-                atom.y = atom.baseY + offsetY;
+                if (condMaterial === 'glass') {
+                    if ((atom.row + atom.col) % 2 !== 0) return;
+                    const { r, g, b } = mixMaterialHeatColor(atom.temp);
+                    condCtx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.75)`;
+                    condCtx.beginPath();
+                    condCtx.moveTo(atom.x, atom.y - 5);
+                    condCtx.lineTo(atom.x + 4, atom.y);
+                    condCtx.lineTo(atom.x, atom.y + 5);
+                    condCtx.lineTo(atom.x - 4, atom.y);
+                    condCtx.closePath();
+                    condCtx.fill();
+                    return;
+                }
 
-                const { r, g, b } = tempToRGB(atom.temp, 20, condSourceTemp);
-                
+                if (condMaterial === 'wood') {
+                    const { r, g, b } = mixMaterialHeatColor(atom.temp);
+                    condCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                    condCtx.beginPath();
+                    condCtx.ellipse(atom.x, atom.y, 5.5, 3.2, 0, 0, Math.PI * 2);
+                    condCtx.fill();
+                    return;
+                }
+
+                const { r, g, b } = mixMaterialHeatColor(atom.temp);
+                const radius = condMaterial === 'iron' ? 6.2 : 7.2;
                 let radGrad = condCtx.createRadialGradient(
                     atom.x - 2, atom.y - 2, 1,
-                    atom.x, atom.y, 8
+                    atom.x, atom.y, radius
                 );
-                radGrad.addColorStop(0, '#ffffff'); // Shiny white highlight
-                radGrad.addColorStop(0.2, `rgb(${Math.min(255, r + 40)}, ${Math.min(255, g + 40)}, ${Math.min(255, b + 40)})`);
-                radGrad.addColorStop(0.6, `rgb(${r}, ${g}, ${b})`);
+                radGrad.addColorStop(0, '#ffffff');
+                radGrad.addColorStop(0.25, `rgb(${Math.min(255, r + 40)}, ${Math.min(255, g + 40)}, ${Math.min(255, b + 40)})`);
                 radGrad.addColorStop(1, `rgb(${Math.max(0, r - 70)}, ${Math.max(0, g - 70)}, ${Math.max(0, b - 70)})`);
-
                 condCtx.fillStyle = radGrad;
                 condCtx.beginPath();
-                condCtx.arc(atom.x, atom.y, 8, 0, Math.PI * 2);
+                condCtx.arc(atom.x, atom.y, radius, 0, Math.PI * 2);
                 condCtx.fill();
-                
-                condCtx.strokeStyle = `rgba(255, 255, 255, ${0.15 + (atom.temp - 20) / (condSourceTemp - 20) * 0.35})`;
-                condCtx.lineWidth = 1;
-                condCtx.stroke();
             });
+            condCtx.restore();
 
             // 6. Draw Electrons (small yellow glowing dots with drift trails)
             if (condMaterial === 'metal' || condMaterial === 'iron') {
+                condCtx.save();
+                roundRectPath(bar.x, bar.y, bar.w, bar.h, bar.rr);
+                condCtx.clip();
                 electrons.forEach(e => {
                     // Update tail history
                     e.history = e.history || [];
                     e.history.push({ x: e.x, y: e.y });
                     if (e.history.length > 5) e.history.shift();
 
-                    const { r, b } = tempToRGB(e.temp, 20, condSourceTemp);
-                    const color = `rgb(${r}, 230, ${b})`;
+                    const { r, g, b } = tempToRGB(e.temp, COND_COLOR_TMIN, COND_COLOR_TMAX);
+                    const color = `rgb(${r}, ${g}, ${b})`;
 
                     // Draw motion blur trail
                     if (e.history.length > 1) {
@@ -2302,7 +2589,7 @@
                         for (let h = 1; h < e.history.length; h++) {
                             condCtx.lineTo(e.history[h].x, e.history[h].y);
                         }
-                        condCtx.strokeStyle = `rgba(${r}, 230, ${b}, 0.3)`;
+                        condCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, 0.35)`;
                         condCtx.lineWidth = 1.5;
                         condCtx.stroke();
                     }
@@ -2310,12 +2597,13 @@
                     // Draw head dot
                     condCtx.fillStyle = color;
                     condCtx.shadowColor = color;
-                    condCtx.shadowBlur = 4;
+                    condCtx.shadowBlur = 8;
                     condCtx.beginPath();
-                    condCtx.arc(e.x, e.y, 2.5, 0, Math.PI * 2);
+                    condCtx.arc(e.x, e.y, 3.8, 0, Math.PI * 2);
                     condCtx.fill();
                 });
-                condCtx.shadowBlur = 0; // Reset shadow
+                condCtx.shadowBlur = 0;
+                condCtx.restore();
             }
 
             condCtx.restore();
@@ -2673,11 +2961,11 @@
         let convIsRunning = false;
         let convScenario = 'room'; // 'room', 'kettle', 'breeze'
         let convParticles = [];
-        const maxConvParticles = 160;
+        const maxConvParticles = 380;
         let convFrameCount = 0;
 
         let roomAC_Active = true;
-        let roomHeater_Active = false;
+        let roomHeater_Active = true;
         let roomAC_XPercent = 85;
         let roomHeater_XPercent = 15;
         let breezeTime = 'day';
@@ -2719,14 +3007,35 @@
             kettleBubbles = [];
             const w = 800; // Fixed virtual width
             const h = 400; // Fixed virtual height
+            const ac = getRoomACRect(w, h);
+            const ht = getRoomHeaterRect(w, h);
             for (let i = 0; i < maxConvParticles; i++) {
+                let x = Math.random() * w;
+                let y = Math.random() * h;
+                let temp = 16 + Math.random() * 10;
+                let vx = (Math.random() - 0.5) * 1.2;
+                let vy = (Math.random() - 0.5) * 1.2;
+                if (convScenario === 'room') {
+                    const roll = i / maxConvParticles;
+                    if (roomHeater_Active && roll < 0.42) {
+                        x = ht.x - 20 + Math.random() * (ht.w + 40);
+                        y = h * 0.55 + Math.random() * (h * 0.40);
+                        temp = 52 + Math.random() * 16;
+                        vy = -1.4 - Math.random() * 0.8;
+                    } else if (roomAC_Active && roll < (roomHeater_Active ? 0.84 : 0.75)) {
+                        x = ac.x - 30 + Math.random() * (ac.w + 60);
+                        y = 20 + Math.random() * (h * 0.38);
+                        temp = 12 + Math.random() * 6;
+                        vy = 1.2 + Math.random() * 0.8;
+                    } else if (!roomHeater_Active) {
+                        temp = 14 + Math.random() * 5;
+                    }
+                } else if (convScenario === 'breeze') {
+                    ({ x, y, vx, vy, temp } = seedBreezeParticleState(i, maxConvParticles, w, h));
+                }
                 convParticles.push({
-                    x: Math.random() * w,
-                    y: Math.random() * h,
-                    vx: (Math.random() - 0.5) * 1.5,
-                    vy: (Math.random() - 0.5) * 1.5,
-                    temp: 20 + Math.random() * 20,
-                    radius: 3 + Math.random() * 2
+                    x, y, vx, vy, temp,
+                    radius: 5.5 + Math.random() * 2.8
                 });
             }
 
@@ -2761,7 +3070,9 @@
             kettleHeaterXPercent = 50;
             roomAC_XPercent = 85;
             roomHeater_XPercent = 15;
+            breezeTime = 'day';
             initConvectionParticles();
+            if (convScenario === 'breeze') resetBreezeCirculation();
             if (!convIsRunning) {
                 toggleConvectionSim();
             }
@@ -2792,6 +3103,7 @@
 
             updateConvectionControls();
             initConvectionParticles();
+            if (scen === 'breeze') resetBreezeCirculation();
             updateConvectionAnnotations();
         }
 
@@ -2887,7 +3199,7 @@
                     <div class="space-y-2">
                         <span class="text-[9px] font-black tracking-widest text-slate-400 uppercase">${t('convection.diurnalSwitcher')}</span>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setBreezeTime('day')" id="btn-breeze-day" class="px-3 py-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                            <button onclick="setBreezeTime('day')" id="btn-breeze-day" class="px-3 py-2 bg-slate-900/60 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
                                 <i data-lucide="sun" class="w-3.5 h-3.5"></i> ${t('convection.daytime')}
                             </button>
                             <button onclick="setBreezeTime('night')" id="btn-breeze-night" class="px-3 py-2 bg-slate-900/60 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5">
@@ -2896,6 +3208,7 @@
                         </div>
                     </div>
                 `;
+                applyBreezeTimeButtons();
                 lucide.createIcons();
             }
         }
@@ -2969,18 +3282,64 @@
             updateConvectionAnnotations();
         }
 
-        function setBreezeTime(time) {
-            breezeTime = time;
+        /** Day sea breeze: sea → land (left). Night land breeze: land → sea (right). */
+        function getBreezeSurfaceWind() {
+            return breezeTime === 'day' ? -1 : 1;
+        }
+
+        function seedBreezeParticleState(i, count, w, h) {
+            const isDay = breezeTime === 'day';
+            const wind = getBreezeSurfaceWind();
+            const x = 16 + Math.random() * (w - 32);
+            const y = 28 + Math.random() * (h - 80);
+            const speed = 1.35 + Math.random() * 0.55;
+            const vx = wind * speed;
+            const vy = (Math.random() - 0.5) * 0.25;
+            const overLand = x < w / 2;
+            const temp = isDay
+                ? (overLand ? 46 + Math.random() * 16 : 16 + Math.random() * 7)
+                : (overLand ? 15 + Math.random() * 6 : 40 + Math.random() * 12);
+            return { x, y, vx, vy, temp };
+        }
+
+        function applyBreezeTimeButtons() {
             const btnDay = document.getElementById('btn-breeze-day');
             const btnNight = document.getElementById('btn-breeze-night');
-
-            if (time === 'day') {
+            if (!btnDay || !btnNight) return;
+            if (breezeTime === 'day') {
                 btnDay.className = "px-3 py-2 bg-amber-600/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5";
                 btnNight.className = "px-3 py-2 bg-slate-900/60 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5";
             } else {
                 btnDay.className = "px-3 py-2 bg-slate-900/60 text-slate-400 border border-slate-800 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5";
                 btnNight.className = "px-3 py-2 bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5";
             }
+        }
+
+        function resetBreezeCirculation() {
+            const w = 800;
+            const h = 400;
+            for (let r = 0; r < convGridRows; r++) {
+                if (!convGrid[r]) continue;
+                for (let c = 0; c < convGridCols; c++) {
+                    convGrid[r][c] = breezeTime === 'day'
+                        ? (c < 5 ? 48 : 18)
+                        : (c < 5 ? 16 : 42);
+                }
+            }
+            convParticles.forEach((p, i) => {
+                const seeded = seedBreezeParticleState(i, convParticles.length, w, h);
+                p.x = seeded.x;
+                p.y = seeded.y;
+                p.vx = seeded.vx;
+                p.vy = seeded.vy;
+                p.temp = seeded.temp;
+            });
+        }
+
+        function setBreezeTime(time) {
+            breezeTime = time;
+            applyBreezeTimeButtons();
+            resetBreezeCirculation();
             updateConvectionAnnotations();
         }
 
@@ -3037,8 +3396,47 @@
             const htAngle = Math.atan2(ht.y - 25 - cy, htCx - cx);
             const halfLoop = Math.PI * 0.92 * sign;
 
-            traceEllipseArc(acAngle, halfLoop, 'rgb(29, 78, 216)', 0.65, roomAC_Active); // Rich dark blue with higher base opacity
-            traceEllipseArc(htAngle, halfLoop, 'rgb(239, 68, 68)', 0.48, roomHeater_Active);
+            // Heater-only also shows a return loop: hot rise, cool sink.
+            traceEllipseArc(htAngle, halfLoop, 'rgb(239, 68, 68)', 0.52, roomHeater_Active);
+            if (roomHeater_Active && !roomAC_Active) {
+                // Cooler return path under the warm plume.
+                traceEllipseArc(htAngle + Math.PI, halfLoop, 'rgb(96, 165, 250)', 0.42, true);
+            } else {
+                traceEllipseArc(acAngle, halfLoop, 'rgb(29, 78, 216)', 0.65, roomAC_Active);
+            }
+        }
+
+        function drawBreezeLiveFlowLines(w, h) {
+            const isDay = breezeTime === 'day';
+            const wind = getBreezeSurfaceWind();
+            const pulse = 0.5 + 0.5 * Math.sin(Date.now() / 600);
+            const offset = (Date.now() / 28) % 36;
+            const color = isDay ? 'rgb(14, 165, 233)' : 'rgb(124, 58, 237)';
+
+            convCtx.save();
+            convCtx.strokeStyle = color;
+            convCtx.fillStyle = color;
+            convCtx.globalAlpha = 0.72 + pulse * 0.16;
+            convCtx.lineWidth = 3;
+
+            for (let i = 0; i < 5; i++) {
+                const y = 70 + i * 48;
+                const len = 95;
+                const mid = w / 2 + wind * offset;
+                const tipX = mid + wind * len;
+                const tailX = mid - wind * (len * 0.55);
+                convCtx.beginPath();
+                convCtx.moveTo(tailX, y);
+                convCtx.lineTo(tipX, y);
+                convCtx.stroke();
+                convCtx.beginPath();
+                convCtx.moveTo(tipX, y);
+                convCtx.lineTo(tipX - wind * 14, y - 7);
+                convCtx.lineTo(tipX - wind * 14, y + 7);
+                convCtx.closePath();
+                convCtx.fill();
+            }
+            convCtx.restore();
         }
 
         /** 情境環流裝飾曲線 · Scenario-specific convection streamlines */
@@ -3130,32 +3528,179 @@
 
                 convCtx.setLineDash([]);
             } else if (convScenario === 'breeze') {
-                const dir = breezeTime === 'day' ? -1 : 1;
-                const offset = (Date.now() / 40) % 30;
-                convCtx.strokeStyle = `rgba(51, 65, 85, ${0.75 + pulse * 0.15})`; // Darker grey Slate-700 for high visibility
-                convCtx.lineWidth = 2.0; // Slightly thicker
-                for (let i = 0; i < 4; i++) {
-                    const y = rect.height - 55 - i * 22;
-                    const x1 = cx + dir * (40 + offset + i * 8);
-                    const x2 = cx - dir * (80 + offset + i * 8);
-                    convCtx.beginPath();
-                    convCtx.moveTo(x1, y);
-                    convCtx.lineTo(x2, y);
-                    convCtx.stroke();
-                    convCtx.beginPath();
-                    convCtx.moveTo(x2, y);
-                    convCtx.lineTo(x2 + dir * 8, y - 4);
-                    convCtx.lineTo(x2 + dir * 8, y + 4);
-                    convCtx.closePath();
-                    convCtx.fillStyle = 'rgba(51, 65, 85, 0.9)'; // Darker grey arrowhead fill
-                    convCtx.fill();
-                }
+                drawBreezeLiveFlowLines(w, h);
             }
         }
 
         /**
-         * 對流動畫幀 · Convection frame with motion trails & glow particles
+         * Room loop:
+         * AC cools parcels on contact → cold air sinks and slowly warms;
+         * heater heats parcels on contact → hot air rises, then cools away from the heater and sinks again.
          */
+        function updateRoomConvectionParticle(p, w, h, acRect, htRect) {
+            const acCx = acRect.x + acRect.w / 2;
+            const htCx = htRect.x + htRect.w / 2;
+            const sign = getRoomCirculationSign(w, h);
+            const acContact = roomAC_Active
+                && p.x > acRect.x - 55
+                && p.x < acRect.x + acRect.w + 55
+                && p.y > acRect.y - 8
+                && p.y < acRect.y + acRect.h + 95;
+            const heaterContact = roomHeater_Active
+                && p.x > htRect.x - 70
+                && p.x < htRect.x + htRect.w + 70
+                && p.y > htRect.y - 110;
+
+            if (acContact) {
+                // Active cooling only inside the AC jet.
+                p.temp += (12 - p.temp) * 0.12;
+                p.thermalState = 'cooling';
+            } else if (heaterContact) {
+                // Floor heater re-heats returning cool air → vivid red plume.
+                p.temp += (66 - p.temp) * 0.085;
+                p.thermalState = 'heating';
+            } else if (roomHeater_Active && !roomAC_Active) {
+                // Heater-only loop: hot parcels lose heat as they rise/travel,
+                // turn cooler (less red), become denser, and sink back to the heater.
+                const heightFrac = Math.max(0, Math.min(1, p.y / h));
+                const coolTarget = 22 + heightFrac * 8; // cooler near ceiling
+                const coolRate = 0.0045 + (1 - heightFrac) * 0.006;
+                p.temp += (coolTarget - p.temp) * coolRate;
+                p.thermalState = p.temp > 34 ? 'cooling' : 'cool';
+            } else if (roomAC_Active && !roomHeater_Active) {
+                // AC-only: cold air gradually absorbs heat from room/floor.
+                const floorWarmth = 1 - Math.max(0, Math.min(1, p.y / h));
+                const warmRate = 0.0028 + (1 - floorWarmth) * 0.0018;
+                p.temp += (38 - p.temp) * warmRate;
+                p.thermalState = p.temp < 27 ? 'warming' : 'warm';
+            } else if (roomAC_Active && roomHeater_Active) {
+                // Both devices: gentle drift toward room comfort away from contact zones.
+                p.temp += (roomTemp - p.temp) * 0.002;
+                p.thermalState = 'drift';
+            } else {
+                p.temp += (24 - p.temp) * 0.0015;
+                p.thermalState = 'idle';
+            }
+            p.temp = Math.max(12, Math.min(70, p.temp));
+
+            // Buoyancy follows the parcel's own temperature: cooler sinks, hotter rises.
+            const neutralTemp = 28;
+            const targetVy = Math.max(-2.6, Math.min(2.6, (neutralTemp - p.temp) * 0.12));
+            p.vy += (targetVy - p.vy) * 0.13;
+
+            if (roomAC_Active && roomHeater_Active) {
+                if (p.y < h * 0.34) {
+                    p.vx += 0.18 * sign;
+                    if (p.temp > neutralTemp) p.vx += 0.10 * sign;
+                }
+                if (p.y > h * 0.66) {
+                    p.vx -= 0.18 * sign;
+                    if (p.temp < neutralTemp) p.vx -= 0.10 * sign;
+                }
+                const onAcWall = sign > 0 ? p.x > w * 0.76 : p.x < w * 0.24;
+                const onHtWall = sign > 0 ? p.x < w * 0.24 : p.x > w * 0.76;
+                if (onAcWall) p.vy += 0.14;
+                if (onHtWall) p.vy -= 0.14;
+            } else if (roomAC_Active && !roomHeater_Active) {
+                const acSide = acCx > w / 2 ? 1 : -1;
+                if (p.temp < neutralTemp) {
+                    p.vx -= 0.12 * acSide;
+                } else {
+                    p.vx += (p.y < h * 0.38 ? 0.14 : -0.04) * acSide;
+                }
+            } else if (roomHeater_Active && !roomAC_Active) {
+                const htSign = htCx < w * 0.5 ? 1 : -1;
+                // Hot air rises above heater, travels across ceiling, cools and returns along floor.
+                if (p.temp > neutralTemp) {
+                    if (p.y < h * 0.40) p.vx += 0.16 * htSign;
+                    else if (heaterContact) p.vy -= 0.22;
+                } else {
+                    if (p.y > h * 0.60) p.vx -= 0.16 * htSign;
+                    if ((htSign > 0 && p.x > w - 80) || (htSign < 0 && p.x < 80)) p.vy += 0.14;
+                }
+                if (heaterContact) p.vy -= 0.18;
+            } else {
+                p.vx += (Math.random() - 0.5) * 0.06;
+                p.vy += (Math.random() - 0.5) * 0.06;
+                p.vx *= 0.98;
+                p.vy *= 0.98;
+            }
+
+            p.vx += (Math.random() - 0.5) * 0.035;
+            p.vx = Math.max(-2.8, Math.min(2.8, p.vx));
+            p.vy = Math.max(-2.8, Math.min(2.8, p.vy));
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.x < 12) {
+                p.x = 12;
+                p.vx = Math.abs(p.vx) * 0.35 + 0.18;
+                if (roomAC_Active && roomHeater_Active && sign > 0) p.vy -= 0.22;
+            } else if (p.x > w - 12) {
+                p.x = w - 12;
+                p.vx = -Math.abs(p.vx) * 0.35 - 0.18;
+                if (roomAC_Active && roomHeater_Active && sign > 0) p.vy += 0.22;
+            }
+            if (p.y < 12) {
+                p.y = 12;
+                p.vy = Math.abs(p.vy) * 0.22 + 0.10;
+                if (roomAC_Active && roomHeater_Active) p.vx += 0.40 * sign;
+            } else if (p.y > h - 12) {
+                p.y = h - 12;
+                p.vy = -Math.abs(p.vy) * 0.22 - 0.10;
+                if (roomAC_Active && roomHeater_Active) p.vx -= 0.40 * sign;
+            }
+        }
+
+        /**
+         * One teaching direction only:
+         * Day sea breeze = sea → land. Night land breeze = land → sea.
+         * Particles keep that horizontal heading; they warm/cool as they cross land or sea.
+         */
+        function updateBreezeConvectionParticle(p, w, h) {
+            const isDay = breezeTime === 'day';
+            const wind = getBreezeSurfaceWind();
+            const overLand = p.x < w / 2;
+            const groundY = h - 42;
+
+            if (isDay) {
+                p.temp += ((overLand ? 58 : 17) - p.temp) * (overLand ? 0.055 : 0.04);
+            } else {
+                p.temp += ((overLand ? 16 : 50) - p.temp) * (overLand ? 0.04 : 0.05);
+            }
+            p.temp = Math.max(14, Math.min(68, p.temp));
+
+            const targetVx = wind * (1.55 + Math.min(0.55, Math.abs(p.temp - 28) * 0.012));
+            p.vx += (targetVx - p.vx) * 0.18;
+
+            const lift = (p.temp - 28) * -0.028;
+            p.vy += (lift - p.vy) * 0.08;
+            p.vy += (Math.random() - 0.5) * 0.03;
+
+            p.vx = Math.max(-2.4, Math.min(2.4, p.vx));
+            p.vy = Math.max(-0.7, Math.min(0.7, p.vy));
+            if (wind < 0 && p.vx > -0.45) p.vx = -0.45;
+            if (wind > 0 && p.vx < 0.45) p.vx = 0.45;
+
+            p.x += p.vx;
+            p.y += p.vy;
+
+            if (p.y < 18) { p.y = 18; p.vy = Math.abs(p.vy) * 0.2; }
+            if (p.y > groundY) { p.y = groundY; p.vy = -Math.abs(p.vy) * 0.2; }
+
+            if (wind < 0 && p.x < 4) {
+                p.x = w - 8;
+                p.y = 40 + Math.random() * (groundY - 50);
+                p.temp = 16 + Math.random() * 6;
+                p.vx = -1.4 - Math.random() * 0.5;
+            } else if (wind > 0 && p.x > w - 4) {
+                p.x = 8;
+                p.y = 40 + Math.random() * (groundY - 50);
+                p.temp = 15 + Math.random() * 6;
+                p.vx = 1.4 + Math.random() * 0.5;
+            }
+        }
+
         /**
          * 對流動畫幀 · Convection frame with scale-independent virtual coordinate rendering (800x400)
          */
@@ -3197,19 +3742,35 @@
                     roomTemp += (20.0 - roomTemp) * 0.0015;
                 }
 
+                for (let c = 0; c < convGridCols; c++) {
+                    convGrid[0][c] += (Math.min(roomTemp, 20) - convGrid[0][c]) * 0.10;
+                }
+                if (!roomHeater_Active) {
+                    for (let r = 0; r < convGridRows; r++) {
+                        for (let c = 0; c < convGridCols; c++) {
+                            if (convGrid[r][c] > 20) {
+                                convGrid[r][c] += (Math.min(roomTemp, 18) - convGrid[r][c]) * 0.12;
+                            }
+                        }
+                    }
+                }
                 if (roomAC_Active) {
                     const ac = getRoomACRect(w, h);
                     const acCol = Math.max(0, Math.min(convGridCols - 1, Math.floor((ac.x + ac.w / 2) / w * convGridCols)));
-                    convGrid[0][acCol] = 14;
-                    if (acCol > 0) convGrid[0][acCol - 1] = 15;
-                    convGrid[1][acCol] = 16;
+                    convGrid[0][acCol] = 12;
+                    if (acCol > 0) convGrid[0][acCol - 1] = 13;
+                    if (acCol < convGridCols - 1) convGrid[0][acCol + 1] = 13;
+                    convGrid[1][acCol] = 13;
+                    convGrid[2][acCol] = 15;
                 }
                 if (roomHeater_Active) {
                     const ht = getRoomHeaterRect(w, h);
                     const htCol = Math.max(0, Math.min(convGridCols - 1, Math.floor((ht.x + ht.w / 2) / w * convGridCols)));
-                    convGrid[convGridRows - 1][htCol] = 72;
-                    if (htCol > 0) convGrid[convGridRows - 1][htCol - 1] = 70;
-                    convGrid[convGridRows - 2][htCol] = 65;
+                    convGrid[convGridRows - 1][htCol] = 78;
+                    if (htCol > 0) convGrid[convGridRows - 1][htCol - 1] = 74;
+                    if (htCol < convGridCols - 1) convGrid[convGridRows - 1][htCol + 1] = 74;
+                    convGrid[convGridRows - 2][htCol] = 68;
+                    convGrid[convGridRows - 3][htCol] = 58;
                 }
             } else if (convScenario === 'kettle') {
                 let khx = 40 + 45 + (kettleHeaterXPercent / 100) * (w - 80 - 90);
@@ -3237,19 +3798,27 @@
             } else if (convScenario === 'breeze') {
                 if (breezeTime === 'day') {
                     for (let c = 0; c < 5; c++) {
-                        convGrid[convGridRows-1][c] = 72;
-                        convGrid[convGridRows-2][c] = 62;
+                        convGrid[convGridRows - 1][c] = 74;
+                        convGrid[convGridRows - 2][c] = 62;
+                        convGrid[convGridRows - 3][c] = 48;
                     }
                     for (let c = 5; c < convGridCols; c++) {
-                        convGrid[convGridRows-1][c] = 20;
+                        convGrid[convGridRows - 1][c] = 16;
+                        convGrid[convGridRows - 2][c] = 18;
+                        convGrid[0][c] = 20;
                     }
+                    for (let c = 0; c < 5; c++) convGrid[0][c] = 26;
                 } else {
                     for (let c = 0; c < 5; c++) {
-                        convGrid[convGridRows-1][c] = 16;
+                        convGrid[convGridRows - 1][c] = 15;
+                        convGrid[convGridRows - 2][c] = 16;
+                        convGrid[0][c] = 18;
                     }
                     for (let c = 5; c < convGridCols; c++) {
-                        convGrid[convGridRows-1][c] = 48;
-                        convGrid[convGridRows-2][c] = 40;
+                        convGrid[convGridRows - 1][c] = 52;
+                        convGrid[convGridRows - 2][c] = 44;
+                        convGrid[convGridRows - 3][c] = 36;
+                        convGrid[0][c] = 24;
                     }
                 }
             }
@@ -3270,7 +3839,8 @@
                     let target = sum / count;
                     nextGrid[r][c] += (target - convGrid[r][c]) * 0.12;
                     let dissolveTarget = convScenario === 'room' ? roomTemp : 25;
-                    nextGrid[r][c] += (dissolveTarget - convGrid[r][c]) * 0.005; // dissolve towards ambient
+                    const dissolveRate = convScenario === 'room' ? 0.002 : (convScenario === 'breeze' ? 0.0012 : 0.005);
+                    nextGrid[r][c] += (dissolveTarget - convGrid[r][c]) * dissolveRate;
                     nextGrid[r][c] = Math.max(12, Math.min(98, nextGrid[r][c]));
                 }
             }
@@ -3360,83 +3930,8 @@
                     convCtx.fillText(t('convection.heater'), htRect.x + 13, htRect.y + 13);
                 }
 
-                // Air density visual panel with dynamic thermostat
-                convCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-                convCtx.fillRect(10, 10, 185, 48);
-                convCtx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
-                convCtx.lineWidth = 1;
-                convCtx.strokeRect(10, 10, 185, 48);
-
-                // Reset text alignment states to avoid leaks
-                convCtx.textAlign = 'left';
-                convCtx.textBaseline = 'alphabetic';
-
-                // Draw glowing thermostat value
-                let thermoColor = tempToRGB(roomTemp, 14, 48).css;
-                convCtx.fillStyle = thermoColor;
-                convCtx.font = 'bold 9px monospace';
-                convCtx.fillText(`🌡️ ${t('convection.thermostat', { temp: roomTemp.toFixed(1) })}`, 15, 21);
-
-                convCtx.fillStyle = '#0284c7';
-                convCtx.font = '8px monospace';
-                convCtx.fillText(t('convection.acColdAir'), 15, 31);
-                convCtx.fillStyle = '#f97316';
-                convCtx.fillText(t('convection.heaterHotAir'), 15, 41);
-                convCtx.fillStyle = '#475569';
-                convCtx.fillText(t('convection.buoyancy'), 15, 51);
-
-                // Run particles
                 convParticles.forEach(p => {
-                    let col = Math.max(0, Math.min(convGridCols - 1, Math.floor(p.x / w * convGridCols)));
-                    let row = Math.max(0, Math.min(convGridRows - 1, Math.floor(p.y / h * convGridRows)));
-
-                    p.temp += (convGrid[row][col] - p.temp) * 0.15;
-                    convGrid[row][col] += (p.temp - convGrid[row][col]) * 0.03;
-
-                    if (roomAC_Active && p.x > acRect.x - 25 && p.x < acRect.x + acRect.w + 25 && p.y < acRect.y + acRect.h + 45) {
-                        p.temp = Math.max(14, p.temp - 1.8);
-                    }
-                    if (roomHeater_Active && p.x > htRect.x - 25 && p.x < htRect.x + htRect.w + 25 && p.y > htRect.y - 45) {
-                        p.temp = Math.min(68, p.temp + 1.8);
-                    }
-
-                    // Buoyancy reference temperature is dynamic roomTemp instead of hardcoded 38
-                    let targetVy = (p.temp - roomTemp) * -0.05;
-                    p.vy += (targetVy - p.vy) * 0.1;
-
-                    const sign = getRoomCirculationSign(w, h);
-                    const acCx = acRect.x + acRect.w / 2;
-                    const htCx = htRect.x + htRect.w / 2;
-
-                    if (roomAC_Active && !roomHeater_Active) {
-                        const acSign = acCx > w * 0.5 ? 1 : -1;
-                        if (p.y > h - 50) p.vx -= 0.05 * acSign;
-                        if ((acSign > 0 && p.x < 50) || (acSign < 0 && p.x > w - 50)) p.vy -= 0.05;
-                        if (p.y < 50) p.vx += 0.05 * acSign;
-                    } else if (roomHeater_Active && !roomAC_Active) {
-                        const htSign = htCx < w * 0.5 ? 1 : -1;
-                        if (p.y < 50) p.vx += 0.05 * htSign;
-                        if ((htSign > 0 && p.x > w - 50) || (htSign < 0 && p.x < 50)) p.vy += 0.05;
-                        if (p.y > h - 50) p.vx -= 0.05 * htSign;
-                    } else if (roomAC_Active && roomHeater_Active) {
-                        if (p.y < 60) p.vx += 0.08 * sign;
-                        if (p.y > h - 60) p.vx -= 0.08 * sign;
-                    } else {
-                        p.vx += (Math.random() - 0.5) * 0.08;
-                        p.vy += (Math.random() - 0.5) * 0.08;
-                    }
-
-                    p.vx = Math.max(-2, Math.min(2, p.vx));
-                    p.vy = Math.max(-2, Math.min(2, p.vy));
-
-                    p.x += p.vx;
-                    p.y += p.vy;
-
-                    if (p.x < 10) { p.x = 10; p.vx *= -0.5; }
-                    if (p.x > w - 10) { p.x = w - 10; p.vx *= -0.5; }
-                    if (p.y < 10) { p.y = 10; p.vy *= -0.5; }
-                    if (p.y > h - 10) { p.y = h - 10; p.vy *= -0.5; }
-
+                    updateRoomConvectionParticle(p, w, h, acRect, htRect);
                     drawConvectionParticle(p);
                 });
             } else if (convScenario === 'kettle') {
@@ -3490,10 +3985,13 @@
                     b.x += b.vx + Math.sin(b.y / 8) * 0.25;
                     b.alpha -= 0.007; // fade slightly faster for higher performance and realism
 
-                    convCtx.strokeStyle = `rgba(255, 255, 255, ${b.alpha})`;
+                    const bubble = tempToRGB(88, 14, 95);
+                    convCtx.fillStyle = `rgba(${bubble.r}, ${bubble.g}, ${bubble.b}, ${b.alpha * 0.55})`;
+                    convCtx.strokeStyle = `rgba(${bubble.r}, ${bubble.g}, ${bubble.b}, ${b.alpha})`;
                     convCtx.lineWidth = 1;
                     convCtx.beginPath();
                     convCtx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                    convCtx.fill();
                     convCtx.stroke();
 
                     if (b.y < 35 || b.alpha <= 0) {
@@ -3519,22 +4017,20 @@
                     let col = Math.max(0, Math.min(convGridCols - 1, Math.floor((p.x - kMinX) / (kMaxX - kMinX) * convGridCols)));
                     let row = Math.max(0, Math.min(convGridRows - 1, Math.floor((p.y - kMinY) / (kMaxY - kMinY) * convGridRows)));
 
-                    p.temp += (convGrid[row][col] - p.temp) * 0.15;
-                    convGrid[row][col] += (p.temp - convGrid[row][col]) * 0.03;
+                    p.temp += (convGrid[row][col] - p.temp) * (row <= 1 ? 0.05 : 0.12);
+                    if (row > 1) convGrid[row][col] += (p.temp - convGrid[row][col]) * 0.02;
 
                     if (kettleHeater_Active && p.y > h - 45 && p.x > khx - 50 && p.x < khx + 50) {
                         p.temp = Math.min(95, p.temp + 3.0);
                     } else {
-                        // Slowly cool down when far from active element, cooling faster at the walls/surface
-                        let coolingRate = 0.25;
-                        if (p.y < kMinY + 65) coolingRate = 0.65; // rapid surface heat loss (evaporation)
-                        if (p.x < kMinX + 45 || p.x > kMaxX - 45) coolingRate = 0.55; // rapid cooling along cold glass sides
+                        let coolingRate = 0.45;
+                        if (p.y < kMinY + 80) coolingRate = 1.55;
+                        if (p.x < kMinX + 45 || p.x > kMaxX - 45) coolingRate = 1.15;
                         p.temp = Math.max(20, p.temp - coolingRate);
                     }
 
-                    // Stronger base buoyancy effect based on local grid/particle temperature
-                    let buoyancy = (p.temp - 25) * 0.045; // Warmer water rises faster
-                    p.vy -= buoyancy * 0.15;
+                    let buoyancy = (p.temp - 28) * 0.055;
+                    p.vy -= buoyancy * 0.18;
 
                     if (kettleHeater_Active) {
                         let centerDist = p.x - khx;
@@ -3547,8 +4043,8 @@
 
                         // 2. Top boundary: spread outward to the sides
                         if (p.y < kMinY + 65) {
-                            p.vx += centerDist > 0 ? 0.16 : -0.16; // strong flow outward
-                            p.vy += 0.04; // push down slightly from surface limit
+                            p.vx += centerDist > 0 ? 0.16 : -0.16;
+                            p.vy += p.temp < 40 ? 0.20 : 0.06;
                         }
 
                         // 3. Side boundaries: cooling glass walls pull particles downward
@@ -3579,12 +4075,19 @@
                     drawConvectionParticle(p);
                 });
             } else if (convScenario === 'breeze') {
-                // Land representation (left) - thicker block
-                convCtx.fillStyle = breezeTime === 'day' ? '#e11d48' : '#1e1b4b'; // rosy red for hot land, deep indigo for cold land
+                // Land (left): hot red by day, cold indigo at night
+                convCtx.fillStyle = breezeTime === 'day' ? '#e11d48' : '#1e1b4b';
                 convCtx.fillRect(0, h - 35, w / 2, 35);
                 
-                // Sea/Water representation (right) - thick block
-                convCtx.fillStyle = '#0284c7'; // ocean blue
+                // Sea (right): cool blue by day, warmer teal-rose at night
+                if (breezeTime === 'day') {
+                    convCtx.fillStyle = '#0284c7';
+                } else {
+                    const seaNight = convCtx.createLinearGradient(w / 2, h - 30, w, h);
+                    seaNight.addColorStop(0, '#0e7490');
+                    seaNight.addColorStop(1, '#db2777');
+                    convCtx.fillStyle = seaNight;
+                }
                 convCtx.fillRect(w / 2, h - 30, w / 2, 30);
 
                 // Draw a beautiful sandy shore divider in the middle
@@ -3708,46 +4211,8 @@
                     convCtx.fillText(t('convection.landBreeze'), 15, 44);
                 }
 
-                // Run particles
                 convParticles.forEach(p => {
-                    let col = Math.max(0, Math.min(convGridCols - 1, Math.floor(p.x / w * convGridCols)));
-                    let row = Math.max(0, Math.min(convGridRows - 1, Math.floor(p.y / h * convGridRows)));
-
-                    p.temp += (convGrid[row][col] - p.temp) * 0.15;
-                    convGrid[row][col] += (p.temp - convGrid[row][col]) * 0.03;
-
-                    if (breezeTime === 'day') {
-                        if (p.x < w / 2 && p.y > h - 70) {
-                            p.temp = Math.min(68, p.temp + 1.4);
-                        } else if (p.x >= w / 2 && p.y > h - 70) {
-                            p.temp = Math.max(22, p.temp - 1.4);
-                        }
-                        if (p.y > h - 70) p.vx -= 0.05;
-                        else if (p.y < 70) p.vx += 0.05;
-                    } else {
-                        if (p.x < w / 2 && p.y > h - 70) {
-                            p.temp = Math.max(20, p.temp - 1.4);
-                        } else if (p.x >= w / 2 && p.y > h - 70) {
-                            p.temp = Math.min(48, p.temp + 0.8);
-                        }
-                        if (p.y > h - 70) p.vx += 0.05;
-                        else if (p.y < 70) p.vx -= 0.05;
-                    }
-
-                    let targetVy = (p.temp - 32) * -0.04;
-                    p.vy += (targetVy - p.vy) * 0.1;
-
-                    p.vx = Math.max(-1.6, Math.min(1.6, p.vx));
-                    p.vy = Math.max(-1.6, Math.min(1.6, p.vy));
-
-                    p.x += p.vx;
-                    p.y += p.vy;
-
-                    if (p.x < 5) p.x = w - 5;
-                    if (p.x > w - 5) p.x = 5;
-                    if (p.y < 10) { p.y = 10; p.vy *= -0.5; }
-                    if (p.y > h - 35) { p.y = h - 35; p.vy *= -0.5; }
-
+                    updateBreezeConvectionParticle(p, w, h);
                     drawConvectionParticle(p);
                 });
             }
@@ -3776,24 +4241,18 @@
 
         function drawConvectionParticle(p) {
             const speed = Math.hypot(p.vx, p.vy);
-            const radius = p.radius + Math.abs(p.vy) * 0.8;
-            const { r, g, b } = tempToRGB(p.temp, 14, 95);
+            const radius = Math.max(6.5, p.radius + Math.abs(p.vy) * 0.9);
+            const { r, g, b } = tempToRGB(p.temp, 16, 48);
 
-            if (p.temp > 50) {
-                convCtx.shadowColor = `rgb(${r}, ${g}, ${b})`;
-                convCtx.shadowBlur = 8;
-            } else if (p.temp < 28) {
-                convCtx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
-                convCtx.lineWidth = 1;
-                convCtx.beginPath();
-                convCtx.arc(p.x, p.y, radius + 1.5, 0, Math.PI * 2);
-                convCtx.stroke();
-            }
-
+            convCtx.shadowColor = `rgb(${r}, ${g}, ${b})`;
+            convCtx.shadowBlur = p.temp >= 36 ? 16 : 7;
             convCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
             convCtx.beginPath();
             convCtx.arc(p.x, p.y, radius, 0, Math.PI * 2);
             convCtx.fill();
+            convCtx.strokeStyle = p.temp >= 36 ? 'rgba(255, 220, 220, 0.55)' : 'rgba(186, 230, 253, 0.7)';
+            convCtx.lineWidth = 1.4;
+            convCtx.stroke();
             convCtx.shadowBlur = 0;
 
             if (speed > 0.8) {
@@ -3958,23 +4417,68 @@
             }, 1000);
         }
 
-        /** 更新方塊溫度光暈脈衝 · Pulsing block glow synced to temperature */
+        /** Keep dull-black / shiny-silver base fixed; heat only via red filter overlay. */
+        function updateRadiationBlockAppearance() {
+            const blackHeat = Math.max(0, Math.min(1, (tempBlack - 20) / 100));
+            const shinyHeat = Math.max(0, Math.min(1, (tempShiny - 20) / 80));
+            const blackEase = Math.pow(blackHeat, 0.7);
+            const shinyEase = Math.pow(shinyHeat, 0.72);
+
+            const blackBlock = document.getElementById('dull-black-block');
+            const shinyBlock = document.getElementById('shiny-silver-block');
+            const tempBlackEl = document.getElementById('temp-black');
+            const tempShinyEl = document.getElementById('temp-shiny');
+
+            if (blackBlock) {
+                blackBlock.style.backgroundColor = '';
+                blackBlock.style.backgroundImage = '';
+                blackBlock.style.background = '';
+                blackBlock.style.borderColor = '';
+                blackBlock.style.boxShadow = blackEase > 0.05
+                    ? `inset 0 1px 0 rgba(255,255,255,0.04), 0 0 ${10 + blackEase * 22}px rgba(239, 68, 68, ${0.12 + blackEase * 0.38})`
+                    : '';
+            }
+            if (shinyBlock) {
+                shinyBlock.style.backgroundColor = '';
+                shinyBlock.style.backgroundImage = '';
+                shinyBlock.style.background = '';
+                shinyBlock.style.borderColor = '';
+                shinyBlock.style.boxShadow = shinyEase > 0.05
+                    ? `inset 0 1px 0 rgba(255,255,255,0.65), 0 0 ${8 + shinyEase * 16}px rgba(248, 113, 113, ${0.10 + shinyEase * 0.26})`
+                    : 'inset 0 1px 0 rgba(255,255,255,0.65)';
+            }
+            if (tempBlackEl) {
+                tempBlackEl.style.color = blackEase > 0.18 ? '#fee2e2' : '#ef4444';
+                tempBlackEl.style.textShadow = blackEase > 0.08 ? '0 0 9px rgba(254, 202, 202, 0.65)' : '';
+            }
+            if (tempShinyEl) {
+                tempShinyEl.style.color = shinyEase > 0.12 ? '#991b1b' : '#4f46e5';
+                tempShinyEl.style.textShadow = shinyEase > 0.08 ? '0 0 8px rgba(255, 255, 255, 0.75)' : '';
+            }
+        }
+
+        /** Red heat filter over fixed block materials · synced to temperature */
         function updateRadiationBlockGlow() {
             const pulse = 0.5 + 0.3 * Math.sin(Date.now() / 500);
             const glowBlack = document.getElementById('glow-black');
             const glowShiny = document.getElementById('glow-shiny');
             if (glowBlack) {
-                const op = radHeaterOn || tempBlack > 21
-                    ? 0.1 + ((tempBlack - 20) / 100) * (0.5 + pulse * 0.3)
+                const heat = Math.max(0, Math.min(1, (tempBlack - 20) / 100));
+                const op = tempBlack > 21
+                    ? 0.10 + heat * (0.55 + pulse * 0.18)
                     : 0;
-                glowBlack.style.opacity = Math.min(1, op);
+                glowBlack.style.opacity = Math.min(0.78, op);
+                glowBlack.style.background = `rgba(185, 28, 28, ${0.22 + heat * 0.42})`;
             }
             if (glowShiny) {
-                const op = radHeaterOn || tempShiny > 21
-                    ? 0.05 + ((tempShiny - 20) / 100) * (0.3 + pulse * 0.2)
+                const heat = Math.max(0, Math.min(1, (tempShiny - 20) / 80));
+                const op = tempShiny > 21
+                    ? 0.06 + heat * (0.42 + pulse * 0.14)
                     : 0;
-                glowShiny.style.opacity = Math.min(0.6, op);
+                glowShiny.style.opacity = Math.min(0.72, op);
+                glowShiny.style.background = `rgba(239, 68, 68, ${0.28 + heat * 0.40})`;
             }
+            updateRadiationBlockAppearance();
         }
 
         function drawIRWavePath(ctx, x0, y0, x1, y1, color, opacity, freq = 12) {
@@ -4003,10 +4507,12 @@
 
         function spawnRadiationWaves() {
             const now = Date.now();
-            if (radHeaterOn && now - radLastSpawn > 400) {
+            if (radHeaterOn && now - radLastSpawn > 180) {
                 radLastSpawn = now;
                 radWaves.push({ kind: 'toBlack', progress: 0, speed: 0.03 });
                 radWaves.push({ kind: 'toShiny', progress: 0, speed: 0.03 });
+                radWaves.push({ kind: 'toBlack', progress: 0, speed: 0.038 });
+                radWaves.push({ kind: 'toShiny', progress: 0, speed: 0.038 });
             }
             if (!radHeaterOn) {
                 if (tempBlack > 21 && Math.random() < 0.015) {
@@ -4070,6 +4576,9 @@
 
                 // Calculate dynamic wavelength (Wien's Displacement Law: frequency ∝ Temp)
                 let dynamicFreq = Math.round(5 + (radHeaterTemp / 1000) * 16);
+                const heaterColor = tempToCSS(radHeaterTemp, 20, 800);
+                const blackColor = tempToCSS(tempBlack, 20, 180);
+                const shinyColor = tempToCSS(tempShiny, 20, 180);
 
                 for (let i = radWaves.length - 1; i >= 0; i--) {
                     const wave = radWaves[i];
@@ -4078,20 +4587,20 @@
                     if (wave.kind === 'toBlack') {
                         const x = cx - wave.progress * (cx - leftX);
                         const op = (1 - wave.progress) * 0.85;
-                        drawIRWavePath(radWaveCtx, cx, cy, x, cy, '#ef4444', op, dynamicFreq);
-                        radPhotons.push({ x, y: cy, life: 0.6, color: '#ef4444', r: 3 });
+                        drawIRWavePath(radWaveCtx, cx, cy, x, cy, heaterColor, op, dynamicFreq);
+                        radPhotons.push({ x, y: cy, life: 0.7, color: heaterColor, r: 5 });
                         
                         if (wave.progress >= 1) {
                             // Absorption high-energy splash particles on Dull Black block!
-                            for (let k = 0; k < 10; k++) {
+                            for (let k = 0; k < 18; k++) {
                                 radPhotons.push({
                                     x: leftX,
                                     y: cy,
                                     vx: (Math.random() - 0.1) * 2.5, // Explode outwards and backwards
                                     vy: (Math.random() - 0.5) * 2.5,
                                     life: 0.8,
-                                    color: Math.random() < 0.5 ? '#f43f5e' : '#fbbf24',
-                                    r: 1.5 + Math.random() * 2
+                                    color: blackColor,
+                                    r: 2.8 + Math.random() * 2.6
                                 });
                             }
                             radWaves.splice(i, 1);
@@ -4099,11 +4608,11 @@
                     } else if (wave.kind === 'toShiny') {
                         const x = cx + wave.progress * (rightX - cx);
                         const op = (1 - wave.progress) * 0.7;
-                        drawIRWavePath(radWaveCtx, cx, cy, x, cy, '#f97316', op, dynamicFreq);
+                        drawIRWavePath(radWaveCtx, cx, cy, x, cy, heaterColor, op, dynamicFreq);
                         
                         if (wave.progress >= 0.92 && !wave.reflected) {
                             wave.reflected = true;
-                            // Specular reflection wave rays
+                            // Specular reflection wave rays keep the heater temperature colour
                             [-0.4, 0, 0.4].forEach((ang) => {
                                 radWaves.push({
                                     kind: 'reflect',
@@ -4112,39 +4621,41 @@
                                     angle: Math.PI + ang * 0.6,
                                     progress: 0,
                                     speed: 0.025,
-                                    color: '#38bdf8'
+                                    color: heaterColor
                                 });
                             });
                             // Specular reflection visual splash particles
-                            for (let k = 0; k < 8; k++) {
+                            for (let k = 0; k < 16; k++) {
                                 radPhotons.push({
                                     x: rightX,
                                     y: cy,
                                     vx: -1.5 - Math.random() * 3, // Fast bounce-back to the left
                                     vy: (Math.random() - 0.5) * 2.5,
                                     life: 0.7,
-                                    color: '#38bdf8',
-                                    r: 1.5 + Math.random() * 1.5
+                                    color: shinyColor,
+                                    r: 2.6 + Math.random() * 2.2
                                 });
                             }
                             radWaves.splice(i, 1);
                         } else if (wave.progress < 0.92) {
-                            radPhotons.push({ x, y: cy, life: 0.5, color: '#f97316', r: 2.5 });
+                            radPhotons.push({ x, y: cy, life: 0.6, color: heaterColor, r: 4.5 });
                         }
                     } else if (wave.kind === 'reflect') {
                         const len = 80 * wave.progress;
                         const ex = wave.x + Math.cos(wave.angle) * len;
                         const ey = wave.y + Math.sin(wave.angle) * len;
-                        drawIRWavePath(radWaveCtx, wave.x, wave.y, ex, ey, wave.color || '#38bdf8', (1 - wave.progress) * 0.6, 8);
-                        radPhotons.push({ x: ex, y: ey, life: 0.4, color: '#38bdf8', r: 2 });
+                        drawIRWavePath(radWaveCtx, wave.x, wave.y, ex, ey, wave.color || heaterColor, (1 - wave.progress) * 0.6, 8);
+                        radPhotons.push({ x: ex, y: ey, life: 0.4, color: wave.color || heaterColor, r: 2 });
                         if (wave.progress >= 1) radWaves.splice(i, 1);
                     } else if (wave.kind === 'emitBlack') {
                         const x = leftX - wave.progress * 40;
-                        drawIRWavePath(radWaveCtx, leftX, cy, x, cy - 20 * wave.progress, '#fbbf24', wave.intensity * (1 - wave.progress), 6);
+                        drawIRWavePath(radWaveCtx, leftX, cy, x, cy - 20 * wave.progress, blackColor, wave.intensity * (1 - wave.progress), 6);
+                        radPhotons.push({ x, y: cy - 20 * wave.progress, life: 0.45, color: blackColor, r: 2.2 });
                         if (wave.progress >= 1) radWaves.splice(i, 1);
                     } else if (wave.kind === 'emitShiny') {
                         const x = rightX + wave.progress * 30;
-                        drawIRWavePath(radWaveCtx, rightX, cy, x, cy - 15 * wave.progress, '#94a3b8', wave.intensity * 0.5 * (1 - wave.progress), 5);
+                        drawIRWavePath(radWaveCtx, rightX, cy, x, cy - 15 * wave.progress, shinyColor, wave.intensity * 0.5 * (1 - wave.progress), 5);
+                        radPhotons.push({ x, y: cy - 15 * wave.progress, life: 0.4, color: shinyColor, r: 2 });
                         if (wave.progress >= 1) radWaves.splice(i, 1);
                     }
                 }
@@ -4268,6 +4779,7 @@
             const glowShiny = document.getElementById('glow-shiny');
             if (glowBlack) glowBlack.style.opacity = '0';
             if (glowShiny) glowShiny.style.opacity = '0';
+            updateRadiationBlockAppearance();
             if (radWaveCtx && radWaveCanvas) {
                 const rect = radWaveCanvas.getBoundingClientRect();
                 radWaveCtx.clearRect(0, 0, rect.width, rect.height);
@@ -4671,8 +5183,8 @@
                     p.life -= 0.015;
 
                     flaskCtx.save();
-                    flaskCtx.globalAlpha = p.life * 0.5 * liquidIntensity;
-                    flaskCtx.fillStyle = '#e2e8f0';
+                    flaskCtx.globalAlpha = p.life * 0.7 * Math.max(0.35, liquidIntensity);
+                    flaskCtx.fillStyle = tempToRGB(flaskLiquidTemp, 25, 100).css;
                     flaskCtx.beginPath();
                     flaskCtx.arc(p.x, p.y, p.size * (1.5 - p.life), 0, Math.PI * 2);
                     flaskCtx.fill();
@@ -4973,6 +5485,9 @@
             const h = 160; // Fixed virtual height
 
             ghCtx.clearRect(0, 0, rect.width, rect.height);
+            const solarColor = tempToCSS(90, 14, 95);
+            const irColor = tempToCSS(ghTemp, 20, 45);
+            const irRgb = tempToRGB(ghTemp, 20, 45);
 
             // Scale to virtual 400x160 space
             ghCtx.save();
@@ -5166,11 +5681,11 @@
                 }
 
                 if (w.type === 'solar') {
-                    // Short-wavelength radiation (Yellow, high frequency, passes roof)
+                    // Short-wavelength radiation (hot, high frequency, passes roof)
                     ghCtx.save();
-                    ghCtx.shadowColor = 'rgba(251, 191, 36, 0.6)';
+                    ghCtx.shadowColor = solarColor;
                     ghCtx.shadowBlur = 4;
-                    ghCtx.strokeStyle = '#fbbf24';
+                    ghCtx.strokeStyle = solarColor;
                     ghCtx.lineWidth = 2;
                     ghCtx.beginPath();
                     ghCtx.moveTo(w.x, w.y);
@@ -5185,7 +5700,7 @@
                     ghCtx.restore();
 
                     // Leading glowing photon core particle
-                    ghCtx.fillStyle = '#ffffff';
+                    ghCtx.fillStyle = solarColor;
                     ghCtx.beginPath();
                     ghCtx.arc(currentX, currentY, 2.5, 0, Math.PI * 2);
                     ghCtx.fill();
@@ -5201,7 +5716,7 @@
                                 vx: (Math.random() - 0.5) * 1.8,
                                 vy: -Math.random() * 2.2 - 0.4,
                                 size: Math.random() * 2.2 + 1,
-                                color: `rgba(251, ${140 + Math.random() * 100}, 36, 0.95)`,
+                                color: solarColor,
                                 life: 1.0,
                                 decay: Math.random() * 0.03 + 0.02
                             });
@@ -5233,7 +5748,7 @@
                     // Long-wavelength radiation (Red, low frequency, blocked by glass roof)
                     // Draw warm red shadow energy background glow
                     ghCtx.save();
-                    ghCtx.strokeStyle = 'rgba(239, 68, 68, 0.12)';
+                    ghCtx.strokeStyle = `rgba(${irRgb.r}, ${irRgb.g}, ${irRgb.b}, 0.12)`;
                     ghCtx.lineWidth = 8;
                     ghCtx.beginPath();
                     ghCtx.moveTo(w.x, w.y);
@@ -5242,9 +5757,9 @@
                     ghCtx.restore();
 
                     ghCtx.save();
-                    ghCtx.shadowColor = 'rgba(239, 68, 68, 0.5)';
+                    ghCtx.shadowColor = irColor;
                     ghCtx.shadowBlur = 5;
-                    ghCtx.strokeStyle = '#ef4444';
+                    ghCtx.strokeStyle = irColor;
                     ghCtx.lineWidth = 2.2;
                     ghCtx.beginPath();
                     ghCtx.moveTo(w.x, w.y);
@@ -5259,7 +5774,7 @@
                     ghCtx.restore();
 
                     // Leading thermal pulse dot
-                    ghCtx.fillStyle = '#fca5a5';
+                    ghCtx.fillStyle = irColor;
                     ghCtx.beginPath();
                     ghCtx.arc(currentX, currentY, 2, 0, Math.PI * 2);
                     ghCtx.fill();
@@ -5347,7 +5862,7 @@
                     ghRipples.splice(j, 1);
                 } else {
                     ghCtx.save();
-                    ghCtx.strokeStyle = `rgba(56, 189, 248, ${r.opacity})`;
+                    ghCtx.strokeStyle = `rgba(${irRgb.r}, ${irRgb.g}, ${irRgb.b}, ${r.opacity})`;
                     ghCtx.lineWidth = 1.2;
                     ghCtx.beginPath();
                     ghCtx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
@@ -5384,7 +5899,7 @@
             ghCtx.textAlign = 'center';
             ghCtx.fillText(t('applications.insideTemp'), rx + rw/2, ry + 10);
 
-            let tempColor = `rgb(${Math.min(255, 56 + (ghTemp - 20) * 16)}, ${Math.max(100, 189 - (ghTemp - 20) * 10)}, ${Math.max(100, 248 - (ghTemp - 20) * 22)})`;
+            let tempColor = tempToCSS(ghTemp, 20, 45);
             ghCtx.fillStyle = tempColor;
             ghCtx.font = 'bold 10px monospace';
             ghCtx.fillText(ghTemp.toFixed(1) + " °C", rx + rw/2, ry + 22);

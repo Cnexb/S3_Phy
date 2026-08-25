@@ -14,8 +14,8 @@ export async function onRequest(context) {
   if (secFetchDest === 'document' || secFetchDest === null) {
     return new Response(
       `<!DOCTYPE html>
-<html lang="zh-Hant">
-<head><meta charset="UTF-8"><title>Uni+</title></head>
+<html lang="zh-Hant" translate="no">
+<head><meta charset="UTF-8"><meta name="google" content="notranslate"><title>Uni+</title></head>
 <body style="text-align:center;padding:60px 20px;font-family:sans-serif;">
   <h2>請透過 Uni+ 平台登入使用</h2>
   <p>Please access this page through the Uni+ platform.</p>

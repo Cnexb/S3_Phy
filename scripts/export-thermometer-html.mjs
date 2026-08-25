@@ -53,9 +53,10 @@ const bundled = await build({
 const js = bundled.outputFiles[0].text;
 
 const html = `<!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-HK" translate="no">
 <head>
   <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>溫度計設計 — Thermometer Design Lab</title>
   <style>

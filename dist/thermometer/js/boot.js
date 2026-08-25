@@ -1,8 +1,9 @@
-import { createThermometerLab, createFaultyScaleCalibrationLab } from './lab.js?v=29';
+import { createThermometerLab, createFaultyScaleCalibrationLab } from './lab.js?v=48';
 import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js';
 
 const root = document.getElementById('app');
 const MODES = new Set(['liquid', 'resistance', 'thermistor', 'faulty']);
+let mountedLab = null;
 
 function modeFromUrl() {
   const mode = new URLSearchParams(location.search).get('mode') || 'liquid';
@@ -11,6 +12,7 @@ function modeFromUrl() {
 
 function mount() {
   if (!root) return;
+  mountedLab?._thermometerLabCleanup?.();
   root.replaceChildren();
   const t = createT(getLang());
   const mode = modeFromUrl();
@@ -18,6 +20,7 @@ function mount() {
     ? createFaultyScaleCalibrationLab(t)
     : createThermometerLab(t, { type: mode });
   root.appendChild(lab);
+  mountedLab = lab;
 }
 
 function applyLang(lang) {
