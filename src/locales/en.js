@@ -3,7 +3,7 @@ export const en = {
   'app.title': 'Uni+ HKDSE Physics Hub',
   'app.subtitle': 'S3 Physics — Optics & Heat',
   'strands.title': 'Choose a strand',
-  'strands.intro': 'Optics (light) and Heat are ready. Mechanics, Gas, and Waves are coming soon and not yet available.',
+  'strands.intro': 'Optics (light) and Heat are ready. Mechanics, Gas, and Waves are coming soon, but you can still open them.',
   'strand.optics.title': 'Optics',
   'strand.optics.desc': 'Light and waves: reflection, refraction, lenses, and electromagnetic waves.',
   'strand.optics.subtitle': 'Optics — light and waves',

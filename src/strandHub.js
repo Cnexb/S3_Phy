@@ -31,14 +31,11 @@ export function mountStrandHub(root) {
         <div class="grid cols-2 topic-hub-grid strand-hub-grid">
           ${STRANDS.map(({ id, titleKey, descKey, ready }) => {
             const badge = ready ? '' : ` <span class="strand-soon-badge">${t('strand.comingSoon')}</span>`;
-            const btn = ready
-              ? `<button class="btn primary" type="button" data-strand="${id}">${t('strand.open')}</button>`
-              : `<button class="btn" type="button" disabled aria-disabled="true">${t('strand.notReady')}</button>`;
             return `
             <div class="card${ready ? '' : ' card--coming-soon'}">
               <h3>${t(titleKey)}${badge}</h3>
               <p>${t(descKey)}</p>
-              ${btn}
+              <button class="btn primary" type="button" data-strand="${id}">${t('strand.open')}</button>
             </div>`;
           }).join('')}
         </div>

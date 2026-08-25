@@ -414,6 +414,23 @@ button.brand-logo-wrap:hover .brand-logo-img {
   margin-top: 8px;
 }
 
+.strand-soon-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  vertical-align: middle;
+  border-radius: 999px;
+  background: #f4ead0;
+  color: #7a5a12;
+  border: 1px solid #e4d19a;
+}
+
+.card--coming-soon {
+  opacity: 0.92;
+}
+
 .panel--empty-strand {
   text-align: center;
   max-width: 36rem;
