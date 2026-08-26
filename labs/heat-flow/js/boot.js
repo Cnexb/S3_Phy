@@ -1,4 +1,4 @@
-import { createHeatFlowLab } from './lab.js?v=41';
+import { createHeatFlowLab } from './lab.js?v=43';
 import { createT, getLang, hubLangToLocal, initLangFromUrl, setLang } from './i18n.js';
 
 const root = document.getElementById('app');

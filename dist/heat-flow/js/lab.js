@@ -403,9 +403,9 @@ export function createHeatFlowLab(t, options = {}) {
     flowArrow.hidden = noHeatFlow;
     flowArrow.textContent = reverseFlow ? '←' : '→';
     renderFlowText(noHeatFlow);
-    query('[data-readout="final"]').innerHTML = phase === 'equilibrium'
-      ? `T<sub>f</sub> = ${format(equilibrium)} °C`
-      : `T<sub>f</sub> = ?`;
+    query('[data-readout="final"]').textContent = phase === 'equilibrium'
+      ? `= ${format(equilibrium)} °C`
+      : '= ?';
     query('[data-readout="time"]').textContent = `${format(elapsed)} s`;
 
     const contactButton = query('.hf-actions [data-action="contact"]');

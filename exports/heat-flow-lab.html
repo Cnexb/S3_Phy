@@ -1818,7 +1818,7 @@ html:fullscreen .hf-layout { min-height: 100%; }
       flowArrow.hidden = noHeatFlow;
       flowArrow.textContent = reverseFlow ? "\u2190" : "\u2192";
       renderFlowText(noHeatFlow);
-      query('[data-readout="final"]').innerHTML = phase === "equilibrium" ? `T<sub>f</sub> = ${format(equilibrium)} \xB0C` : `T<sub>f</sub> = ?`;
+      query('[data-readout="final"]').textContent = phase === "equilibrium" ? `= ${format(equilibrium)} \xB0C` : "= ?";
       query('[data-readout="time"]').textContent = `${format(elapsed)} s`;
       const contactButton = query('.hf-actions [data-action="contact"]');
       const pauseButton = query('[data-action="pause"]');
@@ -2020,8 +2020,8 @@ html:fullscreen .hf-layout { min-height: 100%; }
       massTemperaturePreset: "Preset: hot 2 kg at 80\xB0C \xB7 cold 1 kg at 20\xB0C",
       energyTransferred: "Energy moved",
       heatFlowRate: "Energy moving now",
-      predictedFinal: "Final temperature",
-      finalTemperatureQuestion: "Final temperature = ?",
+      predictedFinal: "Final temperature (T<sub>f</sub>)",
+      finalTemperatureQuestion: "Final temperature (T<sub>f</sub>) = ?",
       elapsed: "Time passed",
       temperatureFall: "Temperature decrease",
       temperatureRise: "Temperature increase",
@@ -2090,8 +2090,8 @@ html:fullscreen .hf-layout { min-height: 100%; }
       massTemperaturePreset: "\u9810\u8A2D\uFF1A\u9AD8\u6EAB 2 kg\u300180\xB0C \xB7 \u4F4E\u6EAB 1 kg\u300120\xB0C",
       energyTransferred: "\u5DF2\u79FB\u52D5\u7684\u71B1\u80FD",
       heatFlowRate: "\u71B1\u80FD\u73FE\u5728\u6D41\u52D5\u901F\u5EA6",
-      predictedFinal: "\u6700\u7D42\u6EAB\u5EA6",
-      finalTemperatureQuestion: "\u6700\u7D42\u6EAB\u5EA6 = ?",
+      predictedFinal: "\u6700\u7D42\u6EAB\u5EA6 (T<sub>f</sub>)",
+      finalTemperatureQuestion: "\u6700\u7D42\u6EAB\u5EA6 (T<sub>f</sub>) = ?",
       elapsed: "\u7D93\u904E\u6642\u9593",
       temperatureFall: "\u6EAB\u5EA6\u4E0B\u964D",
       temperatureRise: "\u6EAB\u5EA6\u4E0A\u5347",
