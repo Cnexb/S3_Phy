@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-c6uGYxzc.js";import"./index-DudlQnP0.js";function i(t){return e(t,{slug:"boiling-water",titleKey:"tools.boilingWater.title",className:"tool-boiling-water",extraParams:()=>"&v=18"})}export{i as createBoilingWaterLab};

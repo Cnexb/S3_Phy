@@ -21,13 +21,28 @@ export function mountFoundationsHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.foundations.section'));
   let shell = null;
   let el = { main: null };
+  let destroyQuiz = null;
+
+  async function mountQuiz(panel) {
+    const { createFoundationsQuantitiesQuiz } = await import('../worksheets/foundationsQuantitiesQuiz.js');
+    const node = createFoundationsQuantitiesQuiz(t);
+    panel.appendChild(node);
+    destroyQuiz = node._foundationsQuantitiesQuizCleanup || null;
+  }
 
   function renderMain() {
     if (!el.main) return;
 
+    destroyQuiz?.();
+    destroyQuiz = null;
+
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
+    } else if (section === 'quiz') {
+      el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
+      const panel = el.main.querySelector('.panel--quiz-embed');
+      void mountQuiz(panel);
     } else {
       el.main.innerHTML = `
         <section class="panel">
@@ -96,6 +111,7 @@ export function mountFoundationsHub(root) {
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
+    destroyQuiz?.();
     shell?.destroy();
   };
 }

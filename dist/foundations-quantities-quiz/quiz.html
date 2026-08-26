@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>S3 · Foundations · Quantities and units quiz</title>
+<link rel="stylesheet" href="../shared/s3phy-tokens.css">
+<link rel="stylesheet" href="../shared/s3phy-embed.css">
+<link rel="stylesheet" href="../shared/quiz-shell.css">
+<script src="../shared/s3phy-embed-init.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        background: "#f7f9fb", secondary: "#006d37", "tertiary-fixed": "#ffdad7",
+        primary: "#004e9f", "outline-variant": "#c1c6d5", "on-secondary": "#ffffff",
+        "tertiary-container": "#c9242c", "primary-fixed": "#d7e3ff",
+        "on-background": "#191c1e", "surface-variant": "#e0e3e5",
+        surface: "#f7f9fb", "on-surface-variant": "#414753", "on-tertiary": "#ffffff",
+        "on-surface": "#191c1e", "surface-container-low": "#f2f4f6",
+        "surface-container-lowest": "#ffffff", "surface-container-high": "#e6e8ea",
+        "on-primary": "#ffffff", tertiary: "#a50018",
+        "primary-container": "#0066cc", "on-primary-container": "#dfe8ff",
+        outline: "#727784", "secondary-fixed-dim": "#4ae183"
+      },
+      borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+      spacing: { "container-max": "1200px" },
+      fontFamily: {
+        "headline-lg": ["Inter", "sans-serif"], "body-md": ["Inter", "sans-serif"], "label-bold": ["Inter", "sans-serif"], "body-sm": ["Inter", "sans-serif"],
+        "headline-lg-mobile": ["Inter", "sans-serif"]
+      },
+      fontSize: {
+        "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }],
+        "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+        "body-md": ["16px", { lineHeight: "24px" }],
+        "body-sm": ["14px", { lineHeight: "20px" }],
+        "label-bold": ["14px", { lineHeight: "18px", fontWeight: "600" }]
+      }
+    }
+  }
+};
+</script>
+<style>
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.shiny-progress-bar::after {
+  content: ""; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shine 2s infinite;
+}
+@keyframes shine { 100% { left: 100%; } }
+.split-word {
+  display: inline-block; opacity: 0; transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal .split-word { opacity: 1; transform: translateY(0); }
+.magnet-link { transition: transform 0.2s ease-out; }
+.true-focus-active .focus-target { filter: blur(0); opacity: 1; z-index: 10; }
+.true-focus-active .focus-dim { filter: blur(8px); opacity: 0.4; pointer-events: none; }
+.q-block {
+  opacity: 0; transform: translateY(1rem);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.q-block.q-visible { opacity: 1; transform: translateY(0); }
+.quiz-fig img {
+  display: block; width: 100%; max-height: 280px; object-fit: contain;
+  border-radius: 0.75rem; background: #f7f9fb;
+}
+.summary-panel[hidden] { display: none !important; }
+#settings-panel { transition: opacity 0.35s ease, transform 0.35s ease; }
+#quiz-layout.settings-collapsed #settings-panel { display: none; }
+#quiz-layout.settings-collapsed { grid-template-columns: 1fr !important; }
+.settings-toggle-btn { transition: transform 0.2s, border-color 0.2s; }
+.settings-toggle-btn:hover { transform: scale(1.02); }
+#quiz-pdf-sheet { display: none; }
+.quiz-bank-summary .bank-available {
+  font-size: 1.25rem; font-weight: 700; color: #004e9f; line-height: 1.3;
+}
+.quiz-bank-matrix {
+  width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 0.5rem;
+}
+.quiz-bank-matrix th, .quiz-bank-matrix td {
+  border: 1px solid rgba(193, 198, 213, 0.5); padding: 0.35rem 0.5rem; text-align: center;
+}
+.quiz-bank-matrix th { background: rgba(242, 244, 246, 0.9); font-weight: 600; }
+.quiz-bank-matrix td:first-child, .quiz-bank-matrix th:first-child { text-align: left; max-width: 9rem; }
+.quiz-bank-matrix .cell-zero { color: #727784; }
+.quiz-bank-matrix .cell-hit { font-weight: 700; color: #004e9f; }
+@media print {
+  html, body {
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  body > *:not(#quiz-pdf-sheet) {
+    display: none !important;
+  }
+  #quiz-pdf-sheet {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  #quiz-pdf-sheet * {
+    visibility: visible !important;
+  }
+  #quiz-pdf-sheet .export-q {
+    page-break-inside: avoid;
+    break-inside: avoid-page;
+    margin-bottom: 1rem;
+  }
+  #quiz-pdf-sheet .export-fig img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+</style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen selection:bg-primary-fixed">
+
+<main class="max-w-container-max mx-auto px-4 md:px-6 py-4 md:py-6 pb-12 grid grid-cols-1 lg:grid-cols-[minmax(280px,360px)_1fr] gap-6 items-start" id="quiz-layout">
+
+<aside class="bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant/30 shadow-lg lg:sticky lg:top-2" id="settings-panel">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-4" data-i18n="hSettings">Worksheet settings</h2>
+<div class="quiz-bank-summary mb-5 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/25 text-body-sm" id="quiz-bank-summary" aria-live="polite"></div>
+<label class="block text-body-sm font-label-bold text-on-surface-variant mb-2" data-i18n="lblTypes">Topics</label>
+<div class="space-y-2 mb-4" id="quiz-type-checks"></div>
+<label class="block text-body-sm font-label-bold text-on-surface-variant mb-1" for="quiz-num-count" data-i18n="lblCount">Number of questions (1–50)</label>
+<input class="w-full mb-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" id="quiz-num-count" max="50" min="1" type="number" value="5"/>
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-bold shadow-md hover:opacity-90 transition-opacity mb-6" id="btn-generate" type="button" data-i18n="btnGenerate">Generate questions</button>
+<h3 class="font-label-bold text-on-surface mb-2" data-i18n="hExport">Export</h3>
+<p class="text-body-sm text-on-surface-variant mb-3" data-i18n="txtExportHint">Word: .doc for Microsoft Word. Use Print → Save as PDF for a PDF copy.</p>
+<div class="flex flex-col gap-2">
+<button class="py-2.5 px-4 rounded-xl border border-outline-variant/40 bg-surface font-label-bold text-body-sm hover:bg-surface-container-low" id="btn-doc-q" type="button" data-i18n="btnDocQ">Word — Questions</button>
+<button class="py-2.5 px-4 rounded-xl border border-outline-variant/40 bg-surface font-label-bold text-body-sm hover:bg-surface-container-low" id="btn-doc-a" type="button" data-i18n="btnDocA">Word — Answers</button>
+<button class="py-2.5 px-4 rounded-xl border border-outline-variant/40 bg-surface font-label-bold text-body-sm hover:bg-surface-container-low" id="btn-print" type="button" data-i18n="btnPrint">Print / Save as PDF</button>
+</div>
+</aside>
+
+<div class="min-w-0 space-y-4">
+<div class="flex flex-wrap items-center justify-between gap-3 focus-dim">
+<div class="min-w-0 flex-1">
+<p class="font-label-bold text-primary text-body-sm mb-1">S3 · Foundations · Quantities and units</p>
+<p class="font-label-bold text-on-surface-variant text-body-sm" id="quiz-progress-text">No session yet</p>
+<div class="h-2.5 w-full max-w-md mt-2 bg-surface-container-high rounded-full relative overflow-hidden">
+<div class="shiny-progress-bar absolute left-0 top-0 h-full bg-primary-container rounded-full transition-all duration-500" id="quiz-progress-bar" style="width:0%"></div>
+</div>
+</div>
+<button class="settings-toggle-btn flex items-center gap-2 px-4 py-2 rounded-full border border-outline-variant/40 bg-surface-container-lowest font-label-bold text-body-sm text-on-surface-variant hover:text-primary shrink-0" id="btn-toggle-settings" type="button" aria-controls="settings-panel" aria-expanded="true">
+<span class="material-symbols-outlined text-lg" id="settings-toggle-icon">chevron_left</span>
+<span data-i18n="hideSettings" data-label-hide="Hide settings" data-label-show="Show settings" id="settings-toggle-label">Hide settings</span>
+</button>
+</div>
+
+<section class="bg-surface-container-lowest p-6 md:p-10 rounded-[2rem] shadow-lg border border-outline-variant/30 min-h-[480px] focus-target transition-all duration-500 relative overflow-hidden" id="quiz-container">
+<div class="absolute -bottom-20 -right-20 w-64 h-64 bg-primary-fixed/20 blur-[100px] rounded-full pointer-events-none"></div>
+<div class="absolute -top-20 -left-20 w-48 h-48 bg-secondary-fixed-dim/10 blur-[80px] rounded-full pointer-events-none"></div>
+<div class="relative z-[1]">
+<div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 split-text-target" id="page-title" data-i18n="hPractice">On-screen practice</h2>
+</div>
+<button class="py-2.5 px-5 rounded-full border border-outline-variant/30 bg-surface font-label-bold text-body-sm hover:border-primary hover:text-primary transition-colors" id="btn-summary" type="button" data-i18n="btnSummary">Session summary</button>
+</div>
+<div class="summary-panel mb-6 p-5 rounded-2xl bg-surface-container-low border border-outline-variant/25" hidden id="summary-panel" role="region" aria-live="polite"></div>
+<div id="quiz-area" class="quiz-empty text-center text-on-surface-variant py-12 text-body-sm">Generate questions first.</div>
+</div>
+</section>
+</div>
+</main>
+
+<div aria-hidden="true" id="quiz-pdf-sheet"></div>
+<script type="module">
+  const showLoadError = (err) => {
+    const msg = String(err?.message || err);
+    const box = document.getElementById("quiz-bank-summary");
+    if (box) {
+      box.innerHTML = `
+        <p class="font-label-bold text-tertiary mb-1">Quiz failed to load</p>
+        <p class="text-body-sm text-on-surface-variant">${msg.replace(/</g, "&lt;")}</p>
+        <p class="text-body-sm text-on-surface-variant mt-2">Try <strong>Ctrl+F5</strong> (hard refresh).</p>`;
+    }
+    console.error("Quiz module load failed:", err);
+  };
+  import("./js/quizApp.js?v=20260826a").catch(showLoadError);
+</script>
+</body>
+</html>

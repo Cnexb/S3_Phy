@@ -1,1 +1,0 @@
-import{c as r}from"./createLabIframe-D9HCpPXj.js";import"./index-Dul0mlIo.js";function o(a){return r(a,{slug:"diffraction-grating-compare",titleKey:"tools.diffractionGratingCompare.title",className:"tool-diffraction-grating-compare-lab",extraParams:()=>"&v=20260722_diffraction_compare_v2"})}export{o as createDiffractionGratingCompareLab};
