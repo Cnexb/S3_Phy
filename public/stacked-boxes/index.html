@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stacked Boxes Laboratory (HKDSE Physics)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap");
+
+    :root {
+      --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      --s3-font-display: "Montserrat", "Inter", system-ui, sans-serif;
+      --tab-accent: #6366f1;
+      --tab-accent-glow: rgba(99, 102, 241, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.82);
+      --force-weight: #000000;
+      --force-normal: #7c3aed;
+      --force-applied: #f97316;
+      --force-friction: #f43f5e;
+    }
+
+    html { scrollbar-gutter: stable; }
+
+    body {
+      font-family: "Plus Jakarta Sans", var(--s3-font, sans-serif);
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    .mono { font-family: "JetBrains Mono", monospace; }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+    }
+
+    .live-value {
+      color: var(--tab-accent);
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 700;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+    .tab-active {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--tab-accent) 85%, #000) 0%, var(--tab-accent) 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 20px -2px var(--tab-accent-glow);
+      border-color: color-mix(in srgb, var(--tab-accent) 50%, transparent);
+    }
+
+    .lang-active {
+      background: linear-gradient(135deg, #334155 0%, #475569 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 10px -2px rgba(71, 85, 105, 0.5);
+    }
+
+    .scen-btn.text-white i,
+    .scen-btn.text-white svg { color: #4f46e5 !important; }
+
+    .cdn-warning {
+      background: linear-gradient(90deg, #b45309, #d97706);
+      color: #fffbeb;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px 12px;
+    }
+
+    .fbd-svg text {
+      font-family: "Plus Jakarta Sans", sans-serif;
+      user-select: none;
+    }
+
+    #sim-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-ping, .animate-pulse { animation: none !important; }
+    }
+
+    body.lab-fs header,
+    body.lab-fs footer,
+    body.lab-fs #cdn-warning,
+    body.lab-fs .deco-blob {
+      display: none !important;
+    }
+    body.lab-fs {
+      overflow: hidden;
+    }
+    body.lab-fs main {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+    body.lab-fs #lab-stage,
+    #lab-stage:fullscreen,
+    #lab-stage:-webkit-full-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      box-sizing: border-box;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 16px 20px;
+      background: #f8fafc;
+      display: grid !important;
+      grid-template-columns: minmax(260px, 3fr) minmax(0, 7fr) !important;
+      grid-template-rows: auto !important;
+      gap: 1.5rem;
+      align-items: stretch;
+      align-content: center;
+    }
+    body.lab-fs #lab-stage > section,
+    #lab-stage:fullscreen > section,
+    #lab-stage:-webkit-full-screen > section {
+      height: auto;
+      min-height: 0;
+      grid-column: auto !important;
+      grid-row: 1 !important;
+    }
+    body.lab-fs #lab-stage > section.order-2,
+    #lab-stage:fullscreen > section.order-2,
+    #lab-stage:-webkit-full-screen > section.order-2 { order: 1 !important; }
+    body.lab-fs #lab-stage > section.order-1,
+    #lab-stage:fullscreen > section.order-1,
+    #lab-stage:-webkit-full-screen > section.order-1 { order: 2 !important; }
+    body.lab-fs #lab-stage > section > .glass-panel,
+    #lab-stage:fullscreen > section > .glass-panel,
+    #lab-stage:-webkit-full-screen > section > .glass-panel {
+      height: 100%;
+    }
+    body.lab-fs .canvas-container,
+    #lab-stage:fullscreen .canvas-container,
+    #lab-stage:-webkit-full-screen .canvas-container {
+      height: auto !important;
+      flex: 1 1 auto;
+      min-height: 12rem;
+    }
+
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+    body.embed-mode {
+      min-height: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    body.embed-mode #cdn-warning,
+    body.embed-mode .deco-blob,
+    body.embed-mode footer {
+      display: none !important;
+    }
+    body.embed-mode header {
+      display: none !important;
+    }
+    body.embed-mode main {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-width: none;
+      margin: 0;
+      padding: 8px;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    body.embed-mode #lab-stage {
+      height: 100%;
+      min-height: 0;
+      align-content: stretch;
+    }
+    body.embed-mode #lab-stage > section {
+      min-height: 0;
+      height: 100%;
+    }
+    body.embed-mode #lab-stage > section > .glass-panel {
+      height: 100%;
+    }
+    body.embed-mode .canvas-container {
+      height: auto !important;
+      flex: 1 1 auto;
+      min-height: 10rem;
+    }
+  </style>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('embed') === '1' || params.get('embed') === 'true') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+  </script>
+</head>
+<body class="min-h-screen flex flex-col">
+  <div id="cdn-warning" class="cdn-warning hidden" role="alert" data-i18n="cdn.warning">
+    Some CDN resources failed to load. Please connect to the internet and refresh.
+  </div>
+
+  <div class="deco-blob absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-60" style="background: var(--tab-accent-glow);"></div>
+  <div class="deco-blob absolute top-0 right-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-2.5 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 text-indigo-400 shadow-inner">
+          <i data-lucide="boxes" class="w-7 h-7 text-indigo-400"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-white" data-i18n="app.title">Stacked Boxes Laboratory</h1>
+            <span class="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded text-[10px] font-bold tracking-wider uppercase">HKDSE Physics</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-0.5" data-i18n="app.subtitle">HKDSE Physics · Newton’s laws · Stacked boxes</p>
+        </div>
+      </div>
+      <div class="flex bg-slate-900/95 p-1 rounded-xl border border-slate-800/80">
+        <button onclick="setLanguage('en')" id="lang-en" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active">EN</button>
+        <button onclick="setLanguage('zh-Hant')" id="lang-zh" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all duration-200">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col gap-6">
+    <div id="lab-stage" class="grid grid-cols-1 lg:grid-cols-10 gap-6 lg:items-stretch">
+
+      <!-- Left 30%: force diagrams -->
+      <section class="order-2 lg:order-1 lg:col-span-3 flex flex-col gap-4">
+        <div class="glass-panel rounded-2xl p-5 flex flex-col gap-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-ping"></span>
+              <h3 class="font-bold text-sm tracking-wide text-slate-800" data-i18n="fbd.title">Force diagrams</h3>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-2">
+              <div class="flex items-center justify-between px-1 pb-1">
+                <span class="text-base font-bold text-slate-700" data-i18n="fbd.boxA">Box A</span>
+              </div>
+              <svg class="fbd-svg w-full h-[180px]" viewBox="0 0 268 180" aria-label="Free-body diagram of box A">
+                <defs>
+                  <marker id="ah-n" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0ea5e9"/></marker>
+                  <marker id="ah-ng" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/></marker>
+                  <marker id="ah-w" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#000000"/></marker>
+                  <marker id="ah-f" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e"/></marker>
+                </defs>
+                <rect x="80" y="62" width="80" height="48" rx="6" fill="#10b981" stroke="#047857" stroke-width="2"/>
+                <g id="fbd-a-nb">
+                  <line x1="134" y1="110" x2="134" y2="18" stroke="#0ea5e9" stroke-width="2.4" marker-end="url(#ah-n)"/>
+                  <text x="134" y="12" text-anchor="start" fill="#0ea5e9" font-size="15" font-weight="800">N (from B)</text>
+                </g>
+                <g id="fbd-a-nf" style="display:none">
+                  <line x1="134" y1="110" x2="134" y2="18" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#ah-ng)"/>
+                  <text x="134" y="12" text-anchor="start" fill="#7c3aed" font-size="15" font-weight="800">N (from floor)</text>
+                </g>
+                <line x1="120" y1="86" x2="120" y2="154" stroke="#000000" stroke-width="2.4" marker-end="url(#ah-w)"/>
+                <text x="120" y="176" text-anchor="middle" fill="#000000" font-size="15" font-weight="800">W</text>
+                <g id="fbd-fa">
+                  <line x1="136" y1="110" x2="214" y2="110" stroke="#f43f5e" stroke-width="2.4" marker-end="url(#ah-f)"/>
+                  <text x="228" y="116" text-anchor="middle" fill="#f43f5e" font-size="15" font-weight="800">f</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-2">
+              <div class="flex items-center justify-between px-1 pb-1">
+                <span class="text-base font-bold text-slate-700" data-i18n="fbd.boxB">Box B</span>
+              </div>
+              <svg class="fbd-svg w-full h-[214px]" viewBox="0 0 252 214" aria-label="Free-body diagram of box B">
+                <defs>
+                  <marker id="bh-n" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"/></marker>
+                  <marker id="bh-ng" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7c3aed"/></marker>
+                  <marker id="bh-w" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#000000"/></marker>
+                  <marker id="bh-f" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e"/></marker>
+                  <marker id="bh-a" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#f97316"/></marker>
+                </defs>
+                <rect x="70" y="78" width="100" height="52" rx="6" fill="#0ea5e9" stroke="#0369a1" stroke-width="2"/>
+                <g id="fbd-b-na">
+                  <line x1="104" y1="22" x2="104" y2="74" stroke="#10b981" stroke-width="2.4" marker-end="url(#bh-n)"/>
+                  <text x="94" y="14" text-anchor="end" fill="#10b981" font-size="15" font-weight="800">N (from </text>
+                  <text x="104" y="14" text-anchor="middle" fill="#10b981" font-size="15" font-weight="800">A)</text>
+                </g>
+                <line x1="134" y1="130" x2="134" y2="24" stroke="#7c3aed" stroke-width="2.4" marker-end="url(#bh-ng)"/>
+                <text x="134" y="16" text-anchor="start" fill="#7c3aed" font-size="15" font-weight="800">N (from floor)</text>
+                <line x1="120" y1="104" x2="120" y2="174" stroke="#000000" stroke-width="2.4" marker-end="url(#bh-w)"/>
+                <text x="120" y="196" text-anchor="middle" fill="#000000" font-size="15" font-weight="800">W</text>
+                <line x1="170" y1="104" x2="226" y2="104" stroke="#f97316" stroke-width="2.6" marker-end="url(#bh-a)"/>
+                <text x="238" y="110" text-anchor="middle" fill="#f97316" font-size="15" font-weight="800">F</text>
+                <g id="fbd-fb">
+                  <line x1="100" y1="78" x2="16" y2="78" stroke="#f43f5e" stroke-width="2.4" marker-end="url(#bh-f)"/>
+                  <text x="2" y="84" text-anchor="middle" fill="#f43f5e" font-size="15" font-weight="800">f</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right 70%: animation -->
+      <section class="order-1 lg:order-2 lg:col-span-7 flex flex-col lg:h-full min-h-0">
+        <div class="glass-panel rounded-2xl p-5 flex flex-col relative overflow-hidden lg:h-full min-h-0">
+          <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-3 gap-3 flex-wrap">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-sky-500 animate-ping"></span>
+              <h3 class="font-bold text-sm tracking-wide text-slate-800" data-i18n="sim.title">Stacked-box motion</h3>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap justify-end">
+              <button type="button" id="fullscreen-btn" onclick="toggleFullscreen()" class="px-3.5 py-1.5 bg-slate-300 hover:bg-slate-400 text-black rounded-lg text-xs font-bold transition-all shadow-md" data-i18n="common.fullscreen">Full screen</button>
+              <button type="button" id="friction-btn" onclick="toggleFriction()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-md">
+                <span id="friction-lbl" data-i18n="situations.remove">Remove friction between A and B</span>
+              </button>
+              <button type="button" id="start-btn" onclick="toggleStart()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1 shadow-md">
+                <i data-lucide="play" class="w-3.5 h-3.5" id="start-icon"></i>
+                <span id="start-lbl" data-i18n="common.start">Start</span>
+              </button>
+              <button type="button" onclick="resetSim()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-all border border-slate-700" data-i18n="common.reset">Reset</button>
+            </div>
+          </div>
+          <div class="relative bg-white rounded-xl overflow-hidden border border-slate-200 h-[13.5rem] lg:h-auto lg:flex-1 lg:min-h-0 canvas-container">
+            <canvas id="sim-canvas" aria-label="Animation of boxes A and B"></canvas>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const M_A = 5;
+    const M_B = 10;
+    const F_EXT = 15;
+    const G = 10;
+    const A_FRICTION = F_EXT / (M_A + M_B);
+    const A_SMOOTH_A = 0;
+    const A_SMOOTH_B = F_EXT / M_B;
+    const F_FRICTION = M_A * A_FRICTION;
+    const SCALE = 52;
+    const TIME_SCALE = 0.6;
+
+    function hubLangToLocal(lang) {
+      if (lang === 'zh-Hant' || lang === 'zhHant' || lang === 'zh') return 'zh-Hant';
+      return 'en';
+    }
+
+    (function initLangFromUrl() {
+      const params = new URLSearchParams(location.search);
+      const langParam = params.get('lang');
+      if (langParam) {
+        try { localStorage.setItem('sb-lang', hubLangToLocal(langParam)); } catch (e) { /* ignore */ }
+      }
+    })();
+
+    let currentLang = localStorage.getItem('sb-lang') || 'en';
+    currentLang = hubLangToLocal(currentLang);
+    let situation = 'friction';
+    let runState = 'idle';
+    let startStamp = 0;
+    let elapsed = 0;
+    let rafId = 0;
+    let canvas, ctx, cssW = 800, cssH = 420;
+    let xA = 0, xB = 0, yA = 0, startXA = 0, startXB = 0, aW = 0, aH = 0, bW = 0, bH = 0, floorY = 0;
+    let fallStart = null;
+    let aLanded = false;
+    let bStopped = false;
+
+    const I18N = {
+      en: {
+        app: {
+          pageTitle: 'Stacked Boxes Laboratory (HKDSE Physics)',
+          title: 'Stacked Boxes Laboratory',
+          subtitle: 'HKDSE Physics · Newton’s laws · Stacked boxes',
+          footer: '© 2026 Stacked Boxes Laboratory. Designed for HKDSE Physics classrooms.',
+          footerSuite: 'Form 3 to Form 6 Core Physics Suite'
+        },
+        cdn: { warning: 'Some CDN resources failed to load. Please connect to the internet and refresh.' },
+        common: { start: 'Start', pause: 'Pause', resume: 'Resume', reset: 'Reset', fullscreen: 'Full screen', exit: 'Exit' },
+        situations: {
+          remove: 'Remove friction between A and B',
+          restore: 'Restore friction between A and B'
+        },
+        fbd: {
+          title: 'Force diagrams',
+          boxA: 'Box A',
+          boxB: 'Box B'
+        },
+        legend: {
+          weight: 'Weight',
+          normal: 'Normal',
+          applied: 'Applied 15 N',
+          friction: 'Friction'
+        },
+        sim: {
+          title: 'Stacked-box motion',
+          smoothFloor: 'Smooth floor',
+          boxA: 'Box A',
+          boxB: 'Box B'
+        },
+        concept: {
+          friction: 'Enough friction: A and B accelerate together. a = 1 m s⁻². Friction on A is 5 N right; on B, 5 N left.',
+          smooth: 'Smooth contact: no horizontal force on A, so a_A = 0. Only B is pushed. a_B = 1.5 m s⁻².'
+        }
+      },
+      'zh-Hant': {
+        app: {
+          pageTitle: '疊箱實驗室（HKDSE 物理）',
+          title: '疊箱實驗室',
+          subtitle: 'HKDSE 物理 · 牛頓定律 · 疊放箱子',
+          footer: '© 2026 疊箱實驗室。為 HKDSE 物理課堂設計。',
+          footerSuite: '中三至中六核心物理套件'
+        },
+        cdn: { warning: '部分資源未能載入。請連接網絡後重新整理。' },
+        common: { start: '開始', pause: '暫停', resume: '繼續', reset: '重置', fullscreen: '全螢幕', exit: '退出' },
+        situations: {
+          remove: '移除 A 與 B 之間的摩擦',
+          restore: '恢復 A 與 B 之間的摩擦'
+        },
+        fbd: {
+          title: '受力圖',
+          boxA: '箱子 A',
+          boxB: '箱子 B'
+        },
+        legend: {
+          weight: '重量',
+          normal: '法向力',
+          applied: '外力 15 N',
+          friction: '摩擦力'
+        },
+        sim: {
+          title: '疊箱運動',
+          smoothFloor: '光滑地面',
+          boxA: 'Box A',
+          boxB: 'Box B'
+        },
+        concept: {
+          friction: '摩擦力足夠：A 與 B 一齊加速，a = 1 m s⁻²。A 受 5 N 向右，B 受 5 N 向左。',
+          smooth: '接觸面光滑：A 沒有水平力，a_A = 0。只有 B 被推，a_B = 1.5 m s⁻²。'
+        }
+      }
+    };
+
+    function t(key) {
+      const parts = key.split('.');
+      let val = I18N[currentLang];
+      for (const p of parts) {
+        if (!val || val[p] === undefined) return key;
+        val = val[p];
+      }
+      return typeof val === 'string' ? val : key;
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('sb-lang', lang);
+      document.documentElement.lang = lang === 'zh-Hant' ? 'zh-Hant' : 'en';
+      document.title = t('app.pageTitle');
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        if (el.id === 'start-lbl' || el.id === 'friction-lbl' || el.id === 'fullscreen-btn') return;
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      const enBtn = document.getElementById('lang-en');
+      const zhBtn = document.getElementById('lang-zh');
+      if (enBtn) enBtn.className = lang === 'en'
+        ? 'lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active'
+        : 'lang-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all duration-200';
+      if (zhBtn) zhBtn.className = lang === 'zh-Hant'
+        ? 'lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active'
+        : 'lang-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all duration-200';
+      updateReadouts();
+      updateFrictionToggle();
+      updateStartButton();
+      const fsBtn = document.getElementById('fullscreen-btn');
+      if (fsBtn) fsBtn.textContent = t(isLabFullscreen() ? 'common.exit' : 'common.fullscreen');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function setLanguage(lang) {
+      applyLanguage(lang);
+    }
+
+    function setFbd(id, on) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = on ? '' : 'none';
+    }
+
+    function syncFbd() {
+      const hasF = situation === 'friction';
+      const started = runState === 'running' || runState === 'paused';
+      setFbd('fbd-fa', hasF && started);
+      setFbd('fbd-fb', hasF && started);
+
+      if (hasF || aStillOnB()) {
+        setFbd('fbd-a-nb', true);
+        setFbd('fbd-b-na', true);
+        setFbd('fbd-a-nf', false);
+        return;
+      }
+
+      setFbd('fbd-a-nb', false);
+      setFbd('fbd-b-na', false);
+      setFbd('fbd-a-nf', aLanded);
+    }
+
+    function updateReadouts() {
+      syncFbd();
+    }
+
+    function updateFrictionToggle() {
+      const lbl = document.getElementById('friction-lbl');
+      const btn = document.getElementById('friction-btn');
+      if (!lbl) return;
+      lbl.textContent = t(situation === 'friction' ? 'situations.remove' : 'situations.restore');
+      if (btn) {
+        btn.className = situation === 'friction'
+          ? 'px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-md'
+          : 'px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all shadow-md';
+      }
+    }
+
+    function fsElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    function isLabFullscreen() {
+      const stage = document.getElementById('lab-stage');
+      return fsElement() === stage || document.body.classList.contains('lab-fs');
+    }
+
+    function setLabFullscreen(on) {
+      document.body.classList.toggle('lab-fs', on);
+      const btn = document.getElementById('fullscreen-btn');
+      if (btn) btn.textContent = t(on ? 'common.exit' : 'common.fullscreen');
+      requestAnimationFrame(() => onStageResize());
+    }
+
+    function toggleFullscreen() {
+      const stage = document.getElementById('lab-stage');
+      if (!stage) return;
+      if (fsElement() === stage) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+        return;
+      }
+      if (fsElement()) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+      }
+      const req = stage.requestFullscreen || stage.webkitRequestFullscreen;
+      if (req) {
+        const p = req.call(stage);
+        if (p && typeof p.catch === 'function') {
+          p.catch(() => setLabFullscreen(!document.body.classList.contains('lab-fs')));
+        }
+      } else {
+        setLabFullscreen(!document.body.classList.contains('lab-fs'));
+      }
+    }
+
+    function updateFullscreenChrome() {
+      const stage = document.getElementById('lab-stage');
+      const on = fsElement() === stage;
+      document.body.classList.toggle('lab-fs', on);
+      const btn = document.getElementById('fullscreen-btn');
+      if (btn) btn.textContent = t(on || document.body.classList.contains('lab-fs') ? 'common.exit' : 'common.fullscreen');
+      requestAnimationFrame(() => onStageResize());
+    }
+
+    function toggleFriction() {
+      setSituation(situation === 'friction' ? 'smooth' : 'friction');
+    }
+
+    function setSituation(next) {
+      situation = next;
+      resetSim();
+      updateFrictionToggle();
+      updateReadouts();
+    }
+
+    function layoutBoxes() {
+      floorY = cssH - 38;
+      bW = Math.min(460, cssW * 0.52) * 0.7;
+      bH = Math.min(96, Math.max(70, cssH * 0.4));
+      aW = bW * 0.46;
+      aH = bH * 0.72;
+      startXB = Math.max(36, cssW * 0.07);
+      startXA = startXB + (bW - aW) / 2;
+      if (runState === 'idle') {
+        xB = startXB;
+        xA = startXA;
+        yA = supportedYA();
+        fallStart = null;
+        aLanded = false;
+        bStopped = false;
+      }
+    }
+
+    function supportedYA() {
+      return floorY - bH - aH;
+    }
+
+    function landedYA() {
+      return floorY - aH;
+    }
+
+    function aStillOnB() {
+      return xB < xA + aW && (xB + bW) > xA;
+    }
+
+    function setupCanvas() {
+      canvas = document.getElementById('sim-canvas');
+      if (!canvas) return;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      cssW = Math.max(320, rect.width);
+      cssH = Math.max(180, rect.height);
+      canvas.width = Math.floor(cssW * dpr);
+      canvas.height = Math.floor(cssH * dpr);
+      ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      layoutBoxes();
+      if (runState === 'idle') {
+        xB = startXB;
+        xA = startXA;
+        yA = supportedYA();
+      }
+    }
+
+    function updatePositions() {
+      if (situation === 'friction') {
+        const s = 0.5 * A_FRICTION * elapsed * elapsed;
+        xB = startXB + s * SCALE;
+        xA = startXA + s * SCALE;
+        yA = supportedYA();
+        if (xB > cssW) resetSim();
+        return;
+      }
+
+      const s = 0.5 * A_SMOOTH_B * elapsed * elapsed;
+      xB = startXB + s * SCALE;
+      xA = startXA;
+
+      if (!aStillOnB()) {
+        if (fallStart === null) fallStart = elapsed;
+        const dt = Math.max(0, elapsed - fallStart);
+        yA = supportedYA() + 0.5 * G * dt * dt * SCALE;
+        if (yA >= landedYA()) {
+          yA = landedYA();
+          aLanded = true;
+        }
+      } else {
+        yA = supportedYA();
+      }
+
+      if (xB > cssW) resetSim();
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, width) {
+      const ang = Math.atan2(y2 - y1, x2 - x1);
+      const head = 22;
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'butt';
+      const inset = head * 0.55;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2 - inset * Math.cos(ang), y2 - inset * Math.sin(ang));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - head * Math.cos(ang - 0.45), y2 - head * Math.sin(ang - 0.45));
+      ctx.lineTo(x2 - head * Math.cos(ang + 0.45), y2 - head * Math.sin(ang + 0.45));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function roundRect(x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawGlowingBox(x, y, w, h, topColor, botColor, glowColor, strokeColor) {
+      const grad = ctx.createLinearGradient(x, y, x, y + h);
+      grad.addColorStop(0, topColor);
+      grad.addColorStop(1, botColor);
+      roundRect(x, y, w, h, 8);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x + 10, y + 5);
+      ctx.lineTo(x + w - 10, y + 5);
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, cssW, cssH);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cssW, cssH);
+
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(0, floorY, cssW, cssH - floorY);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, floorY);
+      ctx.lineTo(cssW, floorY);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(100,116,139,0.45)';
+      ctx.lineWidth = 1;
+      for (let x = 10; x < cssW; x += 18) {
+        ctx.beginPath();
+        ctx.moveTo(x, floorY + 6);
+        ctx.lineTo(x - 8, floorY + 18);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '800 16px Plus Jakarta Sans, sans-serif';
+      ctx.fillText(t('sim.smoothFloor'), 16, floorY + 30);
+
+      const yB = floorY - bH;
+
+      drawGlowingBox(xB, yB, bW, bH, '#38bdf8', '#0369a1', 'rgba(14,165,233,0.75)', '#0284c7');
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 22px Plus Jakarta Sans, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(t('sim.boxB'), xB + bW / 2, yB + bH / 2 + 6);
+
+      if (aStillOnB() && situation === 'friction') {
+        ctx.strokeStyle = '#f43f5e';
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(xA + 8, yA + aH);
+        ctx.lineTo(xA + aW - 8, yA + aH);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      drawGlowingBox(xA, yA, aW, aH, '#34d399', '#059669', 'rgba(16,185,129,0.75)', '#047857');
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 22px Plus Jakarta Sans, sans-serif';
+      ctx.fillText(t('sim.boxA'), xA + aW / 2, yA + aH / 2 + 5);
+      ctx.textAlign = 'left';
+
+      const forceY = yB + bH * 0.55;
+      drawArrow(xB + bW, forceY, xB + bW + 100, forceY, '#f97316', 3.8);
+      ctx.fillStyle = '#f97316';
+      ctx.font = '800 22px Plus Jakarta Sans, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('F', xB + bW + 108, forceY + 7);
+    }
+
+    function loop(now) {
+      if (runState === 'running') {
+        elapsed = ((now - startStamp) / 1000) * TIME_SCALE;
+        updatePositions();
+      }
+      syncFbd();
+      draw();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function updateStartButton() {
+      const btn = document.getElementById('start-btn');
+      const lbl = document.getElementById('start-lbl');
+      const icon = document.getElementById('start-icon');
+      if (!btn || !lbl) return;
+      btn.disabled = runState === 'done';
+      if (runState === 'running') lbl.textContent = t('common.pause');
+      else if (runState === 'paused') lbl.textContent = t('common.resume');
+      else lbl.textContent = t('common.start');
+      if (icon) icon.setAttribute('data-lucide', runState === 'running' ? 'pause' : 'play');
+    }
+
+    function toggleStart() {
+      if (runState === 'done') return;
+      if (runState === 'idle') {
+        runState = 'running';
+        startStamp = performance.now();
+        elapsed = 0;
+      } else if (runState === 'paused') {
+        runState = 'running';
+        startStamp = performance.now() - (elapsed / TIME_SCALE) * 1000;
+      } else if (runState === 'running') {
+        runState = 'paused';
+      }
+      updateStartButton();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function resetSim() {
+      runState = 'idle';
+      elapsed = 0;
+      fallStart = null;
+      aLanded = false;
+      bStopped = false;
+      layoutBoxes();
+      xB = startXB;
+      xA = startXA;
+      yA = supportedYA();
+      updateStartButton();
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function checkCdn() {
+      const missing = [];
+      if (typeof tailwind === 'undefined') missing.push('Tailwind');
+      if (!window.lucide) missing.push('Lucide');
+      const box = document.getElementById('cdn-warning');
+      if (missing.length && box) {
+        box.classList.remove('hidden');
+        box.textContent = t('cdn.warning');
+      }
+    }
+
+    function onStageResize() {
+      const prevXB = xB - startXB;
+      const prevXA = xA - startXA;
+      setupCanvas();
+      if (runState !== 'idle') {
+        xB = startXB + prevXB;
+        xA = startXA + prevXA;
+      }
+    }
+
+    window.addEventListener('resize', onStageResize);
+    document.addEventListener('fullscreenchange', updateFullscreenChrome);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenChrome);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && document.body.classList.contains('lab-fs') && !fsElement()) {
+        setLabFullscreen(false);
+      }
+    });
+
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 's3phy:lang') {
+        setLanguage(hubLangToLocal(event.data.lang));
+      }
+    });
+
+    window.addEventListener('load', () => {
+      if (new URLSearchParams(location.search).get('embed') === '1' || window.self !== window.top) {
+        document.body.classList.add('embed-mode');
+      }
+      setupCanvas();
+      applyLanguage(currentLang);
+      updateReadouts();
+      updateStartButton();
+      if (window.lucide) lucide.createIcons();
+      checkCdn();
+      const stage = document.querySelector('.canvas-container');
+      if (stage && typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => onStageResize());
+        ro.observe(stage);
+      }
+      rafId = requestAnimationFrame(loop);
+      requestAnimationFrame(() => onStageResize());
+    });
+  </script>
+</body>
+</html>

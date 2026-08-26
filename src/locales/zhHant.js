@@ -296,6 +296,7 @@ export const zhHant = {
   'mechanics.section.empty': '力學單元內容即將推出。',
   'tools.vectorTool.title': '矢量實驗室 — 分解',
   'tools.elevatorWeight.title': '電梯 — 法向力與加速度',
+  'tools.stackedBoxes.title': '疊箱 — 牛頓定律與摩擦力',
   'tools.projectileMotion.title': '拋體運動',
   'tools.orbitalForces.title': '軌道力實驗室 — 萬有引力與向心力',
   // Gas and kinetic theory translations

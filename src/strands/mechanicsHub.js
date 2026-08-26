@@ -48,6 +48,7 @@ const MECHANICS_TOPICS = [
     titleKey: 'topic.forceIII',
     fileEn: 'force-iii-en.pdf',
     fileZh: 'force-iii-zhHant.pdf',
+    tool: 'stackedBoxes',
   },
   {
     id: 'moment',
@@ -116,12 +117,14 @@ const MECHANICS_SUMMARY_ROWS = MECHANICS_TOPICS.map((r) => {
   };
 });
 
-const TOOL_ORDER = ['vectorTool', 'elevatorWeight', 'projectileMotion', 'orbitalForces'];
+const TOOL_ORDER = ['vectorTool', 'elevatorWeight', 'stackedBoxes', 'projectileMotion', 'orbitalForces'];
 
 const TOOL_LOADERS = {
   vectorTool: () => import('../tools/vectorToolLab.js').then((m) => m.createVectorToolLab),
   elevatorWeight: () =>
     import('../tools/elevatorWeightLab.js').then((m) => m.createElevatorWeightLab),
+  stackedBoxes: () =>
+    import('../tools/stackedBoxesLab.js').then((m) => m.createStackedBoxesLab),
   projectileMotion: () =>
     import('../tools/projectileMotionLab.js').then((m) => m.createProjectileMotionLab),
   orbitalForces: () =>
@@ -132,6 +135,7 @@ function toolLabel(id) {
   const map = {
     vectorTool: 'tools.vectorTool.title',
     elevatorWeight: 'tools.elevatorWeight.title',
+    stackedBoxes: 'tools.stackedBoxes.title',
     projectileMotion: 'tools.projectileMotion.title',
     orbitalForces: 'tools.orbitalForces.title',
   };

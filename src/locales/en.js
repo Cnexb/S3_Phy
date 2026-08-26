@@ -296,6 +296,7 @@ export const en = {
   'mechanics.section.empty': 'Mechanics strand content is coming soon.',
   'tools.vectorTool.title': 'Vector lab — decomposition',
   'tools.elevatorWeight.title': 'Elevator — normal force & acceleration',
+  'tools.stackedBoxes.title': 'Stacked boxes — Newton’s laws & friction',
   'tools.projectileMotion.title': 'Projectile motion',
   'tools.orbitalForces.title': 'Orbital Forces Lab — gravity & centripetal',
   // Gas and kinetic theory translations
