@@ -272,10 +272,11 @@ export const zhHant = {
   'tools.faultyCalibration.invalidInterval': 'C<sub>u</sub> \u8207 C<sub>f</sub> \u4e0d\u53ef\u76f8\u540c\uff08\u5340\u9593\u4e0d\u53ef\u70ba\u96f6\uff09\u3002',
   // Foundations translations
   'strand.foundations.title': '物理基礎',
-  'strand.foundations.desc': '物理量、國際單位制，以及中三物理常用數學。筆記與短測驗已開放；實驗室、工作紙及閃卡即將推出。',
+  'strand.foundations.desc': '物理量、國際單位制，以及中三物理常用數學。筆記、短測驗與閃卡已開放；實驗室及工作紙即將推出。',
   'strand.foundations.subtitle': '物理基礎 — 物理量、單位與常用數學',
   'foundations.section.empty': '物理基礎單元內容即將推出。',
-  'foundations.comingSoon': '此單元的互動實驗室、工作紙及閃卡將於日後推出。',
+  'foundations.comingSoon': '此單元的互動實驗室及工作紙將於日後推出。',
+  'flashcards.introFoundations': '使用間隔重複習——難記的卡片在下一輪會更頻繁出現。涵蓋 Ch.00 物理量與單位，以及物理常用數學。',
   'topic.quantitiesUnits': '物理量與單位',
   'topic.usefulMaths': '物理中常用的數學',
   'notes.card.quantitiesUnits': 'Ch.00 物理量與單位',

@@ -272,10 +272,11 @@ export const en = {
   'tools.faultyCalibration.invalidInterval': 'C_u must differ from C_f (interval cannot be zero).',
   // Foundations translations
   'strand.foundations.title': 'Foundations',
-  'strand.foundations.desc': 'Physical quantities, SI units, and the mathematics used in S3 physics. Notes and a short quiz are ready; labs, worksheets, and flashcards are coming soon.',
+  'strand.foundations.desc': 'Physical quantities, SI units, and the mathematics used in S3 physics. Notes, a short quiz, and flashcards are ready; labs and worksheets are coming soon.',
   'strand.foundations.subtitle': 'Foundations — quantities, units, and maths for physics',
   'foundations.section.empty': 'Foundations strand content is coming soon.',
-  'foundations.comingSoon': 'Interactive labs, worksheets, and flashcards for this strand are coming soon.',
+  'foundations.comingSoon': 'Interactive labs and worksheets for this strand are coming soon.',
+  'flashcards.introFoundations': 'Study with spaced repetition — cards you find harder appear more often in later rounds. Ch.00 quantities and units, plus useful mathematics for physics.',
   'topic.quantitiesUnits': 'Quantities and units',
   'topic.usefulMaths': 'Useful mathematics in physics',
   'notes.card.quantitiesUnits': 'Ch.00 Quantities and units',

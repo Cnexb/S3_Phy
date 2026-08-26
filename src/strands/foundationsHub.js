@@ -1,6 +1,8 @@
-import { t } from '../i18n.js';
+import { t, getLang } from '../i18n.js';
 import { hydrateNoteCards } from './hubHelpers.js';
 import { mountHubShell, resolveHubSection } from '../hubShell.js';
+import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
+import { buildFoundationsDeck } from '../flashcards/flashcardDeck.js';
 
 const FOUNDATIONS_TOPICS = [
   {
@@ -17,11 +19,18 @@ const FOUNDATIONS_TOPICS = [
   },
 ];
 
+const FOUNDATIONS_DECK_OPTIONS = [
+  { value: 'all', labelKey: 'flashcards.all' },
+  { value: 'quantitiesUnits', labelKey: 'topic.quantitiesUnits' },
+  { value: 'usefulMaths', labelKey: 'topic.usefulMaths' },
+];
+
 export function mountFoundationsHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.foundations.section'));
   let shell = null;
   let el = { main: null };
   let destroyQuiz = null;
+  let destroyFlashcards = null;
 
   async function mountQuiz(panel) {
     const { createFoundationsQuantitiesQuiz } = await import('../worksheets/foundationsQuantitiesQuiz.js');
@@ -35,6 +44,8 @@ export function mountFoundationsHub(root) {
 
     destroyQuiz?.();
     destroyQuiz = null;
+    destroyFlashcards?.();
+    destroyFlashcards = null;
 
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
@@ -43,6 +54,15 @@ export function mountFoundationsHub(root) {
       el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
       const panel = el.main.querySelector('.panel--quiz-embed');
       void mountQuiz(panel);
+    } else if (section === 'flashcards') {
+      destroyFlashcards = mountFlashcardStudy(el.main, {
+        deckOptions: FOUNDATIONS_DECK_OPTIONS.map((o) => ({
+          value: o.value,
+          label: t(o.labelKey),
+        })),
+        buildDeck: (key) => buildFoundationsDeck(key, getLang()),
+        introKey: 'flashcards.introFoundations',
+      });
     } else {
       el.main.innerHTML = `
         <section class="panel">
@@ -112,6 +132,7 @@ export function mountFoundationsHub(root) {
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
     destroyQuiz?.();
+    destroyFlashcards?.();
     shell?.destroy();
   };
 }

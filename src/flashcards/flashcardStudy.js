@@ -18,6 +18,8 @@ const SUBTOPIC_LABEL_KEYS = {
   concave: 'topic.concave',
   em: 'topic.em',
   rotatingMirror: 'topic.reflection',
+  quantitiesUnits: 'topic.quantitiesUnits',
+  usefulMaths: 'topic.usefulMaths',
 };
 
 function subtopicLabel(topic) {
@@ -28,10 +30,10 @@ function subtopicLabel(topic) {
 
 /**
  * @param {HTMLElement} container
- * @param {{ deckOptions: DeckOption[], buildDeck: BuildDeckFn, initialDeck?: string }} opts
+ * @param {{ deckOptions: DeckOption[], buildDeck: BuildDeckFn, initialDeck?: string, introKey?: string }} opts
  * @returns {() => void}
  */
-export function mountFlashcardStudy(container, { deckOptions, buildDeck, initialDeck = 'all' }) {
+export function mountFlashcardStudy(container, { deckOptions, buildDeck, initialDeck = 'all', introKey = 'flashcards.intro' }) {
   let deckKey = initialDeck;
   let session = null;
   let onKeyDown = null;
@@ -39,7 +41,7 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
   container.innerHTML = `
     <section class="panel panel--flashcards">
       <h2>${t('flashcards.title')}</h2>
-      <p class="lead">${t('flashcards.intro')}</p>
+      <p class="lead">${t(introKey)}</p>
       <div class="fc-controls no-print">
         <div class="control">
           <label>${t('flashcards.deck')}</label>
