@@ -6,6 +6,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>熱能流動與熱平衡 — Heat Flow Lab</title>
   <style>
+/* S3_Phy shared design tokens — single source for Hub + iframe labs */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap");
+
+:root {
+  /* Layout */
+  --s3-content-max: min(1600px, calc(100dvw - var(--s3-vp-pad) * 2));
+  --s3-bp-sm: 768px;
+  --s3-bp-md: 1024px;
+  --s3-bp-ws: 1100px;
+  --s3-safe-top: env(safe-area-inset-top, 0px);
+  --s3-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --s3-tool-min-h: clamp(480px, calc(100dvh - var(--s3-nav-offset, 96px) - 48px - var(--s3-safe-bottom)), 1600px);
+  --s3-nav-offset: calc(var(--s3-vp-pad) + var(--s3-safe-top) + 72px + 12px);
+  --s3-panel-pad: 18px;
+  --s3-radius: 14px;
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+
+  /* Typography */
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --s3-font-display: "Montserrat", "Inter", system-ui, sans-serif;
+  --s3-font-size-base: 16px;
+  --s3-font-size-sm: 0.875rem;
+  --s3-font-size-h2: 1.15rem;
+  --s3-font-size-h1: 1.5rem;
+  --s3-line-height: 1.5;
+  --s3-font-min: 15px;
+
+  /* Hub light theme */
+  --s3-bg: #f8f9fa;
+  --s3-surface: #ffffff;
+  --s3-surface2: #f1f3f5;
+  --s3-border: #e8eaed;
+  --s3-text: #1a1c2c;
+  --s3-muted: #6b7280;
+  --s3-accent: #2563eb;
+  --s3-accent-soft: #dbeafe;
+  --s3-navy: #1a1c2c;
+
+  /* Lab chrome — light / ivory (match Hub) */
+  --s3-lab-bg: #f8f9fa;
+  --s3-lab-surface: #ffffff;
+  --s3-lab-surface2: #f1f3f5;
+  --s3-lab-border: #e8eaed;
+  --s3-lab-text: #1a1c2c;
+  --s3-lab-muted: #6b7280;
+  --s3-lab-accent: #2563eb;
+  --s3-lab-success: #16a34a;
+  --s3-lab-cyan: #0891b2;
+
+  /* Breakpoints (for reference in media queries) */
+  --s3-bp-sm: 768px;
+  --s3-bp-md: 1024px;
+  --s3-bp-ws: 1100px;
+  --s3-float-panel-w: min(440px, calc(100% - 24px));
+}
+
+
 /* S3_Phy embed mode — shared chrome for iframe labs inside Hub */
 
 html.s3phy-embed {
@@ -628,7 +685,7 @@ html.s3phy-embed select {
 
 :root {
   color-scheme: light;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--s3-font, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif);
 }
 
 * { box-sizing: border-box; }
@@ -663,8 +720,9 @@ body { padding: 8px; }
 
 .hf-head h1 {
   margin: 0;
+  font-family: var(--s3-font-display, "Montserrat", "Inter", system-ui, sans-serif);
   font-size: clamp(1.35rem, 3vw, 1.7rem);
-  font-weight: 850;
+  font-weight: 800;
   letter-spacing: -0.025em;
   background: linear-gradient(135deg, #ef4444, #6366f1 55%, #0ea5e9);
   background-clip: text;

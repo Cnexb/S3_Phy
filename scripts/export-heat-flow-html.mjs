@@ -30,6 +30,7 @@ const outPath = path.resolve(
 );
 
 const css = [
+  path.join(root, 'labs', 'shared', 's3phy-tokens.css'),
   path.join(root, 'labs', 'shared', 's3phy-embed.css'),
   path.join(root, 'labs', 'heat-flow', 'styles.css'),
 ]

@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--s3-font, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif);
 }
 
 * { box-sizing: border-box; }
@@ -35,8 +35,9 @@ body { padding: 8px; }
 
 .hf-head h1 {
   margin: 0;
+  font-family: var(--s3-font-display, "Montserrat", "Inter", system-ui, sans-serif);
   font-size: clamp(1.35rem, 3vw, 1.7rem);
-  font-weight: 850;
+  font-weight: 800;
   letter-spacing: -0.025em;
   background: linear-gradient(135deg, #ef4444, #6366f1 55%, #0ea5e9);
   background-clip: text;
