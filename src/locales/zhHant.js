@@ -45,7 +45,6 @@ export const zhHant = {
   'topic.em': '\u96fb\u78c1\u6ce2',
   'topic.openTool': '\u958b\u555f\u5be6\u9a57\u5ba4',
   'notes.title': '\u5b78\u7fd2\u7b46\u8a18\uff08PDF\uff09',
-  'notes.intro': '\u8acb\u628a PDF \u653e\u5230 public/notes/ (\u898b\u8a72\u8cc7\u6599\u593e README)\u3002\u5b8c\u6210\u524d\u53ef\u5148\u4f7f\u7528\u8ab2\u984c\u5217\u8868\u8207\u4e92\u52d5\u5de5\u5177\u3002',
   'notes.card.reflection': '\u53cd\u5c04',
   'notes.card.refraction': '\u6298\u5c04\u8207\u53f8\u4e43\u8033\u5b9a\u5f8b',
   'notes.card.tir': '\u5168\u5167\u53cd\u5c04',

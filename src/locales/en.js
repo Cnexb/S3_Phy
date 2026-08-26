@@ -45,7 +45,6 @@ export const en = {
   'topic.em': 'Electromagnetic waves',
   'topic.openTool': 'Open lab',
   'notes.title': 'Study notes (PDF)',
-  'notes.intro': 'Add PDFs under public/notes/ (see README there). Until then, use the topic list and interactive tools.',
   'notes.card.reflection': 'Reflection',
   'notes.card.refraction': 'Refraction and Snell law',
   'notes.card.tir': 'Total internal reflection',

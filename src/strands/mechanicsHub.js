@@ -245,7 +245,6 @@ export function mountMechanicsHub(root) {
     return `
       <section class="panel">
         <h2>${t('notes.title')}</h2>
-        <p class="lead">${t('notes.intro')}</p>
         <p class="lead">${t('notes.embedHint')}</p>
         <div class="grid cols-2" data-notes-grid>
           ${MECHANICS_TOPICS.map((r) => `
