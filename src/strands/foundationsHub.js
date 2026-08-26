@@ -45,7 +45,15 @@ export function mountFoundationsHub(root) {
   let shell = null;
   let el = { main: null };
   let destroyQuiz = null;
+  let destroyWorksheet = null;
   let destroyFlashcards = null;
+
+  async function mountWorksheet(panel) {
+    const { createFoundationsNotesWorksheet } = await import('../worksheets/foundationsNotesWorksheet.js');
+    const node = createFoundationsNotesWorksheet(t);
+    panel.appendChild(node);
+    destroyWorksheet = node._foundationsNotesWorksheetCleanup || null;
+  }
 
   async function mountQuiz(panel) {
     const { createFoundationsQuantitiesQuiz } = await import('../worksheets/foundationsQuantitiesQuiz.js');
@@ -59,6 +67,8 @@ export function mountFoundationsHub(root) {
 
     destroyQuiz?.();
     destroyQuiz = null;
+    destroyWorksheet?.();
+    destroyWorksheet = null;
     destroyFlashcards?.();
     destroyFlashcards = null;
 
@@ -68,6 +78,10 @@ export function mountFoundationsHub(root) {
     } else if (section === 'summary') {
       el.main.innerHTML = renderSummary();
       void hydrateSummary();
+    } else if (section === 'worksheets') {
+      el.main.innerHTML = '<section class="panel panel--worksheets-embed"></section>';
+      const panel = el.main.querySelector('.panel--worksheets-embed');
+      void mountWorksheet(panel);
     } else if (section === 'quiz') {
       el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
       const panel = el.main.querySelector('.panel--quiz-embed');
@@ -171,6 +185,7 @@ export function mountFoundationsHub(root) {
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
     destroyQuiz?.();
+    destroyWorksheet?.();
     destroyFlashcards?.();
     shell?.destroy();
   };

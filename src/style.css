@@ -1408,6 +1408,7 @@ button.brand-logo-wrap:hover .brand-logo-img {
 .tool-heat-final-exam-quiz,
 .tool-heat-ch1-quiz,
 .tool-foundations-quantities-quiz,
+.tool-foundations-notes-quiz,
 .tool-specific-heat,
 .tool-thermal-mixing,
 .tool-change-of-state,
@@ -1434,6 +1435,7 @@ button.brand-logo-wrap:hover .brand-logo-img {
 .tool-heat-final-exam-quiz iframe,
 .tool-heat-ch1-quiz iframe,
 .tool-foundations-quantities-quiz iframe,
+.tool-foundations-notes-quiz iframe,
 .tool-specific-heat iframe,
 .tool-thermal-mixing iframe,
 .tool-change-of-state iframe,
@@ -1580,6 +1582,7 @@ iframe.note-preview {
 .panel--worksheets-embed .worksheet-stage .tool-optics-light-lens-quiz,
 .panel--worksheets-embed .worksheet-stage .tool-optics-ch4-em-quiz,
 .panel--worksheets-embed .tool-heat-final-exam-quiz,
+.panel--worksheets-embed .tool-foundations-notes-quiz,
 .panel--quiz-embed .tool-heat-ch1-quiz,
 .panel--quiz-embed .tool-optics-ch3-quiz,
 .panel--quiz-embed .tool-foundations-quantities-quiz {

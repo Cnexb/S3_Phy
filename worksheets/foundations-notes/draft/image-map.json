@@ -1,0 +1,10 @@
+{
+  "um-q1": { "file": "um-q1.svg", "alt": "Straight line AB through A(3, 3) and B(0, 0)", "caption": "Fig · Notes Q1 — line AB" },
+  "um-q2": { "file": "um-q2.svg", "alt": "Straight line AB through A(-3, 4) and B(-1, 1)", "caption": "Fig · Notes Q2 — line AB" },
+  "um-q3": { "file": "um-q3.svg", "alt": "Straight line AB through A(-4, 2) and B(2, -2)", "caption": "Fig · Notes Q3 — line AB" },
+  "um-q4": { "file": "um-q4.svg", "alt": "Straight line AB through A(2, 3) and B(-4, -3)", "caption": "Fig · Notes Q4 — line AB" },
+  "um-q5a": { "file": "um-q5a.svg", "alt": "Straight line through (0, 1) and (6, 4)", "caption": "Fig · Notes Q5 first graph" },
+  "um-q5b": { "file": "um-q5b.svg", "alt": "Straight line through (0, 3) and (5, 0)", "caption": "Fig · Notes Q5 second graph" },
+  "um-q6a": { "file": "um-q6a.svg", "alt": "Straight line through (0, 4) and (3, 0)", "caption": "Fig · Notes Q6 left graph" },
+  "um-q6b": { "file": "um-q6b.svg", "alt": "Straight line through (0, 8) and (6, 0)", "caption": "Fig · Notes Q6 right graph" }
+}

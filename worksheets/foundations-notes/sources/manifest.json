@@ -1,0 +1,15 @@
+{
+  "title": "S3 Foundations notes worksheet",
+  "sources": [
+    {
+      "id": "quantities-units",
+      "file": "public/notes/quantities-units-en.pdf",
+      "original": "Ch.00_Quantities_and_units_2020-21__Ans_.pdf"
+    },
+    {
+      "id": "useful-maths",
+      "file": "public/notes/useful-mathematics-en.pdf",
+      "original": "Useful_mathematics_in_physics_2024-25__Ans___Uni.pdf"
+    }
+  ]
+}
