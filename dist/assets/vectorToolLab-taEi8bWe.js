@@ -1,1 +1,0 @@
-import{c as t}from"./createLabIframe-gQEIQ5yv.js";import"./index-CAfFDNgh.js";function a(o){return t(o,{slug:"vector-tool",titleKey:"tools.vectorTool.title",className:"tool-vector-tool-lab",extraParams:()=>"&v=20260724_vector_resize_paper_v3"})}export{a as createVectorToolLab};

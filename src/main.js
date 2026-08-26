@@ -18,6 +18,8 @@ const STRAND_LOADERS = {
   mechanics: () => import('./strands/mechanicsHub.js').then((m) => m.mountMechanicsHub),
   gas: () => import('./strands/gasHub.js').then((m) => m.mountGasHub),
   waves: () => import('./strands/wavesHub.js').then((m) => m.mountWavesHub),
+  electricity: () => import('./strands/electricityHub.js').then((m) => m.mountElectricityHub),
+  radioactivity: () => import('./strands/radioactivityHub.js').then((m) => m.mountRadioactivityHub),
 };
 
 let unmountActive = null;

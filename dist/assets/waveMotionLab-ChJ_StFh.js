@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-DDSozgJl.js";import"./index-NZ92tK8R.js";function r(a){return e(a,{slug:"wave-motion",titleKey:"tools.waveMotion.title",className:"tool-wave-motion-lab",extraParams:()=>"&v=20260723_wave_phase_v30"})}export{r as createWaveMotionLab};
