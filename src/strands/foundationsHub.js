@@ -1,5 +1,5 @@
 import { t, getLang } from '../i18n.js';
-import { hydrateNoteCards } from './hubHelpers.js';
+import { hydrateNoteCards, hydrateSummaryCards } from './hubHelpers.js';
 import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildFoundationsDeck } from '../flashcards/flashcardDeck.js';
@@ -16,6 +16,21 @@ const FOUNDATIONS_TOPICS = [
     titleKey: 'topic.usefulMaths',
     fileEn: 'useful-mathematics-en.pdf',
     fileZh: 'useful-mathematics-zhHant.pdf',
+  },
+];
+
+const FOUNDATIONS_SUMMARY_ROWS = [
+  {
+    key: 'quantitiesUnits',
+    type: 'image',
+    fileEn: 'quantities-units-en.webp',
+    fileZh: 'quantities-units-zhHant.webp',
+  },
+  {
+    key: 'usefulMaths',
+    type: 'image',
+    fileEn: 'useful-mathematics-en.webp',
+    fileZh: 'useful-mathematics-zhHant.webp',
   },
 ];
 
@@ -50,6 +65,9 @@ export function mountFoundationsHub(root) {
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
+    } else if (section === 'summary') {
+      el.main.innerHTML = renderSummary();
+      void hydrateSummary();
     } else if (section === 'quiz') {
       el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
       const panel = el.main.querySelector('.panel--quiz-embed');
@@ -122,6 +140,28 @@ export function mountFoundationsHub(root) {
       fileZh: r.fileZh,
     }));
     await hydrateNoteCards(root, rows);
+  }
+
+  function renderSummary() {
+    return `
+      <section class="panel">
+        <h2>${t('summary.title')}</h2>
+        <p class="lead">${t('summary.intro')}</p>
+        <p class="lead">${t('notes.embedHint')}</p>
+        <div class="grid cols-2" data-summary-grid>
+          ${FOUNDATIONS_TOPICS.map(
+            (topic) => `
+            <div class="card" data-summary-card="${topic.id}">
+              <h3>${t(`summary.item.${topic.id}`)}</h3>
+              <div data-summary-body></div>
+            </div>`,
+          ).join('')}
+        </div>
+      </section>`;
+  }
+
+  async function hydrateSummary() {
+    await hydrateSummaryCards(root, FOUNDATIONS_SUMMARY_ROWS);
   }
 
   window.addEventListener('s3phy:lang', onLangChange);

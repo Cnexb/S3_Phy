@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-CTklAC_G.js";import"./index-D4dG1w-8.js";function s(e){return t(e,{slug:"heat-transfer",titleKey:"tools.heatTransfer.title",className:"tool-heat-transfer",extraParams:()=>"&v=34"})}export{s as createHeatTransferLab};
