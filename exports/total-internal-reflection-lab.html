@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逃獄遊戲：全反射互動實驗室</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+/* S3_Phy shared design tokens — single source for Hub + iframe labs */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap");
+
+:root {
+  /* Layout */
+  --s3-content-max: min(1600px, calc(100dvw - var(--s3-vp-pad) * 2));
+  --s3-bp-sm: 768px;
+  --s3-bp-md: 1024px;
+  --s3-bp-ws: 1100px;
+  --s3-safe-top: env(safe-area-inset-top, 0px);
+  --s3-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --s3-tool-min-h: clamp(480px, calc(100dvh - var(--s3-nav-offset, 96px) - 48px - var(--s3-safe-bottom)), 1600px);
+  --s3-nav-offset: calc(var(--s3-vp-pad) + var(--s3-safe-top) + 72px + 12px);
+  --s3-panel-pad: 18px;
+  --s3-radius: 14px;
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+
+  /* Typography */
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --s3-font-display: "Montserrat", "Inter", system-ui, sans-serif;
+  --s3-font-size-base: 16px;
+  --s3-font-size-sm: 0.875rem;
+  --s3-font-size-h2: 1.15rem;
+  --s3-font-size-h1: 1.5rem;
+  --s3-line-height: 1.5;
+  --s3-font-min: 15px;
+
+  /* Hub light theme */
+  --s3-bg: #f8f9fa;
+  --s3-surface: #ffffff;
+  --s3-surface2: #f1f3f5;
+  --s3-border: #e8eaed;
+  --s3-text: #1a1c2c;
+  --s3-muted: #6b7280;
+  --s3-accent: #2563eb;
+  --s3-accent-soft: #dbeafe;
+  --s3-navy: #1a1c2c;
+
+  /* Lab chrome — light / ivory (match Hub) */
+  --s3-lab-bg: #f8f9fa;
+  --s3-lab-surface: #ffffff;
+  --s3-lab-surface2: #f1f3f5;
+  --s3-lab-border: #e8eaed;
+  --s3-lab-text: #1a1c2c;
+  --s3-lab-muted: #6b7280;
+  --s3-lab-accent: #2563eb;
+  --s3-lab-success: #16a34a;
+  --s3-lab-cyan: #0891b2;
+
+  /* Breakpoints (for reference in media queries) */
+  --s3-bp-sm: 768px;
+  --s3-bp-md: 1024px;
+  --s3-bp-ws: 1100px;
+  --s3-float-panel-w: min(440px, calc(100% - 24px));
+}
+
+
+/* S3_Phy embed mode — shared chrome for iframe labs inside Hub */
+
+html.s3phy-embed {
+  font-family: var(--s3-font);
+  font-size: var(--s3-font-size-base);
+  line-height: var(--s3-line-height);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+html.s3phy-embed:has(.lab-section) {
+  height: 100%;
+}
+
+html.s3phy-embed body {
+  font-family: var(--s3-font);
+  font-size: max(var(--s3-font-min), 1rem);
+  line-height: var(--s3-line-height);
+  margin: 0;
+}
+
+/* Interactive lab iframe — flex fill (not quiz/worksheet) */
+html.s3phy-embed body:has(.lab-section),
+html.s3phy-embed body.embed-mode:has(.sim-main-col),
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(.lab-section) > main,
+html.s3phy-embed body.embed-mode main.flex-grow,
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Quiz / worksheet iframe — preserve two-column grid */
+html.s3phy-embed body:has(#quiz-layout) {
+  height: auto;
+  min-height: 100%;
+  display: block;
+  overflow: auto;
+}
+
+html.s3phy-embed #quiz-layout {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: none !important;
+  width: 100%;
+  margin: 0;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1101px) {
+  html.s3phy-embed #quiz-layout {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  html.s3phy-embed #quiz-layout > aside#settings-panel {
+    position: static;
+    max-height: min(42dvh, 420px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+html.s3phy-embed #quiz-layout > aside#settings-panel {
+  position: sticky;
+  top: 0.5rem;
+  align-self: start;
+  max-height: calc(100dvh - 1rem);
+  overflow-y: auto;
+}
+
+html.s3phy-embed #quiz-layout > .min-w-0 {
+  min-width: 0;
+  width: 100%;
+}
+
+html.s3phy-embed .lab-section {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+html.s3phy-embed .lab-viz,
+html.s3phy-embed .lab-steps {
+  height: 100% !important;
+  min-height: 0;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-viz {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .lab-viz-canvas {
+  flex: 1 1 auto;
+  min-height: 200px;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-steps {
+  overflow-y: auto;
+}
+
+html.s3phy-embed .lab-viz.lab-viz-dual {
+  display: grid !important;
+  height: 100% !important;
+}
+
+html.s3phy-embed .lab-viz-dual {
+  max-height: none !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  align-content: stretch;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel:first-child .lab-viz-canvas {
+  flex: 1 1 auto !important;
+  min-height: 120px !important;
+  max-height: none !important;
+  aspect-ratio: unset;
+  height: auto;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart .lab-viz-chart-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  margin-top: 0;
+  aspect-ratio: unset;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed header,
+html.s3phy-embed footer {
+  flex-shrink: 0;
+}
+
+html.s3phy-embed .max-w-7xl {
+  max-width: none;
+  width: 100%;
+}
+
+html.s3phy-embed .sim-main-col,
+html.s3phy-embed .glass-panel.flex-grow {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .canvas-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none;
+}
+
+html.s3phy-embed .main-container,
+html.s3phy-embed .lab-wrap,
+html.s3phy-embed .dashboard,
+html.s3phy-embed .app-root {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+/* Floating controls panel (heat labs + shared script) */
+.lab-section {
+  position: relative;
+  min-height: 0;
+}
+
+@media (min-width: 768px) {
+  /* Keep grid items as 2 parallel columns at >= 768px */
+  html.s3phy-embed .lab-section,
+  html.s3phy-embed .main-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .main-grid .sim-main-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-steps,
+  html.s3phy-embed .main-grid .tab-sidebar-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  /* Specially for heat transfer conduction / convection / radiation simulation */
+  html.s3phy-embed .main-grid > div:first-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .main-grid > div:last-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    position: absolute !important;
+    z-index: 50 !important;
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .lab-section.controls-floating .lab-steps {
+    grid-column: 1 / -1;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: none;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.lab-controls.lab-controls-float {
+  position: absolute;
+  z-index: 40;
+  width: var(--s3-float-panel-w);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.lab-controls-body {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls-desc {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls.controls-collapsed .lab-controls-body,
+.lab-controls.controls-collapsed .lab-controls-desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-body {
+  max-height: min(70vh, 520px);
+  opacity: 1;
+  overflow-y: auto;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-desc {
+  opacity: 1;
+  max-height: 4rem;
+}
+
+.lab-controls.controls-collapsed .lab-controls-title-text {
+  display: none;
+}
+
+.lab-controls-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lab-controls-actions {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.lab-controls-actions button {
+  padding: 0.625rem 0.75rem;
+  justify-content: center;
+}
+
+.lab-controls-actions button:not(.flex-1) {
+  flex-shrink: 0;
+}
+
+.lab-controls-actions button.flex-1 {
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.lab-controls-drag-handle {
+  display: none;
+  cursor: grab;
+  touch-action: none;
+  color: #94a3b8;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+
+@media (min-width: 900px) {
+  .lab-controls.lab-controls-float .lab-controls-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lab-controls-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Hub iframe — standalone labs (rotating-mirror, rgb, thermometer) */
+html.s3phy-embed:has(#app > .rml),
+html.s3phy-embed:has(#app > .rgb-mixer),
+html.s3phy-embed:has(#app > .tl-wrap) {
+  height: 100%;
+}
+
+html.s3phy-embed body:has(#app > .rml),
+html.s3phy-embed body:has(#app > .rgb-mixer),
+html.s3phy-embed body:has(#app > .tl-wrap) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(#app > .rml) #app,
+html.s3phy-embed body:has(#app > .rgb-mixer) #app,
+html.s3phy-embed body:has(#app > .tl-wrap) #app {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+html.s3phy-embed .rml,
+html.s3phy-embed .rgb-mixer,
+html.s3phy-embed .tl-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+html.s3phy-embed .rml .rml-head,
+html.s3phy-embed .tl-wrap .tl-head {
+  display: none;
+}
+
+html.s3phy-embed .rml {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rml .rml-dash {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+html.s3phy-embed .rml .rml-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rml .rml-canvas {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  flex: 1;
+  object-fit: contain;
+}
+
+html.s3phy-embed .rml .rml-controls {
+  flex: 0 0 auto;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+html.s3phy-embed .tl-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .tl-wrap .tl-dash,
+html.s3phy-embed .tl-wrap .tl-dash--faulty {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-dash--faulty {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  grid-template-rows: 1fr;
+  align-items: stretch;
+  gap: 14px;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-live {
+  grid-column: 2;
+  grid-row: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-controls {
+  grid-column: 1 / -1;
+}
+
+html.s3phy-embed .rgb-mixer {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rgb-mixer-body {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto;
+  max-height: none;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rgb-mixer-stage {
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-controls {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Lens simulator embed compact chrome */
+html.s3phy-embed .controls-panel,
+html.s3phy-embed .control-panel {
+  width: var(--s3-float-panel-w) !important;
+  max-width: var(--s3-float-panel-w) !important;
+}
+
+/* Minimum readable text in embed controls */
+html.s3phy-embed label,
+html.s3phy-embed .control label,
+html.s3phy-embed button,
+html.s3phy-embed input,
+html.s3phy-embed select {
+  font-size: max(var(--s3-font-min), 0.875rem);
+}
+
+/* Height adaptive scaling for compact/low-height viewports (height < 720px) */
+@media (max-height: 720px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 13.5px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 11px), 0.85rem) !important;
+  }
+  
+  /* Compact paddings and gaps */
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.5rem 0.625rem !important;
+  }
+  html.s3phy-embed .px-4,
+  html.s3phy-embed .px-5 {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+  html.s3phy-embed .py-4,
+  html.s3phy-embed .py-5,
+  html.s3phy-embed .py-6 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Compact header & tabs */
+  html.s3phy-embed header {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  html.s3phy-embed header h1 {
+    font-size: 1.1rem !important;
+  }
+  
+  /* KaTeX mathematical formulas scaling and tight margins */
+  html.s3phy-embed .lab-steps .katex {
+    font-size: 0.95em !important;
+  }
+  html.s3phy-embed .lab-steps .katex-display {
+    margin: 0.25em 0 !important;
+  }
+  
+  /* Shrink canvas and containers to prevent overflow */
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 120px !important;
+    flex: 1 1 auto !important;
+  }
+  
+  /* Compact parameters/controls — keep panel wide enough for action buttons */
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+    padding: 0.5rem !important;
+  }
+  html.s3phy-embed .lab-controls-body {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .lab-controls-body select,
+  html.s3phy-embed .lab-controls-body input,
+  html.s3phy-embed .lab-controls-body button {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-height: 600px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 12px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 10px), 0.75rem) !important;
+  }
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 100px !important;
+  }
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.375rem 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.25rem !important;
+  }
+}
+
+</style>
+    <script>
+(function () {
+  'use strict';
+  document.documentElement.setAttribute('translate', 'no');
+  document.documentElement.classList.add('notranslate');
+  if (!document.querySelector('meta[name="google"][content="notranslate"]')) {
+    var noTranslate = document.createElement('meta');
+    noTranslate.name = 'google';
+    noTranslate.content = 'notranslate';
+    document.head.appendChild(noTranslate);
+  }
+  var params = new URLSearchParams(location.search);
+  if (params.get('embed') === '1' || params.get('embed') === 'true') {
+    document.documentElement.classList.add('s3phy-embed');
+  }
+})();
+
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;500;700&family=Roboto+Mono:wght@400;700&display=swap');
+
+        html {
+            height: 100%;
+        }
+
+        body.tir-app-root {
+            font-family: var(--s3-font, 'Inter', 'Noto Sans TC', sans-serif);
+            background-color: #f8f9fa;
+            color: #1a1c2c;
+            overflow: hidden;
+            min-height: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .math-font {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .neon-text {
+            text-shadow: none;
+        }
+
+        .glass-panel {
+            background: #ffffff;
+            backdrop-filter: none;
+            border: 1px solid #e8eaed;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(26, 28, 44, 0.06);
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e8eaed;
+            border-radius: 2px;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
+            border: none;
+        }
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 4px;
+            background: #e8eaed;
+            border-radius: 2px;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        .status-trapped {
+            background-color: #ef4444;
+            animation: pulse-red 2s infinite;
+        }
+        .status-escaped {
+            background-color: #22c55e;
+            animation: pulse-green 2s infinite;
+        }
+
+        .chibi-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px 16px;
+        }
+        .chibi-svg {
+            flex-shrink: 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        .n-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .n-btn {
+            width: 32px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid #e8eaed;
+            background: #f1f3f5;
+            color: #2563eb;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .n-btn:hover {
+            background: rgba(37, 99, 235, 0.1);
+            transform: scale(1.05);
+        }
+        .n-btn:active {
+            transform: scale(0.95);
+        }
+        .n-value {
+            min-width: 3em;
+            text-align: center;
+        }
+        .tir-top-dock {
+            flex-shrink: 0;
+            width: 100%;
+            z-index: 10;
+        }
+        .tir-controls-panel.tir-tuning-bar {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 0.5rem 0.75rem;
+            min-height: 6.5rem;
+        }
+        .tir-tune-zone {
+            flex: 0 1 auto;
+        }
+        .tir-tune-zone-brand {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 0.75rem;
+            flex: 1 1 240px;
+            min-width: 200px;
+        }
+        .tir-tune-zone-brand .tir-brand-text {
+            flex: 0 1 auto;
+        }
+        .tir-tune-zone-brand #status-badge {
+            margin-bottom: 0;
+            flex: 1 1 auto;
+            min-width: 160px;
+            max-width: none;
+        }
+        .tir-tune-zone-brand #status-text {
+            white-space: normal;
+            line-height: 1.3;
+        }
+        .tir-tune-zone-brand .chibi-container {
+            flex-wrap: nowrap;
+        }
+        .tir-tune-zone-angle {
+            flex: 1 1 280px;
+            min-width: 220px;
+        }
+        .tir-tune-zone-angle label {
+            margin-bottom: 0.35rem;
+            min-height: 2.25rem;
+        }
+        #angle-display {
+            min-width: 4.5rem;
+            text-align: right;
+        }
+        #angle-slider {
+            width: 100%;
+            touch-action: none;
+        }
+        .tir-tune-zone-n {
+            flex: 0 1 auto;
+        }
+        .tir-tune-zone-n .tir-n-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .tir-tune-zone-n .tir-n-cell {
+            padding: 0.5rem 0.75rem;
+            min-width: 7.5rem;
+        }
+        .tir-tune-zone-rays {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: stretch;
+            gap: 0.35rem;
+            width: 10.5rem;
+            max-width: 11.5rem;
+            align-self: center;
+        }
+        .tir-tune-zone-rays .ray-toggle-btn {
+            width: 100%;
+            min-width: 0;
+            max-width: none;
+            flex: 0 0 auto;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.25;
+            padding: 6px 8px;
+            font-size: 11px;
+        }
+        .tir-stage-row {
+            display: flex;
+            flex: 1 1 auto;
+            min-height: 0;
+            gap: 0.5rem;
+            flex-direction: row;
+        }
+        #sim-canvas-host {
+            flex: 1 1 auto;
+            min-height: 0;
+            min-width: 0;
+        }
+        #sim-canvas-wrap {
+            min-height: 160px;
+        }
+        .tir-physics-panel {
+            flex: 0 0 clamp(280px, 32%, 360px);
+            align-self: stretch;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border-left: 1px solid #e8eaed;
+        }
+        .tir-formula-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        @media (max-width: 767px) {
+            .tir-stage-row {
+                flex-direction: column;
+            }
+            .tir-physics-panel {
+                flex: 0 0 auto;
+                width: 100%;
+                border-left: none;
+            }
+        }
+        #theory-box {
+            max-height: none;
+            line-height: 1.55;
+        }
+        @media (max-width: 640px) {
+            .tir-controls-panel.tir-tuning-bar {
+                flex-wrap: wrap;
+                min-height: auto;
+            }
+            .tir-tune-zone-rays {
+                flex: 1 1 100%;
+                width: 100%;
+                max-width: none;
+            }
+            .tir-tune-zone-rays .ray-toggle-btn {
+                width: 100%;
+                max-width: none;
+            }
+        }
+        .ray-toggle-btn {
+            width: auto;
+            flex: 0 1 auto;
+            min-width: 9rem;
+            max-width: 14rem;
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #e8eaed;
+            background: #f8f9fa;
+            color: #1a1c2c;
+            font-size: 13px;
+            line-height: 1.35;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ray-toggle-btn span:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ray-toggle-btn:hover {
+            background: rgba(37, 99, 235, 0.08);
+            border-color: rgba(37, 99, 235, 0.35);
+        }
+        .ray-toggle-btn.rays-hidden {
+            opacity: 0.9;
+        }
+
+        /* Embedded in S3_PHY hub iframe (?embed=1) */
+        html.s3phy-embed body.tir-app-root {
+            overflow: hidden;
+        }
+        html.s3phy-embed .tir-top-dock {
+            gap: 0.35rem;
+            padding: 0.35rem 0.5rem;
+            overflow: visible;
+            max-height: none;
+        }
+        html.s3phy-embed .tir-controls-panel {
+            flex-shrink: 0;
+            padding: 0.75rem 1rem !important;
+        }
+        html.s3phy-embed .tir-tune-zone-brand h1 {
+            font-size: 1.25rem;
+        }
+        html.s3phy-embed .tir-brand-text > p {
+            font-size: 0.9rem;
+        }
+        html.s3phy-embed .tir-tune-zone-brand #status-badge {
+            margin-bottom: 0;
+            font-size: 1.05rem;
+        }
+        html.s3phy-embed .tir-controls-panel .chibi-container {
+            padding: 4px 10px;
+            gap: 8px;
+        }
+        html.s3phy-embed .tir-controls-panel.tir-tuning-bar {
+            gap: 0.35rem 0.5rem;
+            flex-wrap: nowrap;
+            min-height: 6.25rem;
+        }
+        html.s3phy-embed .tir-tune-zone-rays {
+            width: 11.5rem;
+            max-width: 12rem;
+        }
+        html.s3phy-embed .tir-tune-zone-rays .ray-toggle-btn {
+            font-size: 11.5px;
+            padding: 4px 6px;
+        }
+        html.s3phy-embed .tir-tune-zone-brand #status-badge {
+            min-width: 155px;
+        }
+        html.s3phy-embed .tir-controls-panel input[type=range]::-webkit-slider-thumb {
+            height: 14px;
+            width: 14px;
+            margin-top: -5px;
+        }
+        html.s3phy-embed .tir-controls-panel input[type=range]::-moz-range-thumb {
+            height: 14px;
+            width: 14px;
+        }
+        html.s3phy-embed .tir-controls-panel .ray-toggle-btn {
+            padding: 5px 8px;
+            font-size: 12.5px;
+        }
+        /* Tuning bar: incident angle slider + n controls */
+        html.s3phy-embed .tir-controls-panel {
+            font-size: 14px;
+        }
+        html.s3phy-embed .tir-controls-panel label.text-base {
+            font-size: 14.5px !important;
+        }
+        html.s3phy-embed .tir-controls-panel #angle-display {
+            font-size: 17px !important;
+        }
+        html.s3phy-embed .tir-controls-panel .text-sm {
+            font-size: 13px !important;
+        }
+        html.s3phy-embed .tir-controls-panel #n1-value,
+        html.s3phy-embed .tir-controls-panel #n2-value {
+            font-size: 17px !important;
+        }
+        html.s3phy-embed .tir-controls-panel .n-btn {
+            width: 30px;
+            height: 26px;
+            font-size: 16px;
+        }
+        html.s3phy-embed .tir-stage-row {
+            flex: 1 1 auto;
+            min-height: 0;
+            gap: 0.375rem;
+        }
+        html.s3phy-embed .tir-physics-panel {
+            flex: 0 0 clamp(285px, 35%, 350px);
+            min-height: 0;
+            max-height: none;
+            overflow-y: auto;
+            padding: 0.5rem 0.75rem !important;
+            font-size: 14.5px;
+        }
+        html.s3phy-embed #sim-canvas-wrap {
+            min-height: 160px;
+        }
+        #critical-block,
+        #snell-block {
+            overflow: visible;
+        }
+        #critical-formula,
+        #snell-formula,
+        #calc-result {
+            overflow: visible;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        #critical-block {
+            padding-bottom: 0.5rem;
+            min-height: 3.25rem;
+        }
+        #critical-formula {
+            min-height: 2rem;
+        }
+        #snell-block {
+            padding-bottom: 0.75rem;
+            min-height: 6rem;
+        }
+        #snell-formula {
+            min-height: 2rem;
+        }
+        #calc-result {
+            padding-bottom: 0.5rem;
+            min-height: 3rem;
+        }
+        #critical-block mjx-container,
+        #snell-block mjx-container {
+            overflow: visible !important;
+            margin: 0.35rem auto !important;
+            max-width: 100%;
+        }
+        #snell-block mjx-container[display="true"] {
+            margin-bottom: 0.5rem !important;
+        }
+        html.s3phy-embed #critical-block {
+            min-height: 3.25rem;
+            padding-bottom: 0.5rem;
+        }
+        html.s3phy-embed #snell-block {
+            padding-bottom: 0.75rem;
+            min-height: 6.25rem;
+        }
+        html.s3phy-embed #calc-result {
+            min-height: 3rem;
+            padding-bottom: 0.5rem;
+        }
+        html.s3phy-embed .tir-physics-panel mjx-container {
+            overflow: visible !important;
+        }
+        html.s3phy-embed .tir-physics-panel .bg-slate-900 {
+            overflow: visible;
+        }
+        html.s3phy-embed .tir-physics-panel h3 {
+            font-size: 15px;
+            margin-bottom: 0.5rem;
+        }
+        html.s3phy-embed .tir-physics-panel .space-y-2 {
+            font-size: 14px;
+        }
+        html.s3phy-embed .tir-physics-panel .space-y-2 > * + * {
+            margin-top: 0.375rem;
+        }
+        html.s3phy-embed .tir-physics-panel .text-base {
+            font-size: 14px !important;
+        }
+        html.s3phy-embed .tir-physics-panel .text-sm {
+            font-size: 12.5px !important;
+        }
+        html.s3phy-embed .tir-physics-panel #theory-box {
+            padding: 0.625rem 0.75rem;
+            font-size: 14px;
+        }
+        html.s3phy-embed .tir-physics-panel #theory-box p,
+        html.s3phy-embed .tir-physics-panel #theory-box li {
+            font-size: 14px;
+            line-height: 1.55;
+        }
+        html.s3phy-embed .tir-physics-panel #critical-formula,
+        html.s3phy-embed .tir-physics-panel #snell-formula,
+        html.s3phy-embed .tir-physics-panel #calc-result {
+            font-size: 14px !important;
+        }
+        html.s3phy-embed .tir-physics-panel mjx-container {
+            font-size: 100% !important;
+        }
+        html.s3phy-embed .tir-physics-panel .bg-slate-900 {
+            padding: 0.5rem 0.625rem;
+        }
+        html.s3phy-embed #lang-toggle-btn {
+            display: none;
+        }
+    </style>
+    <script>
+    (function () {
+      var p = new URLSearchParams(location.search);
+      if (p.get('embed') === '1') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+    </script>
+</head>
+<body class="tir-app-root h-full w-full min-h-0 flex flex-col">
+
+    <div class="tir-top-dock w-full shrink-0 flex flex-col gap-2 p-2 md:p-3 z-10 relative text-[15px] sm:text-base leading-relaxed overflow-visible">
+        <div class="tir-controls-panel tir-tuning-bar glass-panel p-3 sm:p-4 shadow-2xl shrink-0">
+            <div class="tir-tune-zone tir-tune-zone-brand">
+                <div class="tir-brand-text">
+                    <h1 class="text-xl sm:text-2xl font-bold mb-0 text-blue-600 neon-text leading-tight">🔥 逃獄遊戲</h1>
+                    <p class="text-sm text-gray-500 mb-0 mt-0.5">The Prison Break: 全反射模擬</p>
+                </div>
+                <div id="status-badge" class="rounded-lg font-bold text-white text-base sm:text-lg transition-all duration-300 status-escaped">
+                    <div class="chibi-container">
+                        <div id="chibi-display" class="chibi-svg"></div>
+                        <span id="status-text">自由！ (折射)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tir-tune-zone tir-tune-zone-angle">
+                <label class="flex flex-col gap-1.5 sm:flex-row sm:justify-between sm:items-center text-base font-medium">
+                    <span id="incident-angle-label" class="min-w-0 shrink">入射角 (Incident Angle) <span class="math-inline">\(\theta_1\)</span></span>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="btn-set-critical" class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1.5 rounded transition-colors border border-blue-500/50">設為 \(\theta_c\)</button>
+                        <button type="button" id="btn-set-0" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 px-2.5 py-1.5 rounded transition-colors border border-gray-200">設為 0°</button>
+                        <button type="button" id="btn-set-90" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 px-2.5 py-1.5 rounded transition-colors border border-gray-200">設為 90°</button>
+                        <span id="angle-display" class="text-blue-600 font-mono text-lg tabular-nums">30.0°</span>
+                    </div>
+                </label>
+                <input type="range" id="angle-slider" min="0" max="90" value="30" step="0.1">
+            </div>
+
+            <div class="tir-tune-zone tir-tune-zone-n">
+                <div class="tir-n-grid">
+                    <div class="tir-n-cell bg-gray-50 rounded-lg border border-gray-200">
+                        <div id="n1-label" class="text-sm text-gray-500 mb-1">監獄 (玻璃) <span class="math-inline">\(n_1\)</span></div>
+                        <div class="n-control">
+                            <button type="button" class="n-btn" id="n1-minus" title="減少 n₁">−</button>
+                            <span id="n1-value" class="text-xl font-mono text-blue-600 n-value">1.50</span>
+                            <button type="button" class="n-btn" id="n1-plus" title="增加 n₁">+</button>
+                        </div>
+                    </div>
+                    <div class="tir-n-cell bg-gray-50 rounded-lg border border-gray-200">
+                        <div id="n2-label" class="text-sm text-gray-500 mb-1">自由 (空氣) <span class="math-inline">\(n_2\)</span></div>
+                        <div class="n-control">
+                            <button type="button" class="n-btn" id="n2-minus" title="減少 n₂">−</button>
+                            <span id="n2-value" class="text-xl font-mono text-gray-700 n-value">1.00</span>
+                            <button type="button" class="n-btn" id="n2-plus" title="增加 n₂">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tir-tune-zone tir-tune-zone-rays">
+                <button type="button" id="refract-toggle-btn" class="ray-toggle-btn" title="切換折射(出射)光線的顯示">
+                    <span id="refract-toggle-icon">👁</span>
+                    <span id="refract-toggle-text">隱藏折射光線</span>
+                </button>
+                <button type="button" id="reflect-toggle-btn" class="ray-toggle-btn" title="切換反射光線的顯示">
+                    <span id="reflect-toggle-icon">👁</span>
+                    <span id="reflect-toggle-text">隱藏反射光線</span>
+                </button>
+                <button type="button" id="dir-toggle-btn" class="ray-toggle-btn" title="切換入射方向">
+                    <span id="dir-toggle-icon">↕️</span>
+                    <span id="dir-toggle-text">入射方向：由 玻璃(n₁) 射向 空氣(n₂)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tir-stage-row">
+        <div id="sim-canvas-host" class="flex-1 min-h-0 relative bg-white flex flex-col overflow-hidden border border-gray-200 rounded-xl">
+            <button id="lang-toggle-btn" class="absolute top-4 right-4 z-50 bg-white hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg border border-gray-200 transition-colors text-sm font-medium shadow-sm">
+                EN / 中文
+            </button>
+            <div class="absolute inset-0 opacity-30 pointer-events-none z-[1]"
+                 style="background-image: linear-gradient(#e8eaed 1px, transparent 1px), linear-gradient(90deg, #e8eaed 1px, transparent 1px); background-size: 40px 40px;">
+            </div>
+
+            <div id="sim-canvas-wrap" class="relative z-0 flex-1 min-h-[160px] w-full">
+                <canvas id="simCanvas" class="absolute inset-0 block w-full h-full"></canvas>
+            </div>
+
+            <div class="absolute bottom-8 right-8 text-right pointer-events-none opacity-20 z-[2]">
+                <div class="text-6xl font-black text-gray-200">PRISON</div>
+                <div class="text-6xl font-black text-gray-300">BREAK</div>
+            </div>
+        </div>
+
+        <div class="tir-physics-panel glass-panel p-3 sm:p-4">
+            <h3 id="physics-core-title" class="text-xl font-semibold text-blue-600 mb-2">🧮 物理核心運算</h3>
+
+            <div class="space-y-2 text-base">
+                <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 shadow-inner" id="theory-box"></div>
+
+                <p id="tir-badge" class="text-blue-700 font-semibold text-center text-sm py-1.5 px-2 bg-blue-50 rounded-lg border border-blue-200 leading-snug">
+                    Total Internal Reflection · 完全內反射
+                </p>
+
+                <div class="tir-formula-grid">
+                    <div id="critical-block" class="bg-white p-2 rounded border border-gray-200">
+                        <p id="critical-angle-label" class="text-sm text-gray-500 mb-1">臨界角 (Critical Angle):</p>
+                        <div id="critical-formula" class="text-center my-1 text-base"></div>
+                    </div>
+
+                    <div id="snell-block" class="bg-white p-2 rounded border border-gray-200">
+                        <p id="snell-label" class="text-sm text-gray-500 mb-1">斯涅爾定律 (Snell's Law):</p>
+                        <div id="snell-formula" class="text-center my-1 text-base"></div>
+                        <div id="calc-result" class="text-center text-green-400 text-base mt-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const N_STEP = 0.05;
+        const N1_MIN = 1.05, N1_MAX = 2.0;
+        const N2_MIN = 1.0, N2_MAX = 1.5;
+
+        let n1 = 1.5;
+        let n2 = 1.0;
+
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const slider = document.getElementById('angle-slider');
+        const angleDisplay = document.getElementById('angle-display');
+        const statusBadge = document.getElementById('status-badge');
+        const statusText = document.getElementById('status-text');
+        const chibiDisplay = document.getElementById('chibi-display');
+        const calcResult = document.getElementById('calc-result');
+        const criticalFormula = document.getElementById('critical-formula');
+        const snellFormula = document.getElementById('snell-formula');
+        const n1Value = document.getElementById('n1-value');
+        const n2Value = document.getElementById('n2-value');
+        const tirPhysicsPanel = document.querySelector('.tir-physics-panel');
+        const snellBlock = document.getElementById('snell-block');
+
+        let incidentAngle = 30;
+        let showRefractedRay = true;
+        let showReflectedRay = true;
+        let incidentFromBottom = true;
+        let currentLang = 'zh';
+
+        const i18n = {
+            zh: {
+                title: "🔥 逃獄遊戲",
+                subtitle: "全反射模擬",
+                incidentLabel: "入射角 <span class=\"math-inline\">\\(\\theta_1\\)</span>",
+                setCritical: "設為 \\(\\theta_c\\)",
+                set0deg: "設為 0°",
+                set90deg: "設為 90°",
+                glassLabel: "監獄 (光密介質) <span class=\"math-inline\">\\(n_1\\)</span>",
+                airLabel: "自由 (光疏介質) <span class=\"math-inline\">\\(n_2\\)</span>",
+                showRefractRay: "顯示折射光線",
+                hideRefractRay: "隱藏折射光線",
+                showReflectRay: "顯示反射光線",
+                hideReflectRay: "隱藏反射光線",
+                dirFromGlass: "入射方向：由 光密介質(n₁) 射向 光疏介質(n₂)",
+                dirFromAir: "入射方向：由 光疏介質(n₂) 射向 光密介質(n₁)",
+                physicsCore: "🧮 物理核心運算",
+                theoryDenseRare: "<strong>【越獄理論】</strong> 光想從光密介質 (<span class=\"math-inline\">\\(n=N_I\\)</span>) 逃到光疏介質 (<span class=\"math-inline\">\\(n=N_R\\)</span>)。",
+                theoryDenseRareL1: "<strong>角度 &lt; <span class=\"math-inline\">\\(C\\)</span></strong>：成功越獄（折射）",
+                theoryDenseRareL2: "<strong>角度 = <span class=\"math-inline\">\\(C\\)</span></strong>：卡在圍牆上（沿界面跑）",
+                theoryDenseRareL3: "<strong>角度 &gt; <span class=\"math-inline\">\\(C\\)</span></strong>：越獄失敗，被彈回來（全內反射）",
+                theoryRareDense: "<strong>【入獄理論】</strong> 光從光疏介質 (<span class=\"math-inline\">\\(n=N_I\\)</span>) 進入光密介質 (<span class=\"math-inline\">\\(n=N_R\\)</span>)。",
+                theoryRareDenseL1: "<strong>任何角度</strong>：皆會發生折射穿透",
+                theoryRareDenseL2: "<strong>光線偏折</strong>：永遠偏向法線，<strong>不會</strong>發生全內反射！",
+                tirBadge: "完全內反射",
+                criticalAngleLabel: "臨界角：",
+                snellLabel: "斯涅爾定律：",
+                canvasAir: "光疏介質 (自由世界)",
+                canvasGlass: "光密介質 (監獄)",
+                statusFailed: "🚨 越獄失敗！（全內反射）",
+                statusStuck: "🧱 卡在圍牆上！（沿界面跑）",
+                statusEscaped: "✨ 成功越獄！（折射）",
+                statusEntered: "✨ 成功進入！（折射）",
+                noTIR: "光從光疏到光密，不會發生全內反射",
+                noSolution: "無解（全內反射）",
+                reflectRayTip: "切換反射光線的顯示",
+                reflectRayTipDisabled: "此情況不顯示反射（θ₁=0° 或由低 n→高 n）",
+                calcCritical: "\\[\\theta_2 = \\sin^{-1}(1.00) = 90.0^{\\circ}\\]",
+                calcTir: "\\[\\sin(\\theta_2) > 1 \\rightarrow \\text{無解（全內反射）}\\]"
+            },
+            en: {
+                title: "🔥 Prison Break",
+                subtitle: "TIR Simulation",
+                incidentLabel: "Incident Angle <span class=\"math-inline\">\\(\\theta_1\\)</span>",
+                setCritical: "Set to \\(\\theta_c\\)",
+                set0deg: "Set to 0°",
+                set90deg: "Set to 90°",
+                glassLabel: "Prison (Dense medium) <span class=\"math-inline\">\\(n_1\\)</span>",
+                airLabel: "Free (Less dense medium) <span class=\"math-inline\">\\(n_2\\)</span>",
+                showRefractRay: "Show Refracted Ray",
+                hideRefractRay: "Hide Refracted Ray",
+                showReflectRay: "Show Reflected Ray",
+                hideReflectRay: "Hide Reflected Ray",
+                dirFromGlass: "Direction: Dense medium(n₁) to Less dense medium(n₂)",
+                dirFromAir: "Direction: Less dense medium(n₂) to Dense medium(n₁)",
+                physicsCore: "🧮 Physics Core",
+                theoryDenseRare: "<strong>【Prison Break】</strong> Light escapes from dense medium (<span class=\"math-inline\">\\(n=N_I\\)</span>) to less dense medium (<span class=\"math-inline\">\\(n=N_R\\)</span>).",
+                theoryDenseRareL1: "<strong>Angle &lt; <span class=\"math-inline\">\\(C\\)</span></strong>: Escape Successful (Refraction)",
+                theoryDenseRareL2: "<strong>Angle = <span class=\"math-inline\">\\(C\\)</span></strong>: Stuck on Wall (Runs along interface)",
+                theoryDenseRareL3: "<strong>Angle &gt; <span class=\"math-inline\">\\(C\\)</span></strong>: Escape Failed, Bounced Back (TIR)",
+                theoryRareDense: "<strong>【Prison Entry】</strong> Light enters dense medium (<span class=\"math-inline\">\\(n=N_R\\)</span>) from less dense medium (<span class=\"math-inline\">\\(n=N_I\\)</span>).",
+                theoryRareDenseL1: "<strong>Any angle</strong>: Refraction occurs",
+                theoryRareDenseL2: "<strong>Bending</strong>: Bends towards normal, <strong>NO</strong> TIR occurs!",
+                tirBadge: "Total Internal Reflection",
+                criticalAngleLabel: "Critical Angle:",
+                snellLabel: "Snell's Law:",
+                canvasAir: "Less dense medium (Free World)",
+                canvasGlass: "Dense medium (Prison)",
+                statusFailed: "🚨 Escape Failed! (TIR)",
+                statusStuck: "🧱 Stuck on Wall! (Grazing)",
+                statusEscaped: "✨ Escape Successful! (Refraction)",
+                statusEntered: "✨ Successfully Entered! (Refraction)",
+                noTIR: "Light from less dense to dense medium, no TIR.",
+                noSolution: "No solution (TIR)",
+                reflectRayTip: "Toggle reflected ray visibility",
+                reflectRayTipDisabled: "No reflected ray for θ₁≈0° or less dense→dense incidence",
+                calcCritical: "\\[\\theta_2 = \\sin^{-1}(1.00) = 90.0^{\\circ}\\]",
+                calcTir: "\\[\\sin(\\theta_2) > 1 \\rightarrow \\text{No solution (TIR)}\\]"
+            }
+        };
+
+        function hubLangToLocal(hubLang) {
+            if (hubLang === 'zh-Hant' || hubLang === 'zh') return 'zh';
+            return 'en';
+        }
+
+        function setLang(lang) {
+            currentLang = lang === 'en' ? 'en' : 'zh';
+            document.documentElement.lang = currentLang === 'zh' ? 'zh-Hant' : 'en';
+        }
+
+        function initLangFromLocation() {
+            const lang = new URLSearchParams(location.search).get('lang');
+            if (lang) setLang(hubLangToLocal(lang));
+        }
+
+        function bindHubLangSync() {
+            window.addEventListener('message', (ev) => {
+                if (ev.data?.type !== 's3phy:lang') return;
+                const next = hubLangToLocal(ev.data.lang);
+                if (next === currentLang) return;
+                setLang(next);
+                updateTexts();
+            });
+        }
+
+        function t(key) {
+            return i18n[currentLang][key];
+        }
+
+        function retypesetMath(elements) {
+            if (!window.MathJax?.typesetPromise) return Promise.resolve();
+            const els = (Array.isArray(elements) ? elements : [elements]).filter(Boolean);
+            if (!els.length) return Promise.resolve();
+            if (MathJax.typesetClear) MathJax.typesetClear(els);
+            return MathJax.typesetPromise(els).catch(function (err) { console.warn(err); });
+        }
+
+        function typesetCalcResult() {
+            return retypesetMath([calcResult]);
+        }
+
+        function typesetAllMath() {
+            return retypesetMath([
+                tirPhysicsPanel,
+                calcResult,
+                criticalFormula,
+                snellFormula,
+                document.getElementById('incident-angle-label'),
+                document.getElementById('btn-set-critical'),
+                document.getElementById('n1-label'),
+                document.getElementById('n2-label')
+            ]);
+        }
+
+        function applyLabels() {
+            document.querySelector('h1').innerHTML = t('title');
+            document.querySelector('h1').nextElementSibling.innerHTML = t('subtitle');
+            document.getElementById('incident-angle-label').innerHTML = t('incidentLabel');
+            document.getElementById('btn-set-critical').innerHTML = t('setCritical');
+            document.getElementById('btn-set-0').innerHTML = t('set0deg');
+            document.getElementById('btn-set-90').innerHTML = t('set90deg');
+            document.getElementById('n1-label').innerHTML = t('glassLabel');
+            document.getElementById('n2-label').innerHTML = t('airLabel');
+            document.getElementById('refract-toggle-text').textContent = showRefractedRay ? t('hideRefractRay') : t('showRefractRay');
+            document.getElementById('reflect-toggle-text').textContent = showReflectedRay ? t('hideReflectRay') : t('showReflectRay');
+            document.getElementById('dir-toggle-text').textContent = incidentFromBottom ? t('dirFromGlass') : t('dirFromAir');
+            document.getElementById('physics-core-title').innerHTML = t('physicsCore');
+            document.getElementById('tir-badge').innerHTML = t('tirBadge');
+            document.getElementById('critical-angle-label').innerHTML = t('criticalAngleLabel');
+            document.getElementById('snell-label').innerHTML = t('snellLabel');
+        }
+
+        /** Fill theory + formulas + calc; always re-typeset Snell result line after draw. */
+        function refreshPhysicsPanel() {
+            applyLabels();
+            updateTheoryText(true);
+            updateStaticFormulas(true);
+            draw(true);
+            return typesetCalcResult();
+        }
+
+        function updateTexts() {
+            const savedAngle = parseFloat(slider.value);
+            refreshPhysicsPanel();
+            return typesetAllMath().then(function () {
+                if (Number.isFinite(savedAngle)) {
+                    incidentAngle = savedAngle;
+                    slider.value = savedAngle;
+                    angleDisplay.innerText = savedAngle.toFixed(1) + '°';
+                }
+                draw(true);
+                return typesetCalcResult();
+            });
+        }
+
+        document.getElementById('lang-toggle-btn').addEventListener('click', function () {
+            setLang(currentLang === 'zh' ? 'en' : 'zh');
+            this.textContent = currentLang === 'zh' ? 'EN / 中文' : '中文 / EN';
+            updateTexts();
+        });
+
+        initLangFromLocation();
+        bindHubLangSync();
+
+        function getCriticalAngleDeg() {
+            const n_i = incidentFromBottom ? n1 : n2;
+            const n_r = incidentFromBottom ? n2 : n1;
+            if (n_i <= n_r) return 90;
+            return (Math.asin(n_r / n_i) * 180 / Math.PI);
+        }
+
+        const CHIBI_HAPPY = '<svg class="chibi-svg" width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="32" r="22" fill="#fcd34d" stroke="#f59e0b" stroke-width="2"/><ellipse cx="22" cy="28" rx="4" ry="5" fill="#1f2937"/><ellipse cx="34" cy="28" rx="4" ry="5" fill="#1f2937"/><path d="M20 40 Q28 48 36 40" stroke="#1f2937" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M14 20 L18 14 M42 20 L38 14" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><path d="M28 8 L30 4 L32 8" stroke="#fbbf24" stroke-width="1.5" fill="none"/></svg>';
+        const CHIBI_UNHAPPY = '<svg class="chibi-svg" width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="32" r="22" fill="#fcd34d" stroke="#f59e0b" stroke-width="2"/><ellipse cx="22" cy="28" rx="4" ry="5" fill="#1f2937"/><ellipse cx="34" cy="28" rx="4" ry="5" fill="#1f2937"/><path d="M20 42 Q28 36 36 42" stroke="#1f2937" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="20" cy="38" rx="2" ry="3" fill="#7dd3fc" opacity="0.8"/><ellipse cx="36" cy="38" rx="2" ry="3" fill="#7dd3fc" opacity="0.8"/></svg>';
+        const CHIBI_CRITICAL = '<svg class="chibi-svg" width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="32" r="22" fill="#fcd34d" stroke="#f59e0b" stroke-width="2"/><circle cx="22" cy="28" r="4" fill="#1f2937"/><circle cx="34" cy="28" r="4" fill="#1f2937"/><path d="M22 40 L34 40" stroke="#1f2937" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M38 16 Q42 22 40 26 Q36 22 38 16" fill="#7dd3fc" opacity="0.8"/></svg>';
+
+        function updateChibi(state) {
+            if (state === 'critical') chibiDisplay.innerHTML = CHIBI_CRITICAL;
+            else if (state === 'tir') chibiDisplay.innerHTML = CHIBI_UNHAPPY;
+            else chibiDisplay.innerHTML = CHIBI_HAPPY;
+        }
+
+        function updateNControls() {
+            n1Value.textContent = n1.toFixed(2);
+            n2Value.textContent = n2.toFixed(2);
+        }
+
+        function updateStaticFormulas(skipTypeset) {
+            const thetaC = getCriticalAngleDeg();
+            const n_i = incidentFromBottom ? n1 : n2;
+            const n_r = incidentFromBottom ? n2 : n1;
+
+            if (n_i <= n_r) {
+                criticalFormula.innerHTML = '\\[' + n_i.toFixed(2) + ' \\leq ' + n_r.toFixed(2) + ' \\Rightarrow \\text{' + t('noTIR') + '}\\]';
+            } else {
+                criticalFormula.innerHTML = '\\[\\theta_c = \\sin^{-1}\\left(\\frac{n_r}{n_i}\\right) = \\sin^{-1}\\left(\\frac{' + n_r.toFixed(2) + '}{' + n_i.toFixed(2) + '}\\right) \\approx ' + thetaC.toFixed(1) + '^\\circ\\]';
+            }
+            snellFormula.innerHTML = '\\[' + n_i.toFixed(2) + ' \\cdot \\sin(\\theta_1) = ' + n_r.toFixed(2) + ' \\cdot \\sin(\\theta_2)\\]';
+
+            if (skipTypeset) return;
+            return retypesetMath([criticalFormula, snellFormula, calcResult, snellBlock]);
+        }
+
+        function updateTheoryText(skipTypeset) {
+            const n_i = incidentFromBottom ? n1 : n2;
+            const n_r = incidentFromBottom ? n2 : n1;
+            const theoryBox = document.getElementById('theory-box');
+            if (n_i > n_r) {
+                theoryBox.innerHTML = `
+                    <p class="mb-2 text-gray-800">${t('theoryDenseRare').replace('N_I', n_i.toFixed(2)).replace('N_R', n_r.toFixed(2))}</p>
+                    <ul class="list-disc pl-5 space-y-1.5 text-gray-600">
+                        <li>${t('theoryDenseRareL1')}</li>
+                        <li>${t('theoryDenseRareL2')}</li>
+                        <li>${t('theoryDenseRareL3')}</li>
+                    </ul>
+                `;
+            } else {
+                theoryBox.innerHTML = `
+                    <p class="mb-2 text-gray-800">${t('theoryRareDense').replace('N_I', n_i.toFixed(2)).replace('N_R', n_r.toFixed(2))}</p>
+                    <ul class="list-disc pl-5 space-y-1.5 text-gray-600">
+                        <li>${t('theoryRareDenseL1')}</li>
+                        <li>${t('theoryRareDenseL2')}</li>
+                    </ul>
+                `;
+            }
+            if (skipTypeset) return;
+            return retypesetMath([theoryBox]);
+        }
+
+        let width, height, centerX, centerY, radius;
+
+        function resizeCanvas() {
+            const parent = canvas.parentElement;
+            width = parent ? parent.clientWidth : 0;
+            height = parent ? parent.clientHeight : 0;
+            canvas.width = width;
+            canvas.height = height;
+
+            centerX = width / 2;
+            centerY = height / 2 + Math.min(20, height * 0.03);
+            radius = Math.min(width, height) * 0.36;
+
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        (function attachCanvasResizeObserver() {
+            const wrap = document.getElementById('sim-canvas-wrap');
+            if (!wrap || typeof ResizeObserver === 'undefined') return;
+            const ro = new ResizeObserver(() => resizeCanvas());
+            ro.observe(wrap);
+        })();
+
+        const toRad = (deg) => deg * Math.PI / 180;
+        const toDeg = (rad) => rad * 180 / Math.PI;
+
+        function clamp01(x) {
+            return Math.max(0, Math.min(1, x));
+        }
+
+        function lerp(a, b, t) {
+            return a + (b - a) * t;
+        }
+
+        function rayStyle(type, incidentAngleDeg, criticalAngleDeg, state) {
+            const a = clamp01(incidentAngleDeg / 90);
+            const hasCritical = Number.isFinite(criticalAngleDeg) && criticalAngleDeg > 0 && criticalAngleDeg < 90;
+            const nearCritical = hasCritical ? clamp01(1 - Math.abs(incidentAngleDeg - criticalAngleDeg) / 12) : 0;
+
+            // 目標：入射角改變時，線的粗幼與深淺有可感知的比例變化；接近臨界角時再加強對比。
+            const accent = 0.25 * nearCritical;
+
+            if (type === 'incident') {
+                return { core: 2.0, glow: lerp(4.5, 7.5, a), alpha: 1.0, shadow: lerp(10, 18, a) };
+            }
+            if (type === 'reflect') {
+                const boost = (state === 'tir') ? 1 : (state === 'critical' ? 0.75 : 0.55);
+                return {
+                    core: lerp(1.2, 2.2, a),
+                    glow: lerp(2.6, 6.0, a) * boost + accent * 2,
+                    alpha: clamp01(lerp(0.22, 0.75, a) * boost + accent),
+                    shadow: lerp(6, 16, a) * boost
+                };
+            }
+            // refract / critical grazing
+            return {
+                core: lerp(1.2, 2.0, a),
+                glow: lerp(3.0, 6.5, a) + accent * 2,
+                alpha: clamp01(lerp(0.35, 0.85, a) + accent),
+                shadow: lerp(8, 18, a)
+            };
+        }
+
+        function draw(skipTypeset) {
+            if (!width || !height) return undefined;
+            ctx.clearRect(0, 0, width, height);
+
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, width, centerY);
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI, false);
+            ctx.closePath();
+
+            let glassGradient = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, radius);
+            glassGradient.addColorStop(0, 'rgba(191, 219, 254, 0.85)');
+            glassGradient.addColorStop(1, 'rgba(147, 197, 253, 0.95)');
+            ctx.fillStyle = glassGradient;
+            ctx.fill();
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.save();
+            ctx.clip();
+            ctx.strokeStyle = 'rgba(26, 28, 44, 0.06)';
+            ctx.lineWidth = 1;
+            const gridSize = 20;
+            for (let x = centerX - radius; x < centerX + radius; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, centerY);
+                ctx.lineTo(x, centerY + radius);
+                ctx.stroke();
+            }
+            for (let y = centerY; y < centerY + radius; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(centerX - radius, y);
+                ctx.lineTo(centerX + radius, y);
+                ctx.stroke();
+            }
+            ctx.restore();
+
+            ctx.beginPath();
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#9ca3af';
+            ctx.lineWidth = 1;
+            ctx.moveTo(centerX, centerY - radius * 0.8);
+            ctx.lineTo(centerX, centerY + radius * 0.8);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#6b7280';
+            ctx.lineWidth = 2;
+            ctx.moveTo(centerX - radius - 50, centerY);
+            ctx.lineTo(centerX + radius + 50, centerY);
+            ctx.stroke();
+
+            ctx.save();
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#6b7280';
+            ctx.font = 'bold 16px system-ui, sans-serif';
+            ctx.fillText(t('canvasAir'), centerX - radius - 15, centerY - 30);
+            ctx.fillText("n=" + n2.toFixed(2), centerX - radius - 15, centerY - 10);
+
+            ctx.fillStyle = '#2563eb';
+            ctx.fillText(t('canvasGlass'), centerX - radius - 15, centerY + 20);
+            ctx.fillText("n=" + n1.toFixed(2), centerX - radius - 15, centerY + 40);
+            ctx.restore();
+
+            const n_i = incidentFromBottom ? n1 : n2;
+            const n_r = incidentFromBottom ? n2 : n1;
+
+            const theta1 = toRad(incidentAngle);
+            const startX = centerX - radius * Math.sin(theta1);
+            const startY = incidentFromBottom 
+                ? centerY + radius * Math.cos(theta1)
+                : centerY - radius * Math.cos(theta1);
+
+            const criticalAngle = getCriticalAngleDeg();
+            const incStyle = rayStyle('incident', incidentAngle, criticalAngle, 'incident');
+            drawLaser(startX, startY, centerX, centerY, '#f43f5e', incStyle);
+            drawArrowOnRay(startX, startY, centerX, centerY, '#f43f5e', 0.7);
+
+            // 本專案的教學模式：只在「由高 n 射向低 n」且入射角非 0° 時顯示反射與反射角
+            const canShowReflection = (n_i > n_r) && (incidentAngle > 0.05);
+            // 讓 UI 在不適用時自動淡化/禁用反射按鈕，避免誤導
+            const reflectBtn = document.getElementById('reflect-toggle-btn');
+            if (reflectBtn) {
+                reflectBtn.disabled = !canShowReflection;
+                reflectBtn.style.opacity = canShowReflection ? '1' : '0.45';
+                reflectBtn.style.cursor = canShowReflection ? 'pointer' : 'not-allowed';
+                reflectBtn.title = canShowReflection ? t('reflectRayTip') : t('reflectRayTipDisabled');
+            }
+
+            const sinTheta2 = (n_i * Math.sin(theta1)) / n_r;
+            let theta2 = 0;
+            const reflectEndX = centerX + radius * Math.sin(theta1);
+            const reflectEndY = incidentFromBottom
+                ? centerY + radius * Math.cos(theta1)
+                : centerY - radius * Math.cos(theta1);
+
+            // 檢查是否為臨界角 (考慮浮點數誤差)
+            if (n_i > n_r && Math.abs(incidentAngle - criticalAngle) < 0.05) {
+                theta2 = Math.PI / 2;
+                const rayLength = radius * 1.5;
+                const endX = centerX + rayLength;
+                const endY = centerY;
+                if (showRefractedRay) {
+                    const outStyle = rayStyle('refract', incidentAngle, criticalAngle, 'critical');
+                    drawLaser(centerX, centerY, endX, endY, '#eab308', outStyle); // 黃色光線
+                    drawArrowOnRay(centerX, centerY, endX, endY, '#eab308', 0.6);
+                    if (incidentFromBottom) {
+                        drawRightAngle(centerX, centerY, 20, 'θ2=90.0°', '#eab308', 1, -1);
+                    } else {
+                        drawRightAngle(centerX, centerY, 20, 'θ2=90.0°', '#eab308', 1, 1);
+                    }
+                }
+                if (showReflectedRay && canShowReflection) {
+                    // 反射光線（臨界角同時存在反射與沿界面折射）
+                    const reflStyle = rayStyle('reflect', incidentAngle, criticalAngle, 'critical');
+                    drawLaser(centerX, centerY, reflectEndX, reflectEndY, '#f97316', reflStyle);
+                    drawArrowOnRay(centerX, centerY, reflectEndX, reflectEndY, '#f97316', 0.6);
+                    if (Math.abs(incidentAngle - 90) < 0.1) {
+                        if (incidentFromBottom) {
+                            drawRightAngle(centerX, centerY, 20, 'θr=90.0°', '#f97316', 1, 1);
+                        } else {
+                            drawRightAngle(centerX, centerY, 20, 'θr=90.0°', '#f97316', 1, -1);
+                        }
+                    } else {
+                        if (incidentFromBottom) {
+                            drawAngleArc(centerX, centerY, radius * 0.15, Math.PI / 2 - theta1, Math.PI / 2, 'θr=' + incidentAngle.toFixed(1) + '°', '#f97316');
+                        } else {
+                            drawAngleArc(centerX, centerY, radius * 0.15, -Math.PI / 2, -Math.PI / 2 + theta1, 'θr=' + incidentAngle.toFixed(1) + '°', '#f97316');
+                        }
+                    }
+                }
+                updateUI('critical', theta1, theta2, skipTypeset);
+            } else if (sinTheta2 >= 1.0) {
+                if (showReflectedRay && canShowReflection) {
+                    const reflStyle = rayStyle('reflect', incidentAngle, criticalAngle, 'tir');
+                    drawLaser(centerX, centerY, reflectEndX, reflectEndY, '#f97316', reflStyle);
+                    drawArrowOnRay(centerX, centerY, reflectEndX, reflectEndY, '#f97316', 0.6);
+                    if (Math.abs(incidentAngle - 90) < 0.1) {
+                        if (incidentFromBottom) {
+                            drawRightAngle(centerX, centerY, 20, 'θr=90.0°', '#f97316', 1, 1);
+                        } else {
+                            drawRightAngle(centerX, centerY, 20, 'θr=90.0°', '#f97316', 1, -1);
+                        }
+                    } else {
+                        if (incidentFromBottom) {
+                            drawAngleArc(centerX, centerY, radius * 0.15, Math.PI / 2 - theta1, Math.PI / 2, 'θr=' + incidentAngle.toFixed(1) + '°', '#f97316');
+                        } else {
+                            drawAngleArc(centerX, centerY, radius * 0.15, -Math.PI / 2, -Math.PI / 2 + theta1, 'θr=' + incidentAngle.toFixed(1) + '°', '#f97316');
+                        }
+                    }
+                }
+                updateUI('tir', theta1, 0, skipTypeset);
+            } else {
+                theta2 = Math.asin(sinTheta2);
+                const rayLength = radius * 1.5;
+                const endX = centerX + rayLength * Math.sin(theta2);
+                const endY = incidentFromBottom 
+                    ? centerY - rayLength * Math.cos(theta2)
+                    : centerY + rayLength * Math.cos(theta2);
+                if (showRefractedRay) {
+                    const outStyle = rayStyle('refract', incidentAngle, criticalAngle, 'refract');
+                    drawLaser(centerX, centerY, endX, endY, '#22c55e', outStyle);
+                    drawArrowOnRay(centerX, centerY, endX, endY, '#22c55e', 0.6);
+                    if (incidentFromBottom) {
+                        drawAngleArc(centerX, centerY, radius * 0.15, -Math.PI / 2, -Math.PI / 2 + theta2, 'θ2=' + toDeg(theta2).toFixed(1) + '°', '#22c55e');
+                    } else {
+                        drawAngleArc(centerX, centerY, radius * 0.15, Math.PI / 2 - theta2, Math.PI / 2, 'θ2=' + toDeg(theta2).toFixed(1) + '°', '#22c55e');
+                    }
+                }
+                if (showReflectedRay && canShowReflection) {
+                    // 反射光線：折射時也會有反射（以較淡/較細呈現，入射角改變時動態調整）
+                    const reflStyle = rayStyle('reflect', incidentAngle, criticalAngle, 'refract');
+                    drawLaser(centerX, centerY, reflectEndX, reflectEndY, '#f97316', reflStyle);
+                    drawArrowOnRay(centerX, centerY, reflectEndX, reflectEndY, '#f97316', 0.6);
+                    if (Math.abs(incidentAngle - 90) < 0.1) {
+                        if (incidentFromBottom) {
+                            drawRightAngle(centerX, centerY, 20, 'θr=90.0°', '#f97316', 1, 1);
+                        } else {
+                            drawRightAngle(centerX, centerY, 20, 'θr=90.0°', '#f97316', 1, -1);
+                        }
+                    } else {
+                        if (incidentFromBottom) {
+                            drawAngleArc(centerX, centerY, radius * 0.15, Math.PI / 2 - theta1, Math.PI / 2, 'θr=' + incidentAngle.toFixed(1) + '°', '#f97316');
+                        } else {
+                            drawAngleArc(centerX, centerY, radius * 0.15, -Math.PI / 2, -Math.PI / 2 + theta1, 'θr=' + incidentAngle.toFixed(1) + '°', '#f97316');
+                        }
+                    }
+                }
+                updateUI('refract', theta1, theta2, skipTypeset);
+            }
+
+            if (Math.abs(incidentAngle - 90) < 0.1) {
+                if (incidentFromBottom) {
+                    drawRightAngle(centerX, centerY, 20, 'θi=90.0°', '#f43f5e', -1, 1);
+                } else {
+                    drawRightAngle(centerX, centerY, 20, 'θi=90.0°', '#f43f5e', -1, -1);
+                }
+            } else {
+                if (incidentFromBottom) {
+                    drawAngleArc(centerX, centerY, radius * 0.2, Math.PI / 2, Math.PI / 2 + theta1, 'θi=' + incidentAngle.toFixed(1) + '°', '#f43f5e');
+                } else {
+                    drawAngleArc(centerX, centerY, radius * 0.2, -Math.PI / 2 - theta1, -Math.PI / 2, 'θi=' + incidentAngle.toFixed(1) + '°', '#f43f5e');
+                }
+            }
+            drawCriticalAngleLine();
+        }
+
+        function drawLaser(x1, y1, x2, y2, color, style) {
+            style = style || {};
+            const coreWidth = style.core ?? 2;
+            const glowWidth = style.glow ?? 6;
+            const alpha = style.alpha ?? 1;
+            const shadowBlur = style.shadow ?? 15;
+
+            ctx.save();
+            ctx.globalAlpha = alpha;
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = coreWidth;
+            ctx.stroke();
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = glowWidth;
+            ctx.lineCap = 'round';
+            ctx.shadowBlur = shadowBlur;
+            ctx.shadowColor = color;
+            ctx.stroke();
+
+            ctx.shadowBlur = 0;
+            ctx.restore();
+        }
+
+        function drawArrowOnRay(x1, y1, x2, y2, color, t) {
+            t = t || 0.65;
+            const px = x1 + (x2 - x1) * t;
+            const py = y1 + (y2 - y1) * t;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const headLen = 14;
+            const tipX = px + headLen * Math.cos(angle);
+            const tipY = py + headLen * Math.sin(angle);
+            const wing = 0.45;
+            const leftX = px - headLen * 0.7 * Math.cos(angle - wing);
+            const leftY = py - headLen * 0.7 * Math.sin(angle - wing);
+            const rightX = px - headLen * 0.7 * Math.cos(angle + wing);
+            const rightY = py - headLen * 0.7 * Math.sin(angle + wing);
+            ctx.beginPath();
+            ctx.moveTo(tipX, tipY);
+            ctx.lineTo(leftX, leftY);
+            ctx.lineTo(px, py);
+            ctx.lineTo(rightX, rightY);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = color;
+            ctx.fill();
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        function drawAngleLabel(ctx, cx, cy, text, color) {
+            ctx.save();
+            ctx.fillStyle = color;
+            
+            const mainFont = 'bold 15px system-ui, sans-serif';
+            const subFont = 'bold 11px system-ui, sans-serif';
+            
+            const match = text.match(/^(θ)([irc2])(\s*[=≈]\s*)(.*)$/);
+            if (match) {
+                const [_, theta, sub, op, value] = match;
+                
+                ctx.font = mainFont;
+                const wTheta = ctx.measureText(theta).width;
+                const wOp = ctx.measureText(op).width;
+                const wValue = ctx.measureText(value).width;
+                
+                ctx.font = subFont;
+                const wSub = ctx.measureText(sub).width;
+                
+                const totalW = wTheta + wSub + wOp + wValue;
+                
+                let curX = cx - totalW / 2;
+                
+                ctx.textBaseline = 'middle';
+                
+                ctx.font = mainFont;
+                ctx.textAlign = 'left';
+                ctx.fillText(theta, curX, cy);
+                curX += wTheta;
+                
+                ctx.font = subFont;
+                ctx.textAlign = 'left';
+                ctx.fillText(sub, curX, cy + 4);
+                curX += wSub;
+                
+                ctx.font = mainFont;
+                ctx.textAlign = 'left';
+                ctx.fillText(op, curX, cy);
+                curX += wOp;
+                
+                ctx.fillText(value, curX, cy);
+            } else {
+                ctx.font = mainFont;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, cx, cy);
+            }
+            ctx.restore();
+        }
+
+        function drawAngleArc(x, y, r, startAngle, endAngle, text, color) {
+            ctx.beginPath();
+            ctx.arc(x, y, r, startAngle, endAngle);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            const midAngle = (startAngle + endAngle) / 2;
+            const textX = x + (r + 20) * Math.cos(midAngle);
+            const textY = y + (r + 20) * Math.sin(midAngle);
+            drawAngleLabel(ctx, textX, textY, text, color);
+        }
+
+        function drawRightAngle(x, y, size, text, color, dirX = 1, dirY = -1) {
+            ctx.beginPath();
+            ctx.moveTo(x, y + dirY * size);
+            ctx.lineTo(x + dirX * size, y + dirY * size);
+            ctx.lineTo(x + dirX * size, y);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 調整文字位置到直角符號的斜對角
+            const textX = x + dirX * (size + 25);
+            const textY = y + dirY * (size + 10);
+            drawAngleLabel(ctx, textX, textY, text, color);
+        }
+
+        function drawCriticalAngleLine() {
+            const n_i = incidentFromBottom ? n1 : n2;
+            const n_r = incidentFromBottom ? n2 : n1;
+            if (n_i <= n_r) return;
+            const thetaC = toRad(getCriticalAngleDeg());
+            const x = centerX - radius * Math.sin(thetaC);
+            const y = incidentFromBottom
+                ? centerY + radius * Math.cos(thetaC)
+                : centerY - radius * Math.cos(thetaC);
+
+            ctx.beginPath();
+            ctx.setLineDash([2, 4]);
+            ctx.strokeStyle = 'rgba(37, 99, 235, 0.35)';
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            const textX = x - 15;
+            const textY = y + (incidentFromBottom ? 12 : -12);
+            drawAngleLabel(ctx, textX, textY, 'θc ≈ ' + getCriticalAngleDeg().toFixed(1) + '°', 'rgba(37, 99, 235, 0.85)');
+        }
+
+        function updateUI(state, theta1Rad, theta2Rad, skipTypeset) {
+            theta2Rad = theta2Rad || 0;
+            const theta2Deg = toDeg(theta2Rad).toFixed(1);
+            const theta1Deg = toDeg(theta1Rad).toFixed(1);
+            const n_i = incidentFromBottom ? n1 : n2;
+            const n_r = incidentFromBottom ? n2 : n1;
+
+            updateChibi(state);
+
+            if (state === 'tir') {
+                statusText.textContent = t('statusFailed');
+                statusBadge.className = "rounded-lg font-bold text-white text-xl mb-6 transition-all duration-300 status-trapped";
+                calcResult.innerHTML = t('calcTir');
+                calcResult.className = "text-center text-red-400 mt-2";
+            } else if (state === 'critical') {
+                statusText.textContent = t('statusStuck');
+                statusBadge.className = "rounded-lg font-bold text-white text-xl mb-6 transition-all duration-300 bg-yellow-500 shadow-[0_0_15px_rgba(234,179,8,0.6)]";
+                calcResult.innerHTML = t('calcCritical');
+                calcResult.className = "text-center text-yellow-400 mt-2";
+            } else {
+                if (n_i > n_r) {
+                    statusText.textContent = t('statusEscaped');
+                } else {
+                    statusText.textContent = t('statusEntered');
+                }
+                statusBadge.className = "rounded-lg font-bold text-white text-xl mb-6 transition-all duration-300 status-escaped";
+                calcResult.innerHTML = '\\[\\theta_2 = \\sin^{-1}\\left(\\frac{' + n_i.toFixed(2) + ' \\cdot \\sin\\left(' + theta1Deg + '^{\\circ}\\right)}{' + n_r.toFixed(2) + '}\\right) \\approx ' + theta2Deg + '^{\\circ}\\]';
+                calcResult.className = "text-center text-green-400 mt-2";
+            }
+
+            if (skipTypeset) return typesetCalcResult();
+            return retypesetMath([calcResult, snellBlock]);
+        }
+
+        slider.addEventListener('input', function (e) {
+            incidentAngle = parseFloat(e.target.value);
+            angleDisplay.innerText = incidentAngle.toFixed(1) + "°";
+            draw();
+        });
+
+        document.getElementById('btn-set-critical').addEventListener('click', function () {
+            if (n1 > n2) {
+                incidentAngle = getCriticalAngleDeg();
+                slider.value = incidentAngle;
+                angleDisplay.innerText = incidentAngle.toFixed(1) + "°";
+                draw();
+            }
+        });
+
+        document.getElementById('btn-set-0').addEventListener('click', function () {
+            incidentAngle = 0;
+            slider.value = incidentAngle;
+            angleDisplay.innerText = incidentAngle.toFixed(1) + "°";
+            draw();
+        });
+
+        document.getElementById('btn-set-90').addEventListener('click', function () {
+            incidentAngle = 90;
+            slider.value = incidentAngle;
+            angleDisplay.innerText = incidentAngle.toFixed(1) + "°";
+            draw();
+        });
+
+        document.getElementById('n1-minus').addEventListener('click', function () { adjustN1(-N_STEP); });
+        document.getElementById('n1-plus').addEventListener('click', function () { adjustN1(N_STEP); });
+        document.getElementById('n2-minus').addEventListener('click', function () { adjustN2(-N_STEP); });
+        document.getElementById('n2-plus').addEventListener('click', function () { adjustN2(N_STEP); });
+
+        const refractToggleBtn = document.getElementById('refract-toggle-btn');
+        const refractToggleIcon = document.getElementById('refract-toggle-icon');
+        const refractToggleText = document.getElementById('refract-toggle-text');
+        refractToggleBtn.addEventListener('click', function () {
+            showRefractedRay = !showRefractedRay;
+            refractToggleIcon.textContent = showRefractedRay ? '👁' : '🙈';
+            refractToggleText.textContent = showRefractedRay ? t('hideRefractRay') : t('showRefractRay');
+            refractToggleBtn.classList.toggle('rays-hidden', !showRefractedRay);
+            draw();
+        });
+
+        const reflectToggleBtn = document.getElementById('reflect-toggle-btn');
+        const reflectToggleIcon = document.getElementById('reflect-toggle-icon');
+        const reflectToggleText = document.getElementById('reflect-toggle-text');
+        reflectToggleBtn.addEventListener('click', function () {
+            if (reflectToggleBtn.disabled) return;
+            showReflectedRay = !showReflectedRay;
+            reflectToggleIcon.textContent = showReflectedRay ? '👁' : '🙈';
+            reflectToggleText.textContent = showReflectedRay ? t('hideReflectRay') : t('showReflectRay');
+            reflectToggleBtn.classList.toggle('rays-hidden', !showReflectedRay);
+            draw();
+        });
+
+        const dirToggleBtn = document.getElementById('dir-toggle-btn');
+        const dirToggleIcon = document.getElementById('dir-toggle-icon');
+        const dirToggleText = document.getElementById('dir-toggle-text');
+        dirToggleBtn.addEventListener('click', function () {
+            incidentFromBottom = !incidentFromBottom;
+            dirToggleText.textContent = incidentFromBottom ? t('dirFromGlass') : t('dirFromAir');
+            refreshPhysicsPanel();
+            typesetAllMath();
+        });
+
+        function adjustN1(delta) {
+            n1 = Math.max(N1_MIN, Math.min(N1_MAX, n1 + delta));
+            n1 = Math.round(n1 * 100) / 100;
+            updateNControls();
+            refreshPhysicsPanel();
+            typesetAllMath();
+        }
+        function adjustN2(delta) {
+            n2 = Math.max(N2_MIN, Math.min(N2_MAX, n2 + delta));
+            n2 = Math.round(n2 * 100) / 100;
+            updateNControls();
+            refreshPhysicsPanel();
+            typesetAllMath();
+        }
+
+        resizeCanvas();
+        updateNControls();
+        updateChibi(false);
+        refreshPhysicsPanel();
+
+        if (window.MathJax?.startup?.promise) {
+            window.MathJax.startup.promise.then(typesetAllMath);
+        } else {
+            window.addEventListener('load', typesetAllMath);
+        }
+    </script>
+</body>
+</html>

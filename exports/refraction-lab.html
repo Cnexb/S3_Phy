@@ -1,0 +1,2677 @@
+<!DOCTYPE html>
+<html lang="zh-HK" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refraction Lab — Snell's Law</title>
+  <style>
+/* S3_Phy embed mode — shared chrome for iframe labs inside Hub */
+
+html.s3phy-embed {
+  font-family: var(--s3-font);
+  font-size: var(--s3-font-size-base);
+  line-height: var(--s3-line-height);
+  -webkit-font-smoothing: antialiased;
+  touch-action: manipulation;
+}
+
+html.s3phy-embed:has(.lab-section) {
+  height: 100%;
+}
+
+html.s3phy-embed body {
+  font-family: var(--s3-font);
+  font-size: max(var(--s3-font-min), 1rem);
+  line-height: var(--s3-line-height);
+  margin: 0;
+}
+
+/* Interactive lab iframe — flex fill (not quiz/worksheet) */
+html.s3phy-embed body:has(.lab-section),
+html.s3phy-embed body.embed-mode:has(.sim-main-col),
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(.lab-section) > main,
+html.s3phy-embed body.embed-mode main.flex-grow,
+html.s3phy-embed body:has(.sim-main-col):not(:has(#quiz-layout)) > main {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Quiz / worksheet iframe — preserve two-column grid */
+html.s3phy-embed body:has(#quiz-layout) {
+  height: auto;
+  min-height: 100%;
+  display: block;
+  overflow: auto;
+}
+
+html.s3phy-embed #quiz-layout {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: none !important;
+  width: 100%;
+  margin: 0;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1101px) {
+  html.s3phy-embed #quiz-layout {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1100px) {
+  html.s3phy-embed #quiz-layout > aside#settings-panel {
+    position: static;
+    max-height: min(42dvh, 420px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+html.s3phy-embed #quiz-layout > aside#settings-panel {
+  position: sticky;
+  top: 0.5rem;
+  align-self: start;
+  max-height: calc(100dvh - 1rem);
+  overflow-y: auto;
+}
+
+html.s3phy-embed #quiz-layout > .min-w-0 {
+  min-width: 0;
+  width: 100%;
+}
+
+html.s3phy-embed .lab-section {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+html.s3phy-embed .lab-viz,
+html.s3phy-embed .lab-steps {
+  height: 100% !important;
+  min-height: 0;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-viz {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .lab-viz-canvas {
+  flex: 1 1 auto;
+  min-height: 200px;
+  max-height: none !important;
+}
+
+html.s3phy-embed .lab-steps {
+  overflow-y: auto;
+}
+
+html.s3phy-embed .lab-viz.lab-viz-dual {
+  display: grid !important;
+  height: 100% !important;
+}
+
+html.s3phy-embed .lab-viz-dual {
+  max-height: none !important;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  align-content: stretch;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel:first-child .lab-viz-canvas {
+  flex: 1 1 auto !important;
+  min-height: 120px !important;
+  max-height: none !important;
+  aspect-ratio: unset;
+  height: auto;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel-chart .lab-viz-chart-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  margin-top: 0;
+  aspect-ratio: unset;
+}
+
+html.s3phy-embed .lab-viz-dual .lab-viz-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed header,
+html.s3phy-embed footer {
+  flex-shrink: 0;
+}
+
+html.s3phy-embed .max-w-7xl {
+  max-width: none;
+  width: 100%;
+}
+
+html.s3phy-embed .sim-main-col,
+html.s3phy-embed .glass-panel.flex-grow {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .canvas-container {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none;
+}
+
+html.s3phy-embed .main-container,
+html.s3phy-embed .lab-wrap,
+html.s3phy-embed .dashboard,
+html.s3phy-embed .app-root {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+/* Floating controls panel (heat labs + shared script) */
+.lab-section {
+  position: relative;
+  min-height: 0;
+}
+
+@media (min-width: 768px) {
+  /* Keep grid items as 2 parallel columns at >= 768px */
+  html.s3phy-embed .lab-section,
+  html.s3phy-embed .main-grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .main-grid .sim-main-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .lab-section.controls-floating .lab-steps,
+  html.s3phy-embed .main-grid .tab-sidebar-col {
+    grid-column: span 6 / span 6 !important;
+  }
+  /* Specially for heat transfer conduction / convection / radiation simulation */
+  html.s3phy-embed .main-grid > div:first-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+  html.s3phy-embed .main-grid > div:last-of-type {
+    grid-column: span 6 / span 6 !important;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    position: absolute !important;
+    z-index: 50 !important;
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html.s3phy-embed .lab-section.controls-floating .lab-viz,
+  html.s3phy-embed .lab-section.controls-floating .lab-steps {
+    grid-column: 1 / -1;
+  }
+
+  html.s3phy-embed .lab-controls.lab-controls-float {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    max-width: none;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.lab-controls.lab-controls-float {
+  position: absolute;
+  z-index: 40;
+  width: var(--s3-float-panel-w);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.lab-controls-body {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls-desc {
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+}
+
+.lab-controls.controls-collapsed .lab-controls-body,
+.lab-controls.controls-collapsed .lab-controls-desc {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-body {
+  max-height: min(70vh, 520px);
+  opacity: 1;
+  overflow-y: auto;
+}
+
+.lab-controls:not(.controls-collapsed) .lab-controls-desc {
+  opacity: 1;
+  max-height: 4rem;
+}
+
+.lab-controls.controls-collapsed .lab-controls-title-text {
+  display: none;
+}
+
+.lab-controls-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lab-controls-actions {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.lab-controls-actions button {
+  padding: 0.625rem 0.75rem;
+  justify-content: center;
+}
+
+.lab-controls-actions button:not(.flex-1) {
+  flex-shrink: 0;
+}
+
+.lab-controls-actions button.flex-1 {
+  white-space: nowrap;
+  min-width: max-content;
+}
+
+.lab-controls-drag-handle {
+  display: none;
+  cursor: grab;
+  touch-action: none;
+  color: #94a3b8;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+
+@media (min-width: 900px) {
+  .lab-controls.lab-controls-float .lab-controls-drag-handle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.lab-controls-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Hub iframe — standalone labs (rotating-mirror, rgb, thermometer) */
+html.s3phy-embed:has(#app > .rml),
+html.s3phy-embed:has(#app > .rgb-mixer),
+html.s3phy-embed:has(#app > .tl-wrap) {
+  height: 100%;
+}
+
+html.s3phy-embed body:has(#app > .rml),
+html.s3phy-embed body:has(#app > .rgb-mixer),
+html.s3phy-embed body:has(#app > .tl-wrap) {
+  height: 100%;
+  min-height: 0 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html.s3phy-embed body:has(#app > .rml) #app,
+html.s3phy-embed body:has(#app > .rgb-mixer) #app,
+html.s3phy-embed body:has(#app > .tl-wrap) #app {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+html.s3phy-embed .rml,
+html.s3phy-embed .rgb-mixer,
+html.s3phy-embed .tl-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+html.s3phy-embed .rml .rml-head,
+html.s3phy-embed .tl-wrap .tl-head {
+  display: none;
+}
+
+html.s3phy-embed .rml {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rml .rml-dash {
+  flex: 1 1 auto;
+  min-height: 0;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+html.s3phy-embed .rml .rml-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rml .rml-canvas {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  flex: 1;
+  object-fit: contain;
+}
+
+html.s3phy-embed .rml .rml-controls {
+  flex: 0 0 auto;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+html.s3phy-embed .tl-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .tl-wrap .tl-dash,
+html.s3phy-embed .tl-wrap .tl-dash--faulty {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero-viz {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-dash--faulty {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  grid-template-rows: 1fr;
+  align-items: stretch;
+  gap: 14px;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-hero {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-faulty-live {
+  grid-column: 2;
+  grid-row: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+html.s3phy-embed .tl-wrap--faulty-cal .tl-controls {
+  grid-column: 1 / -1;
+}
+
+html.s3phy-embed .rgb-mixer {
+  display: flex;
+  flex-direction: column;
+}
+
+html.s3phy-embed .rgb-mixer-body {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto;
+  max-height: none;
+  align-items: stretch;
+}
+
+html.s3phy-embed .rgb-mixer-stage {
+  min-height: 0 !important;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+html.s3phy-embed .rgb-mixer-controls {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Lens simulator embed compact chrome */
+html.s3phy-embed .controls-panel,
+html.s3phy-embed .control-panel {
+  width: var(--s3-float-panel-w) !important;
+  max-width: var(--s3-float-panel-w) !important;
+}
+
+/* Minimum readable text in embed controls */
+html.s3phy-embed label,
+html.s3phy-embed .control label,
+html.s3phy-embed button,
+html.s3phy-embed input,
+html.s3phy-embed select {
+  font-size: max(var(--s3-font-min), 0.875rem);
+}
+
+/* Height adaptive scaling for compact/low-height viewports (height < 720px) */
+@media (max-height: 720px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 13.5px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 11px), 0.85rem) !important;
+  }
+  
+  /* Compact paddings and gaps */
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.5rem 0.625rem !important;
+  }
+  html.s3phy-embed .px-4,
+  html.s3phy-embed .px-5 {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+  html.s3phy-embed .py-4,
+  html.s3phy-embed .py-5,
+  html.s3phy-embed .py-6 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.375rem !important;
+  }
+  html.s3phy-embed .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem !important;
+  }
+
+  /* Compact header & tabs */
+  html.s3phy-embed header {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  html.s3phy-embed header h1 {
+    font-size: 1.1rem !important;
+  }
+  
+  /* KaTeX mathematical formulas scaling and tight margins */
+  html.s3phy-embed .lab-steps .katex {
+    font-size: 0.95em !important;
+  }
+  html.s3phy-embed .lab-steps .katex-display {
+    margin: 0.25em 0 !important;
+  }
+  
+  /* Shrink canvas and containers to prevent overflow */
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 120px !important;
+    flex: 1 1 auto !important;
+  }
+  
+  /* Compact parameters/controls — keep panel wide enough for action buttons */
+  html.s3phy-embed .lab-controls.lab-controls-float,
+  html.s3phy-embed .control-panel {
+    width: var(--s3-float-panel-w) !important;
+    max-width: var(--s3-float-panel-w) !important;
+    padding: 0.5rem !important;
+  }
+  html.s3phy-embed .lab-controls-body {
+    gap: 0.375rem !important;
+  }
+  html.s3phy-embed .lab-controls-body select,
+  html.s3phy-embed .lab-controls-body input,
+  html.s3phy-embed .lab-controls-body button {
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-height: 600px) {
+  html.s3phy-embed {
+    --s3-font-size-base: 12px !important;
+  }
+  html.s3phy-embed body {
+    font-size: max(var(--s3-font-min, 10px), 0.75rem) !important;
+  }
+  html.s3phy-embed .lab-viz-canvas {
+    min-height: 100px !important;
+  }
+  html.s3phy-embed .p-5,
+  html.s3phy-embed .p-4,
+  html.s3phy-embed .p-3.5,
+  html.s3phy-embed .p-3 {
+    padding: 0.375rem 0.5rem !important;
+  }
+  html.s3phy-embed .gap-6,
+  html.s3phy-embed .gap-5,
+  html.s3phy-embed .gap-4,
+  html.s3phy-embed .gap-3 {
+    gap: 0.25rem !important;
+  }
+}
+
+
+html, body { margin: 0; padding: 0; background: #f8f9fa; }
+#app { padding: 8px; }
+
+.lang-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid #e8eaed;
+  color: #6b7280;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lang-btn:hover {
+  border-color: #cbd5e1;
+  color: #1a1c2c;
+}
+
+.lang-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+html.s3phy-embed .lang-bar {
+  display: none !important;
+}
+
+html.s3phy-embed,
+html.s3phy-embed body {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  background: #f8f9fa;
+}
+html.s3phy-embed #app {
+  padding: 4px;
+  height: auto !important;
+  min-height: 100% !important;
+  box-sizing: border-box;
+}
+
+.reflab {
+  --reflab-bg: #f8f9fa;
+  --reflab-panel: #ffffff;
+  --reflab-border: #e8eaed;
+  --reflab-green: #16a34a;
+  --reflab-cyan: #0891b2;
+  --reflab-yellow: #ca8a04;
+  --reflab-text: #1a1c2c;
+  --reflab-muted: #6b7280;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--reflab-text);
+  background: var(--reflab-bg);
+  border-radius: 12px;
+  padding: 12px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.reflab * { box-sizing: border-box; }
+.reflab-head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+  min-height: 0;
+}
+.reflab-head-main {
+  grid-column: 2;
+  text-align: center;
+}
+.reflab-head .lang-bar {
+  grid-column: 3;
+  justify-self: end;
+}
+.reflab-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.35rem;
+  background: linear-gradient(90deg, #2563eb, #16a34a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.reflab-sub { color: var(--reflab-muted); font-size: 0.82rem; margin-top: 4px; }
+
+html.s3phy-embed .reflab-head {
+  grid-template-columns: 1fr;
+}
+html.s3phy-embed .reflab-head-main {
+  grid-column: 1;
+}
+.reflab-dash {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+.reflab-viz {
+  position: relative;
+  width: 100%;
+  background: var(--reflab-panel);
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--reflab-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(26, 28, 44, 0.04);
+}
+
+.reflab-mode-toggle {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
+  display: inline-flex;
+  gap: 0;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--reflab-border);
+  border-radius: 999px;
+  padding: 3px;
+  box-shadow: 0 2px 10px rgba(26, 28, 44, 0.08);
+}
+
+.reflab-mode-btn {
+  border: none;
+  background: transparent;
+  color: var(--reflab-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.reflab-mode-btn:hover { color: #1a1c2c; }
+.reflab-mode-btn.active {
+  background: #1a1c2c;
+  color: #ffffff;
+}
+
+.reflab-mode-panel {
+  display: contents;
+}
+.reflab-mode-panel[hidden] {
+  display: none !important;
+}
+
+.reflab-canvas {
+  background: #f8f9fa;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--reflab-border);
+  touch-action: none;
+  user-select: none;
+}
+
+/* —— Canvas HUD overlays —— */
+.reflab-canvas-hud {
+  position: absolute;
+  z-index: 8;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--reflab-border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  box-shadow: 0 2px 10px rgba(26, 28, 44, 0.08);
+  backdrop-filter: blur(4px);
+}
+
+.reflab-canvas-hud--incident {
+  top: 14px;
+  left: 14px;
+  width: min(260px, 42%);
+}
+
+.reflab-canvas-hud--refracted {
+  bottom: 58px;
+  right: 14px;
+  width: min(260px, 42%);
+}
+
+.reflab-canvas-hud--layerX {
+  /* Top band (X) — left */
+  top: max(48px, 6%);
+  left: 14px;
+  width: min(220px, 34%);
+}
+
+.reflab-canvas-hud--layerY {
+  /* Middle band (Y) — left */
+  top: 38%;
+  left: 14px;
+  right: auto;
+  width: min(220px, 34%);
+}
+
+.reflab-canvas-hud--layerZ {
+  /* Bottom band (Z) — right */
+  bottom: 58px;
+  right: 14px;
+  width: min(220px, 34%);
+}
+
+.reflab-canvas-hud--formula {
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 28px);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 12px;
+}
+
+.reflab-hud-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--reflab-muted);
+  margin-bottom: 4px;
+}
+
+.reflab-canvas-hud--incident .reflab-hud-label { color: #92400e; }
+.reflab-canvas-hud--refracted .reflab-hud-label { color: #0e7490; }
+.reflab-canvas-hud--layerX .reflab-hud-label { color: #92400e; }
+.reflab-canvas-hud--layerY .reflab-hud-label { color: #5b21b6; }
+.reflab-canvas-hud--layerZ .reflab-hud-label { color: #0e7490; }
+
+.reflab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.reflab-chip {
+  background: #f1f3f5;
+  color: var(--reflab-muted);
+  border: 1px solid transparent;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.reflab-chip:hover { color: #1a1c2c; border-color: #cbd5e1; }
+.reflab-chips[data-side="1"] .reflab-chip.active,
+.reflab-chips[data-side="X"] .reflab-chip.active {
+  background: rgba(202, 138, 4, 0.12);
+  color: #a16207;
+  border-color: #ca8a04;
+}
+.reflab-chips[data-side="2"] .reflab-chip.active,
+.reflab-chips[data-side="Z"] .reflab-chip.active {
+  background: rgba(8, 145, 178, 0.1);
+  color: var(--reflab-cyan);
+  border-color: var(--reflab-cyan);
+}
+.reflab-chips[data-side="Y"] .reflab-chip.active {
+  background: rgba(91, 33, 182, 0.1);
+  color: #5b21b6;
+  border-color: #5b21b6;
+}
+
+.reflab-slider-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 24px;
+}
+
+.reflab-num-input {
+  width: 68px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid var(--reflab-border);
+  color: #1a1c2c;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  text-align: center;
+  font-weight: bold;
+}
+.reflab-num-input::-webkit-outer-spin-button,
+.reflab-num-input::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+.reflab-readout--compact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: var(--reflab-muted);
+  min-height: 0;
+}
+.reflab-readout--compact strong {
+  color: var(--reflab-yellow);
+  font-variant-numeric: tabular-nums;
+}
+
+.reflab-slider-row input[type="range"] {
+  flex: 1;
+  width: 100%;
+  accent-color: var(--reflab-cyan);
+  margin: 0;
+  cursor: pointer;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 16px;
+}
+
+.reflab-canvas-hud input[type="range"]::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+}
+.reflab-canvas-hud input[type="range"]::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+}
+.reflab-canvas-hud input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--reflab-cyan);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #d1d5db;
+  margin-top: -5px;
+  cursor: pointer;
+}
+.reflab-canvas-hud input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--reflab-cyan);
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 0 1px #d1d5db;
+  cursor: pointer;
+}
+.reflab-canvas-hud--incident input[type="range"] {
+  accent-color: #ca8a04;
+}
+.reflab-canvas-hud--incident input[type="range"]::-webkit-slider-thumb {
+  background: #ca8a04;
+}
+.reflab-canvas-hud--incident input[type="range"]::-moz-range-thumb {
+  background: #ca8a04;
+}
+
+.reflab-formula {
+  flex: 0 1 auto;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #1d4ed8;
+  min-width: 0;
+}
+.reflab-formula-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+.reflab-formula sub {
+  font-size: 0.72em;
+  vertical-align: sub;
+  line-height: 0;
+  font-weight: 700;
+}
+.reflab-formula-body {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: #0e7490;
+  line-height: 1.35;
+}
+.reflab-formula-body--row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px 6px;
+  white-space: nowrap;
+}
+.reflab-formula-body--tir {
+  color: #b91c1c;
+}
+.reflab-formula-body--tir > span {
+  display: block;
+  font-size: 0.72rem;
+  margin-top: 2px;
+}
+.reflab-eq {
+  font-weight: 700;
+  color: #0e7490;
+}
+.reflab-eq-val {
+  font-weight: 800;
+  color: #0e7490;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vertical fraction (numerator / bar / denominator) */
+.reflab-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1.15;
+  font-weight: 700;
+  color: inherit;
+}
+.reflab-frac-num,
+.reflab-frac-den {
+  padding: 0 2px;
+  white-space: nowrap;
+}
+.reflab-frac-bar {
+  display: block;
+  width: 100%;
+  min-width: 1.2em;
+  height: 0;
+  border-top: 1.5px solid currentColor;
+  margin: 1px 0;
+}
+.reflab-formula-title .reflab-frac {
+  font-size: 0.72rem;
+  color: #374151;
+}
+.reflab-formula-body .reflab-frac {
+  font-size: 0.75rem;
+  color: #0e7490;
+}
+
+.reflab-hud-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.reflab-sr {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.72rem;
+}
+.reflab-sl { color: var(--reflab-muted); }
+.reflab-sv {
+  font-weight: 700;
+  color: var(--reflab-yellow);
+  font-variant-numeric: tabular-nums;
+}
+.reflab-tir {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #dc2626;
+  font-size: 0.68rem;
+  line-height: 1.3;
+  max-width: 200px;
+}
+.reflab-reset--compact {
+  background: #f1f3f5;
+  color: #1a1c2c;
+  border: 1px solid var(--reflab-border);
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+.reflab-reset--compact:hover {
+  border-color: var(--reflab-cyan);
+  color: var(--reflab-cyan);
+  background: #ffffff;
+}
+
+/* Microscopic models — clear of HUDs */
+.reflab-micro-overlay {
+  position: absolute;
+  z-index: 5;
+  width: clamp(160px, 28%, 260px);
+  pointer-events: none;
+}
+
+.reflab-micro-overlay--1 {
+  /* Two-layer: incident (top-right); three-layer: X (top-right) */
+  top: 14px;
+  right: 14px;
+}
+
+.reflab-micro-overlay--2 {
+  /* Two-layer: refracted (bottom-left); three-layer: Z (bottom-left) */
+  bottom: 58px;
+  left: 14px;
+}
+
+.reflab-micro-overlay--3 {
+  /* Three-layer only: Y (middle-right) */
+  top: 38%;
+  right: 14px;
+}
+
+.reflab[data-layers="three"] .reflab-micro-overlay--1 {
+  top: max(48px, 6%);
+  right: 14px;
+}
+
+.reflab[data-layers="three"] .reflab-micro-overlay {
+  width: clamp(120px, 22%, 200px);
+}
+
+.reflab-micro-box {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reflab-micro-title {
+  font-weight: 800;
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: 1.25;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
+}
+
+.reflab-micro-title--1 { color: #92400e; }
+.reflab-micro-title--2 { color: #0e7490; }
+.reflab-micro-title--Y { color: #5b21b6; }
+
+.reflab-particle-canvas-1,
+.reflab-particle-canvas-2,
+.reflab-particle-canvas-Y {
+  background: transparent;
+  border-radius: 8px;
+  width: 100%;
+  height: auto;
+  display: block;
+  border: none;
+}
+
+@media (max-width: 700px) {
+  .reflab-canvas-hud--incident,
+  .reflab-canvas-hud--refracted,
+  .reflab-canvas-hud--layerX,
+  .reflab-canvas-hud--layerY,
+  .reflab-canvas-hud--layerZ {
+    width: min(200px, 48%);
+    padding: 6px 8px;
+  }
+  .reflab-mode-btn {
+    font-size: 0.68rem;
+    padding: 5px 10px;
+  }
+  .reflab-micro-overlay {
+    width: clamp(120px, 32%, 180px);
+  }
+  .reflab-chip {
+    padding: 3px 6px;
+    font-size: 0.65rem;
+  }
+}
+
+  </style>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('embed') === '1' || params.get('embed') === 'true') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+(() => {
+  // labs/refraction/js/app.js
+  var MEDIA = {
+    air: { id: "air", n: 1 },
+    water: { id: "water", n: 1.33 },
+    glass: { id: "glass", n: 1.5 }
+  };
+  var C_VACUUM = 3;
+  function initRefractionLab(root2, t) {
+    const wrap = document.createElement("div");
+    wrap.className = "reflab";
+    wrap.innerHTML = `
+    <div class="reflab-head">
+      <div class="reflab-head-main">
+        <h2 class="reflab-title">${t("tools.refraction.title")}</h2>
+        <div class="reflab-sub">${t("tools.refraction.subtitle")}</div>
+      </div>
+      <div class="lang-bar">
+        <button type="button" class="lang-btn" data-set-lang="en">English</button>
+        <button type="button" class="lang-btn" data-set-lang="zh">\u7E41\u9AD4\u4E2D\u6587</button>
+      </div>
+    </div>
+    <div class="reflab-dash">
+      <div class="reflab-viz">
+        <div class="reflab-mode-toggle">
+          <button type="button" class="reflab-mode-btn active" data-layer-mode="two">${t("tools.refraction.mode.two")}</button>
+          <button type="button" class="reflab-mode-btn" data-layer-mode="three">${t("tools.refraction.mode.three")}</button>
+        </div>
+        <canvas class="reflab-canvas" width="720" height="440" aria-label="${t("tools.refraction.title")}"></canvas>
+
+        <!-- Two-layer HUDs -->
+        <div class="reflab-mode-panel" data-mode-panel="two">
+          <div class="reflab-canvas-hud reflab-canvas-hud--incident">
+            <div class="reflab-hud-label">${t("tools.refraction.n1")}</div>
+            <div class="reflab-chips" data-side="1">${mediumChips("1")}</div>
+            <div class="reflab-slider-row">
+              <input type="range" data-n1-slider min="1.00" max="2.00" step="0.01" value="1.00" aria-label="n1" />
+              <input type="number" data-n1-input min="1.00" max="2.00" step="0.01" value="1.00" class="reflab-num-input" />
+            </div>
+            <div class="reflab-readout reflab-readout--compact">
+              <span>${t("tools.refraction.nLabel")}\u2081 = <strong data-n="1">1.00</strong></span>
+              <span>${t("tools.refraction.speedLabel")}\u2081 = <strong data-v="1">3.00</strong> ${t("tools.refraction.speedUnit")}</span>
+            </div>
+          </div>
+          <div class="reflab-canvas-hud reflab-canvas-hud--refracted">
+            <div class="reflab-hud-label">${t("tools.refraction.n2")}</div>
+            <div class="reflab-chips" data-side="2">${mediumChips("2")}</div>
+            <div class="reflab-slider-row">
+              <input type="range" data-n2-slider min="1.00" max="2.00" step="0.01" value="1.33" aria-label="n2" />
+              <input type="number" data-n2-input min="1.00" max="2.00" step="0.01" value="1.33" class="reflab-num-input" />
+            </div>
+            <div class="reflab-readout reflab-readout--compact">
+              <span>${t("tools.refraction.nLabel")}\u2082 = <strong data-n="2">1.33</strong></span>
+              <span>${t("tools.refraction.speedLabel")}\u2082 = <strong data-v="2">2.26</strong> ${t("tools.refraction.speedUnit")}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Three-layer HUDs (X / Y / Z) -->
+        <div class="reflab-mode-panel" data-mode-panel="three" hidden>
+          <div class="reflab-canvas-hud reflab-canvas-hud--layerX">
+            <div class="reflab-hud-label">${t("tools.refraction.layer.X")}</div>
+            <div class="reflab-chips" data-side="X">${mediumChips("X")}</div>
+            <div class="reflab-slider-row">
+              <input type="range" data-nx-slider min="1.00" max="2.00" step="0.01" value="1.20" aria-label="nX" />
+              <input type="number" data-nx-input min="1.00" max="2.00" step="0.01" value="1.20" class="reflab-num-input" />
+            </div>
+            <div class="reflab-readout reflab-readout--compact">
+              <span>n<sub>X</sub> = <strong data-n="X">1.20</strong></span>
+              <span>v<sub>X</sub> = <strong data-v="X">2.50</strong> ${t("tools.refraction.speedUnit")}</span>
+            </div>
+          </div>
+          <div class="reflab-canvas-hud reflab-canvas-hud--layerY">
+            <div class="reflab-hud-label">${t("tools.refraction.layer.Y")}</div>
+            <div class="reflab-chips" data-side="Y">${mediumChips("Y")}</div>
+            <div class="reflab-slider-row">
+              <input type="range" data-ny-slider min="1.00" max="2.00" step="0.01" value="1.50" aria-label="nY" />
+              <input type="number" data-ny-input min="1.00" max="2.00" step="0.01" value="1.50" class="reflab-num-input" />
+            </div>
+            <div class="reflab-readout reflab-readout--compact">
+              <span>n<sub>Y</sub> = <strong data-n="Y">1.50</strong></span>
+              <span>v<sub>Y</sub> = <strong data-v="Y">2.00</strong> ${t("tools.refraction.speedUnit")}</span>
+            </div>
+          </div>
+          <div class="reflab-canvas-hud reflab-canvas-hud--layerZ">
+            <div class="reflab-hud-label">${t("tools.refraction.layer.Z")}</div>
+            <div class="reflab-chips" data-side="Z">${mediumChips("Z")}</div>
+            <div class="reflab-slider-row">
+              <input type="range" data-nz-slider min="1.00" max="2.00" step="0.01" value="1.00" aria-label="nZ" />
+              <input type="number" data-nz-input min="1.00" max="2.00" step="0.01" value="1.00" class="reflab-num-input" />
+            </div>
+            <div class="reflab-readout reflab-readout--compact">
+              <span>n<sub>Z</sub> = <strong data-n="Z">1.00</strong></span>
+              <span>v<sub>Z</sub> = <strong data-v="Z">3.00</strong> ${t("tools.refraction.speedUnit")}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formula strip -->
+        <div class="reflab-canvas-hud reflab-canvas-hud--formula">
+          <div class="reflab-formula">${t("tools.refraction.snell")}</div>
+          <div class="reflab-hud-meta">
+            <div class="reflab-sr" data-critical-row hidden>
+              <span class="reflab-sl">${t("tools.refraction.critical")}</span>
+              <span class="reflab-sv" data-critical>\u2014</span>
+            </div>
+            <div class="reflab-tir" data-tir hidden>${t("tools.refraction.tir")}</div>
+            <button type="button" class="reflab-reset reflab-reset--compact" data-reset>${t("tools.refraction.reset")}</button>
+          </div>
+        </div>
+
+        <!-- Microscopic models -->
+        <div class="reflab-micro-overlay reflab-micro-overlay--1">
+          <div class="reflab-micro-box" data-side="1">
+            <div class="reflab-micro-title reflab-micro-title--1">${t("tools.refraction.particleModel.title")}</div>
+            <canvas class="reflab-particle-canvas-1" width="320" height="220" aria-label="Microscopic Particle Model 1"></canvas>
+          </div>
+        </div>
+        <div class="reflab-micro-overlay reflab-micro-overlay--3" hidden>
+          <div class="reflab-micro-box" data-side="Y">
+            <div class="reflab-micro-title reflab-micro-title--Y">${t("tools.refraction.particleModel.title")}</div>
+            <canvas class="reflab-particle-canvas-Y" width="320" height="220" aria-label="Microscopic Particle Model Y"></canvas>
+          </div>
+        </div>
+        <div class="reflab-micro-overlay reflab-micro-overlay--2">
+          <div class="reflab-micro-box" data-side="2">
+            <div class="reflab-micro-title reflab-micro-title--2">${t("tools.refraction.particleModel.title")}</div>
+            <canvas class="reflab-particle-canvas-2" width="320" height="220" aria-label="Microscopic Particle Model 2"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+    function mediumChips(side) {
+      return ["air", "water", "glass"].map(
+        (id) => `
+      <button type="button" class="reflab-chip" data-medium="${id}" data-for="${side}">
+        ${t(`tools.refraction.medium.${id}`)}
+      </button>`
+      ).join("");
+    }
+    const canvas = (
+      /** @type {HTMLCanvasElement} */
+      wrap.querySelector(".reflab-canvas")
+    );
+    const ctx = (
+      /** @type {CanvasRenderingContext2D} */
+      canvas.getContext("2d")
+    );
+    const particleCanvas1 = (
+      /** @type {HTMLCanvasElement} */
+      wrap.querySelector(".reflab-particle-canvas-1")
+    );
+    const ctxP1 = (
+      /** @type {CanvasRenderingContext2D} */
+      particleCanvas1.getContext("2d")
+    );
+    const particleCanvas2 = (
+      /** @type {HTMLCanvasElement} */
+      wrap.querySelector(".reflab-particle-canvas-2")
+    );
+    const ctxP2 = (
+      /** @type {CanvasRenderingContext2D} */
+      particleCanvas2.getContext("2d")
+    );
+    const particleCanvasY = (
+      /** @type {HTMLCanvasElement} */
+      wrap.querySelector(".reflab-particle-canvas-Y")
+    );
+    const ctxPY = particleCanvasY ? (
+      /** @type {CanvasRenderingContext2D} */
+      particleCanvasY.getContext("2d")
+    ) : null;
+    const microOverlayY = (
+      /** @type {HTMLElement | null} */
+      wrap.querySelector(".reflab-micro-overlay--3")
+    );
+    const microTitle1 = wrap.querySelector(".reflab-micro-title--1");
+    const microTitle2 = wrap.querySelector(".reflab-micro-title--2");
+    const microTitleY = wrap.querySelector(".reflab-micro-title--Y");
+    const n1Slider = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-n1-slider]")
+    );
+    const n2Slider = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-n2-slider]")
+    );
+    const n1Input = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-n1-input]")
+    );
+    const n2Input = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-n2-input]")
+    );
+    const nXSlider = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-nx-slider]")
+    );
+    const nYSlider = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-ny-slider]")
+    );
+    const nZSlider = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-nz-slider]")
+    );
+    const nXInput = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-nx-input]")
+    );
+    const nYInput = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-ny-input]")
+    );
+    const nZInput = (
+      /** @type {HTMLInputElement} */
+      wrap.querySelector("[data-nz-input]")
+    );
+    const n1El = wrap.querySelector('[data-n="1"]');
+    const n2El = wrap.querySelector('[data-n="2"]');
+    const v1El = wrap.querySelector('[data-v="1"]');
+    const v2El = wrap.querySelector('[data-v="2"]');
+    const nXEl = wrap.querySelector('[data-n="X"]');
+    const nYEl = wrap.querySelector('[data-n="Y"]');
+    const nZEl = wrap.querySelector('[data-n="Z"]');
+    const vXEl = wrap.querySelector('[data-v="X"]');
+    const vYEl = wrap.querySelector('[data-v="Y"]');
+    const vZEl = wrap.querySelector('[data-v="Z"]');
+    const tirEl = wrap.querySelector("[data-tir]");
+    const critRow = wrap.querySelector("[data-critical-row]");
+    const critEl = wrap.querySelector("[data-critical]");
+    const formulaEl = wrap.querySelector(".reflab-formula");
+    let layerMode = "two";
+    let n1Val = 1;
+    let n2Val = 1.33;
+    let theta1Deg = 40;
+    let isTir = false;
+    let nXVal = 1.2;
+    let nYVal = 1.5;
+    let nZVal = 1;
+    let thetaXDeg = 35;
+    let threeTirAt = null;
+    let microElapsedSec = 0;
+    let microLastTs = 0;
+    function n1() {
+      return n1Val;
+    }
+    function n2() {
+      return n2Val;
+    }
+    function getActiveMedium(n) {
+      if (Math.abs(n - 1) < 5e-3) return "air";
+      if (Math.abs(n - 1.33) < 5e-3) return "water";
+      if (Math.abs(n - 1.5) < 5e-3) return "glass";
+      return null;
+    }
+    function formatN(n) {
+      return n.toFixed(2);
+    }
+    function formatV(n) {
+      return (C_VACUUM / n).toFixed(2);
+    }
+    function formatSig3(n) {
+      if (n == null || !Number.isFinite(n)) return "\u2014";
+      return Number(n.toPrecision(3)).toString();
+    }
+    function toRad(deg) {
+      return deg * Math.PI / 180;
+    }
+    function toDeg(rad) {
+      return rad * 180 / Math.PI;
+    }
+    function criticalDeg() {
+      if (n1() <= n2()) return null;
+      const s = n2() / n1();
+      if (s >= 1) return null;
+      return toDeg(Math.asin(s));
+    }
+    function solveFromTheta1(t1) {
+      const s2 = n1() / n2() * Math.sin(toRad(t1));
+      if (s2 > 1 + 1e-9) return { tir: true, theta2: null };
+      if (s2 < -1) return { tir: true, theta2: null };
+      return { tir: false, theta2: toDeg(Math.asin(Math.min(1, Math.max(-1, s2)))) };
+    }
+    function solveFromTheta2(t2) {
+      const s1 = n2() / n1() * Math.sin(toRad(t2));
+      if (s1 > 1 + 1e-9) return { tir: true, theta1: null };
+      return { tir: false, theta1: toDeg(Math.asin(Math.min(1, Math.max(-1, s1)))) };
+    }
+    function paintMediumChips() {
+      const map = {
+        "1": getActiveMedium(n1Val),
+        "2": getActiveMedium(n2Val),
+        X: getActiveMedium(nXVal),
+        Y: getActiveMedium(nYVal),
+        Z: getActiveMedium(nZVal)
+      };
+      Object.keys(map).forEach((side) => {
+        wrap.querySelectorAll(`.reflab-chip[data-for="${side}"]`).forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-medium") === map[side]);
+        });
+      });
+    }
+    function fracHtml(num, den) {
+      return `<span class="reflab-frac" aria-label="${num} / ${den}"><span class="reflab-frac-num">${num}</span><span class="reflab-frac-bar"></span><span class="reflab-frac-den">${den}</span></span>`;
+    }
+    function solveThreeFromThetaX(tX) {
+      const sY = nXVal / nYVal * Math.sin(toRad(tX));
+      if (sY > 1 + 1e-9) return { tir: "xy", thetaY: null, thetaZ: null };
+      const tY = toDeg(Math.asin(Math.min(1, Math.max(-1, sY))));
+      const sZ = nYVal / nZVal * Math.sin(toRad(tY));
+      if (sZ > 1 + 1e-9) return { tir: "yz", thetaY: tY, thetaZ: null };
+      const tZ = toDeg(Math.asin(Math.min(1, Math.max(-1, sZ))));
+      return { tir: null, thetaY: tY, thetaZ: tZ };
+    }
+    function applyLayerModeUI() {
+      wrap.dataset.layers = layerMode;
+      wrap.querySelectorAll("[data-mode-panel]").forEach((el) => {
+        const mode = el.getAttribute("data-mode-panel");
+        el.hidden = mode !== layerMode;
+      });
+      wrap.querySelectorAll("[data-layer-mode]").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-layer-mode") === layerMode);
+      });
+      if (microOverlayY) microOverlayY.hidden = layerMode !== "three";
+      const title = t("tools.refraction.particleModel.title");
+      if (layerMode === "three") {
+        if (microTitle1) microTitle1.textContent = `${title} \xB7 X`;
+        if (microTitleY) microTitleY.textContent = `${title} \xB7 Y`;
+        if (microTitle2) microTitle2.textContent = `${title} \xB7 Z`;
+      } else {
+        if (microTitle1) microTitle1.textContent = title;
+        if (microTitle2) microTitle2.textContent = title;
+      }
+    }
+    function updateReadouts() {
+      if (n1El) n1El.textContent = formatN(n1());
+      if (n2El) n2El.textContent = formatN(n2());
+      if (v1El) v1El.textContent = formatV(n1());
+      if (v2El) v2El.textContent = formatV(n2());
+      if (nXEl) nXEl.textContent = formatN(nXVal);
+      if (nYEl) nYEl.textContent = formatN(nYVal);
+      if (nZEl) nZEl.textContent = formatN(nZVal);
+      if (vXEl) vXEl.textContent = formatV(nXVal);
+      if (vYEl) vYEl.textContent = formatV(nYVal);
+      if (vZEl) vZEl.textContent = formatV(nZVal);
+      if (n1Slider) n1Slider.value = String(n1Val);
+      if (n2Slider) n2Slider.value = String(n2Val);
+      if (nXSlider) nXSlider.value = String(nXVal);
+      if (nYSlider) nYSlider.value = String(nYVal);
+      if (nZSlider) nZSlider.value = String(nZVal);
+      if (n1Input && document.activeElement !== n1Input) n1Input.value = n1Val.toFixed(2);
+      if (n2Input && document.activeElement !== n2Input) n2Input.value = n2Val.toFixed(2);
+      if (nXInput && document.activeElement !== nXInput) nXInput.value = nXVal.toFixed(2);
+      if (nYInput && document.activeElement !== nYInput) nYInput.value = nYVal.toFixed(2);
+      if (nZInput && document.activeElement !== nZInput) nZInput.value = nZVal.toFixed(2);
+      if (layerMode === "three") {
+        const sol = solveThreeFromThetaX(thetaXDeg);
+        threeTirAt = sol.tir;
+        if (tirEl) {
+          tirEl.hidden = !threeTirAt;
+          if (threeTirAt === "xy") tirEl.textContent = t("tools.refraction.tirXY");
+          else if (threeTirAt === "yz") tirEl.textContent = t("tools.refraction.tirYZ");
+        }
+        if (critRow) critRow.hidden = true;
+        if (formulaEl) {
+          const lawTitle = `${fracHtml("sin&nbsp;\u03B8\u2081", "sin&nbsp;\u03B8\u2082")} = ${t("tools.refraction.snellConstant")}`;
+          if (sol.tir === "xy") {
+            formulaEl.innerHTML = `
+            <div class="reflab-formula-title">${lawTitle} \xB7 X\u2192Y</div>
+            <div class="reflab-formula-body reflab-formula-body--tir">${t("tools.refraction.tirXY")}
+              <span>\u03B8<sub>X</sub> = ${thetaXDeg.toFixed(1)}\xB0</span>
+            </div>`;
+          } else if (sol.tir === "yz") {
+            const tY = sol.thetaY ?? 0;
+            formulaEl.innerHTML = `
+            <div class="reflab-formula-title">${lawTitle} \xB7 Y\u2192Z</div>
+            <div class="reflab-formula-body reflab-formula-body--tir">${t("tools.refraction.tirYZ")}
+              <span>\u03B8<sub>X</sub> = ${thetaXDeg.toFixed(1)}\xB0 \xB7 \u03B8<sub>Y</sub> = ${tY.toFixed(1)}\xB0</span>
+            </div>`;
+          } else {
+            const pX = formatSig3(nXVal * Math.sin(toRad(thetaXDeg)));
+            formulaEl.innerHTML = `
+            <div class="reflab-formula-body reflab-formula-body--row">
+              <span>n<sub>X</sub> sin \u03B8<sub>X</sub> = n<sub>Y</sub> sin \u03B8<sub>Y</sub> = n<sub>Z</sub> sin \u03B8<sub>Z</sub></span>
+              <span class="reflab-eq">=</span>
+              <span class="reflab-eq-val">${pX}</span>
+            </div>`;
+          }
+        }
+        return;
+      }
+      const tc = criticalDeg();
+      if (critRow && critEl) {
+        if (tc != null) {
+          critRow.hidden = false;
+          critEl.textContent = `${tc.toFixed(1)}\xB0`;
+        } else {
+          critRow.hidden = true;
+        }
+      }
+      if (tirEl) {
+        tirEl.hidden = !isTir;
+        tirEl.textContent = t("tools.refraction.tir");
+      }
+      if (formulaEl) {
+        const r = solveFromTheta1(theta1Deg);
+        if (isTir) {
+          formulaEl.innerHTML = `
+          <div class="reflab-formula-body reflab-formula-body--tir">
+            ${t("tools.refraction.snellTir")}
+            <span>\u03B8\u2081 = ${theta1Deg.toFixed(1)}\xB0 \xB7 ${t("tools.refraction.canvas.reflected")}</span>
+          </div>
+        `;
+        } else {
+          const t2 = r.theta2 != null ? r.theta2 : 0;
+          const sinI = Math.sin(toRad(theta1Deg));
+          const sinR = Math.sin(toRad(t2));
+          const ratio = Math.abs(sinR) < 1e-9 ? null : sinI / sinR;
+          const nRatio = n2Val / n1Val;
+          const ratioStr = formatSig3(ratio);
+          formulaEl.innerHTML = `
+          <div class="reflab-formula-body reflab-formula-body--row">
+            ${fracHtml("sin&nbsp;\u03B8\u2081", "sin&nbsp;\u03B8\u2082")}
+            <span class="reflab-eq">=</span>
+            ${fracHtml(`sin(${theta1Deg.toFixed(1)}\xB0)`, `sin(${t2.toFixed(1)}\xB0)`)}
+            <span class="reflab-eq">=</span>
+            <span class="reflab-eq-val">${ratioStr}</span>
+            <span class="reflab-eq">=</span>
+            ${fracHtml("n\u2082", "n\u2081")}
+            <span class="reflab-eq">=</span>
+            ${fracHtml(formatN(n2Val), formatN(n1Val))}
+            <span class="reflab-eq">=</span>
+            <span class="reflab-eq-val">${formatSig3(nRatio)}</span>
+          </div>
+        `;
+        }
+      }
+    }
+    function syncSlidersFromState() {
+    }
+    let drawPending = false;
+    function requestDraw() {
+      if (drawPending) return;
+      drawPending = true;
+      requestAnimationFrame(() => {
+        drawPending = false;
+        draw();
+      });
+    }
+    function getMacroGeometry() {
+      const W = canvas.width;
+      const H = canvas.height;
+      const cx = W / 2;
+      const cy = H / 2;
+      const rayLen = Math.min(W, H) * 0.47;
+      const iAngle = -Math.PI / 2 - toRad(theta1Deg);
+      const ix = cx + Math.cos(iAngle) * rayLen;
+      const iy = cy + Math.sin(iAngle) * rayLen;
+      let tx = null;
+      let ty = null;
+      let rx = null;
+      let ry = null;
+      let t2 = null;
+      if (isTir) {
+        const rAngle = -Math.PI / 2 + toRad(theta1Deg);
+        rx = cx + Math.cos(rAngle) * rayLen;
+        ry = cy + Math.sin(rAngle) * rayLen;
+      } else {
+        const sol = solveFromTheta1(theta1Deg);
+        t2 = sol.theta2 ?? 0;
+        const tAngle = Math.PI / 2 - toRad(t2);
+        tx = cx + Math.cos(tAngle) * rayLen;
+        ty = cy + Math.sin(tAngle) * rayLen;
+      }
+      return { W, H, cx, cy, rayLen, ix, iy, tx, ty, rx, ry, t2 };
+    }
+    function getThreeLayerGeometry() {
+      const W = canvas.width;
+      const H = canvas.height;
+      const yXY = H / 3;
+      const yYZ = 2 * H / 3;
+      const hLayer = H / 3;
+      const rayLen = Math.min(W, H) * 0.42;
+      const x1 = W * 0.42;
+      const sol = solveThreeFromThetaX(thetaXDeg);
+      const tir = sol.tir;
+      const iAngle = -Math.PI / 2 - toRad(thetaXDeg);
+      const maxBack = Math.min(rayLen, (yXY - 16) / Math.max(0.08, Math.abs(Math.sin(iAngle))));
+      const ix = x1 + Math.cos(iAngle) * maxBack;
+      const iy = yXY + Math.sin(iAngle) * maxBack;
+      let thetaY = sol.thetaY;
+      let thetaZ = sol.thetaZ;
+      let x2 = x1;
+      let zx = null;
+      let zy = null;
+      let rx = null;
+      let ry = null;
+      if (tir === "xy") {
+        const rAngle = -Math.PI / 2 + toRad(thetaXDeg);
+        const maxFwd = Math.min(rayLen, (yXY - 16) / Math.max(0.08, Math.abs(Math.sin(rAngle))));
+        rx = x1 + Math.cos(rAngle) * maxFwd;
+        ry = yXY + Math.sin(rAngle) * maxFwd;
+      } else if (thetaY != null) {
+        const dxY = hLayer * Math.tan(toRad(thetaY));
+        x2 = x1 + dxY;
+        if (tir === "yz") {
+          const rAngle = -Math.PI / 2 + toRad(thetaY);
+          const maxFwd = Math.min(rayLen, (hLayer - 12) / Math.max(0.08, Math.abs(Math.sin(rAngle))));
+          rx = x2 + Math.cos(rAngle) * maxFwd;
+          ry = yYZ + Math.sin(rAngle) * maxFwd;
+        } else if (thetaZ != null) {
+          const tAngle = Math.PI / 2 - toRad(thetaZ);
+          const maxFwd = Math.min(rayLen, (H - yYZ - 16) / Math.max(0.08, Math.sin(tAngle)));
+          zx = x2 + Math.cos(tAngle) * maxFwd;
+          zy = yYZ + Math.sin(tAngle) * maxFwd;
+        }
+      }
+      return {
+        W,
+        H,
+        yXY,
+        yYZ,
+        x1,
+        x2,
+        ix,
+        iy,
+        zx,
+        zy,
+        rx,
+        ry,
+        thetaY,
+        thetaZ,
+        tir,
+        rayLen
+      };
+    }
+    function setLayerMode(mode) {
+      if (mode !== "two" && mode !== "three") return;
+      layerMode = mode;
+      applyLayerModeUI();
+      if (layerMode === "three") applyFromThetaX();
+      else applyFromTheta1();
+      fitCanvases(true);
+    }
+    function applyFromThetaX() {
+      const sol = solveThreeFromThetaX(thetaXDeg);
+      threeTirAt = sol.tir;
+      updateReadouts();
+      requestDraw();
+    }
+    function distPointToSegment(px, py, x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const len2 = dx * dx + dy * dy;
+      if (len2 < 1e-9) return Math.hypot(px - x1, py - y1);
+      let t2 = ((px - x1) * dx + (py - y1) * dy) / len2;
+      t2 = Math.min(1, Math.max(0, t2));
+      return Math.hypot(px - (x1 + t2 * dx), py - (y1 + t2 * dy));
+    }
+    function canvasPointerPos(ev) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (ev.clientX - rect.left) * scaleX,
+        y: (ev.clientY - rect.top) * scaleY
+      };
+    }
+    function theta1FromPoint(px, py, cx, cy) {
+      const dx = px - cx;
+      const dy = py - cy;
+      let deg = -toDeg(Math.atan2(dx, -dy));
+      if (deg < 0) deg = 0;
+      return Math.min(89, Math.max(0, deg));
+    }
+    function theta2FromPoint(px, py, cx, cy) {
+      const dx = px - cx;
+      const dy = py - cy;
+      let deg = toDeg(Math.atan2(dx, dy));
+      if (deg < 0) deg = 0;
+      return Math.min(89, Math.max(0, deg));
+    }
+    const HIT_RAY = 16;
+    let dragTarget = (
+      /** @type {null | 'incident' | 'refracted'} */
+      null
+    );
+    function hitTestRays(px, py) {
+      if (layerMode === "three") {
+        const g2 = getThreeLayerGeometry();
+        const dInc2 = distPointToSegment(px, py, g2.ix, g2.iy, g2.x1, g2.yXY);
+        if (dInc2 <= HIT_RAY) return "incident";
+        return null;
+      }
+      const g = getMacroGeometry();
+      const dInc = distPointToSegment(px, py, g.ix, g.iy, g.cx, g.cy);
+      let best = null;
+      let bestDist = Infinity;
+      if (dInc <= HIT_RAY) {
+        best = "incident";
+        bestDist = dInc;
+      }
+      if (!isTir && g.tx != null && g.ty != null) {
+        const dRef = distPointToSegment(px, py, g.cx, g.cy, g.tx, g.ty);
+        if (dRef <= HIT_RAY && dRef < bestDist) {
+          best = "refracted";
+          bestDist = dRef;
+        }
+      }
+      return best;
+    }
+    function applyFromTheta1() {
+      const r = solveFromTheta1(theta1Deg);
+      isTir = r.tir;
+      updateReadouts();
+      syncSlidersFromState();
+      requestDraw();
+    }
+    function applyFromTheta2(t2) {
+      const r = solveFromTheta2(t2);
+      if (r.tir || r.theta1 == null) {
+        applyFromTheta1();
+        return;
+      }
+      theta1Deg = Math.min(89, Math.max(0, r.theta1));
+      isTir = false;
+      updateReadouts();
+      requestDraw();
+    }
+    const COLOR_INCIDENT = "#b45309";
+    const COLOR_REFRACTED = "#0e7490";
+    const COLOR_REFLECTED = "#b91c1c";
+    const COLOR_MID = "#5b21b6";
+    const COLOR_AXIS = "#374151";
+    const COLOR_LABEL = "#1a1c2c";
+    function drawArrow(x1, y1, x2, y2, color, width = 2.5) {
+      ctx.save();
+      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const len = Math.hypot(dx, dy);
+      if (len >= 1) {
+        const ux = dx / len;
+        const uy = dy / len;
+        const size = 26;
+        const mx = (x1 + x2) / 2;
+        const my = (y1 + y2) / 2;
+        const tipX = mx + ux * (size * 0.35);
+        const tipY = my + uy * (size * 0.35);
+        const baseX = tipX - ux * size;
+        const baseY = tipY - uy * size;
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.moveTo(tipX, tipY);
+        ctx.lineTo(baseX - uy * size * 0.55, baseY + ux * size * 0.55);
+        ctx.lineTo(baseX + uy * size * 0.55, baseY - ux * size * 0.55);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+    function drawTextWithOutline(text, x, y, textColor, align = "center", baseline = "middle", font = "bold 15px system-ui, sans-serif") {
+      const thetaSub = /^θ([XYZ]) = (.+)$/.exec(text);
+      if (thetaSub) {
+        drawThetaSubOutline(thetaSub[1], thetaSub[2], x, y, textColor, align, baseline, font);
+        return;
+      }
+      ctx.save();
+      ctx.font = font;
+      ctx.textAlign = align;
+      ctx.textBaseline = baseline;
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.92)";
+      ctx.lineWidth = 4;
+      ctx.lineJoin = "round";
+      ctx.miterLimit = 2;
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = textColor;
+      ctx.fillText(text, x, y);
+      ctx.restore();
+    }
+    function drawThetaSubOutline(letter, rest, x, y, textColor, align, baseline, font) {
+      ctx.save();
+      ctx.font = font;
+      const mainSize = parseFloat(font) || 15;
+      const subFont = font.replace(/(\d+(?:\.\d+)?)px/, `${Math.max(9, mainSize * 0.72)}px`);
+      const thetaW = ctx.measureText("\u03B8").width;
+      ctx.font = subFont;
+      const letterW = ctx.measureText(letter).width;
+      ctx.font = font;
+      const restW = ctx.measureText(` = ${rest}`).width;
+      const totalW = thetaW + letterW + restW;
+      let left = x;
+      if (align === "center") left = x - totalW / 2;
+      else if (align === "right" || align === "end") left = x - totalW;
+      let baseY = y;
+      const subDy = mainSize * 0.28;
+      function strokeFill(str, px, py, fnt) {
+        ctx.font = fnt;
+        ctx.textAlign = "left";
+        ctx.textBaseline = baseline;
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.92)";
+        ctx.lineWidth = 4;
+        ctx.lineJoin = "round";
+        ctx.miterLimit = 2;
+        ctx.strokeText(str, px, py);
+        ctx.fillStyle = textColor;
+        ctx.fillText(str, px, py);
+      }
+      strokeFill("\u03B8", left, baseY, font);
+      strokeFill(letter, left + thetaW, baseY + subDy, subFont);
+      strokeFill(` = ${rest}`, left + thetaW + letterW, baseY, font);
+      ctx.restore();
+    }
+    function drawAngleArc(cx, cy, startDeg, endDeg, color, label) {
+      const r = 55;
+      const a0 = toRad(startDeg);
+      const a1 = toRad(endDeg);
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.arc(cx, cy, r, a0, a1, endDeg < startDeg);
+      ctx.stroke();
+      const mid = (a0 + a1) / 2;
+      const along = r + 18;
+      const bx = cx + Math.cos(a1) * along;
+      const by = cy + Math.sin(a1) * along;
+      let px = Math.cos(a1 + Math.PI / 2);
+      let py = Math.sin(a1 + Math.PI / 2);
+      const towardMidX = Math.cos(mid);
+      const towardMidY = Math.sin(mid);
+      if (px * towardMidX + py * towardMidY < 0) {
+        px = -px;
+        py = -py;
+      }
+      const offset = 42;
+      const textX = bx + px * offset;
+      const textY = by + py * offset;
+      drawTextWithOutline(label, textX, textY, color, "center", "middle", "bold 15px system-ui, sans-serif");
+    }
+    function drawTwoLayers() {
+      const g = getMacroGeometry();
+      const { W, H, cx, cy, rayLen, ix, iy } = g;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = mediumFill(n1Val, 0.22);
+      ctx.fillRect(0, 0, W, cy);
+      ctx.fillStyle = mediumFill(n2Val, 0.28);
+      ctx.fillRect(0, cy, W, H - cy);
+      ctx.beginPath();
+      ctx.strokeStyle = COLOR_AXIS;
+      ctx.lineWidth = 3;
+      ctx.moveTo(30, cy);
+      ctx.lineTo(W - 30, cy);
+      ctx.stroke();
+      drawTextWithOutline(t("tools.refraction.canvas.interface"), W / 2 + 24, cy - 12, COLOR_LABEL, "start", "bottom", "bold 14px system-ui, sans-serif");
+      ctx.beginPath();
+      ctx.setLineDash([8, 6]);
+      ctx.strokeStyle = COLOR_AXIS;
+      ctx.lineWidth = 2.5;
+      ctx.moveTo(cx, 20);
+      ctx.lineTo(cx, H - 20);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      drawTextWithOutline(t("tools.refraction.canvas.normal"), cx + 10, 78, COLOR_LABEL, "start", "alphabetic", "bold 14px system-ui, sans-serif");
+      drawArrow(ix, iy, cx, cy, COLOR_INCIDENT, 5.5);
+      const labelDist = rayLen * 0.65;
+      if (isTir) {
+        const rAngle = -Math.PI / 2 + toRad(theta1Deg);
+        drawArrow(cx, cy, g.rx, g.ry, COLOR_REFLECTED, 5.5);
+        const perpAngleR = rAngle + Math.PI / 2;
+        const lrx = cx + Math.cos(rAngle) * labelDist + Math.cos(perpAngleR) * 38;
+        const lry = cy + Math.sin(rAngle) * labelDist + Math.sin(perpAngleR) * 38;
+        drawTextWithOutline(t("tools.refraction.canvas.reflected"), lrx, lry, COLOR_REFLECTED, "center", "middle", "bold 15px system-ui, sans-serif");
+        drawAngleArc(cx, cy, -90, -90 - theta1Deg, COLOR_INCIDENT, `\u03B8\u2081 = ${theta1Deg.toFixed(1)}\xB0`);
+        drawAngleArc(cx, cy, -90, -90 + theta1Deg, COLOR_REFLECTED, `\u03B8\u2081 = ${theta1Deg.toFixed(1)}\xB0`);
+      } else {
+        const t2 = g.t2 ?? 0;
+        const tAngle = Math.PI / 2 - toRad(t2);
+        drawArrow(cx, cy, g.tx, g.ty, COLOR_REFRACTED, 5.5);
+        const perpAngleT = tAngle - Math.PI / 2;
+        const ltx = cx + Math.cos(tAngle) * labelDist + Math.cos(perpAngleT) * 38;
+        const lty = cy + Math.sin(tAngle) * labelDist + Math.sin(perpAngleT) * 38;
+        drawTextWithOutline(t("tools.refraction.canvas.refracted"), ltx, lty, COLOR_REFRACTED, "center", "middle", "bold 15px system-ui, sans-serif");
+        drawAngleArc(cx, cy, -90, -90 - theta1Deg, COLOR_INCIDENT, `\u03B8\u2081 = ${theta1Deg.toFixed(1)}\xB0`);
+        drawAngleArc(cx, cy, 90, 90 - t2, COLOR_REFRACTED, `\u03B8\u2082 = ${t2.toFixed(1)}\xB0`);
+      }
+      const iAngle = -Math.PI / 2 - toRad(theta1Deg);
+      const perpAngleI = iAngle - Math.PI / 2;
+      const lix = cx + Math.cos(iAngle) * labelDist + Math.cos(perpAngleI) * 38;
+      const liy = cy + Math.sin(iAngle) * labelDist + Math.sin(perpAngleI) * 38;
+      drawTextWithOutline(t("tools.refraction.canvas.incident"), lix, liy, COLOR_INCIDENT, "center", "middle", "bold 15px system-ui, sans-serif");
+    }
+    function drawDashedNormal(nx, y0, y1) {
+      ctx.beginPath();
+      ctx.setLineDash([8, 6]);
+      ctx.strokeStyle = COLOR_AXIS;
+      ctx.lineWidth = 2;
+      ctx.moveTo(nx, y0);
+      ctx.lineTo(nx, y1);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    function drawThreeLayers() {
+      const g = getThreeLayerGeometry();
+      const { W, H, yXY, yYZ, x1, x2, ix, iy } = g;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = mediumFill(nXVal, 0.2);
+      ctx.fillRect(0, 0, W, yXY);
+      ctx.fillStyle = mediumFill(nYVal, 0.26);
+      ctx.fillRect(0, yXY, W, yYZ - yXY);
+      ctx.fillStyle = mediumFill(nZVal, 0.22);
+      ctx.fillRect(0, yYZ, W, H - yYZ);
+      ctx.beginPath();
+      ctx.strokeStyle = COLOR_AXIS;
+      ctx.lineWidth = 3;
+      ctx.moveTo(24, yXY);
+      ctx.lineTo(W - 24, yXY);
+      ctx.moveTo(24, yYZ);
+      ctx.lineTo(W - 24, yYZ);
+      ctx.stroke();
+      drawTextWithOutline("X", 28, yXY / 2, COLOR_LABEL, "start", "middle", "bold 18px system-ui, sans-serif");
+      drawTextWithOutline("Y", 28, (yXY + yYZ) / 2, COLOR_LABEL, "start", "middle", "bold 18px system-ui, sans-serif");
+      drawTextWithOutline("Z", 28, (yYZ + H) / 2, COLOR_LABEL, "start", "middle", "bold 18px system-ui, sans-serif");
+      drawDashedNormal(x1, Math.max(12, yXY - H * 0.28), Math.min(H - 12, yXY + H * 0.28));
+      if (g.tir !== "xy") {
+        drawDashedNormal(x2, Math.max(12, yYZ - H * 0.28), Math.min(H - 12, yYZ + H * 0.28));
+      }
+      drawTextWithOutline(t("tools.refraction.canvas.normal"), x1 + 8, Math.max(78, yXY - H * 0.18), COLOR_LABEL, "start", "alphabetic", "bold 13px system-ui, sans-serif");
+      drawArrow(ix, iy, x1, yXY, COLOR_INCIDENT, 5);
+      drawAngleArc(x1, yXY, -90, -90 - thetaXDeg, COLOR_INCIDENT, `\u03B8X = ${thetaXDeg.toFixed(1)}\xB0`);
+      if (g.tir === "xy") {
+        drawArrow(x1, yXY, g.rx, g.ry, COLOR_REFLECTED, 5);
+        drawAngleArc(x1, yXY, -90, -90 + thetaXDeg, COLOR_REFLECTED, `\u03B8X = ${thetaXDeg.toFixed(1)}\xB0`);
+        drawTextWithOutline(t("tools.refraction.canvas.reflected"), (x1 + (g.rx ?? x1)) / 2 + 28, (yXY + (g.ry ?? yXY)) / 2, COLOR_REFLECTED, "center", "middle", "bold 14px system-ui, sans-serif");
+        return;
+      }
+      const tY = g.thetaY ?? 0;
+      drawArrow(x1, yXY, x2, yYZ, COLOR_MID, 5);
+      drawAngleArc(x1, yXY, 90, 90 - tY, COLOR_MID, `\u03B8Y = ${tY.toFixed(1)}\xB0`);
+      if (g.tir === "yz") {
+        drawArrow(x2, yYZ, g.rx, g.ry, COLOR_REFLECTED, 5);
+        drawAngleArc(x2, yYZ, -90, -90 + tY, COLOR_REFLECTED, `\u03B8Y = ${tY.toFixed(1)}\xB0`);
+        drawTextWithOutline(t("tools.refraction.canvas.reflected"), (x2 + (g.rx ?? x2)) / 2 + 28, (yYZ + (g.ry ?? yYZ)) / 2, COLOR_REFLECTED, "center", "middle", "bold 14px system-ui, sans-serif");
+        return;
+      }
+      const tZ = g.thetaZ ?? 0;
+      drawArrow(x2, yYZ, g.zx, g.zy, COLOR_REFRACTED, 5);
+      drawAngleArc(x2, yYZ, -90, -90 - tY, COLOR_MID, `\u03B8Y = ${tY.toFixed(1)}\xB0`);
+      drawAngleArc(x2, yYZ, 90, 90 - tZ, COLOR_REFRACTED, `\u03B8Z = ${tZ.toFixed(1)}\xB0`);
+    }
+    function draw() {
+      if (layerMode === "three") drawThreeLayers();
+      else drawTwoLayers();
+    }
+    function seededRandom(s) {
+      const x = Math.sin(s) * 1e4;
+      return x - Math.floor(x);
+    }
+    function pathLength(path) {
+      let total = 0;
+      for (let i = 0; i < path.length - 1; i++) {
+        total += Math.hypot(path[i + 1].x - path[i].x, path[i + 1].y - path[i].y);
+      }
+      return total;
+    }
+    function getPathPosByDistance(path, distance) {
+      if (!path || path.length < 2) return path?.[0] || { x: 0, y: 0, segmentIndex: 0 };
+      const total = pathLength(path);
+      if (total < 1e-6) return { ...path[0], segmentIndex: 0 };
+      let d = (distance % total + total) % total;
+      let accumulated = 0;
+      for (let i = 0; i < path.length - 1; i++) {
+        const len = Math.hypot(path[i + 1].x - path[i].x, path[i + 1].y - path[i].y);
+        if (d <= accumulated + len || i === path.length - 2) {
+          const t2 = len < 1e-9 ? 0 : (d - accumulated) / len;
+          return {
+            x: path[i].x + (path[i + 1].x - path[i].x) * t2,
+            y: path[i].y + (path[i + 1].y - path[i].y) * t2,
+            segmentIndex: i
+          };
+        }
+        accumulated += len;
+      }
+      return { ...path[path.length - 1], segmentIndex: path.length - 2 };
+    }
+    function generateBoxRays(bx, by, bw, bh, nVal, side) {
+      const baseAngle = toRad(16);
+      const dx = bh * Math.tan(baseAngle);
+      const starts = [bx + bw * 0.18, bx + bw * 0.45, bx + bw * 0.72];
+      const scatterCount = Math.max(0, Math.round((nVal - 1) * 8));
+      function buildRay(x0, rayIdx) {
+        const pts = [{ x: x0, y: by }];
+        if (scatterCount === 0) {
+          pts.push({ x: x0 + dx, y: by + bh });
+          return pts;
+        }
+        for (let k = 1; k <= scatterCount; k++) {
+          const frac = k / (scatterCount + 1);
+          const seed = side * 1e3 + rayIdx * 97 + k * 13 + Math.round(nVal * 100);
+          const wobble = (seededRandom(seed) - 0.5) * (10 + nVal * 14);
+          const sign = k % 2 === 0 ? 1 : -1;
+          pts.push({
+            x: x0 + dx * frac + sign * wobble,
+            y: by + bh * frac
+          });
+        }
+        pts.push({ x: x0 + dx, y: by + bh });
+        for (let i = 1; i < pts.length; i++) {
+          pts[i].x = Math.min(bx + bw - 6, Math.max(bx + 6, pts[i].x));
+        }
+        return pts;
+      }
+      return {
+        rays: starts.map((x0, i) => buildRay(x0, i))
+      };
+    }
+    function drawSingleParticleModel(canvas2, ctx2, nVal, side, primaryColor) {
+      if (!canvas2) return;
+      const W = canvas2.width;
+      const H = canvas2.height;
+      ctx2.clearRect(0, 0, W, H);
+      const boxW = W * 0.94;
+      const boxH = H * 0.86;
+      const boxY = H * 0.06;
+      const boxX = W * 0.03;
+      ctx2.fillStyle = mediumFill(nVal, side === 1 ? 0.18 : 0.24);
+      ctx2.fillRect(boxX, boxY, boxW, boxH);
+      ctx2.strokeStyle = "#3f4a66";
+      ctx2.lineWidth = 2.5;
+      ctx2.strokeRect(boxX, boxY, boxW, boxH);
+      drawBoxParticles(boxX, boxY, boxW, boxH, nVal, side === 1 ? "rgba(180, 83, 9, 0.35)" : "rgba(14, 116, 144, 0.35)");
+      const boxData = generateBoxRays(boxX, boxY, boxW, boxH, nVal, side);
+      const rays = boxData.rays;
+      ctx2.lineWidth = 2.5;
+      ctx2.lineCap = "round";
+      ctx2.lineJoin = "round";
+      rays.forEach((ray) => {
+        ctx2.beginPath();
+        ctx2.strokeStyle = primaryColor;
+        ctx2.moveTo(ray[0].x, ray[0].y);
+        for (let i = 1; i < ray.length; i++) ctx2.lineTo(ray[i].x, ray[i].y);
+        ctx2.stroke();
+      });
+      rays.forEach((ray) => {
+        for (let i = 1; i < ray.length - 1; i++) {
+          const pt = ray[i];
+          ctx2.beginPath();
+          ctx2.fillStyle = COLOR_REFLECTED;
+          ctx2.arc(pt.x, pt.y, 3.5, 0, Math.PI * 2);
+          ctx2.fill();
+          ctx2.strokeStyle = "#ffffff";
+          ctx2.lineWidth = 1;
+          ctx2.stroke();
+        }
+      });
+      const speed = 1 / nVal;
+      const V0_PX = boxH;
+      const vPx = V0_PX * speed;
+      const distance = microElapsedSec * vPx;
+      rays.forEach((ray) => {
+        const p = getPathPosByDistance(ray, distance);
+        drawSinglePhoton(p.x, p.y, primaryColor);
+      });
+      if (rays[1] && rays[1].length >= 2) {
+        const mid = rays[1];
+        const midLen = pathLength(mid);
+        const spacing = Math.max(28, midLen / 3.5);
+        for (let k = 0; k < 3; k++) {
+          const s = (distance + k * spacing) % midLen;
+          const p = getPathPosByDistance(mid, s);
+          const p2 = getPathPosByDistance(mid, s + 2);
+          const tx = p2.x - p.x;
+          const ty = p2.y - p.y;
+          const tlen = Math.hypot(tx, ty) || 1;
+          const nx = -ty / tlen;
+          const ny = tx / tlen;
+          const hw = 7;
+          ctx2.beginPath();
+          ctx2.strokeStyle = primaryColor;
+          ctx2.lineWidth = 2;
+          ctx2.globalAlpha = 0.55;
+          ctx2.moveTo(p.x - nx * hw, p.y - ny * hw);
+          ctx2.lineTo(p.x + nx * hw, p.y + ny * hw);
+          ctx2.stroke();
+          ctx2.globalAlpha = 1;
+        }
+      }
+      function drawSinglePhoton(x, y, color) {
+        ctx2.save();
+        ctx2.shadowBlur = 6;
+        ctx2.shadowColor = color;
+        ctx2.fillStyle = color;
+        ctx2.beginPath();
+        ctx2.arc(x, y, 5.5, 0, Math.PI * 2);
+        ctx2.fill();
+        ctx2.strokeStyle = "#ffffff";
+        ctx2.lineWidth = 1.5;
+        ctx2.stroke();
+        ctx2.restore();
+      }
+      function drawBoxParticles(bx, by, bw, bh, n, color) {
+        const spacing = 36 / (n * n);
+        ctx2.fillStyle = color;
+        const cols = Math.ceil(bw / spacing) + 1;
+        const rows = Math.ceil(bh / spacing) + 1;
+        const jigglePhase = microElapsedSec * 60;
+        for (let c = 0; c < cols; c++) {
+          for (let r = 0; r < rows; r++) {
+            const gridX = bx + c * spacing;
+            const gridY = by + r * spacing;
+            const seed = c * 17 + r * 31 + (side === 2 ? 500 : 0);
+            const randX = seededRandom(seed) * 0.3 - 0.15;
+            const randY = seededRandom(seed + 1) * 0.3 - 0.15;
+            const jiggleSpeed = 0.04 + seededRandom(seed + 2) * 0.04;
+            const jiggleAmp = 0.8 + seededRandom(seed + 3) * 0.8;
+            const jiggleX = Math.sin(jigglePhase * jiggleSpeed + seed) * jiggleAmp;
+            const jiggleY = Math.cos(jigglePhase * jiggleSpeed + seed * 1.3) * jiggleAmp;
+            const x = gridX + randX * spacing + jiggleX;
+            const y = gridY + randY * spacing + jiggleY;
+            if (x >= bx + 4 && x <= bx + bw - 4 && y >= by + 4 && y <= by + bh - 4) {
+              ctx2.beginPath();
+              ctx2.arc(x, y, 1.8, 0, Math.PI * 2);
+              ctx2.fill();
+            }
+          }
+        }
+      }
+    }
+    function drawParticleModel() {
+      if (layerMode === "three") {
+        drawSingleParticleModel(particleCanvas1, ctxP1, nXVal, 1, COLOR_INCIDENT);
+        if (particleCanvasY && ctxPY) {
+          drawSingleParticleModel(particleCanvasY, ctxPY, nYVal, 3, COLOR_MID);
+        }
+        drawSingleParticleModel(particleCanvas2, ctxP2, nZVal, 2, COLOR_REFRACTED);
+      } else {
+        drawSingleParticleModel(particleCanvas1, ctxP1, n1Val, 1, COLOR_INCIDENT);
+        drawSingleParticleModel(particleCanvas2, ctxP2, n2Val, 2, COLOR_REFRACTED);
+      }
+    }
+    function mediumFill(n, alpha) {
+      if (n < 1.15) return `rgba(120, 160, 220, ${alpha})`;
+      if (n < 1.42) return `rgba(40, 120, 200, ${alpha})`;
+      return `rgba(160, 200, 230, ${alpha})`;
+    }
+    wrap.querySelectorAll("[data-layer-mode]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const mode = btn.getAttribute("data-layer-mode");
+        if (mode === "two" || mode === "three") setLayerMode(mode);
+      });
+    });
+    wrap.querySelectorAll(".reflab-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const side = btn.getAttribute("data-for");
+        const id = btn.getAttribute("data-medium");
+        if (!id || !MEDIA[id]) return;
+        if (side === "1") n1Val = MEDIA[id].n;
+        else if (side === "2") n2Val = MEDIA[id].n;
+        else if (side === "X") nXVal = MEDIA[id].n;
+        else if (side === "Y") nYVal = MEDIA[id].n;
+        else if (side === "Z") nZVal = MEDIA[id].n;
+        paintMediumChips();
+        if (side === "X" || side === "Y" || side === "Z") applyFromThetaX();
+        else applyFromTheta1();
+      });
+    });
+    function bindNControl(slider, input, getVal, setVal, onChange, fallback) {
+      if (slider) {
+        slider.addEventListener("input", () => {
+          setVal(Number(slider.value));
+          paintMediumChips();
+          onChange();
+        });
+        slider.addEventListener("change", () => {
+          setVal(Number(slider.value));
+          paintMediumChips();
+          onChange();
+        });
+      }
+      if (input) {
+        input.addEventListener("input", () => {
+          let val = Number(input.value);
+          if (isNaN(val)) return;
+          val = Math.min(2, Math.max(1, val));
+          setVal(val);
+          paintMediumChips();
+          onChange();
+        });
+        input.addEventListener("change", () => {
+          let val = Number(input.value);
+          if (isNaN(val)) val = fallback;
+          val = Math.min(2, Math.max(1, val));
+          setVal(val);
+          input.value = val.toFixed(2);
+          paintMediumChips();
+          onChange();
+        });
+      }
+    }
+    bindNControl(n1Slider, n1Input, () => n1Val, (v) => {
+      n1Val = v;
+    }, applyFromTheta1, 1);
+    bindNControl(n2Slider, n2Input, () => n2Val, (v) => {
+      n2Val = v;
+    }, applyFromTheta1, 1.33);
+    bindNControl(nXSlider, nXInput, () => nXVal, (v) => {
+      nXVal = v;
+    }, applyFromThetaX, 1.2);
+    bindNControl(nYSlider, nYInput, () => nYVal, (v) => {
+      nYVal = v;
+    }, applyFromThetaX, 1.5);
+    bindNControl(nZSlider, nZInput, () => nZVal, (v) => {
+      nZVal = v;
+    }, applyFromThetaX, 1);
+    wrap.querySelector("[data-reset]")?.addEventListener("click", () => {
+      if (layerMode === "three") {
+        nXVal = 1.2;
+        nYVal = 1.5;
+        nZVal = 1;
+        thetaXDeg = 35;
+        paintMediumChips();
+        applyFromThetaX();
+      } else {
+        n1Val = 1;
+        n2Val = 1.33;
+        theta1Deg = 40;
+        paintMediumChips();
+        applyFromTheta1();
+      }
+    });
+    canvas.style.touchAction = "none";
+    canvas.style.cursor = "default";
+    function updateCanvasCursor(hit) {
+      if (dragTarget) {
+        canvas.style.cursor = "grabbing";
+      } else if (hit) {
+        canvas.style.cursor = "grab";
+      } else {
+        canvas.style.cursor = "default";
+      }
+    }
+    function onRayPointerDown(ev) {
+      if (ev.button != null && ev.button !== 0) return;
+      const { x, y } = canvasPointerPos(ev);
+      const hit = hitTestRays(x, y);
+      if (!hit) return;
+      dragTarget = hit;
+      canvas.setPointerCapture(ev.pointerId);
+      updateCanvasCursor(hit);
+      requestDraw();
+      ev.preventDefault();
+    }
+    function onRayPointerMove(ev) {
+      const { x, y } = canvasPointerPos(ev);
+      if (!dragTarget) {
+        updateCanvasCursor(hitTestRays(x, y));
+        return;
+      }
+      if (layerMode === "three") {
+        if (dragTarget === "incident") {
+          const g = getThreeLayerGeometry();
+          const next = theta1FromPoint(x, y, g.x1, g.yXY);
+          if (Math.abs(next - thetaXDeg) >= 0.05) {
+            thetaXDeg = Math.round(next * 10) / 10;
+            applyFromThetaX();
+          }
+        }
+      } else {
+        const g = getMacroGeometry();
+        if (dragTarget === "incident") {
+          const next = theta1FromPoint(x, y, g.cx, g.cy);
+          if (Math.abs(next - theta1Deg) >= 0.05) {
+            theta1Deg = Math.round(next * 10) / 10;
+            applyFromTheta1();
+          }
+        } else if (dragTarget === "refracted" && !isTir) {
+          const next = theta2FromPoint(x, y, g.cx, g.cy);
+          applyFromTheta2(Math.round(next * 10) / 10);
+        }
+      }
+      updateCanvasCursor(dragTarget);
+      ev.preventDefault();
+    }
+    function onRayPointerUp(ev) {
+      if (!dragTarget) return;
+      dragTarget = null;
+      try {
+        canvas.releasePointerCapture(ev.pointerId);
+      } catch (_) {
+      }
+      const { x, y } = canvasPointerPos(ev);
+      updateCanvasCursor(hitTestRays(x, y));
+      requestDraw();
+    }
+    canvas.addEventListener("pointerdown", onRayPointerDown);
+    canvas.addEventListener("pointermove", onRayPointerMove);
+    canvas.addEventListener("pointerup", onRayPointerUp);
+    canvas.addEventListener("pointercancel", onRayPointerUp);
+    canvas.addEventListener("pointerleave", () => {
+      if (!dragTarget) updateCanvasCursor(null);
+    });
+    function fitParticleCanvas(el, particleCanvas) {
+      if (!el || !particleCanvas) return false;
+      const w = Math.max(160, el.clientWidth - 8);
+      const h = Math.round(w * (210 / 320));
+      if (particleCanvas.width !== w || particleCanvas.height !== h) {
+        particleCanvas.width = w;
+        particleCanvas.height = h;
+        return true;
+      }
+      return false;
+    }
+    function fitCanvases(forceDraw = false) {
+      const viz = wrap.querySelector(".reflab-viz");
+      let macroChanged = false;
+      if (viz) {
+        const w = Math.max(320, viz.clientWidth - 20);
+        const h = Math.round(w * (440 / 720));
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
+          macroChanged = true;
+        }
+      }
+      const micro1 = wrap.querySelector('.reflab-micro-box[data-side="1"]');
+      const micro2 = wrap.querySelector('.reflab-micro-box[data-side="2"]');
+      const microY = wrap.querySelector('.reflab-micro-box[data-side="Y"]');
+      const p1Changed = fitParticleCanvas(micro1, particleCanvas1);
+      const p2Changed = fitParticleCanvas(micro2, particleCanvas2);
+      const pYChanged = fitParticleCanvas(microY, particleCanvasY);
+      if (forceDraw || macroChanged) requestDraw();
+      if (forceDraw || p1Changed || p2Changed || pYChanged) drawParticleModel();
+    }
+    paintMediumChips();
+    applyLayerModeUI();
+    applyFromTheta1();
+    root2.appendChild(wrap);
+    let animId = null;
+    function tick(ts) {
+      if (!wrap.isConnected) {
+        if (animId) cancelAnimationFrame(animId);
+        return;
+      }
+      if (!microLastTs) microLastTs = ts;
+      const dt = Math.min(0.05, (ts - microLastTs) / 1e3);
+      microLastTs = ts;
+      microElapsedSec += dt;
+      drawParticleModel();
+      animId = requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    const ro = new ResizeObserver(() => {
+      fitCanvases(false);
+    });
+    ro.observe(wrap);
+    const vizEl = wrap.querySelector(".reflab-viz");
+    if (vizEl) ro.observe(vizEl);
+    wrap.querySelectorAll(".reflab-micro-overlay").forEach((el) => ro.observe(el));
+    fitCanvases(true);
+  }
+
+  // labs/refraction/js/i18n.js
+  var currentLang = "zh";
+  var STORAGE_KEY = "s3phy.refraction.lang";
+  function hubLangToLocal(hubLang) {
+    if (hubLang === "zh-Hant" || hubLang === "zh") return "zh";
+    return "en";
+  }
+  function initLangFromUrl() {
+    const lang = new URLSearchParams(location.search).get("lang");
+    if (lang) {
+      currentLang = hubLangToLocal(lang);
+    } else {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored === "en" || stored === "zh") {
+          currentLang = stored;
+        }
+      } catch (e) {
+      }
+    }
+  }
+  function setLang(lang) {
+    currentLang = lang === "en" ? "en" : "zh";
+    try {
+      localStorage.setItem(STORAGE_KEY, currentLang);
+    } catch (e) {
+    }
+    document.documentElement.lang = currentLang === "zh" ? "zh-HK" : "en";
+    return currentLang;
+  }
+  function getLang() {
+    return currentLang;
+  }
+  var STRINGS = {
+    en: {
+      "tools.refraction.title": "Refraction \u2014 Snell\u2019s law",
+      "tools.refraction.subtitle": "Choose media, adjust angles, and compare light speeds.",
+      "tools.refraction.n1": "Medium 1",
+      "tools.refraction.n2": "Medium 2",
+      "tools.refraction.angleI": "Angle \u03B8\u2081 (\xB0)",
+      "tools.refraction.angleR": "Angle \u03B8\u2082 (\xB0)",
+      "tools.refraction.medium.air": "Air",
+      "tools.refraction.medium.water": "Water",
+      "tools.refraction.medium.glass": "Glass",
+      "tools.refraction.medium.custom": "Custom",
+      "tools.refraction.nLabel": "n",
+      "tools.refraction.speedLabel": "Speed of light v",
+      "tools.refraction.speedUnit": "\xD7 10\u2078 m s\u207B\xB9",
+      "tools.refraction.snell": "sin \u03B8\u2081 / sin \u03B8\u2082 = constant",
+      "tools.refraction.snellConstant": "constant",
+      "tools.refraction.snellTir": "No refracted ray \u2014 this ratio does not apply (TIR).",
+      "tools.refraction.critical": "Critical angle \u03B8c",
+      "tools.refraction.tir": "Total internal reflection \u2014 no refracted ray (\u03B8\u2081 > \u03B8c).",
+      "tools.refraction.reset": "Reset",
+      "tools.refraction.canvas.incident": "Incident",
+      "tools.refraction.canvas.refracted": "Refracted",
+      "tools.refraction.canvas.reflected": "Reflected",
+      "tools.refraction.canvas.normal": "Normal",
+      "tools.refraction.canvas.interface": "Interface",
+      "tools.refraction.hideControls": "Hide Controls",
+      "tools.refraction.showControls": "Show Controls",
+      "tools.refraction.particleModel.title": "Microscopic Particle Model",
+      "tools.refraction.particleModel.denser": "Denser (More Particles, Harder & Slower Light)",
+      "tools.refraction.particleModel.lessDense": "Less Dense (Fewer Particles, Easier & Faster Light)",
+      "tools.refraction.particleModel.speed": "Speed",
+      "tools.refraction.mode.two": "Two layers",
+      "tools.refraction.mode.three": "Three layers",
+      "tools.refraction.layer.X": "Medium X",
+      "tools.refraction.layer.Y": "Medium Y",
+      "tools.refraction.layer.Z": "Medium Z",
+      "tools.refraction.threeEqual": "n<sub>X</sub> sin \u03B8<sub>X</sub> = n<sub>Y</sub> sin \u03B8<sub>Y</sub> = n<sub>Z</sub> sin \u03B8<sub>Z</sub>",
+      "tools.refraction.tirXY": "Total internal reflection at X\u2013Y interface \u2014 no ray into Y.",
+      "tools.refraction.tirYZ": "Total internal reflection at Y\u2013Z interface \u2014 no ray into Z."
+    },
+    zh: {
+      "tools.refraction.title": "\u6298\u5C04 \u2014 \u53F8\u4E43\u8033\u5B9A\u5F8B",
+      "tools.refraction.subtitle": "\u9078\u64C7\u4ECB\u8CEA\u3001\u8ABF\u6821\u89D2\u5EA6\uFF0C\u4E26\u6BD4\u8F03\u4E0D\u540C\u4ECB\u8CEA\u4E2D\u7684\u5149\u901F\u3002",
+      "tools.refraction.n1": "\u4ECB\u8CEA 1",
+      "tools.refraction.n2": "\u4ECB\u8CEA 2",
+      "tools.refraction.angleI": "\u89D2\u5EA6 \u03B8\u2081\uFF08\xB0\uFF09",
+      "tools.refraction.angleR": "\u89D2\u5EA6 \u03B8\u2082\uFF08\xB0\uFF09",
+      "tools.refraction.medium.air": "\u7A7A\u6C23",
+      "tools.refraction.medium.water": "\u6C34",
+      "tools.refraction.medium.glass": "\u73BB\u7483",
+      "tools.refraction.medium.custom": "\u81EA\u8A02\u4ECB\u8CEA",
+      "tools.refraction.nLabel": "n",
+      "tools.refraction.speedLabel": "\u5149\u901F v",
+      "tools.refraction.speedUnit": "\xD7 10\u2078 m s\u207B\xB9",
+      "tools.refraction.snell": "sin \u03B8\u2081 / sin \u03B8\u2082 = \u5E38\u6578",
+      "tools.refraction.snellConstant": "\u5E38\u6578",
+      "tools.refraction.snellTir": "\u6C92\u6709\u6298\u5C04\u5149\u7DDA \u2014 \u6B64\u6BD4\u503C\u4E0D\u9069\u7528\uFF08\u5168\u5167\u53CD\u5C04\uFF09\u3002",
+      "tools.refraction.critical": "\u81E8\u754C\u89D2 \u03B8c",
+      "tools.refraction.tir": "\u5168\u5167\u53CD\u5C04 \u2014 \u6C92\u6709\u6298\u5C04\u5149\u7DDA\uFF08\u03B8\u2081 > \u03B8c\uFF09\u3002",
+      "tools.refraction.reset": "\u91CD\u8A2D",
+      "tools.refraction.canvas.incident": "\u5165\u5C04",
+      "tools.refraction.canvas.refracted": "\u6298\u5C04",
+      "tools.refraction.canvas.reflected": "\u53CD\u5C04",
+      "tools.refraction.canvas.normal": "\u6CD5\u7DDA",
+      "tools.refraction.canvas.interface": "\u4ECB\u9762",
+      "tools.refraction.hideControls": "\u6536\u5408\u63A7\u5236\u53F0",
+      "tools.refraction.showControls": "\u5C55\u958B\u63A7\u5236\u53F0",
+      "tools.refraction.particleModel.title": "\u6298\u5C04\u5FAE\u89C0\u7C92\u5B50\u6A21\u578B",
+      "tools.refraction.particleModel.denser": "\u8F03\u5BC6\u96C6 (\u7C92\u5B50\u6975\u591A\uFF0C\u5149\u7DDA\u7A7F\u900F\u963B\u529B\u5927\u3001\u50B3\u64AD\u6162)",
+      "tools.refraction.particleModel.lessDense": "\u8F03\u7A00\u758F (\u7C92\u5B50\u6975\u5C11\uFF0C\u5149\u7DDA\u7A7F\u900F\u963B\u529B\u5C0F\u3001\u50B3\u64AD\u5FEB)",
+      "tools.refraction.particleModel.speed": "\u5149\u901F",
+      "tools.refraction.mode.two": "\u5169\u5C64\u4ECB\u8CEA",
+      "tools.refraction.mode.three": "\u4E09\u5C64\u4ECB\u8CEA",
+      "tools.refraction.layer.X": "\u4ECB\u8CEA X",
+      "tools.refraction.layer.Y": "\u4ECB\u8CEA Y",
+      "tools.refraction.layer.Z": "\u4ECB\u8CEA Z",
+      "tools.refraction.threeEqual": "n<sub>X</sub> sin \u03B8<sub>X</sub> = n<sub>Y</sub> sin \u03B8<sub>Y</sub> = n<sub>Z</sub> sin \u03B8<sub>Z</sub>",
+      "tools.refraction.tirXY": "X\u2013Y \u4ECB\u9762\u5168\u5167\u53CD\u5C04 \u2014 \u6C92\u6709\u9032\u5165 Y \u7684\u5149\u7DDA\u3002",
+      "tools.refraction.tirYZ": "Y\u2013Z \u4ECB\u9762\u5168\u5167\u53CD\u5C04 \u2014 \u6C92\u6709\u9032\u5165 Z \u7684\u5149\u7DDA\u3002"
+    }
+  };
+  function createT(lang = currentLang) {
+    const map = STRINGS[lang === "en" ? "en" : "zh"] || STRINGS.zh;
+    return (key) => map[key] ?? key;
+  }
+
+  // labs/refraction/js/boot.js
+  var root = document.getElementById("app");
+  function updateLangButtons(activeLang) {
+    document.querySelectorAll(".lang-btn").forEach((btn) => {
+      const lang = btn.getAttribute("data-set-lang");
+      btn.classList.toggle("active", lang === activeLang);
+    });
+  }
+  function mount() {
+    if (!root) return;
+    root.replaceChildren();
+    const current = getLang();
+    initRefractionLab(root, createT(current));
+    updateLangButtons(current);
+  }
+  function applyLang(lang) {
+    setLang(lang);
+    mount();
+  }
+  initLangFromUrl();
+  applyLang(getLang());
+  document.addEventListener("click", (ev) => {
+    const btn = ev.target.closest(".lang-btn");
+    if (!btn || !btn.hasAttribute("data-set-lang")) return;
+    const lang = btn.getAttribute("data-set-lang");
+    if (lang) applyLang(lang);
+  });
+  window.addEventListener("message", (ev) => {
+    if (ev.data?.type !== "s3phy:lang") return;
+    const next = hubLangToLocal(ev.data.lang);
+    if (next === getLang()) return;
+    applyLang(next);
+  });
+})();
+
+  </script>
+</body>
+</html>
