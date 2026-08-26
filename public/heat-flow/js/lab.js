@@ -100,10 +100,6 @@ export function createHeatFlowLab(t, options = {}) {
     <div class="hf-layout">
       <div class="hf-main">
         <section class="hf-stage" data-stage>
-          <button class="hf-fullscreen" type="button" data-action="fullscreen" aria-pressed="false">
-            <span data-fullscreen-icon aria-hidden="true">⛶</span>
-            <strong data-fullscreen-label>${t('fullscreen')}</strong>
-          </button>
           <button class="hf-panel-toggle hf-panel-toggle--overlay" type="button" data-action="toggleControls" aria-expanded="false">
             <span aria-hidden="true">⚙</span>
             <strong data-panel-toggle-text>${t('showControls')}</strong>
@@ -204,36 +200,6 @@ export function createHeatFlowLab(t, options = {}) {
 
   const query = (selector) => root.querySelector(selector);
   const queryAll = (selector) => [...root.querySelectorAll(selector)];
-
-  function isFullscreen() {
-    return Boolean(document.fullscreenElement || document.webkitFullscreenElement);
-  }
-
-  function updateFullscreenButton() {
-    const active = isFullscreen();
-    const button = query('[data-action="fullscreen"]');
-    if (!button) return;
-    button.setAttribute('aria-pressed', String(active));
-    button.setAttribute('aria-label', active ? t('exitFullscreen') : t('fullscreen'));
-    query('[data-fullscreen-label]').textContent = active ? t('exitFullscreen') : t('fullscreen');
-    query('[data-fullscreen-icon]').textContent = active ? '✕' : '⛶';
-  }
-
-  async function toggleFullscreen() {
-    try {
-      if (!isFullscreen()) {
-        const request = document.documentElement.requestFullscreen
-          || document.documentElement.webkitRequestFullscreen;
-        await request?.call(document.documentElement);
-      } else {
-        const exit = document.exitFullscreen || document.webkitExitFullscreen;
-        await exit?.call(document);
-      }
-    } catch {
-      // The containing hub also provides a fullscreen fallback.
-    }
-    updateFullscreenButton();
-  }
 
   function capacities() {
     return {
@@ -547,17 +513,13 @@ export function createHeatFlowLab(t, options = {}) {
       controlsCollapsed = !controlsCollapsed;
       render();
     }
-    if (action === 'fullscreen') void toggleFullscreen();
     if (action === 'language') options.onLanguageToggle?.();
   }
 
   root.addEventListener('input', onInput);
   root.addEventListener('change', onInput);
   root.addEventListener('click', onClick);
-  document.addEventListener('fullscreenchange', updateFullscreenButton);
-  document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
   reset();
-  updateFullscreenButton();
 
   root.destroy = () => {
     cancelAnimationFrame(animationFrame);
@@ -565,8 +527,6 @@ export function createHeatFlowLab(t, options = {}) {
     root.removeEventListener('input', onInput);
     root.removeEventListener('change', onInput);
     root.removeEventListener('click', onClick);
-    document.removeEventListener('fullscreenchange', updateFullscreenButton);
-    document.removeEventListener('webkitfullscreenchange', updateFullscreenButton);
   };
 
   return root;

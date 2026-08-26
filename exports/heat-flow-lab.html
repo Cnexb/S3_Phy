@@ -1137,29 +1137,6 @@ body { padding: 8px; }
 .hf-panel-toggle span { font-size: 1.3em; }
 .hf-panel-toggle strong { line-height: 1.15; }
 .hf-panel-toggle:hover { border-color: #6366f1; background: #e0e7ff; }
-.hf-fullscreen {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 20;
-  display: inline-flex;
-  min-height: 48px;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 9px 12px;
-  border: 2px solid #bae6fd;
-  border-radius: 12px;
-  background: rgba(240, 249, 255, 0.96);
-  color: #075985;
-  font: inherit;
-  font-size: 0.86rem;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
-}
-.hf-fullscreen:hover { border-color: #0ea5e9; background: #e0f2fe; }
-.hf-fullscreen[aria-pressed="true"] { border-color: #6366f1; color: #4338ca; background: #eef2ff; }
-.hf-fullscreen span { font-size: 1.2rem; line-height: 1; }
 .hf-panel-toggle--overlay {
   position: absolute;
   top: 16px;
@@ -1347,13 +1324,6 @@ html.s3phy-embed .hf-layout { min-height: 100%; height: 100%; }
 html.s3phy-embed .hf-main,
 html.s3phy-embed .hf-stage { height: 100%; }
 
-html:fullscreen,
-html:fullscreen body,
-html:fullscreen #app { width: 100%; height: 100%; overflow: hidden; }
-html:fullscreen body { padding: 0; }
-html:fullscreen .hf-wrap { width: 100%; height: 100%; max-width: none; border-radius: 0; overflow: auto; }
-html:fullscreen .hf-layout { min-height: 100%; }
-
 @media (min-width: 981px) and (max-height: 720px) {
   .hf-main { grid-template-rows: minmax(300px, 1.5fr) minmax(160px, 0.7fr); }
   .hf-stage { min-height: 520px; padding: 12px; }
@@ -1392,8 +1362,6 @@ html:fullscreen .hf-layout { min-height: 100%; }
   .hf-wrap { padding: 8px; border-radius: 10px; }
   .hf-head { padding-inline: 0; padding-top: 38px; }
   .hf-language { top: 0; transform: none; }
-  .hf-fullscreen strong { display: none; }
-  .hf-fullscreen { min-width: 48px; padding-inline: 9px; }
   .hf-stage-actions { top: 70px; right: 7px; width: 48px; }
   .hf-stage-actions button { width: 48px; padding: 7px; }
   .hf-stage-actions button strong { display: none; }
@@ -1549,10 +1517,6 @@ html:fullscreen .hf-layout { min-height: 100%; }
     <div class="hf-layout">
       <div class="hf-main">
         <section class="hf-stage" data-stage>
-          <button class="hf-fullscreen" type="button" data-action="fullscreen" aria-pressed="false">
-            <span data-fullscreen-icon aria-hidden="true">\u26F6</span>
-            <strong data-fullscreen-label>${t("fullscreen")}</strong>
-          </button>
           <button class="hf-panel-toggle hf-panel-toggle--overlay" type="button" data-action="toggleControls" aria-expanded="false">
             <span aria-hidden="true">\u2699</span>
             <strong data-panel-toggle-text>${t("showControls")}</strong>
@@ -1652,31 +1616,6 @@ html:fullscreen .hf-layout { min-height: 100%; }
     </div>`;
     const query = (selector) => root2.querySelector(selector);
     const queryAll = (selector) => [...root2.querySelectorAll(selector)];
-    function isFullscreen() {
-      return Boolean(document.fullscreenElement || document.webkitFullscreenElement);
-    }
-    function updateFullscreenButton() {
-      const active = isFullscreen();
-      const button = query('[data-action="fullscreen"]');
-      if (!button) return;
-      button.setAttribute("aria-pressed", String(active));
-      button.setAttribute("aria-label", active ? t("exitFullscreen") : t("fullscreen"));
-      query("[data-fullscreen-label]").textContent = active ? t("exitFullscreen") : t("fullscreen");
-      query("[data-fullscreen-icon]").textContent = active ? "\u2715" : "\u26F6";
-    }
-    async function toggleFullscreen() {
-      try {
-        if (!isFullscreen()) {
-          const request = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
-          await request?.call(document.documentElement);
-        } else {
-          const exit = document.exitFullscreen || document.webkitExitFullscreen;
-          await exit?.call(document);
-        }
-      } catch {
-      }
-      updateFullscreenButton();
-    }
     function capacities() {
       return {
         hot: state.hotMass * MATERIALS[state.hotMaterial].c,
@@ -1952,24 +1891,18 @@ html:fullscreen .hf-layout { min-height: 100%; }
         controlsCollapsed = !controlsCollapsed;
         render();
       }
-      if (action === "fullscreen") void toggleFullscreen();
       if (action === "language") options.onLanguageToggle?.();
     }
     root2.addEventListener("input", onInput);
     root2.addEventListener("change", onInput);
     root2.addEventListener("click", onClick);
-    document.addEventListener("fullscreenchange", updateFullscreenButton);
-    document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
     reset();
-    updateFullscreenButton();
     root2.destroy = () => {
       cancelAnimationFrame(animationFrame);
       clearTimeout(joinTimer);
       root2.removeEventListener("input", onInput);
       root2.removeEventListener("change", onInput);
       root2.removeEventListener("click", onClick);
-      document.removeEventListener("fullscreenchange", updateFullscreenButton);
-      document.removeEventListener("webkitfullscreenchange", updateFullscreenButton);
     };
     return root2;
   }
@@ -2043,9 +1976,7 @@ html:fullscreen .hf-layout { min-height: 100%; }
       noFlow: "There is no heat flow",
       language: "\u4E2D\u6587",
       showControls: "Show controls",
-      hideControls: "Hide controls",
-      fullscreen: "Full screen",
-      exitFullscreen: "Exit full screen"
+      hideControls: "Hide controls"
     },
     zh: {
       title: "\u71B1\u80FD\u6D41\u52D5\u8207\u71B1\u5E73\u8861",
@@ -2113,9 +2044,7 @@ html:fullscreen .hf-layout { min-height: 100%; }
       noFlow: "\u6C92\u6709\u71B1\u80FD\u6D41\u52D5",
       language: "English",
       showControls: "\u986F\u793A\u63A7\u5236",
-      hideControls: "\u6536\u8D77\u63A7\u5236",
-      fullscreen: "\u5168\u87A2\u5E55",
-      exitFullscreen: "\u9000\u51FA\u5168\u87A2\u5E55"
+      hideControls: "\u6536\u8D77\u63A7\u5236"
     }
   };
   function hubLangToLocal(lang) {

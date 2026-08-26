@@ -68,8 +68,6 @@ const STRINGS = {
     language: '中文',
     showControls: 'Show controls',
     hideControls: 'Hide controls',
-    fullscreen: 'Full screen',
-    exitFullscreen: 'Exit full screen',
   },
   zh: {
     title: '熱能流動與熱平衡',
@@ -138,8 +136,6 @@ const STRINGS = {
     language: 'English',
     showControls: '顯示控制',
     hideControls: '收起控制',
-    fullscreen: '全螢幕',
-    exitFullscreen: '退出全螢幕',
   },
 };
 
