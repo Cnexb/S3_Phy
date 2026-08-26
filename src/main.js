@@ -214,6 +214,18 @@ window.addEventListener('hashchange', routeStrand);
 window.addEventListener('s3phy:strand', (e) => {
   void navigateStrand(e.detail ?? null);
 });
+window.addEventListener('s3phy:logout', () => {
+  document.getElementById('splash')?.remove();
+  clearSplashTimers();
+  unmountActive?.();
+  unmountActive = null;
+  unmountPicker?.();
+  unmountPicker = null;
+  const app = document.getElementById('app');
+  if (app) app.innerHTML = '';
+  clearHash();
+  trySplashThenApp();
+});
 window.addEventListener('pagehide', () => {
   unmountHubScale?.();
 });

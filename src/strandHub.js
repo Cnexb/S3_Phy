@@ -1,4 +1,5 @@
-import { t, getLang, setLang } from './i18n.js';
+import { t } from './i18n.js';
+import { mountProfileMenu, profileMenuMarkup } from './profileMenu.js';
 
 const STRANDS = [
   { id: 'foundations', titleKey: 'strand.foundations.title', descKey: 'strand.foundations.desc', ready: false },
@@ -12,6 +13,8 @@ const STRANDS = [
 ];
 
 export function mountStrandHub(root) {
+  let profile = null;
+
   function render() {
     root.innerHTML = `
       <header class="site-header site-header--strand-picker">
@@ -25,7 +28,7 @@ export function mountStrandHub(root) {
           </div>
         </div>
         <div class="site-header__actions">
-          <div class="lang-toggle" data-lang></div>
+          ${profileMenuMarkup()}
         </div>
       </header>
       <section class="panel panel--topic-hub panel--strand-hub">
@@ -45,17 +48,8 @@ export function mountStrandHub(root) {
       </section>
     `;
 
-    const langEl = root.querySelector('[data-lang]');
-    langEl.innerHTML = `
-      <button type="button" data-set-lang="en" class="${getLang() === 'en' ? 'active' : ''}">${t('lang.en')}</button>
-      <button type="button" data-set-lang="zh-Hant" class="${getLang() === 'zh-Hant' ? 'active' : ''}">${t('lang.zhHant')}</button>
-    `;
-    langEl.querySelectorAll('button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        setLang(btn.getAttribute('data-set-lang'));
-        render();
-      });
-    });
+    profile?.destroy();
+    profile = mountProfileMenu(root);
 
     root.querySelectorAll('[data-strand]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -84,5 +78,6 @@ export function mountStrandHub(root) {
 
   return () => {
     window.removeEventListener('s3phy:lang', onLang);
+    profile?.destroy();
   };
 }

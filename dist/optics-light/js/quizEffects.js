@@ -63,19 +63,10 @@ export function revealQuestionBlocks(root = document) {
   });
 }
 
-export function initSettingsToggle({ layout, panel, btn, icon, label, storageKey = "quiz-settings-open" }) {
+export function initSettingsToggle({ layout, panel, btn, icon, label }) {
   if (!layout || !panel || !btn) return;
 
-  const readOpen = () => {
-    try {
-      const v = sessionStorage.getItem(storageKey);
-      return v === null ? true : v === "1";
-    } catch {
-      return true;
-    }
-  };
-
-  let open = readOpen();
+  let open = true;
 
   function apply() {
     layout.classList.toggle("settings-collapsed", !open);
@@ -88,11 +79,6 @@ export function initSettingsToggle({ layout, panel, btn, icon, label, storageKey
         : label.dataset.labelShow || label.getAttribute("data-label-show") || "Show settings";
     }
     btn.setAttribute("aria-expanded", open ? "true" : "false");
-    try {
-      sessionStorage.setItem(storageKey, open ? "1" : "0");
-    } catch {
-      /* ignore */
-    }
   }
 
   btn.addEventListener("click", () => {

@@ -1,5 +1,6 @@
-import { t, getLang, setLang } from './i18n.js';
+import { t } from './i18n.js';
 import { initHubNavResize } from './hubNavResize.js';
+import { mountProfileMenu, profileMenuMarkup } from './profileMenu.js';
 
 export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary'];
 export const OPTICS_HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'comics', 'summary'];
@@ -43,7 +44,7 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
       <nav class="main-nav" data-nav aria-label="${t('app.title')}"></nav>
       <div class="site-header__actions">
         <button type="button" class="strand-back-btn" data-strand-back>${t('strand.back')}</button>
-        <div class="lang-toggle" data-lang></div>
+        ${profileMenuMarkup()}
       </div>
     </header>
     <main data-main></main>
@@ -52,8 +53,8 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
 
   const main = root.querySelector('[data-main]');
   const nav = root.querySelector('[data-nav]');
-  const langEl = root.querySelector('[data-lang]');
   const backBtn = root.querySelector('[data-strand-back]');
+  const profile = mountProfileMenu(root, { onLang });
 
   let currentSection = activeSection;
   const header = root.querySelector('.site-header--hub');
@@ -70,19 +71,6 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
       btn.addEventListener('click', () => onSection(btn.getAttribute('data-sec')));
     });
     requestAnimationFrame(() => navResize.check());
-  }
-
-  function paintLang() {
-    langEl.innerHTML = `
-      <button type="button" data-set-lang="en" class="${getLang() === 'en' ? 'active' : ''}">${t('lang.en')}</button>
-      <button type="button" data-set-lang="zh-Hant" class="${getLang() === 'zh-Hant' ? 'active' : ''}">${t('lang.zhHant')}</button>
-    `;
-    langEl.querySelectorAll('button').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        setLang(btn.getAttribute('data-set-lang'));
-        onLang();
-      });
-    });
   }
 
   function refreshLabels() {
@@ -105,7 +93,6 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
   root.querySelector('[data-brand-home]')?.addEventListener('click', onBack);
 
   paintNav(activeSection);
-  paintLang();
 
   return {
     main,
@@ -115,10 +102,11 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
     refreshLabels() {
       refreshLabels();
       paintNav(currentSection);
-      paintLang();
+      profile.refreshLabels();
     },
     destroy() {
       backBtn.removeEventListener('click', onBack);
+      profile.destroy();
       navResize.cleanup();
     },
   };
