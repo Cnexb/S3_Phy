@@ -277,7 +277,7 @@ export const zhHant = {
   'foundations.comingSoon': '此單元的互動實驗室、工作紙、測驗及閃卡將於日後推出。',
   'topic.quantitiesUnits': '物理量與單位',
   'topic.usefulMaths': '物理中常用的數學',
-  'notes.card.quantitiesUnits': '物理量與單位',
+  'notes.card.quantitiesUnits': 'Ch.00 物理量與單位',
   'notes.card.usefulMaths': '物理中常用的數學',
   'summary.item.quantitiesUnits': '物理量與單位',
   'summary.item.usefulMaths': '物理中常用的數學',

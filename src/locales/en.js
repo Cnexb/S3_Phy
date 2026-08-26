@@ -277,7 +277,7 @@ export const en = {
   'foundations.comingSoon': 'Interactive labs, worksheets, quizzes, and flashcards for this strand are coming soon.',
   'topic.quantitiesUnits': 'Quantities and units',
   'topic.usefulMaths': 'Useful mathematics in physics',
-  'notes.card.quantitiesUnits': 'Quantities and units',
+  'notes.card.quantitiesUnits': 'Ch.00 Quantities and units',
   'notes.card.usefulMaths': 'Useful mathematics in physics',
   'summary.item.quantitiesUnits': 'Quantities and units',
   'summary.item.usefulMaths': 'Useful mathematics in physics',
