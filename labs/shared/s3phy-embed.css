@@ -620,8 +620,9 @@ html.s3phy-embed select {
 /* Floating fullscreen — universal control for standalone labs */
 .s3phy-fs-btn {
   position: fixed;
-  top: max(12px, env(safe-area-inset-top, 0px));
-  right: max(12px, env(safe-area-inset-right, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
+  top: auto;
   z-index: 2147483646;
   display: inline-flex;
   align-items: center;
@@ -638,6 +639,18 @@ html.s3phy-embed select {
   cursor: pointer;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.2);
   pointer-events: auto;
+}
+
+.s3phy-fs-btn:not(.s3phy-fs-btn--active) {
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.s3phy-fs-btn:not(.s3phy-fs-btn--active) .s3phy-fs-btn__label {
+  display: none;
 }
 
 .s3phy-fs-btn:hover {

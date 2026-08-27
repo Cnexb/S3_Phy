@@ -118,6 +118,5 @@ export function hydrateToolsShell(root, { getLabel, t, onSelectTool, mountTool, 
     stage,
     t,
     setCollapsed,
-    getCollapsed: () => collapsed,
   });
 }

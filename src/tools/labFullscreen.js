@@ -26,17 +26,15 @@ function notifyLabResize(stage) {
   });
 }
 
-export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed }) {
+export function initLabFullscreen({ app, stage, t, setCollapsed }) {
   let overlayMode = false;
-  let pickerWasCollapsed = false;
   let overlayBackdrop = null;
   let floatBtn = null;
 
-  const isActive = () =>
-    isFullscreenActive(stage) || overlayMode || Boolean(app?.classList.contains('is-lab-fullscreen'));
+  const isModeActive = () => isFullscreenActive(stage) || overlayMode;
 
   const syncFloatButton = () => {
-    const active = isActive();
+    const active = isModeActive() || Boolean(app?.classList.contains('is-lab-fullscreen'));
     if (!floatBtn) {
       floatBtn = document.createElement('button');
       floatBtn.type = 'button';
@@ -47,7 +45,7 @@ export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed })
       floatBtn.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (isActive()) exitFullscreen();
+        if (isModeActive() || app?.classList.contains('is-lab-fullscreen')) exitFullscreen();
         else enterFullscreen();
       });
       document.body.appendChild(floatBtn);
@@ -73,15 +71,21 @@ export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed })
     overlayMode = false;
   };
 
-  const exitFullscreen = async () => {
-    if (overlayMode) {
-      clearOverlay();
-      app?.classList.remove('is-lab-fullscreen');
-      setCollapsed(pickerWasCollapsed);
-      syncFloatButton();
-      return;
-    }
+  const finishExit = () => {
+    clearOverlay();
+    app?.classList.remove('is-lab-fullscreen');
+    setCollapsed(false);
+    stage.style.position = '';
+    stage.style.inset = '';
+    stage.style.zIndex = '';
+    stage.style.width = '';
+    stage.style.height = '';
+    stage.style.margin = '';
+    syncFloatButton();
+    requestAnimationFrame(() => notifyLabResize(stage));
+  };
 
+  const exitFullscreen = async () => {
     if (isFullscreenActive(stage)) {
       try {
         if (document.exitFullscreen) await document.exitFullscreen();
@@ -89,14 +93,11 @@ export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed })
       } catch {
         /* ignore */
       }
-    } else {
-      app?.classList.remove('is-lab-fullscreen');
-      syncFloatButton();
     }
+    finishExit();
   };
 
   const enterOverlay = () => {
-    pickerWasCollapsed = getCollapsed();
     setCollapsed(true);
     app?.classList.add('is-lab-fullscreen');
 
@@ -125,7 +126,6 @@ export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed })
   };
 
   const enterFullscreen = async () => {
-    pickerWasCollapsed = getCollapsed();
     setCollapsed(true);
     app?.classList.add('is-lab-fullscreen');
 
@@ -145,28 +145,18 @@ export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed })
       requestAnimationFrame(() => notifyLabResize(stage));
     } catch {
       app?.classList.remove('is-lab-fullscreen');
-      setCollapsed(pickerWasCollapsed);
+      setCollapsed(false);
       enterOverlay();
     }
   };
 
   const onFullscreenChange = () => {
-    const active = isActive();
-    if (!active) {
-      app?.classList.remove('is-lab-fullscreen');
-      if (overlayMode) clearOverlay();
-      setCollapsed(pickerWasCollapsed);
-      stage.style.position = '';
-      stage.style.inset = '';
-      stage.style.zIndex = '';
-      stage.style.width = '';
-      stage.style.height = '';
-      stage.style.margin = '';
+    if (!isModeActive()) {
+      finishExit();
+      return;
     }
     syncFloatButton();
-    if (active) {
-      requestAnimationFrame(() => notifyLabResize(stage));
-    }
+    requestAnimationFrame(() => notifyLabResize(stage));
   };
 
   document.addEventListener('fullscreenchange', onFullscreenChange);
@@ -179,6 +169,6 @@ export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed })
     document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
     floatBtn?.remove();
     floatBtn = null;
-    exitFullscreen();
+    finishExit();
   };
 }
