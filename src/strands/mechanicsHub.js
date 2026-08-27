@@ -35,6 +35,7 @@ const MECHANICS_TOPICS = [
     titleKey: 'topic.forceI',
     fileEn: 'force-i-en.pdf',
     fileZh: 'force-i-zhHant.pdf',
+    tool: 'newtonFirstLaw',
   },
   {
     id: 'forceII',
@@ -117,10 +118,12 @@ const MECHANICS_SUMMARY_ROWS = MECHANICS_TOPICS.map((r) => {
   };
 });
 
-const TOOL_ORDER = ['vectorTool', 'elevatorWeight', 'stackedBoxes', 'projectileMotion', 'orbitalForces'];
+const TOOL_ORDER = ['vectorTool', 'newtonFirstLaw', 'elevatorWeight', 'stackedBoxes', 'projectileMotion', 'orbitalForces'];
 
 const TOOL_LOADERS = {
   vectorTool: () => import('../tools/vectorToolLab.js').then((m) => m.createVectorToolLab),
+  newtonFirstLaw: () =>
+    import('../tools/newtonFirstLawLab.js').then((m) => m.createNewtonFirstLawLab),
   elevatorWeight: () =>
     import('../tools/elevatorWeightLab.js').then((m) => m.createElevatorWeightLab),
   stackedBoxes: () =>
@@ -134,6 +137,7 @@ const TOOL_LOADERS = {
 function toolLabel(id) {
   const map = {
     vectorTool: 'tools.vectorTool.title',
+    newtonFirstLaw: 'tools.newtonFirstLaw.title',
     elevatorWeight: 'tools.elevatorWeight.title',
     stackedBoxes: 'tools.stackedBoxes.title',
     projectileMotion: 'tools.projectileMotion.title',

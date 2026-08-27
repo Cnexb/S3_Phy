@@ -6,6 +6,6 @@ export function createStackedBoxesLab(t) {
     slug: 'stacked-boxes',
     titleKey: 'tools.stackedBoxes.title',
     className: 'tool-stacked-boxes-lab',
-    extraParams: () => '&v=20260826_stacked_boxes_v1',
+    extraParams: () => '&v=20260827_stacked_boxes_v2',
   });
 }

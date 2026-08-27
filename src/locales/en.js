@@ -295,6 +295,7 @@ export const en = {
   'strand.mechanics.subtitle': 'Mechanics — force and motion',
   'mechanics.section.empty': 'Mechanics strand content is coming soon.',
   'tools.vectorTool.title': 'Vector lab — decomposition',
+  'tools.newtonFirstLaw.title': 'Newton’s first law — smooth floor',
   'tools.elevatorWeight.title': 'Elevator — normal force & acceleration',
   'tools.stackedBoxes.title': 'Stacked boxes — Newton’s laws & friction',
   'tools.projectileMotion.title': 'Projectile motion',

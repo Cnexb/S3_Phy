@@ -92,64 +92,20 @@
       .animate-ping, .animate-pulse { animation: none !important; }
     }
 
-    body.lab-fs header,
+    html:fullscreen footer,
+    html:-webkit-full-screen footer,
     body.lab-fs footer,
-    body.lab-fs #cdn-warning,
+    html:fullscreen .deco-blob,
+    html:-webkit-full-screen .deco-blob,
     body.lab-fs .deco-blob {
       display: none !important;
     }
-    body.lab-fs {
-      overflow: hidden;
-    }
+
+    html:fullscreen main,
+    html:-webkit-full-screen main,
     body.lab-fs main {
-      max-width: none;
-      margin: 0;
-      padding: 0;
-    }
-    body.lab-fs #lab-stage,
-    #lab-stage:fullscreen,
-    #lab-stage:-webkit-full-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 80;
-      box-sizing: border-box;
-      width: 100vw;
-      height: 100vh;
-      margin: 0;
-      padding: 16px 20px;
-      background: #f8fafc;
-      display: grid !important;
-      grid-template-columns: minmax(260px, 3fr) minmax(0, 7fr) !important;
-      grid-template-rows: auto !important;
-      gap: 1.5rem;
-      align-items: stretch;
-      align-content: center;
-    }
-    body.lab-fs #lab-stage > section,
-    #lab-stage:fullscreen > section,
-    #lab-stage:-webkit-full-screen > section {
-      height: auto;
-      min-height: 0;
-      grid-column: auto !important;
-      grid-row: 1 !important;
-    }
-    body.lab-fs #lab-stage > section.order-2,
-    #lab-stage:fullscreen > section.order-2,
-    #lab-stage:-webkit-full-screen > section.order-2 { order: 1 !important; }
-    body.lab-fs #lab-stage > section.order-1,
-    #lab-stage:fullscreen > section.order-1,
-    #lab-stage:-webkit-full-screen > section.order-1 { order: 2 !important; }
-    body.lab-fs #lab-stage > section > .glass-panel,
-    #lab-stage:fullscreen > section > .glass-panel,
-    #lab-stage:-webkit-full-screen > section > .glass-panel {
-      height: 100%;
-    }
-    body.lab-fs .canvas-container,
-    #lab-stage:fullscreen .canvas-container,
-    #lab-stage:-webkit-full-screen .canvas-container {
-      height: auto !important;
       flex: 1 1 auto;
-      min-height: 12rem;
+      justify-content: center;
     }
 
     html.s3phy-embed,
@@ -197,7 +153,12 @@
       flex: 1 1 auto;
       min-height: 10rem;
     }
+    body.embed-mode .glass-panel {
+      min-height: 0;
+    }
+
   </style>
+
   <script>
     (function () {
       var params = new URLSearchParams(location.search);
@@ -537,46 +498,25 @@
     }
 
     function isLabFullscreen() {
-      const stage = document.getElementById('lab-stage');
-      return fsElement() === stage || document.body.classList.contains('lab-fs');
-    }
-
-    function setLabFullscreen(on) {
-      document.body.classList.toggle('lab-fs', on);
-      const btn = document.getElementById('fullscreen-btn');
-      if (btn) btn.textContent = t(on ? 'common.exit' : 'common.fullscreen');
-      requestAnimationFrame(() => onStageResize());
+      return !!fsElement();
     }
 
     function toggleFullscreen() {
-      const stage = document.getElementById('lab-stage');
-      if (!stage) return;
-      if (fsElement() === stage) {
+      if (fsElement()) {
         const exit = document.exitFullscreen || document.webkitExitFullscreen;
         if (exit) exit.call(document);
         return;
       }
-      if (fsElement()) {
-        const exit = document.exitFullscreen || document.webkitExitFullscreen;
-        if (exit) exit.call(document);
-      }
-      const req = stage.requestFullscreen || stage.webkitRequestFullscreen;
-      if (req) {
-        const p = req.call(stage);
-        if (p && typeof p.catch === 'function') {
-          p.catch(() => setLabFullscreen(!document.body.classList.contains('lab-fs')));
-        }
-      } else {
-        setLabFullscreen(!document.body.classList.contains('lab-fs'));
-      }
+      const root = document.documentElement;
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
     }
 
     function updateFullscreenChrome() {
-      const stage = document.getElementById('lab-stage');
-      const on = fsElement() === stage;
+      const on = isLabFullscreen();
       document.body.classList.toggle('lab-fs', on);
       const btn = document.getElementById('fullscreen-btn');
-      if (btn) btn.textContent = t(on || document.body.classList.contains('lab-fs') ? 'common.exit' : 'common.fullscreen');
+      if (btn) btn.textContent = t(on ? 'common.exit' : 'common.fullscreen');
       requestAnimationFrame(() => onStageResize());
     }
 
@@ -855,11 +795,6 @@
     window.addEventListener('resize', onStageResize);
     document.addEventListener('fullscreenchange', updateFullscreenChrome);
     document.addEventListener('webkitfullscreenchange', updateFullscreenChrome);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && document.body.classList.contains('lab-fs') && !fsElement()) {
-        setLabFullscreen(false);
-      }
-    });
 
     window.addEventListener('message', (event) => {
       if (event.data && event.data.type === 's3phy:lang') {
@@ -883,7 +818,6 @@
         ro.observe(stage);
       }
       rafId = requestAnimationFrame(loop);
-      requestAnimationFrame(() => onStageResize());
     });
   </script>
 </body>

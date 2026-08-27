@@ -295,6 +295,7 @@ export const zhHant = {
   'strand.mechanics.subtitle': '力學 — 力與運動',
   'mechanics.section.empty': '力學單元內容即將推出。',
   'tools.vectorTool.title': '矢量實驗室 — 分解',
+  'tools.newtonFirstLaw.title': '牛頓第一定律 — 光滑地面',
   'tools.elevatorWeight.title': '電梯 — 法向力與加速度',
   'tools.stackedBoxes.title': '疊箱 — 牛頓定律與摩擦力',
   'tools.projectileMotion.title': '拋體運動',

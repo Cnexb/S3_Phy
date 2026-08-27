@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newton’s First Law Laboratory (HKDSE Physics)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap");
+
+    :root {
+      --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      --s3-font-display: "Montserrat", "Inter", system-ui, sans-serif;
+      --tab-accent: #6366f1;
+      --tab-accent-glow: rgba(99, 102, 241, 0.4);
+      --glass-bg: rgba(255, 255, 255, 0.82);
+      --force-applied: #f97316;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", var(--s3-font, sans-serif);
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow: hidden;
+    }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+    }
+
+    .lang-active {
+      background: linear-gradient(135deg, #334155 0%, #475569 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 10px -2px rgba(71, 85, 105, 0.5);
+    }
+
+    .cdn-warning {
+      background: linear-gradient(90deg, #b45309, #d97706);
+      color: #fffbeb;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      padding: 6px 12px;
+    }
+
+    #sim-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .canvas-container {
+      position: relative;
+      min-height: 0;
+    }
+
+    .push-btn {
+      position: absolute;
+      top: 14px;
+      z-index: 10;
+      min-width: 9.5rem;
+      padding: 0.9rem 1.35rem;
+      border-radius: 0.9rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+    }
+
+    #btn-rightward { right: 14px; }
+    #btn-leftward { left: 14px; }
+
+    .push-btn.off {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .push-btn.off:hover {
+      background: #cbd5e1;
+    }
+
+    .push-btn.on {
+      background: var(--force-applied);
+      color: #ffffff;
+      border-color: #ea580c;
+      box-shadow: 0 4px 18px rgba(249, 115, 22, 0.45);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-ping, .animate-pulse, .push-btn { animation: none !important; transition: none; }
+    }
+
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+    }
+    body.embed-mode {
+      min-height: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    body.embed-mode #cdn-warning,
+    body.embed-mode .deco-blob,
+    body.embed-mode footer {
+      display: none !important;
+    }
+    body.embed-mode header {
+      display: none !important;
+    }
+    body.embed-mode main {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-width: none;
+      margin: 0;
+      padding: 8px;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    body.embed-mode #lab-stage {
+      height: 100%;
+      min-height: 0;
+      align-content: stretch;
+    }
+    body.embed-mode #lab-stage > section {
+      min-height: 0;
+      height: 100%;
+    }
+    body.embed-mode #lab-stage > section > .glass-panel {
+      height: 100%;
+    }
+    body.embed-mode .canvas-container {
+      height: auto !important;
+      flex: 1 1 auto;
+      min-height: 10rem;
+    }
+    body.embed-mode .glass-panel {
+      min-height: 0;
+    }
+
+  </style>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('embed') === '1' || params.get('embed') === 'true') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+  </script>
+</head>
+<body class="h-full flex flex-col">
+  <div id="cdn-warning" class="cdn-warning hidden" role="alert" data-i18n="cdn.warning">
+    Some CDN resources failed to load. Please connect to the internet and refresh.
+  </div>
+
+  <div class="deco-blob absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-60" style="background: var(--tab-accent-glow);"></div>
+  <div class="deco-blob absolute top-0 right-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md sticky top-0 z-50 shrink-0">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-2.5 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 text-indigo-400 shadow-inner">
+          <i data-lucide="box" class="w-7 h-7 text-indigo-400"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-white" data-i18n="app.title">Newton’s First Law Laboratory</h1>
+            <span class="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded text-[10px] font-bold tracking-wider uppercase">HKDSE Physics</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-0.5" data-i18n="app.subtitle">HKDSE Physics · Newton’s first law · Smooth surface</p>
+        </div>
+      </div>
+      <div class="flex bg-slate-900/95 p-1 rounded-xl border border-slate-800/80">
+        <button type="button" onclick="setLanguage('en')" id="lang-en" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active">EN</button>
+        <button type="button" onclick="setLanguage('zh-Hant')" id="lang-zh" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all duration-200">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 min-h-0 max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col">
+    <div class="glass-panel rounded-2xl p-5 flex flex-col flex-1 min-h-0">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-3 gap-3 flex-wrap shrink-0">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-sky-500 animate-ping"></span>
+          <h3 class="font-bold text-sm tracking-wide text-slate-800" data-i18n="sim.title">Motion on a smooth floor</h3>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap justify-end">
+          <button type="button" id="fullscreen-btn" onclick="toggleFullscreen()" class="px-3.5 py-1.5 bg-slate-300 hover:bg-slate-400 text-black rounded-lg text-xs font-bold transition-all shadow-md">Full screen</button>
+          <button type="button" onclick="setUniformVelocity(-1)" class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition-all shadow-md" data-i18n="motion.uniformLeft">Uniform velocity (left)</button>
+          <button type="button" onclick="setUniformVelocity(1)" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-md" data-i18n="motion.uniformRight">Uniform velocity (right)</button>
+          <button type="button" onclick="setAtRest()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-all border border-slate-700" data-i18n="motion.atRest">At rest</button>
+        </div>
+      </div>
+      <div class="canvas-container relative bg-white rounded-xl overflow-hidden border border-slate-200 flex-1">
+        <canvas id="sim-canvas" aria-label="A box on a smooth surface"></canvas>
+        <button type="button" id="btn-rightward" class="push-btn off" aria-pressed="false" data-i18n="push.right">Push →</button>
+        <button type="button" id="btn-leftward" class="push-btn off" aria-pressed="false" data-i18n="push.left">← Push</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const MASS = 5;
+    const F_PUSH = 10;
+    const SCALE = 70;
+    const ARROW_LEN = 100;
+    const V_UNIFORM = 4;
+
+    function hubLangToLocal(lang) {
+      if (lang === 'zh-Hant' || lang === 'zhHant' || lang === 'zh') return 'zh-Hant';
+      return 'en';
+    }
+
+    (function initLangFromUrl() {
+      const params = new URLSearchParams(location.search);
+      const langParam = params.get('lang');
+      if (langParam) {
+        try { localStorage.setItem('n1-lang', hubLangToLocal(langParam)); } catch (e) { /* ignore */ }
+      }
+    })();
+
+    let currentLang = localStorage.getItem('n1-lang') || 'en';
+    currentLang = hubLangToLocal(currentLang);
+    let canvas, ctx, cssW = 800, cssH = 420;
+    let floorY = 0, boxW = 140, boxH = 90;
+    let x = 0, v = 0;
+    let pushRight = false;
+    let pushLeft = false;
+    let lastStamp = 0;
+
+    const I18N = {
+      en: {
+        app: {
+          pageTitle: 'Newton’s First Law Laboratory (HKDSE Physics)',
+          title: 'Newton’s First Law Laboratory',
+          subtitle: 'HKDSE Physics · Newton’s first law · Smooth surface'
+        },
+        cdn: { warning: 'Some CDN resources failed to load. Please connect to the internet and refresh.' },
+        common: { fullscreen: 'Full screen', exit: 'Exit' },
+        motion: {
+          uniformLeft: 'Uniform velocity (left)',
+          uniformRight: 'Uniform velocity (right)',
+          atRest: 'At rest'
+        },
+        sim: { title: 'Motion on a smooth floor', smoothFloor: 'Smooth floor' },
+        push: { right: 'Push →', left: '← Push' }
+      },
+      'zh-Hant': {
+        app: {
+          pageTitle: '牛頓第一定律實驗室（HKDSE 物理）',
+          title: '牛頓第一定律實驗室',
+          subtitle: 'HKDSE 物理 · 牛頓第一定律 · 光滑地面'
+        },
+        cdn: { warning: '部分資源未能載入。請連接網絡後重新整理。' },
+        common: { fullscreen: '全螢幕', exit: '退出' },
+        motion: {
+          uniformLeft: '勻速（左）',
+          uniformRight: '勻速（右）',
+          atRest: '靜止'
+        },
+        sim: { title: '光滑地面上的運動', smoothFloor: '光滑地面' },
+        push: { right: '向右推 →', left: '← 向左推' }
+      }
+    };
+
+    function t(key) {
+      const parts = key.split('.');
+      let val = I18N[currentLang];
+      for (const p of parts) {
+        if (!val || val[p] === undefined) return key;
+        val = val[p];
+      }
+      return typeof val === 'string' ? val : key;
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('n1-lang', lang);
+      document.documentElement.lang = lang === 'zh-Hant' ? 'zh-Hant' : 'en';
+      document.title = t('app.pageTitle');
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        if (el.id === 'fullscreen-btn') return;
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+      updateFullscreenLabel();
+      const enBtn = document.getElementById('lang-en');
+      const zhBtn = document.getElementById('lang-zh');
+      if (enBtn) enBtn.className = lang === 'en'
+        ? 'lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active'
+        : 'lang-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all duration-200';
+      if (zhBtn) zhBtn.className = lang === 'zh-Hant'
+        ? 'lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active'
+        : 'lang-btn px-3 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all duration-200';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function setLanguage(lang) {
+      applyLanguage(lang);
+    }
+
+    function netForce() {
+      const right = pushRight ? F_PUSH : 0;
+      const left = pushLeft ? F_PUSH : 0;
+      return right - left;
+    }
+
+    function layoutBox() {
+      floorY = cssH - 56;
+      boxW = Math.min(180, Math.max(120, cssW * 0.14));
+      boxH = Math.min(110, Math.max(78, cssH * 0.16));
+    }
+
+    function setupCanvas() {
+      canvas = document.getElementById('sim-canvas');
+      if (!canvas) return;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      cssW = Math.max(320, rect.width);
+      cssH = Math.max(180, rect.height);
+      canvas.width = Math.floor(cssW * dpr);
+      canvas.height = Math.floor(cssH * dpr);
+      ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      layoutBox();
+    }
+
+    function wrapIfNeeded() {
+      if (Math.abs(v) < 1e-8) return;
+      if (x > cssW) x = -boxW;
+      if (x + boxW < 0) x = cssW;
+    }
+
+    function step(dt) {
+      const a = netForce() / MASS;
+      v += a * dt;
+      x += v * SCALE * dt;
+      wrapIfNeeded();
+    }
+
+    function roundRect(rx, ry, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(rx + r, ry);
+      ctx.arcTo(rx + w, ry, rx + w, ry + h, r);
+      ctx.arcTo(rx + w, ry + h, rx, ry + h, r);
+      ctx.arcTo(rx, ry + h, rx, ry, r);
+      ctx.arcTo(rx, ry, rx + w, ry, r);
+      ctx.closePath();
+    }
+
+    function drawGlowingBox(bx, by, w, h, topColor, botColor, strokeColor) {
+      const grad = ctx.createLinearGradient(bx, by, bx, by + h);
+      grad.addColorStop(0, topColor);
+      grad.addColorStop(1, botColor);
+      roundRect(bx, by, w, h, 8);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(bx + 10, by + 5);
+      ctx.lineTo(bx + w - 10, by + 5);
+      ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+
+    function drawArrow(x1, y1, x2, y2, color, width) {
+      const ang = Math.atan2(y2 - y1, x2 - x1);
+      const head = 22;
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'butt';
+      const inset = head * 0.55;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2 - inset * Math.cos(ang), y2 - inset * Math.sin(ang));
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - head * Math.cos(ang - 0.45), y2 - head * Math.sin(ang - 0.45));
+      ctx.lineTo(x2 - head * Math.cos(ang + 0.45), y2 - head * Math.sin(ang + 0.45));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawPushArrows(bx, by) {
+      const forceY = by + boxH * 0.55;
+      ctx.font = '800 22px Plus Jakarta Sans, sans-serif';
+      ctx.fillStyle = '#f97316';
+
+      if (pushRight) {
+        drawArrow(bx - ARROW_LEN, forceY, bx, forceY, '#f97316', 3.8);
+        ctx.textAlign = 'right';
+        ctx.fillText('F', bx - ARROW_LEN - 8, forceY + 7);
+      }
+      if (pushLeft) {
+        drawArrow(bx + boxW + ARROW_LEN, forceY, bx + boxW, forceY, '#f97316', 3.8);
+        ctx.textAlign = 'left';
+        ctx.fillText('F', bx + boxW + ARROW_LEN + 8, forceY + 7);
+      }
+      ctx.textAlign = 'left';
+    }
+
+    function draw() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, cssW, cssH);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cssW, cssH);
+
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(0, floorY, cssW, cssH - floorY);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, floorY);
+      ctx.lineTo(cssW, floorY);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(100,116,139,0.45)';
+      ctx.lineWidth = 1;
+      for (let sx = 10; sx < cssW; sx += 18) {
+        ctx.beginPath();
+        ctx.moveTo(sx, floorY + 6);
+        ctx.lineTo(sx - 8, floorY + 18);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '800 16px Plus Jakarta Sans, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(t('sim.smoothFloor'), 16, floorY + 34);
+
+      const y = floorY - boxH;
+      drawGlowingBox(x, y, boxW, boxH, '#38bdf8', '#0369a1', '#0284c7');
+      drawPushArrows(x, y);
+    }
+
+    function syncPushButtons() {
+      const leftBtn = document.getElementById('btn-rightward');
+      const rightBtn = document.getElementById('btn-leftward');
+      if (leftBtn) {
+        leftBtn.className = 'push-btn ' + (pushRight ? 'on' : 'off');
+        leftBtn.setAttribute('aria-pressed', pushRight ? 'true' : 'false');
+      }
+      if (rightBtn) {
+        rightBtn.className = 'push-btn ' + (pushLeft ? 'on' : 'off');
+        rightBtn.setAttribute('aria-pressed', pushLeft ? 'true' : 'false');
+      }
+    }
+
+    function loop(now) {
+      if (!lastStamp) lastStamp = now;
+      let dt = (now - lastStamp) / 1000;
+      lastStamp = now;
+      if (dt > 0.05) dt = 0.05;
+      step(dt);
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function setAtRest() {
+      layoutBox();
+      x = (cssW - boxW) / 2;
+      v = 0;
+    }
+
+    function setUniformVelocity(dir) {
+      v = dir * V_UNIFORM;
+    }
+
+    function fsElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement || null;
+    }
+
+    function isPageFullscreen() {
+      return !!fsElement();
+    }
+
+    function updateFullscreenLabel() {
+      const btn = document.getElementById('fullscreen-btn');
+      if (btn) btn.textContent = t(isPageFullscreen() ? 'common.exit' : 'common.fullscreen');
+    }
+
+    function toggleFullscreen() {
+      if (fsElement()) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+        return;
+      }
+      const root = document.documentElement;
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
+    }
+
+    function updateFullscreenChrome() {
+      updateFullscreenLabel();
+      requestAnimationFrame(() => onStageResize());
+    }
+
+    function onStageResize() {
+      const frac = cssW > 0 ? (x + boxW / 2) / cssW : 0.5;
+      setupCanvas();
+      x = frac * cssW - boxW / 2;
+      wrapIfNeeded();
+    }
+
+    function checkCdn() {
+      const missing = [];
+      if (typeof tailwind === 'undefined') missing.push('Tailwind');
+      if (!window.lucide) missing.push('Lucide');
+      const box = document.getElementById('cdn-warning');
+      if (missing.length && box) {
+        box.classList.remove('hidden');
+        box.textContent = t('cdn.warning');
+      }
+    }
+
+    window.addEventListener('resize', onStageResize);
+    document.addEventListener('fullscreenchange', updateFullscreenChrome);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenChrome);
+
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 's3phy:lang') {
+        setLanguage(hubLangToLocal(event.data.lang));
+      }
+    });
+
+    window.addEventListener('load', () => {
+      if (new URLSearchParams(location.search).get('embed') === '1' || window.self !== window.top) {
+        document.body.classList.add('embed-mode');
+      }
+      setupCanvas();
+      setAtRest();
+      applyLanguage(currentLang);
+      checkCdn();
+      if (window.lucide) lucide.createIcons();
+
+      document.getElementById('btn-rightward').addEventListener('click', () => {
+        pushRight = !pushRight;
+        syncPushButtons();
+      });
+      document.getElementById('btn-leftward').addEventListener('click', () => {
+        pushLeft = !pushLeft;
+        syncPushButtons();
+      });
+
+      const stage = document.querySelector('.canvas-container');
+      if (stage && typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => onStageResize());
+        ro.observe(stage);
+      }
+
+      requestAnimationFrame(loop);
+    });
+  </script>
+</body>
+</html>
