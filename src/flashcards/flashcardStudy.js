@@ -170,7 +170,6 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
     restart: container.querySelector('[data-fc-restart]'),
   };
 
-  // ---- UNI+ tracker: 送 flashcard 自評結果去 uni-tracker.js ----
   function trackAttempt(isCorrect) {
     const card = session?.currentCard();
     if (!card) return;
@@ -179,6 +178,7 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
         type: 'uniplus:flashcardAttempt',
         subject: 'PHY',
         deck: deckKey,
+        topic: card.subtopic || null,
         cardId: String(card.id),
         questionText: card.front,
         answerText: card.back,
