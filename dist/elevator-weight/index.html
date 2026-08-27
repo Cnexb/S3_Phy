@@ -128,13 +128,12 @@
         }
         body.is-fullscreen .main-grid > .card:first-child .legend { flex: 0 0 auto; }
         body.is-fullscreen #case-cue { margin: 2px 0 0 !important; font-size: 0.9rem !important; }
-        body.is-fullscreen .fbd-card #fbdCanvas { flex: 0 0 auto; }
-        body.is-fullscreen .fbd-card .readouts { gap: 5px; margin-top: 5px; }
-        body.is-fullscreen .stat { padding: 5px 7px; }
-        body.is-fullscreen .stat .k { font-size: 0.78rem; }
-        body.is-fullscreen .stat .v { font-size: 0.98rem; }
-        body.is-fullscreen .feel { margin-top: 5px; padding: 6px 8px; font-size: 0.9rem; }
-        body.is-fullscreen .eq-box { margin-top: 5px; padding: 6px 8px; font-size: 0.9rem; }
+        body.is-fullscreen .fbd-card #fbdCanvas {
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            height: auto;
+        }
         body.is-fullscreen .nt-card { display: none !important; }
         .container {
             width: 100%;
@@ -213,7 +212,7 @@
         }
         .main-grid {
             display: grid;
-            grid-template-columns: 6fr 4fr;
+            grid-template-columns: 1fr 1fr;
             gap: 14px;
             align-items: stretch;
         }
@@ -225,16 +224,13 @@
             flex-direction: column;
             min-height: 0;
         }
-        .main-grid > .card:first-child #sceneCanvas {
+        .main-grid > .card:first-child #sceneCanvas,
+        .fbd-card #fbdCanvas {
             flex: 1 1 auto;
             width: 100%;
             min-height: 640px;
             height: auto;
         }
-        .fbd-card #fbdCanvas { flex: 0 0 auto; }
-        .fbd-card .readouts,
-        .fbd-card .feel,
-        .fbd-card .eq-box { flex: 0 0 auto; }
         .canvas-label {
             font-size: 1rem;
             font-weight: 700;
@@ -252,60 +248,9 @@
             box-sizing: border-box;
         }
         #sceneCanvas { height: 640px; }
-        #fbdCanvas { height: 360px; background: #fafafa; }
+        #fbdCanvas { height: 640px; background: #fafafa; }
         #ntCanvas { height: 380px; background: #fafafa; }
         .nt-card { display: none !important; }
-        .readouts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .stat {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 8px 10px;
-        }
-        .stat .k {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--muted);
-            margin-bottom: 2px;
-        }
-        .stat .v {
-            font-weight: 800;
-            font-size: 1.2rem;
-            font-variant-numeric: tabular-nums;
-        }
-        .stat.n .v { color: var(--n); }
-        .stat.w .v { color: var(--w); }
-        .stat.a .v { color: var(--a); }
-        .stat.vstat .v { color: #0369a1; }
-        .feel {
-            margin-top: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-align: center;
-            border: 1px solid transparent;
-        }
-        .feel.heavy { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
-        .feel.normal { background: #f1f5f9; color: #334155; border-color: #e2e8f0; }
-        .feel.light { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
-        .feel.zero { background: #f5f3ff; color: #6d28d9; border-color: #ddd6fe; }
-        .eq-box {
-            margin-top: 10px;
-            font-family: "Roboto Mono", Consolas, monospace;
-            font-size: 1.05rem;
-            background: #f0fdfa;
-            border-radius: 8px;
-            padding: 10px 12px;
-            color: #0f766e;
-            line-height: 1.55;
-        }
         .legend {
             display: flex;
             flex-wrap: wrap;
@@ -419,16 +364,7 @@
             </div>
             <div class="card fbd-card">
                 <div class="canvas-label" id="label-fbd">Free-body diagram</div>
-                <canvas id="fbdCanvas" width="320" height="280"></canvas>
-                <div class="readouts">
-                    <div class="stat a"><span class="k" id="k-a">Acceleration a</span><span class="v" id="v-a">0</span></div>
-                    <div class="stat vstat"><span class="k" id="k-v">Speed |v|</span><span class="v" id="v-v">0</span></div>
-                    <div class="stat n"><span class="k" id="k-n">Normal N</span><span class="v" id="v-n">0</span></div>
-                    <div class="stat w"><span class="k" id="k-w">Weight mg</span><span class="v" id="v-w">0</span></div>
-                    <div class="stat"><span class="k" id="k-ratio">N / mg</span><span class="v" id="v-ratio">1.00</span></div>
-                </div>
-                <div class="feel normal" id="feelBox">Feels normal weight</div>
-                <div class="eq-box" id="eqBox">ΣF = N − mg = ma</div>
+                <canvas id="fbdCanvas" width="640" height="640"></canvas>
             </div>
         </div>
     </div>
@@ -888,11 +824,6 @@
             document.getElementById('label-fbd').innerText = d.fbd;
             const labelNt = document.getElementById('label-nt');
             if (labelNt) labelNt.innerText = d.nt;
-            document.getElementById('k-a').innerText = d.ka;
-            document.getElementById('k-v').innerText = d.kv;
-            document.getElementById('k-n').innerText = d.kn;
-            document.getElementById('k-w').innerText = d.kw;
-            document.getElementById('k-ratio').innerText = d.kratio;
             document.getElementById('leg-n').innerText = d.legN;
             document.getElementById('leg-w').innerText = d.legW;
             document.getElementById('leg-a').innerText = d.legA;
@@ -938,40 +869,9 @@
         function updateUI() {
             const d = t();
             const m = mass();
-            const a = accel();
-            const N = normal();
-            const W = weight();
-            const ratio = W > 0 ? N / W : 0;
 
             document.getElementById('massVal').textContent = `${m.toFixed(0)} kg`;
             document.getElementById('animSpeedVal').textContent = `×${animSpeed().toFixed(2)}`;
-
-            document.getElementById('v-a').textContent = `${a.toFixed(2)} ms⁻²`;
-            document.getElementById('v-v').textContent = `${Math.abs(velocity).toFixed(2)} ms⁻¹`;
-            document.getElementById('v-n').textContent = `${N.toFixed(1)} N`;
-            document.getElementById('v-w').textContent = `${W.toFixed(1)} N`;
-            document.getElementById('v-ratio').textContent = ratio.toFixed(3);
-
-            const feel = document.getElementById('feelBox');
-            if (N < 1) {
-                feel.className = 'feel zero';
-                feel.textContent = d.feelZero;
-            } else if (ratio > 1.02) {
-                feel.className = 'feel heavy';
-                feel.textContent = d.feelHeavy;
-            } else if (ratio < 0.98) {
-                feel.className = 'feel light';
-                feel.textContent = d.feelLight;
-            } else {
-                feel.className = 'feel normal';
-                feel.textContent = d.feelNormal;
-            }
-
-            document.getElementById('eqBox').textContent = d.eq(
-                N.toFixed(1),
-                W.toFixed(1),
-                a.toFixed(2)
-            );
             playBtn.innerText = playing ? d.pause : d.play;
             document.getElementById('resetBtn').innerText = d.reset;
             const cues = {
@@ -1237,75 +1137,76 @@
             const h = fbdCanvas.clientHeight || fbdCanvas.height;
             ctx.clearRect(0, 0, w, h);
 
-            const s = Math.max(0.72, Math.min(1, h / 300));
+            // Grow with canvas so the force arrows stay the visual focus
+            const s = Math.max(0.85, Math.min(1.55, Math.min(w, h) / 420));
             const cx = w / 2;
             const cy = h / 2 + 6 * s;
             const N = normal();
             const W = weight();
             const a = accel();
-            const baseLen = 100 * s;
+            const baseLen = 130 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
             const nSt = forceStyle(N, s);
             const wSt = forceStyle(W, s);
-            const forceFont = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
-            const sideFont = `bold ${Math.round(12.5 * s)}px sans-serif`;
+            const forceFont = `bold ${Math.round(22 * s)}px "Noto Sans TC", sans-serif`;
+            const sideFont = `bold ${Math.round(15 * s)}px sans-serif`;
 
             ctx.fillStyle = '#e2e8f0';
             ctx.beginPath();
-            ctx.arc(cx, cy, 22 * s, 0, Math.PI * 2);
+            ctx.arc(cx, cy, 28 * s, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 2.5 * s;
             ctx.stroke();
             ctx.fillStyle = '#1e293b';
             ctx.font = forceFont;
             ctx.textAlign = 'center';
-            ctx.fillText('m', cx, cy + 5 * s);
+            ctx.fillText('m', cx, cy + 7 * s);
             ctx.textAlign = 'left';
 
             if (nLen > 0) {
                 drawArrow(ctx, cx, cy, cx, cy - nLen, '#059669', nSt.width, nSt.head);
                 ctx.fillStyle = '#059669';
                 ctx.font = forceFont;
-                ctx.fillText('N', cx + 22 * s, cy - Math.max(22 * s, nLen / 2));
+                ctx.fillText('N', cx + 26 * s, cy - Math.max(28 * s, nLen / 2));
             } else {
                 ctx.fillStyle = '#059669';
                 ctx.font = forceFont;
-                ctx.fillText('N', cx + 28 * s, cy - 14 * s);
+                ctx.fillText('N', cx + 32 * s, cy - 16 * s);
             }
             drawArrow(ctx, cx, cy, cx, cy + wLen, '#dc2626', wSt.width, wSt.head);
             ctx.fillStyle = '#dc2626';
             ctx.font = forceFont;
-            ctx.fillText('mg', cx + 22 * s, cy + Math.max(28 * s, wLen / 2 + 4));
+            ctx.fillText('mg', cx + 26 * s, cy + Math.max(34 * s, wLen / 2 + 4));
 
             // a (left) and |v| (right): label above, arrow underneath — symmetric layout
             ctx.fillStyle = '#7c3aed';
             ctx.font = sideFont;
             const aFbdLabel = `a = ${a.toFixed(2)} ms⁻²`;
-            const aFbdX = 10;
-            const sideLabelY = 18 + 4 * s;
+            const aFbdX = 14 * s;
+            const sideLabelY = 22 + 6 * s;
             ctx.textAlign = 'left';
             ctx.fillText(aFbdLabel, aFbdX, sideLabelY);
-            const al = aPx(a, 88 * s);
+            const al = aPx(a, 110 * s);
             const aArrowX = aFbdX + ctx.measureText(aFbdLabel).width / 2;
-            const sideArrowTop = sideLabelY + 10 * s;
+            const sideArrowTop = sideLabelY + 12 * s;
             if (al > 2) {
-                if (a > 0) drawArrow(ctx, aArrowX, sideArrowTop + al, aArrowX, sideArrowTop, '#7c3aed', 3.5 * s);
-                else drawArrow(ctx, aArrowX, sideArrowTop, aArrowX, sideArrowTop + al, '#7c3aed', 3.5 * s);
+                if (a > 0) drawArrow(ctx, aArrowX, sideArrowTop + al, aArrowX, sideArrowTop, '#7c3aed', 4 * s);
+                else drawArrow(ctx, aArrowX, sideArrowTop, aArrowX, sideArrowTop + al, '#7c3aed', 4 * s);
             }
 
             const speed = Math.abs(velocity);
-            const vl = vPx(velocity, 88 * s);
+            const vl = vPx(velocity, 110 * s);
             ctx.fillStyle = '#0369a1';
             ctx.font = sideFont;
             const vFbdLabel = `|v| = ${speed.toFixed(2)} ms⁻¹`;
             ctx.textAlign = 'right';
-            ctx.fillText(vFbdLabel, w - 10, sideLabelY);
-            const vArrowX = w - 10 - ctx.measureText(vFbdLabel).width / 2;
+            ctx.fillText(vFbdLabel, w - 14 * s, sideLabelY);
+            const vArrowX = w - 14 * s - ctx.measureText(vFbdLabel).width / 2;
             if (vl > 2) {
-                if (velocity > 0) drawArrow(ctx, vArrowX, sideArrowTop + vl, vArrowX, sideArrowTop, '#0369a1', 3.5 * s);
-                else drawArrow(ctx, vArrowX, sideArrowTop, vArrowX, sideArrowTop + vl, '#0369a1', 3.5 * s);
+                if (velocity > 0) drawArrow(ctx, vArrowX, sideArrowTop + vl, vArrowX, sideArrowTop, '#0369a1', 4 * s);
+                else drawArrow(ctx, vArrowX, sideArrowTop, vArrowX, sideArrowTop + vl, '#0369a1', 4 * s);
             }
             ctx.textAlign = 'left';
         }
@@ -1431,9 +1332,9 @@
             const sParent = sceneCanvas.parentElement;
             const fParent = fbdCanvas.parentElement;
             let sceneH = 640;
-            let fbdH = 360;
+            let fbdH = 640;
             if (isFullscreen()) {
-                // Stretch shaft to use full remaining height (no empty gap under the well)
+                // Stretch both panels to use full remaining height
                 const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
                 const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
                 const phaseH = sParent.querySelector('.phase-tag')?.offsetHeight || 0;
@@ -1448,17 +1349,17 @@
                     const vh = window.innerHeight;
                     sceneH = Math.max(280, vh - 150 - extras);
                 }
-                const fbdReadoutReserve = 185;
+                const fbdLabelH = fParent.querySelector('.canvas-label')?.offsetHeight || 22;
                 const fbdFill = fParent.clientHeight || fillH;
-                fbdH = Math.max(120, Math.min(sceneH - 40, fbdFill - fbdReadoutReserve - 30));
+                fbdH = Math.max(200, Math.min(sceneH, fbdFill - fbdLabelH - 24));
             }
             const sceneW = Math.min(Math.max(280, sParent.clientWidth - 32), 1048);
             const fbdW = Math.min(Math.max(260, fParent.clientWidth - 32), 1048);
             fitCanvas(fbdCanvas, fbdW, fbdH);
 
             if (!isFullscreen()) {
-                // Match shaft card bottom with FBD card: stretch scene canvas to fill
                 fitCanvas(sceneCanvas, sceneW, sceneH);
+                fitCanvas(fbdCanvas, fbdW, fbdH);
                 draw();
                 requestAnimationFrame(() => {
                     if (isFullscreen()) return;
@@ -1467,10 +1368,17 @@
                     const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
                     const cs = getComputedStyle(sParent);
                     const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
-                    const fbdCardH = fParent.offsetHeight;
-                    const nextH = Math.max(640, Math.floor(fbdCardH - padY - labelH - legendH - phaseH - 16));
-                    if (Math.abs(nextH - sceneCanvas.clientHeight) > 4) {
-                        fitCanvas(sceneCanvas, sceneW, nextH);
+                    const fLabelH = fParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                    const fCs = getComputedStyle(fParent);
+                    const fPadY = (parseFloat(fCs.paddingTop) || 0) + (parseFloat(fCs.paddingBottom) || 0);
+                    // Match both canvases to the taller card content area
+                    const targetH = Math.max(
+                        640,
+                        Math.floor(Math.max(sParent.clientHeight, fParent.clientHeight) - Math.max(padY + labelH + legendH + phaseH + 16, fPadY + fLabelH + 16))
+                    );
+                    if (Math.abs(targetH - sceneCanvas.clientHeight) > 4 || Math.abs(targetH - fbdCanvas.clientHeight) > 4) {
+                        fitCanvas(sceneCanvas, sceneW, targetH);
+                        fitCanvas(fbdCanvas, fbdW, targetH);
                     }
                     draw();
                 });
@@ -1478,9 +1386,10 @@
             }
 
             fitCanvas(sceneCanvas, sceneW, sceneH);
+            fitCanvas(fbdCanvas, fbdW, fbdH);
             draw();
 
-            // Fullscreen: remeasure after layout so shaft fills any leftover lower space
+            // Fullscreen: remeasure after layout so both panels fill leftover space
             requestAnimationFrame(() => {
                 if (!isFullscreen()) return;
                 const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
@@ -1491,8 +1400,9 @@
                 const nextH = Math.floor(fillH - extras);
                 if (nextH > 120 && Math.abs(nextH - sceneH) > 6) {
                     fitCanvas(sceneCanvas, sceneW, nextH);
+                    const fbdLabelH = fParent.querySelector('.canvas-label')?.offsetHeight || 22;
                     const fbdFill = fParent.clientHeight || fillH;
-                    const nextFbd = Math.max(120, Math.min(nextH - 40, fbdFill - 215));
+                    const nextFbd = Math.max(200, Math.min(nextH, fbdFill - fbdLabelH - 24));
                     fitCanvas(fbdCanvas, fbdW, nextFbd);
                     draw();
                 }
