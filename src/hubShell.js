@@ -1,6 +1,7 @@
 import { t } from './i18n.js';
 import { initHubNavResize } from './hubNavResize.js';
 import { mountProfileMenu, profileMenuMarkup } from './profileMenu.js';
+import { initHubFullscreen } from './tools/labFullscreen.js';
 
 export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary'];
 export const OPTICS_HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'comics', 'summary'];
@@ -55,10 +56,12 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
   const nav = root.querySelector('[data-nav]');
   const backBtn = root.querySelector('[data-strand-back]');
   const profile = mountProfileMenu(root, { onLang });
+  const app = document.getElementById('app');
 
   let currentSection = activeSection;
   const header = root.querySelector('.site-header--hub');
   const navResize = initHubNavResize(header);
+  const hubFullscreen = initHubFullscreen({ app, stage: main, t });
 
   function paintNav(sec) {
     currentSection = sec;
@@ -68,7 +71,10 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
       return `<button type="button" class="${active}" data-sec="${id}">${label}</button>`;
     }).join('');
     nav.querySelectorAll('button').forEach((btn) => {
-      btn.addEventListener('click', () => onSection(btn.getAttribute('data-sec')));
+      btn.addEventListener('click', () => {
+        hubFullscreen.exit();
+        onSection(btn.getAttribute('data-sec'));
+      });
     });
     requestAnimationFrame(() => navResize.check());
   }
@@ -106,6 +112,7 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
     },
     destroy() {
       backBtn.removeEventListener('click', onBack);
+      hubFullscreen.destroy();
       profile.destroy();
       navResize.cleanup();
     },

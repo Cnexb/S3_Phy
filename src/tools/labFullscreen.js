@@ -26,7 +26,8 @@ function notifyLabResize(stage) {
   });
 }
 
-export function initLabFullscreen({ app, stage, t, setCollapsed }) {
+/** Hub-wide fullscreen for any strand section (notes, labs, quiz, …). */
+export function initHubFullscreen({ app, stage, t }) {
   let overlayMode = false;
   let overlayBackdrop = null;
   let floatBtn = null;
@@ -66,7 +67,7 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
       overlayBackdrop.remove();
       overlayBackdrop = null;
     }
-    stage.classList.remove('tool-stage--overlay-fullscreen');
+    stage.classList.remove('hub-main--overlay-fullscreen');
     document.body.style.overflow = '';
     overlayMode = false;
   };
@@ -74,7 +75,6 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
   const finishExit = () => {
     clearOverlay();
     app?.classList.remove('is-lab-fullscreen');
-    setCollapsed(false);
     stage.style.position = '';
     stage.style.inset = '';
     stage.style.zIndex = '';
@@ -98,7 +98,6 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
   };
 
   const enterOverlay = () => {
-    setCollapsed(true);
     app?.classList.add('is-lab-fullscreen');
 
     overlayBackdrop = document.createElement('div');
@@ -108,7 +107,7 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
     document.body.appendChild(overlayBackdrop);
     document.body.style.overflow = 'hidden';
 
-    stage.classList.add('tool-stage--overlay-fullscreen');
+    stage.classList.add('hub-main--overlay-fullscreen');
     stage.style.position = 'fixed';
     stage.style.inset = '0';
     stage.style.zIndex = String(OVERLAY_Z + 1);
@@ -126,7 +125,6 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
   };
 
   const enterFullscreen = async () => {
-    setCollapsed(true);
     app?.classList.add('is-lab-fullscreen');
 
     if (!supportsFullscreen()) {
@@ -145,7 +143,6 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
       requestAnimationFrame(() => notifyLabResize(stage));
     } catch {
       app?.classList.remove('is-lab-fullscreen');
-      setCollapsed(false);
       enterOverlay();
     }
   };
@@ -164,11 +161,17 @@ export function initLabFullscreen({ app, stage, t, setCollapsed }) {
 
   syncFloatButton();
 
-  return () => {
-    document.removeEventListener('fullscreenchange', onFullscreenChange);
-    document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
-    floatBtn?.remove();
-    floatBtn = null;
-    finishExit();
+  return {
+    destroy() {
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
+      floatBtn?.remove();
+      floatBtn = null;
+      finishExit();
+    },
+    exit: finishExit,
   };
 }
+
+/** @deprecated Use initHubFullscreen — kept for any external imports */
+export const initLabFullscreen = initHubFullscreen;

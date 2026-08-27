@@ -1110,6 +1110,57 @@ button.brand-logo-wrap:hover .brand-logo-img {
   display: none;
 }
 
+#app.is-lab-fullscreen .tool-picker {
+  display: none !important;
+}
+
+#app.is-lab-fullscreen [data-main] {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100% !important;
+  max-height: none;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#app.is-lab-fullscreen [data-main] > .panel,
+#app.is-lab-fullscreen [data-main] > section {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  border-radius: 0;
+  margin: 0;
+}
+
+#app.is-lab-fullscreen .panel--worksheets-embed,
+#app.is-lab-fullscreen .panel--quiz-embed {
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+[data-main]:fullscreen,
+[data-main].hub-main--overlay-fullscreen {
+  background: var(--bg);
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+[data-main]:fullscreen .panel--worksheets-embed iframe,
+[data-main]:fullscreen .panel--quiz-embed iframe,
+[data-main].hub-main--overlay-fullscreen .panel--worksheets-embed iframe,
+[data-main].hub-main--overlay-fullscreen .panel--quiz-embed iframe,
+#app.is-lab-fullscreen .panel--worksheets-embed iframe,
+#app.is-lab-fullscreen .panel--quiz-embed iframe {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100% !important;
+}
+
 #app.is-lab-fullscreen .panel--tools {
   padding: 0;
   border: none;

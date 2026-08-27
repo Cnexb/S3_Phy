@@ -1,5 +1,3 @@
-import { initLabFullscreen } from './labFullscreen.js';
-
 const STORAGE_KEY = 's3phy:tool-picker-collapsed';
 const MOBILE_BREAKPOINT = 768;
 
@@ -112,11 +110,4 @@ export function hydrateToolsShell(root, { getLabel, t, onSelectTool, mountTool, 
   });
 
   mountTool(stage);
-
-  initLabFullscreen({
-    app: document.getElementById('app'),
-    stage,
-    t,
-    setCollapsed,
-  });
 }
