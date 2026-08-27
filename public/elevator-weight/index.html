@@ -7,7 +7,7 @@
     <title>電梯中的受力</title>
     <link rel="stylesheet" href="../shared/s3phy-embed.css">
     <script src="../shared/s3phy-embed-init.js"></script>
-    <link rel="stylesheet" href="styles.css?v=1">
+    <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
     <div class="el-wrap">
@@ -89,6 +89,9 @@
         const V_REF = 24; // m/s — scale for v arrow (≈ max cruise = 5×3)
         const FORCE_REF = 70 * G; // pixel scale reference (70 kg · g)
         const A_REF = 8; // scale for a arrow length
+        const SCENE_ASPECT = 580 / 640;
+        const FBD_ASPECT = 1;
+        const GRID_STACK_MQ = window.matchMedia('(max-width: 820px)');
         const SCENARIOS = [
             { id: 'upAccel' },   // from rest, a↑ — ends still accelerating (N > mg)
             { id: 'upDecel' },   // coast up, then a↓ — ends still braking (N < mg)
@@ -627,7 +630,7 @@
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, w, h);
 
-            const s = Math.max(0.52, Math.min(1, h / 580));
+            const s = Math.max(0.45, Math.min(1, Math.min(h / 580, w / 640)));
             const shaftTop = Math.round(20 * s);
             const shaftPad = Math.round(20 * s);
             const shaftH = h - shaftTop - shaftPad;
@@ -636,11 +639,12 @@
             const travelPadBot = Math.round(30 * s);
             const travel = Math.max(24, shaftH - cabinH - travelPadTop - travelPadBot);
 
-            // Room on left for |v|, on right for N gauge + a
-            const leftLane = Math.min(150, Math.max(118, w * 0.26));
-            const rightLane = Math.min(180, Math.max(110, w * 0.30));
-            const sw = Math.max(72, Math.min(w * 0.40, w - leftLane - rightLane));
-            const sx = leftLane;
+            // Side lanes scale down on narrow canvases so labels stay inside
+            const padL = Math.max(6, Math.min(112, w * 0.17));
+            const padR = Math.max(6, Math.min(128, w * 0.20));
+            const innerW = Math.max(120, w - padL - padR);
+            const sw = Math.max(56, Math.min(innerW * 0.52, innerW - 16));
+            const sx = padL + (innerW - sw) / 2;
             ctx.fillStyle = C.shaft;
             ctx.fillRect(sx, shaftTop, sw, shaftH);
             ctx.strokeStyle = C.border;
@@ -749,23 +753,30 @@
             const aLabelSample = 'a 0.0 ms⁻²';
             ctx.font = uiFont(15, s);
             const aTextW = ctx.measureText(aLabelSample).width + 14;
-            const gaugeX = Math.min(sx + sw + 48 * s, w - aTextW - 56 * s);
+            const gaugeW = 36 * s;
+            const gaugeX = Math.min(
+                sx + sw + 20 * s,
+                w - padR - gaugeW
+            );
             drawNormalGauge(ctx, gaugeX, cabinTop + 8 * s, cabinH - 16 * s, N, W, d, s);
 
             // |v| on the LEFT of the shaft
-            const kvx = Math.max(22 * s, sx - 28 * s);
+            const kvx = Math.max(padL + 14 * s, sx - 18 * s);
             const kvy = cabinTop + cabinH / 2;
             const speed = Math.abs(velocity);
             const vLen = vPx(velocity, 100 * s);
             ctx.fillStyle = C.v;
             ctx.font = uiFont(15, s);
             ctx.textAlign = 'right';
+            const vLabel = vLen > 2 ? `|v| = ${speed.toFixed(2)} ms⁻¹` : '|v| = 0.00 ms⁻¹';
+            const vLabelW = ctx.measureText(vLabel).width;
+            const vLabelX = Math.max(padL, Math.min(kvx - 6 * s, w - padR - vLabelW));
             if (vLen > 2) {
                 if (velocity > 0) drawArrow(ctx, kvx, kvy + vLen / 2, kvx, kvy - vLen / 2, C.v, 3 * s);
                 else drawArrow(ctx, kvx, kvy - vLen / 2, kvx, kvy + vLen / 2, C.v, 3 * s);
-                ctx.fillText(`|v| = ${speed.toFixed(2)} ms⁻¹`, Math.max(4, kvx - 8 * s), kvy + vLen / 2 + 18 * s);
+                ctx.fillText(vLabel, vLabelX + vLabelW, kvy + vLen / 2 + 18 * s);
             } else {
-                ctx.fillText('|v| = 0.00 ms⁻¹', Math.max(4, kvx - 8 * s), kvy + 6 * s);
+                ctx.fillText(vLabel, vLabelX + vLabelW, kvy + 6 * s);
             }
             ctx.textAlign = 'left';
 
@@ -777,8 +788,8 @@
             const aLabel = aLen > 2 ? `a ${a.toFixed(1)} ms⁻²` : 'a = 0 ms⁻²';
             const aLabelW = ctx.measureText(aLabel).width;
             const aLabelX = Math.min(
-                gaugeX + 36 * s,
-                w - aLabelW - 6
+                gaugeX + gaugeW + 10 * s,
+                w - padR - aLabelW
             );
             const aBlockH = (aLen > 2 ? aLen : 16 * s) + 22 * s;
             const aLabelY = Math.max(
@@ -1034,85 +1045,82 @@
             ctx.imageSmoothingQuality = 'high';
         }
 
+        function cardChrome(parent, withLegend) {
+            const cs = getComputedStyle(parent);
+            const padX = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+            const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+            const labelH = parent.querySelector('.el-canvas-label')?.offsetHeight || 0;
+            const legendH = withLegend ? (parent.querySelector('.el-legend')?.offsetHeight || 0) : 0;
+            const phaseH = withLegend ? (parent.querySelector('#phaseTag')?.offsetHeight || 0) : 0;
+            return {
+                padX,
+                padY,
+                below: labelH + legendH + phaseH + padY + 8,
+            };
+        }
+
+        function gridStacked() {
+            return GRID_STACK_MQ.matches;
+        }
+
         function resize() {
             const sParent = sceneCanvas.parentElement;
             const fParent = fbdCanvas.parentElement;
-            let sceneH = 640;
-            let fbdH = 640;
-            if (isFullscreen()) {
-                // Stretch both panels to use full remaining height
-                const labelH = sParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
-                const legendH = sParent.querySelector('.el-legend')?.offsetHeight || 28;
-                const phaseH = sParent.querySelector('.el-phase-tag')?.offsetHeight || 0;
-                const cardPad = 16;
-                const extras = labelH + legendH + phaseH + cardPad + 8;
-                const cardH = sParent.clientHeight;
-                const gridH = document.querySelector('.el-main-grid')?.clientHeight || 0;
-                const fillH = Math.max(cardH, gridH);
-                if (fillH > extras + 120) {
-                    sceneH = Math.floor(fillH - extras);
-                } else {
-                    const vh = window.innerHeight;
-                    sceneH = Math.max(280, vh - 150 - extras);
-                }
-                const fbdLabelH = fParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
-                const fbdFill = fParent.clientHeight || fillH;
-                fbdH = Math.max(200, Math.min(sceneH, fbdFill - fbdLabelH - 24));
-            }
-            const sceneW = Math.min(Math.max(280, sParent.clientWidth - 32), 1048);
-            const fbdW = Math.min(Math.max(260, fParent.clientWidth - 32), 1048);
-            fitCanvas(fbdCanvas, fbdW, fbdH);
+            const sChrome = cardChrome(sParent, true);
+            const fChrome = cardChrome(fParent, false);
 
-            if (!isFullscreen()) {
-                fitCanvas(sceneCanvas, sceneW, sceneH);
-                fitCanvas(fbdCanvas, fbdW, fbdH);
-                draw();
-                requestAnimationFrame(() => {
-                    if (isFullscreen()) return;
-                    const labelH = sParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
-                    const legendH = sParent.querySelector('.el-legend')?.offsetHeight || 28;
-                    const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
-                    const cs = getComputedStyle(sParent);
-                    const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
-                    const fLabelH = fParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
-                    const fCs = getComputedStyle(fParent);
-                    const fPadY = (parseFloat(fCs.paddingTop) || 0) + (parseFloat(fCs.paddingBottom) || 0);
-                    // Match both canvases to the taller card content area
-                    const targetH = Math.max(
-                        640,
-                        Math.floor(Math.max(sParent.clientHeight, fParent.clientHeight) - Math.max(padY + labelH + legendH + phaseH + 16, fPadY + fLabelH + 16))
-                    );
-                    if (Math.abs(targetH - sceneCanvas.clientHeight) > 4 || Math.abs(targetH - fbdCanvas.clientHeight) > 4) {
-                        fitCanvas(sceneCanvas, sceneW, targetH);
-                        fitCanvas(fbdCanvas, fbdW, targetH);
+            const sceneW = Math.max(280, Math.floor(sParent.clientWidth - sChrome.padX));
+            const fbdW = Math.max(280, Math.floor(fParent.clientWidth - fChrome.padX));
+
+            let sceneH = Math.round(sceneW * SCENE_ASPECT);
+            let fbdH = Math.round(fbdW * FBD_ASPECT);
+            const stacked = gridStacked();
+
+            if (isFullscreen()) {
+                const grid = document.querySelector('.el-main-grid');
+                const gridH = grid?.clientHeight || 0;
+                if (gridH > 120) {
+                    if (stacked) {
+                        const each = Math.floor((gridH - 16) / 2);
+                        sceneH = Math.max(240, each - sChrome.below);
+                        fbdH = Math.max(240, each - fChrome.below);
+                    } else {
+                        sceneH = Math.max(280, gridH - sChrome.below);
+                        fbdH = Math.max(280, gridH - fChrome.below);
                     }
-                    draw();
-                });
-                return;
+                }
+            } else {
+                sceneH = Math.min(540, Math.max(340, sceneH));
+                fbdH = Math.min(540, Math.max(300, fbdH));
             }
 
             fitCanvas(sceneCanvas, sceneW, sceneH);
             fitCanvas(fbdCanvas, fbdW, fbdH);
             draw();
 
-            // Fullscreen: remeasure after layout so both panels fill leftover space
-            requestAnimationFrame(() => {
-                if (!isFullscreen()) return;
-                const labelH = sParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
-                const legendH = sParent.querySelector('.el-legend')?.offsetHeight || 28;
-                const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
-                const extras = labelH + legendH + phaseH + 24;
-                const fillH = Math.max(sParent.clientHeight, document.querySelector('.el-main-grid')?.clientHeight || 0);
-                const nextH = Math.floor(fillH - extras);
-                if (nextH > 120 && Math.abs(nextH - sceneH) > 6) {
-                    fitCanvas(sceneCanvas, sceneW, nextH);
-                    const fbdLabelH = fParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
-                    const fbdFill = fParent.clientHeight || fillH;
-                    const nextFbd = Math.max(200, Math.min(nextH, fbdFill - fbdLabelH - 24));
-                    fitCanvas(fbdCanvas, fbdW, nextFbd);
-                    draw();
-                }
-            });
+            if (isFullscreen()) {
+                requestAnimationFrame(() => {
+                    if (!isFullscreen()) return;
+                    const grid = document.querySelector('.el-main-grid');
+                    const gridH = grid?.clientHeight || 0;
+                    if (gridH <= 120) return;
+                    let nextSceneH;
+                    let nextFbdH;
+                    if (stacked) {
+                        const each = Math.floor((gridH - 16) / 2);
+                        nextSceneH = Math.max(240, each - sChrome.below);
+                        nextFbdH = Math.max(240, each - fChrome.below);
+                    } else {
+                        nextSceneH = Math.max(280, gridH - sChrome.below);
+                        nextFbdH = Math.max(280, gridH - fChrome.below);
+                    }
+                    if (Math.abs(nextSceneH - sceneH) > 6 || Math.abs(nextFbdH - fbdH) > 6) {
+                        fitCanvas(sceneCanvas, sceneW, nextSceneH);
+                        fitCanvas(fbdCanvas, fbdW, nextFbdH);
+                        draw();
+                    }
+                });
+            }
         }
 
         function stopCabin() {
@@ -1238,6 +1246,11 @@
             updateLanguageUI();
         });
         window.addEventListener('resize', resize);
+        if (typeof GRID_STACK_MQ.addEventListener === 'function') {
+            GRID_STACK_MQ.addEventListener('change', resize);
+        } else if (typeof GRID_STACK_MQ.addListener === 'function') {
+            GRID_STACK_MQ.addListener(resize);
+        }
 
         if (!CanvasRenderingContext2D.prototype.roundRect) {
             CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
