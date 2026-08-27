@@ -40,8 +40,16 @@ const FOUNDATIONS_DECK_OPTIONS = [
   { value: 'usefulMaths', labelKey: 'topic.usefulMaths' },
 ];
 
+const QUIZ_ORDER = ['quantitiesUnits', 'usefulMaths'];
+const QUIZ_STORAGE_KEY = 's3phy.foundations.quiz';
+
+function resolveQuizId(raw) {
+  return QUIZ_ORDER.includes(raw) ? raw : 'quantitiesUnits';
+}
+
 export function mountFoundationsHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.foundations.section'));
+  let quizId = resolveQuizId(sessionStorage.getItem(QUIZ_STORAGE_KEY));
   let shell = null;
   let el = { main: null };
   let destroyQuiz = null;
@@ -55,11 +63,37 @@ export function mountFoundationsHub(root) {
     destroyWorksheet = node._foundationsNotesWorksheetCleanup || null;
   }
 
-  async function mountQuiz(panel) {
+  async function mountActiveQuiz(stage) {
+    if (!stage) return;
+    destroyQuiz?.();
+    destroyQuiz = null;
+    stage.innerHTML = '';
+    if (quizId === 'usefulMaths') {
+      const { createFoundationsUsefulMathQuiz } = await import('../worksheets/foundationsUsefulMathQuiz.js');
+      const node = createFoundationsUsefulMathQuiz(t);
+      stage.appendChild(node);
+      destroyQuiz = node._foundationsUsefulMathQuizCleanup || null;
+      return;
+    }
     const { createFoundationsQuantitiesQuiz } = await import('../worksheets/foundationsQuantitiesQuiz.js');
     const node = createFoundationsQuantitiesQuiz(t);
-    panel.appendChild(node);
+    stage.appendChild(node);
     destroyQuiz = node._foundationsQuantitiesQuizCleanup || null;
+  }
+
+  function renderQuiz() {
+    const buttons = QUIZ_ORDER.map(
+      (id) =>
+        `<button type="button" data-quiz="${id}" class="${quizId === id ? 'active' : ''}">${t(`topic.${id}`)}</button>`,
+    ).join('');
+    return `
+      <section class="panel panel--quiz-embed">
+        <div class="worksheet-picker">
+          <p class="lead">${t('quiz.pick')}</p>
+          <div class="tool-list" data-quiz-list>${buttons}</div>
+        </div>
+        <div class="worksheet-stage" data-quiz-stage></div>
+      </section>`;
   }
 
   function renderMain() {
@@ -83,9 +117,8 @@ export function mountFoundationsHub(root) {
       const panel = el.main.querySelector('.panel--worksheets-embed');
       void mountWorksheet(panel);
     } else if (section === 'quiz') {
-      el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
-      const panel = el.main.querySelector('.panel--quiz-embed');
-      void mountQuiz(panel);
+      el.main.innerHTML = renderQuiz();
+      void mountActiveQuiz(el.main.querySelector('[data-quiz-stage]'));
     } else if (section === 'flashcards') {
       destroyFlashcards = mountFlashcardStudy(el.main, {
         deckOptions: FOUNDATIONS_DECK_OPTIONS.map((o) => ({
@@ -178,12 +211,24 @@ export function mountFoundationsHub(root) {
     await hydrateSummaryCards(root, FOUNDATIONS_SUMMARY_ROWS);
   }
 
+  function onMainClick(ev) {
+    const btn = ev.target.closest('[data-quiz]');
+    if (!btn || section !== 'quiz') return;
+    const id = btn.getAttribute('data-quiz');
+    if (!id || id === quizId || !QUIZ_ORDER.includes(id)) return;
+    quizId = id;
+    sessionStorage.setItem(QUIZ_STORAGE_KEY, id);
+    renderMain();
+  }
+
   window.addEventListener('s3phy:lang', onLangChange);
+  root.addEventListener('click', onMainClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
+    root.removeEventListener('click', onMainClick);
     destroyQuiz?.();
     destroyWorksheet?.();
     destroyFlashcards?.();

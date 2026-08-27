@@ -161,6 +161,8 @@ export const en = {
   'quiz.practiceTitle': 'S3 Heat Ch.1 quiz',
   'quiz.opticsCh3Title': 'S3 Optics Ch.3 · Light & Lens quiz',
   'quiz.foundationsTitle': 'S3 Foundations · Quantities and units quiz',
+  'quiz.foundationsUsefulMathTitle': 'S3 Foundations · Useful mathematics quiz',
+  'quiz.pick': 'Choose quiz',
   'quiz.comingSoon': 'Interactive quizzes for this strand are coming soon.',
   'flashcards.title': 'Flashcards',
   'flashcards.intro': 'Study with spaced repetition — cards you find harder appear more often in later rounds. Ch.3 light topics plus convex lens, concave lens, and EM wave definitions.',

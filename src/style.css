@@ -1602,6 +1602,7 @@ button.brand-logo-wrap:hover .brand-logo-img {
 .tool-heat-final-exam-quiz,
 .tool-heat-ch1-quiz,
 .tool-foundations-quantities-quiz,
+.tool-foundations-useful-math-quiz,
 .tool-foundations-notes-quiz,
 .tool-specific-heat,
 .tool-thermal-mixing,
@@ -1629,6 +1630,7 @@ button.brand-logo-wrap:hover .brand-logo-img {
 .tool-heat-final-exam-quiz iframe,
 .tool-heat-ch1-quiz iframe,
 .tool-foundations-quantities-quiz iframe,
+.tool-foundations-useful-math-quiz iframe,
 .tool-foundations-notes-quiz iframe,
 .tool-specific-heat iframe,
 .tool-thermal-mixing iframe,
@@ -1779,7 +1781,9 @@ iframe.note-preview {
 .panel--worksheets-embed .tool-foundations-notes-quiz,
 .panel--quiz-embed .tool-heat-ch1-quiz,
 .panel--quiz-embed .tool-optics-ch3-quiz,
-.panel--quiz-embed .tool-foundations-quantities-quiz {
+.panel--quiz-embed .tool-foundations-quantities-quiz,
+.panel--quiz-embed .worksheet-stage .tool-foundations-quantities-quiz,
+.panel--quiz-embed .worksheet-stage .tool-foundations-useful-math-quiz {
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;
