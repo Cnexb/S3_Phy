@@ -659,6 +659,14 @@
         function forcePx(F, basePx) {
             return F > 0.5 ? Math.max(8, (F / FORCE_REF) * basePx) : 0;
         }
+        /** Shaft width + head size track force magnitude (same scale as length). */
+        function forceStyle(F, s = 1) {
+            const t = Math.min(1.85, Math.max(0.28, F / FORCE_REF));
+            return {
+                width: (2.2 + 3.0 * t) * s,
+                head: (7 + 9 * t) * s,
+            };
+        }
         function aPx(a, maxPx) {
             return Math.min(maxPx, (Math.abs(a) / A_REF) * maxPx);
         }
@@ -1014,9 +1022,9 @@
             const travelPadBot = Math.round(30 * s);
             const travel = Math.max(24, shaftH - cabinH - travelPadTop - travelPadBot);
 
-            // Room on left for |v|, on right for N gauge + N magnitude + a
+            // Room on left for |v|, on right for N gauge + a
             const leftLane = Math.min(150, Math.max(118, w * 0.26));
-            const rightLane = Math.min(200, Math.max(120, w * 0.34));
+            const rightLane = Math.min(180, Math.max(110, w * 0.30));
             const sw = Math.max(72, Math.min(w * 0.40, w - leftLane - rightLane));
             const sx = leftLane;
             ctx.fillStyle = '#dbe3ec';
@@ -1089,46 +1097,45 @@
             const N = normal();
             const W = weight();
             const a = accel();
-            const baseLen = 58 * s;
+            // Longer base so N vs mg length difference is easy to read at start/stop
+            const baseLen = 72 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
+            const nSt = forceStyle(N, s);
+            const wSt = forceStyle(W, s);
 
             const nArrowX = px - 22 * s;
             const nTextX = nArrowX - 8 * s;
             if (nLen > 0) {
-                drawArrow(ctx, nArrowX, py, nArrowX, py - nLen, '#059669', 3.5 * s);
+                drawArrow(ctx, nArrowX, py, nArrowX, py - nLen, '#059669', nSt.width, nSt.head);
                 ctx.fillStyle = '#059669';
                 ctx.textAlign = 'right';
                 ctx.font = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
-                ctx.fillText('N', nTextX, py - nLen / 2 - 4 * s);
-                ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
-                ctx.fillText(`${N.toFixed(1)} N`, nTextX, py - nLen / 2 + 14 * s);
+                ctx.fillText('N', nTextX, py - nLen / 2);
             } else {
                 ctx.fillStyle = '#059669';
                 ctx.textAlign = 'right';
                 ctx.font = `bold ${Math.round(15 * s)}px "Noto Sans TC", sans-serif`;
-                ctx.fillText('N = 0', nTextX, py - 8 * s);
+                ctx.fillText('N', nTextX, py - 8 * s);
             }
 
             const wArrowX = px + 22 * s;
             const wStartY = py - 30 * s;
-            drawArrow(ctx, wArrowX, wStartY, wArrowX, wStartY + wLen, '#dc2626', 3.5 * s);
+            drawArrow(ctx, wArrowX, wStartY, wArrowX, wStartY + wLen, '#dc2626', wSt.width, wSt.head);
             const wMidY = wStartY + wLen / 2;
             const cabinBlackBottom = cabinTop + cabinH;
-            const mgLabelY = Math.min(wMidY - 4 * s, cabinBlackBottom - 22 * s);
+            const mgLabelY = Math.min(wMidY, cabinBlackBottom - 10 * s);
             const mgTextX = wArrowX + 12 * s;
             ctx.fillStyle = '#dc2626';
             ctx.textAlign = 'left';
             ctx.font = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
             ctx.fillText('mg', mgTextX, mgLabelY);
-            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
-            ctx.fillText(`${W.toFixed(1)} N`, mgTextX, mgLabelY + 16 * s);
             ctx.textAlign = 'left';
 
             const aLabelSample = 'a 0.0 ms⁻²';
             ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
             const aTextW = ctx.measureText(aLabelSample).width + 14;
-            const gaugeX = Math.min(sx + sw + 56 * s, w - aTextW - 70 * s);
+            const gaugeX = Math.min(sx + sw + 48 * s, w - aTextW - 56 * s);
             drawNormalGauge(ctx, gaugeX, cabinTop + 8 * s, cabinH - 16 * s, N, W, d, s);
 
             // |v| on the LEFT of the shaft
@@ -1148,18 +1155,15 @@
             }
             ctx.textAlign = 'left';
 
-            // a — label above, arrow underneath; sit right of N magnitude so they do not overlap
+            // a — label above, arrow underneath; sit right of N gauge
             const aLen = aPx(a, 110 * s);
             ctx.fillStyle = '#7c3aed';
             ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
             ctx.textAlign = 'left';
             const aLabel = aLen > 2 ? `a ${a.toFixed(1)} ms⁻²` : 'a = 0 ms⁻²';
             const aLabelW = ctx.measureText(aLabel).width;
-            ctx.font = `bold ${Math.round(15 * s)}px "Noto Sans TC", sans-serif`;
-            const nMagW = ctx.measureText(N.toFixed(1)).width;
-            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
             const aLabelX = Math.min(
-                gaugeX + 22 * s + nMagW + 22 * s,
+                gaugeX + 36 * s,
                 w - aLabelW - 6
             );
             const aBlockH = (aLen > 2 ? aLen : 16 * s) + 22 * s;
@@ -1219,14 +1223,11 @@
             ctx.closePath();
             ctx.fill();
 
-            // Title "N" above the column; numeric value stays on the RIGHT only
+            // Title "N" above the column — height vs mg line shows magnitude (no number)
             ctx.textAlign = 'center';
             ctx.fillStyle = '#059669';
             ctx.font = `bold ${Math.round(16 * ts)}px "Noto Sans TC", sans-serif`;
             ctx.fillText('N', x, yTop - 8 * ts);
-            ctx.textAlign = 'left';
-            ctx.font = `bold ${Math.round(15 * ts)}px "Noto Sans TC", sans-serif`;
-            ctx.fillText(`${N.toFixed(1)}`, x + 20 * s, nY + 5 * ts);
             ctx.textAlign = 'left';
         }
 
@@ -1242,9 +1243,11 @@
             const N = normal();
             const W = weight();
             const a = accel();
-            const baseLen = 88 * s;
+            const baseLen = 100 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
+            const nSt = forceStyle(N, s);
+            const wSt = forceStyle(W, s);
             const forceFont = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
             const sideFont = `bold ${Math.round(12.5 * s)}px sans-serif`;
 
@@ -1262,19 +1265,19 @@
             ctx.textAlign = 'left';
 
             if (nLen > 0) {
-                drawArrow(ctx, cx, cy, cx, cy - nLen, '#059669', 3.5 * s);
+                drawArrow(ctx, cx, cy, cx, cy - nLen, '#059669', nSt.width, nSt.head);
                 ctx.fillStyle = '#059669';
                 ctx.font = forceFont;
-                ctx.fillText(`N = ${N.toFixed(1)} N`, cx + 22 * s, cy - Math.max(22 * s, nLen / 2));
+                ctx.fillText('N', cx + 22 * s, cy - Math.max(22 * s, nLen / 2));
             } else {
                 ctx.fillStyle = '#059669';
                 ctx.font = forceFont;
-                ctx.fillText('N = 0', cx + 28 * s, cy - 14 * s);
+                ctx.fillText('N', cx + 28 * s, cy - 14 * s);
             }
-            drawArrow(ctx, cx, cy, cx, cy + wLen, '#dc2626', 3.5 * s);
+            drawArrow(ctx, cx, cy, cx, cy + wLen, '#dc2626', wSt.width, wSt.head);
             ctx.fillStyle = '#dc2626';
             ctx.font = forceFont;
-            ctx.fillText(`mg = ${W.toFixed(1)} N`, cx + 22 * s, cy + Math.max(28 * s, wLen / 2 + 4));
+            ctx.fillText('mg', cx + 22 * s, cy + Math.max(28 * s, wLen / 2 + 4));
 
             // a (left) and |v| (right): label above, arrow underneath — symmetric layout
             ctx.fillStyle = '#7c3aed';
@@ -1377,9 +1380,7 @@
                 ctx.fill();
             }
 
-            // Left-axis labels (sketch format):
-            //   mg = XXX  at mg level (red, with equals)
-            //   XXX       at fixed brake-phase N level (number only, no "N" / no "=")
+            // Left-axis labels: mg and N phase marks (length/height only — no numeric forces)
             ctx.font = 'bold 14px "Noto Sans TC", sans-serif';
             ctx.textAlign = 'right';
             let yMgLbl = mgY + 5;
@@ -1389,9 +1390,9 @@
                 else yNLbl = yMgLbl - 18;
             }
             ctx.fillStyle = '#dc2626';
-            ctx.fillText(`mg = ${W.toFixed(1)}`, pad.l - 10, yMgLbl);
+            ctx.fillText('mg', pad.l - 10, yMgLbl);
             ctx.fillStyle = '#1e293b';
-            ctx.fillText(Nphase.toFixed(1), pad.l - 10, yNLbl);
+            ctx.fillText('N', pad.l - 10, yNLbl);
             ctx.fillStyle = '#64748b';
             ctx.fillText('0', pad.l - 10, pad.t + plotH + 5);
 
