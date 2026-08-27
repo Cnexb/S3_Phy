@@ -14,3 +14,6 @@ scripts/build-s3-bio-promo.mjs
 scripts/capture-s3-bio-promo.mjs
 scripts/capture-s3-bio-jsdelivr.mjs
 scripts/record-ai-class-promo.mjs
+exports/ai-lab-demo-5min.mp4
+exports/ai-lab-demo-5min.webm
+exports/_demo-video-tmp/

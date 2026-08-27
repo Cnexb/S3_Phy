@@ -673,6 +673,22 @@
         let incidentFromBottom = true;
         let currentLang = 'zh';
 
+        (function applyQueryParams() {
+            const params = new URLSearchParams(location.search);
+            function clampNum(key, fallback, min, max) {
+                const raw = params.get(key);
+                if (raw == null || raw === '') return fallback;
+                const n = parseFloat(raw);
+                if (!Number.isFinite(n)) return fallback;
+                return Math.max(min, Math.min(max, n));
+            }
+            n1 = Math.round(clampNum('n1', n1, N1_MIN, N1_MAX) * 100) / 100;
+            n2 = Math.round(clampNum('n2', n2, N2_MIN, N2_MAX) * 100) / 100;
+            incidentAngle = Math.round(clampNum('angle', incidentAngle, 0, 90) * 10) / 10;
+            slider.value = String(incidentAngle);
+            angleDisplay.innerText = incidentAngle.toFixed(1) + '°';
+        })();
+
         const i18n = {
             zh: {
                 title: "🔥 逃獄遊戲",
@@ -1392,7 +1408,10 @@
         slider.addEventListener('input', function (e) {
             incidentAngle = parseFloat(e.target.value);
             angleDisplay.innerText = incidentAngle.toFixed(1) + "°";
-            draw();
+            draw(true);
+        });
+        slider.addEventListener('change', function () {
+            draw(false);
         });
 
         document.getElementById('btn-set-critical').addEventListener('click', function () {
