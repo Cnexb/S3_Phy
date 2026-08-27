@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-HK" translate="no">
 <head>
   <meta name="google" content="notranslate">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>矢量工具 — 分解次序</title>
+  <title>矢量工具 — 受力圖</title>
   <link rel="stylesheet" href="../shared/s3phy-embed.css">
   <script src="../shared/s3phy-embed-init.js"></script>
   <style>
@@ -16,6 +16,28 @@
     #app {
       padding: 8px;
       box-sizing: border-box;
+    }
+    html.is-fullscreen,
+    html.is-fullscreen body {
+      height: 100%;
+      overflow: hidden;
+    }
+    html.is-fullscreen #app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+    html.is-fullscreen .lab-section {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    html.is-fullscreen .vt-dash {
+      margin-top: auto;
+      margin-bottom: auto;
+      align-items: flex-start;
     }
 
     html.s3phy-embed .lang-btn { display: none; }
@@ -112,10 +134,28 @@
       font-size: 0.82rem;
       margin: 4px 0 0;
     }
-    .lang-btn {
+    .vt-head-btns {
       position: absolute;
       top: 0;
       right: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fs-btn {
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .fs-btn:hover {
+      background: #1d4ed8;
+    }
+    .lang-btn {
       background: #f1f3f5;
       color: var(--vt-muted);
       border: 1px solid var(--vt-border);
@@ -193,51 +233,23 @@
       background: #eff6ff;
       color: #1d4ed8;
     }
-    .stamp-actions {
+    .stamp-btn.remove-mode {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+    .stamp-btn.remove-mode:hover {
+      background: #222;
+      color: #fff;
+      border-color: #222;
+    }
+    .slope-ends {
       display: flex;
-      gap: 6px;
-    }
-    .stamp-actions button {
-      flex: 1;
-      border: 1px solid var(--vt-border);
-      background: #f8f9fa;
-      color: var(--vt-muted);
-      border-radius: 8px;
-      padding: 8px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .stamp-actions button:hover {
-      background: #e8eaed;
-      color: var(--vt-text);
-    }
-    details.vt-advanced {
-      border: 1px solid var(--vt-border);
-      border-radius: 10px;
-      background: #f8f9fa;
-      padding: 0;
-    }
-    details.vt-advanced > summary {
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--vt-muted);
-      padding: 10px 12px;
-      list-style: none;
-      user-select: none;
-    }
-    details.vt-advanced > summary::-webkit-details-marker { display: none; }
-    details.vt-advanced > summary::after {
-      content: " ▾";
+      justify-content: space-between;
       font-size: 0.7rem;
-    }
-    details.vt-advanced[open] > summary::after { content: " ▴"; }
-    details.vt-advanced .vt-advanced-body {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 0 12px 12px;
+      font-weight: 700;
+      color: var(--vt-muted);
+      margin-top: -4px;
     }
     .vt-controls { gap: 12px; }
     .vt-hint {
@@ -273,6 +285,7 @@
       flex-direction: column;
       gap: 6px;
     }
+    #slope-controls[hidden] { display: none !important; }
     .vt-lr {
       display: flex;
       justify-content: space-between;
@@ -351,80 +364,12 @@
       box-shadow: 0 1px 4px rgba(26, 28, 44, 0.15);
     }
 
-    .radio-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 12px;
-      background: #f8f9fa;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--vt-border);
-    }
-    .radio-group label {
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.78rem;
-      color: var(--vt-text);
-    }
     .field-label {
       font-size: 0.78rem;
       font-weight: 600;
       color: var(--vt-muted);
       display: block;
       margin-bottom: 4px;
-    }
-
-    .check-row {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 8px;
-    }
-    .check-row input { width: auto; cursor: pointer; }
-    .check-row label {
-      margin: 0;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--vt-text);
-    }
-
-    .upload-btn-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: block;
-      width: 100%;
-    }
-    .btn-upload {
-      border: 1px dashed #cbd5e1;
-      color: var(--vt-muted);
-      background: #f8f9fa;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      width: 100%;
-      cursor: pointer;
-      transition: 0.15s;
-      text-align: center;
-    }
-    .btn-upload:hover {
-      border-color: #2563eb;
-      color: #2563eb;
-      background: #eff6ff;
-    }
-    .upload-btn-wrapper input[type="file"] {
-      font-size: 100px;
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
     }
 
     .vt-reset {
@@ -456,8 +401,9 @@
         max-width: 100%;
         width: 100%;
       }
-      .lang-btn {
+      .vt-head-btns {
         position: static;
+        justify-content: center;
         margin-top: 8px;
       }
     }
@@ -467,23 +413,26 @@
   <div id="app">
     <div class="lab-section">
       <div class="vt-head">
-        <h1 class="vt-title" id="page-title">矢量工具 — 受力圖</h1>
-        <p class="vt-sub" id="page-sub">調力的大小同方向，再放物件示範</p>
-        <button type="button" class="lang-btn" id="lang-toggle">English</button>
+        <h1 class="vt-title" id="page-title">Vector Tool — Force Diagram</h1>
+        <p class="vt-sub" id="page-sub">Set force size and direction, then place objects</p>
+        <div class="vt-head-btns">
+          <button type="button" class="fs-btn" id="btn-fullscreen">Full screen</button>
+          <button type="button" class="lang-btn" id="lang-toggle">中文</button>
+        </div>
       </div>
 
       <div class="vt-dash">
         <div class="vt-viz">
           <canvas id="vectorCanvas" class="vt-canvas" width="900" height="640"></canvas>
-          <p class="vt-hint" id="drag-hint">拖物件移動 · 拖藍角縮放 · 拖藍色箭嘴改力</p>
+          <p class="vt-hint" id="drag-hint">Drag the blue arrow tip · Drag the black origin</p>
         </div>
 
         <div class="vt-controls">
-          <h4 class="vt-section-title" id="sec-vector">① 調力</h4>
+          <h4 class="vt-section-title" id="sec-vector">① Force and direction</h4>
 
           <div class="vt-cg polar-input">
             <div class="vt-lr">
-              <label class="polar-label" id="label-mag">力的大小 F</label>
+              <label class="polar-label" id="label-mag">Force size F</label>
               <input type="number" id="numMag" value="7.2" step="0.1" min="0">
             </div>
             <input type="range" id="sliderMag" min="0" max="25" step="0.1" value="7.2">
@@ -491,108 +440,32 @@
 
           <div class="vt-cg angle-input">
             <div class="vt-lr">
-              <label class="angle-label" id="label-angle">方向角度 θ°</label>
-              <input type="number" id="numAngle" value="-33.7" step="1">
+              <label class="angle-label" id="label-angle">Direction angle θ°</label>
+              <input type="number" id="numAngle" value="45" step="1" min="0" max="90">
             </div>
-            <input type="range" id="sliderAngle" min="-180" max="180" step="1" value="-33.7">
+            <input type="range" id="sliderAngle" min="0" max="360" step="1" value="45">
           </div>
 
-          <p class="vt-hint" id="panel-tip" style="text-align:left;margin:0;">亦可直接拖圖上藍色箭嘴尖端。</p>
+          <p class="vt-hint" id="panel-tip" style="text-align:left;margin:0;">You can also drag the blue arrow tip on the graph.</p>
 
           <div class="vt-divider"></div>
-          <h4 class="vt-section-title muted" id="sec-stamps">② 放物件</h4>
+          <h4 class="vt-section-title muted" id="sec-stamps">② Box and slope</h4>
           <div class="vt-cg">
-            <span class="field-label" id="label-stamps">選一樣，再點圖放上去</span>
             <div class="stamp-row" id="stamp-row">
-              <button type="button" class="stamp-btn" data-kind="box" id="stamp-box">箱</button>
-              <button type="button" class="stamp-btn" data-kind="person" id="stamp-person">人</button>
-              <button type="button" class="stamp-btn" data-kind="ball" id="stamp-ball">球</button>
-              <button type="button" class="stamp-btn" data-kind="wedge" id="stamp-wedge">斜面</button>
+              <button type="button" class="stamp-btn" data-kind="box" id="stamp-box">Place a box</button>
             </div>
-            <div class="stamp-actions">
-              <button type="button" id="btn-del-obj">刪除</button>
-              <button type="button" id="btn-clear-obj">清空</button>
-            </div>
-            <div class="vt-cg" id="obj-size-wrap" hidden>
+            <button type="button" class="stamp-btn" id="stamp-slope">Box with slope</button>
+            <div class="vt-cg slope-input" id="slope-controls" hidden>
               <div class="vt-lr">
-                <label id="label-obj-size">物件大小</label>
-                <span id="obj-size-val" style="font-weight:800;font-variant-numeric:tabular-nums;">100%</span>
+                <label class="angle-label" id="label-slope">Slope to the horizontal</label>
+                <input type="number" id="numSlope" value="0" step="1" min="0" max="90">
               </div>
-              <input type="range" id="objSizeSlider" min="40" max="250" step="5" value="100">
+              <input type="range" id="sliderSlope" min="-90" max="90" step="1" value="0">
+              <div class="slope-ends"><span>90°</span><span>0°</span><span>90°</span></div>
             </div>
           </div>
 
-          <button type="button" class="vt-reset" id="btn-reset" onclick="resetView()">重設</button>
-
-          <details class="vt-advanced" id="advanced-panel">
-            <summary id="sec-advanced">進階設定（老師用）</summary>
-            <div class="vt-advanced-body">
-              <div>
-                <span class="field-label" id="label-angle-ref">量度角由</span>
-                <div class="radio-group" style="margin-bottom: 6px;">
-                  <label><input type="radio" name="angleRef" value="x" checked> <span id="opt-ref-x">方向 1</span></label>
-                  <label><input type="radio" name="angleRef" value="y"> <span id="opt-ref-y">方向 2</span></label>
-                </div>
-                <div class="radio-group">
-                  <label><input type="radio" name="axisPolarity" value="1" checked> <span id="opt-pol-pos">正方向</span></label>
-                  <label><input type="radio" name="axisPolarity" value="-1"> <span id="opt-pol-neg">負方向</span></label>
-                </div>
-              </div>
-
-              <div class="vt-cg">
-                <div class="vt-lr">
-                  <label id="label-comp1">分量 Fx</label>
-                  <input type="number" id="numX" value="6" step="0.1">
-                </div>
-                <input type="range" id="sliderX" min="-15" max="15" step="0.1" value="6">
-              </div>
-
-              <div class="vt-cg">
-                <div class="vt-lr">
-                  <label id="label-comp2">分量 Fy</label>
-                  <input type="number" id="numY" value="4" step="0.1">
-                </div>
-                <input type="range" id="sliderY" min="-15" max="15" step="0.1" value="4">
-              </div>
-
-              <div class="vt-cg">
-                <span class="field-label" id="label-comp-style">分量樣式</span>
-                <div class="radio-group">
-                  <label><input type="radio" name="compStyle" value="head-to-tail" checked> <span id="opt-style-htt">頭尾相接</span></label>
-                  <label><input type="radio" name="compStyle" value="origin"> <span id="opt-style-origin">由原點</span></label>
-                </div>
-              </div>
-
-              <div class="vt-cg">
-                <span class="field-label" id="label-decomp">分解次序</span>
-                <div class="radio-group">
-                  <label><input type="radio" name="decompOrder" value="xy" checked> <span id="opt-order-xy">先水平</span></label>
-                  <label><input type="radio" name="decompOrder" value="yx"> <span id="opt-order-yx">先垂直</span></label>
-                </div>
-              </div>
-
-              <div class="vt-cg">
-                <div class="vt-lr">
-                  <label id="label-rot">軸旋轉 °</label>
-                  <input type="number" id="numRot" value="0" min="-180" max="180">
-                </div>
-                <input type="range" id="sliderRot" min="-180" max="180" step="1" value="0">
-              </div>
-
-              <div class="check-row">
-                <input type="checkbox" id="showGrid" checked>
-                <label for="showGrid" id="label-grid">顯示方格</label>
-              </div>
-
-              <div class="vt-cg">
-                <span class="field-label" id="label-upload">背景圖</span>
-                <div class="upload-btn-wrapper">
-                  <button type="button" class="btn-upload" id="btn-upload-label">上傳圖片</button>
-                  <input type="file" id="bgUpload" accept="image/*">
-                </div>
-              </div>
-            </div>
-          </details>
+          <button type="button" class="vt-reset" id="btn-reset" onclick="resetView()">Reset</button>
         </div>
       </div>
     </div>
@@ -605,83 +478,43 @@
       docTitle: '矢量工具 — 受力圖',
       pageTitle: '矢量工具 — 受力圖',
       pageSub: '調力的大小同方向，再放物件示範',
-      dragHint: '拖物件移動 · 拖藍角縮放 · 拖藍色箭嘴改力',
-      secVector: '① 調力',
+      dragHint: '拖藍色箭嘴改力 · 拖黑點移原點',
+      secVector: '① 力與方向',
       panelTip: '亦可直接拖圖上藍色箭嘴尖端。',
-      secStamps: '② 放物件',
-      labelStamps: '選一樣，再點圖放上去',
-      stampBox: '箱',
-      stampPerson: '人',
-      stampBall: '球',
-      stampWedge: '斜面',
-      btnDelObj: '刪除',
-      btnClearObj: '清空',
-      labelObjSize: '物件大小',
-      secAdvanced: '進階設定（老師用）',
+      secStamps: '② 箱子與斜面',
+      stampBox: '放置箱子',
+      stampRemove: '移除箱子',
+      stampSlopeOn: '有斜面的箱子',
+      stampSlopeOff: '取消斜面',
       labelMag: '力的大小 F',
       labelAngle: '方向角度 θ°',
-      labelAngleRef: '量度角由',
-      optRefX: '方向 1',
-      optRefY: '方向 2',
-      optPolPos: '正方向',
-      optPolNeg: '負方向',
-      labelComp1: '分量 Fx',
-      labelComp2: '分量 Fy',
-      labelUpload: '背景圖',
-      btnUpload: '上傳圖片',
-      labelGrid: '顯示方格',
-      labelCompStyle: '分量樣式',
-      optStyleHtt: '頭尾相接',
-      optStyleOrigin: '由原點',
-      labelDecomp: '分解次序',
-      optOrderXy: '先水平',
-      optOrderYx: '先垂直',
-      labelRot: '軸旋轉 °',
+      labelSlope: '斜面與水平的夾角',
       btnReset: '重設',
-      dir1: '分解方向 1',
-      dir2: '分解方向 2',
-      langBtn: 'English'
+      langBtn: 'English',
+      fsEnter: '全螢幕',
+      fsExit: '離開',
+      smoothFloor: '光滑地面'
     },
     en: {
       docTitle: 'Vector Tool — Force Diagram',
       pageTitle: 'Vector Tool — Force Diagram',
       pageSub: 'Set force size and direction, then place objects',
-      dragHint: 'Drag objects to move · Drag blue corner to resize · Drag blue arrow for force',
-      secVector: '① Set the force',
+      dragHint: 'Drag the blue arrow tip · Drag the black origin',
+      secVector: '① Force and direction',
       panelTip: 'You can also drag the blue arrow tip on the graph.',
-      secStamps: '② Place objects',
-      labelStamps: 'Pick one, then click the graph',
-      stampBox: 'Box',
-      stampPerson: 'Person',
-      stampBall: 'Ball',
-      stampWedge: 'Slope',
-      btnDelObj: 'Delete',
-      btnClearObj: 'Clear',
-      labelObjSize: 'Object size',
-      secAdvanced: 'Advanced (for teachers)',
+      secStamps: '② Box and slope',
+      stampBox: 'Place a box',
+      stampRemove: 'Remove the box',
+      stampSlopeOn: 'Box with slope',
+      stampSlopeOff: 'Box without slope',
       labelMag: 'Force size F',
       labelAngle: 'Direction angle θ°',
-      labelAngleRef: 'Measure angle from',
-      optRefX: 'Direction 1',
-      optRefY: 'Direction 2',
-      optPolPos: 'Positive',
-      optPolNeg: 'Negative',
-      labelComp1: 'Component Fx',
-      labelComp2: 'Component Fy',
-      labelUpload: 'Background',
-      btnUpload: 'Upload image',
-      labelGrid: 'Show grid',
-      labelCompStyle: 'Component style',
-      optStyleHtt: 'Head-to-tail',
-      optStyleOrigin: 'From origin',
-      labelDecomp: 'Decomposition order',
-      optOrderXy: 'Horizontal first',
-      optOrderYx: 'Vertical first',
-      labelRot: 'Axis rotation °',
+      labelSlope: 'Slope to the horizontal',
       btnReset: 'Reset',
-      dir1: 'Resolving Direction 1',
-      dir2: 'Resolving Direction 2',
-      langBtn: '中文'
+      langBtn: '中文',
+      fsEnter: 'Full screen',
+      fsExit: 'Exit',
+      smoothFloor: 'Smooth floor'
     }
   };
 
@@ -691,7 +524,7 @@
   }
 
   const params = new URLSearchParams(location.search);
-  let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+  let currentLang = hubLangToLocal(params.get('lang') || 'en');
   const t = () => dict[currentLang] || dict.zh;
 
   function updateLanguageUI() {
@@ -702,45 +535,54 @@
     document.getElementById('page-sub').textContent = tr.pageSub;
     document.getElementById('drag-hint').textContent = tr.dragHint;
     document.getElementById('lang-toggle').textContent = tr.langBtn;
+    syncFullscreenButton();
     document.getElementById('sec-vector').textContent = tr.secVector;
     document.getElementById('panel-tip').textContent = tr.panelTip;
     document.getElementById('sec-stamps').textContent = tr.secStamps;
-    document.getElementById('label-stamps').textContent = tr.labelStamps;
-    document.getElementById('stamp-box').textContent = tr.stampBox;
-    document.getElementById('stamp-person').textContent = tr.stampPerson;
-    document.getElementById('stamp-ball').textContent = tr.stampBall;
-    document.getElementById('stamp-wedge').textContent = tr.stampWedge;
-    document.getElementById('btn-del-obj').textContent = tr.btnDelObj;
-    document.getElementById('btn-clear-obj').textContent = tr.btnClearObj;
-    document.getElementById('label-obj-size').textContent = tr.labelObjSize;
-    document.getElementById('sec-advanced').textContent = tr.secAdvanced;
+    syncBoxButton();
+    syncSlopeButton();
     document.getElementById('label-mag').textContent = tr.labelMag;
     document.getElementById('label-angle').textContent = tr.labelAngle;
-    document.getElementById('label-angle-ref').textContent = tr.labelAngleRef;
-    document.getElementById('opt-ref-x').textContent = tr.optRefX;
-    document.getElementById('opt-ref-y').textContent = tr.optRefY;
-    document.getElementById('opt-pol-pos').textContent = tr.optPolPos;
-    document.getElementById('opt-pol-neg').textContent = tr.optPolNeg;
-    document.getElementById('label-comp1').textContent = tr.labelComp1;
-    document.getElementById('label-comp2').textContent = tr.labelComp2;
-    document.getElementById('label-upload').textContent = tr.labelUpload;
-    document.getElementById('btn-upload-label').textContent = tr.btnUpload;
-    document.getElementById('label-grid').textContent = tr.labelGrid;
-    document.getElementById('label-comp-style').textContent = tr.labelCompStyle;
-    document.getElementById('opt-style-htt').textContent = tr.optStyleHtt;
-    document.getElementById('opt-style-origin').textContent = tr.optStyleOrigin;
-    document.getElementById('label-decomp').textContent = tr.labelDecomp;
-    document.getElementById('opt-order-xy').textContent = tr.optOrderXy;
-    document.getElementById('opt-order-yx').textContent = tr.optOrderYx;
-    document.getElementById('label-rot').textContent = tr.labelRot;
+    const slopeLabel = document.getElementById('label-slope');
+    if (slopeLabel) slopeLabel.textContent = tr.labelSlope;
     document.getElementById('btn-reset').textContent = tr.btnReset;
     draw();
+  }
+
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+
+  function syncFullscreenButton() {
+    const tr = t();
+    const btn = document.getElementById('btn-fullscreen');
+    if (btn) btn.textContent = isFullscreen() ? tr.fsExit : tr.fsEnter;
+  }
+
+  function toggleFullscreen() {
+    const root = document.documentElement;
+    if (isFullscreen()) {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document);
+    } else {
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
+    }
   }
 
   document.getElementById('lang-toggle').addEventListener('click', () => {
     currentLang = currentLang === 'zh' ? 'en' : 'zh';
     updateLanguageUI();
   });
+  document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+  function onFullscreenChange() {
+    document.documentElement.classList.toggle('is-fullscreen', isFullscreen());
+    syncFullscreenButton();
+    fitCanvas();
+    draw();
+  }
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
   window.addEventListener('message', (ev) => {
     if (ev.data?.type !== 's3phy:lang') return;
@@ -754,27 +596,33 @@
   let width = 900;
   let height = 640;
   let dpr = 1;
-  let scale = 30; // px per unit — finer than old 20
+  let scale = 30; // px per graph square
+  const NEWTONS_PER_GRID = 2;
 
   // State
-  let vector = { x: 6, y: -4 }; // Y is Canvas Y (positive down)
+  let lastAngleDeg = 45;
+  let vector = { x: 5.091, y: -5.091 }; // 45°, F ≈ 7.2; Y is canvas down
+  let paperOrigin = { x: width / 2, y: height / 2 };
   let origin = { x: width / 2, y: height / 2 };
   let axisAngle = 0;
   let bgImage = null;
   let showGrid = true;
   let angleRef = 'x';
   let axisPolarity = 1;
-  let compStyle = 'head-to-tail';
-  let decompOrder = 'xy';
+  let compStyle = 'origin';
+  let decompOrder = 'yx';
 
-  /** @type {{ id: number, kind: string, x: number, y: number, size?: number }[]} */
+  /** @type {{ id: number, kind: string, x: number, y: number }[]} */
   let sceneObjects = [];
   let nextObjId = 1;
-  let stampKind = null; // 'box' | 'person' | 'ball' | 'wedge' | null
+  let stampKind = null;
   let selectedObjId = null;
   let isDraggingObject = false;
-  let isResizingObject = false;
   let objDragOff = { x: 0, y: 0 };
+  const GRID_BOX = { left: -2, top: 1, w: 4, h: 2 };
+
+  let slopeMode = false;
+  let slopeDeg = 0;
 
   let drawnLabels = [];
   let isDraggingVector = false;
@@ -785,18 +633,8 @@
     sliderMag: document.getElementById('sliderMag'),
     angle: document.getElementById('numAngle'),
     sliderAngle: document.getElementById('sliderAngle'),
-    x: document.getElementById('numX'),
-    y: document.getElementById('numY'),
-    sliderX: document.getElementById('sliderX'),
-    sliderY: document.getElementById('sliderY'),
-    rot: document.getElementById('numRot'),
-    sliderRot: document.getElementById('sliderRot'),
-    bgUpload: document.getElementById('bgUpload'),
-    checkGrid: document.getElementById('showGrid'),
-    angleRefs: document.getElementsByName('angleRef'),
-    axisPolarities: document.getElementsByName('axisPolarity'),
-    compStyles: document.getElementsByName('compStyle'),
-    decompOrders: document.getElementsByName('decompOrder')
+    slope: document.getElementById('numSlope'),
+    sliderSlope: document.getElementById('sliderSlope')
   };
 
   function fitCanvas() {
@@ -818,6 +656,9 @@
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     // Keep origin roughly centered on first layout / if off-canvas
+    if (paperOrigin.x < 0 || paperOrigin.x > width || paperOrigin.y < 0 || paperOrigin.y > height) {
+      paperOrigin = { x: width / 2, y: height / 2 };
+    }
     if (origin.x < 0 || origin.x > width || origin.y < 0 || origin.y > height) {
       origin = { x: width / 2, y: height / 2 };
     }
@@ -837,8 +678,8 @@
 
     let relAngle = mathAngle - baseOffset;
     let deg = relAngle * 180 / Math.PI;
-    while (deg > 180) deg -= 360;
-    while (deg < -180) deg += 360;
+    while (deg < 0) deg += 360;
+    while (deg >= 360) deg -= 360;
     return deg;
   }
 
@@ -852,24 +693,44 @@
     vector.y = -mag * Math.sin(mathAngle);
   }
 
+  function angleToHorizontal(deg) {
+    let a = ((deg % 180) + 180) % 180;
+    return a > 90 ? 180 - a : a;
+  }
+
+  function isForceOnAxis() {
+    let d = lastAngleDeg;
+    while (d < 0) d += 360;
+    while (d >= 360) d -= 360;
+    const axes = [0, 90, 180, 270];
+    return axes.some((a) => Math.abs(d - a) < 0.5 || Math.abs(d - 360) < 0.5);
+  }
+
+  function isForceZero() {
+    return Math.hypot(vector.x, vector.y) < 0.05;
+  }
+
+  function setAcuteInCurrentQuadrant(acute) {
+    const a = Math.max(0, Math.min(90, acute));
+    const q = lastAngleDeg;
+    if (q <= 90) lastAngleDeg = a;
+    else if (q <= 180) lastAngleDeg = 180 - a;
+    else if (q <= 270) lastAngleDeg = 180 + a;
+    else lastAngleDeg = 360 - a;
+  }
+
   function updateUI(skipActiveElement = null) {
     const mag = Math.hypot(vector.x, vector.y);
-    const displayAngle = getAngleFromRef();
+    const displayAngle = angleToHorizontal(lastAngleDeg);
 
     if (skipActiveElement !== inputs.mag) inputs.mag.value = mag.toFixed(1);
     if (skipActiveElement !== inputs.sliderMag) inputs.sliderMag.value = mag;
 
     if (skipActiveElement !== inputs.angle) inputs.angle.value = displayAngle.toFixed(1);
-    if (skipActiveElement !== inputs.sliderAngle) inputs.sliderAngle.value = displayAngle;
+    if (skipActiveElement !== inputs.sliderAngle) inputs.sliderAngle.value = lastAngleDeg;
 
-    if (skipActiveElement !== inputs.x) inputs.x.value = vector.x.toFixed(1);
-    if (skipActiveElement !== inputs.sliderX) inputs.sliderX.value = vector.x;
-
-    if (skipActiveElement !== inputs.y) inputs.y.value = (-vector.y).toFixed(1);
-    if (skipActiveElement !== inputs.sliderY) inputs.sliderY.value = -vector.y;
-
-    inputs.rot.value = axisAngle;
-    inputs.sliderRot.value = axisAngle;
+    if (inputs.slope && skipActiveElement !== inputs.slope) inputs.slope.value = Math.abs(slopeDeg).toFixed(0);
+    if (inputs.sliderSlope && skipActiveElement !== inputs.sliderSlope) inputs.sliderSlope.value = slopeDeg;
 
     draw();
   }
@@ -877,152 +738,198 @@
   function onMagnitudeInput(e) {
     let newMag = parseFloat(e.target.value);
     if (isNaN(newMag) || newMag < 0) newMag = 0;
-    setVectorFromRef(newMag, getAngleFromRef());
+    setVectorFromRef(newMag, lastAngleDeg);
     updateUI(e.target);
   }
 
-  function onAngleInput(e) {
+  function onAngleSliderInput(e) {
     let newAngle = parseFloat(e.target.value);
-    setVectorFromRef(Math.hypot(vector.x, vector.y), newAngle);
+    if (isNaN(newAngle)) newAngle = 0;
+    while (newAngle < 0) newAngle += 360;
+    while (newAngle >= 360) newAngle -= 360;
+    lastAngleDeg = newAngle;
+    setVectorFromRef(Math.hypot(vector.x, vector.y), lastAngleDeg);
     updateUI(e.target);
   }
 
-  function onComponentInput(e) {
-    vector.x = parseFloat(inputs.sliderX.value);
-    vector.y = -parseFloat(inputs.sliderY.value);
+  function onAngleNumberInput(e) {
+    let newAcute = parseFloat(e.target.value);
+    if (isNaN(newAcute)) newAcute = 0;
+    setAcuteInCurrentQuadrant(newAcute);
+    setVectorFromRef(Math.hypot(vector.x, vector.y), lastAngleDeg);
     updateUI(e.target);
   }
-
-  function onComponentTextInput(e) {
-    vector.x = parseFloat(inputs.x.value);
-    vector.y = -parseFloat(inputs.y.value);
-    updateUI(e.target);
-  }
-
-  inputs.angleRefs.forEach(radio => {
-    radio.addEventListener('change', (e) => { angleRef = e.target.value; updateUI(); });
-  });
-  inputs.axisPolarities.forEach(radio => {
-    radio.addEventListener('change', (e) => { axisPolarity = parseInt(e.target.value); updateUI(); });
-  });
-  inputs.compStyles.forEach(radio => {
-    radio.addEventListener('change', (e) => { compStyle = e.target.value; draw(); });
-  });
-  inputs.decompOrders.forEach(radio => {
-    radio.addEventListener('change', (e) => { decompOrder = e.target.value; draw(); });
-  });
 
   inputs.sliderMag.addEventListener('input', onMagnitudeInput);
   inputs.mag.addEventListener('input', onMagnitudeInput);
-  inputs.sliderAngle.addEventListener('input', onAngleInput);
-  inputs.angle.addEventListener('input', onAngleInput);
-  inputs.sliderX.addEventListener('input', onComponentInput);
-  inputs.sliderY.addEventListener('input', onComponentInput);
-  inputs.x.addEventListener('input', onComponentTextInput);
-  inputs.y.addEventListener('input', onComponentTextInput);
+  inputs.sliderAngle.addEventListener('input', onAngleSliderInput);
+  inputs.angle.addEventListener('input', onAngleNumberInput);
 
-  inputs.sliderRot.addEventListener('input', () => {
-    axisAngle = parseFloat(inputs.sliderRot.value);
-    updateUI();
-  });
-  inputs.rot.addEventListener('input', () => {
-    let val = parseFloat(inputs.rot.value);
-    if (!isNaN(val)) {
-      axisAngle = Math.max(-180, Math.min(180, val));
-      updateUI();
-    }
-  });
+  function applySlopeDeg(deg) {
+    slopeDeg = Math.max(-90, Math.min(90, deg));
+    axisAngle = slopeMode ? slopeDeg : 0;
+    if (slopeMode && hasBox()) pinOriginToBoxTopRight();
+  }
 
-  inputs.bgUpload.addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (event) {
-      const img = new Image();
-      img.onload = function () { bgImage = img; draw(); };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
+  function onSlopeSliderInput(e) {
+    let v = parseFloat(e.target.value);
+    if (isNaN(v)) v = 0;
+    applySlopeDeg(v);
+    updateUI(e.target);
+  }
 
-  inputs.checkGrid.addEventListener('change', (e) => { showGrid = e.target.checked; draw(); });
+  function onSlopeNumberInput(e) {
+    let a = parseFloat(e.target.value);
+    if (isNaN(a)) a = 0;
+    a = Math.max(0, Math.min(90, a));
+    const sign = slopeDeg < 0 ? -1 : 1;
+    applySlopeDeg(a * sign);
+    updateUI(e.target);
+  }
 
-  function setStampKind(kind) {
-    stampKind = stampKind === kind ? null : kind;
-    document.querySelectorAll('.stamp-btn').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.kind === stampKind);
+  if (inputs.sliderSlope) inputs.sliderSlope.addEventListener('input', onSlopeSliderInput);
+  if (inputs.slope) inputs.slope.addEventListener('input', onSlopeNumberInput);
+
+  function hasBox() {
+    return sceneObjects.some((o) => o.kind === 'box');
+  }
+
+  function syncBoxButton() {
+    const btn = document.getElementById('stamp-box');
+    const tr = t();
+    if (!btn) return;
+    const placed = hasBox();
+    btn.textContent = placed ? tr.stampRemove : tr.stampBox;
+    btn.classList.toggle('remove-mode', placed);
+  }
+
+  function syncSlopeButton() {
+    const btn = document.getElementById('stamp-slope');
+    const panel = document.getElementById('slope-controls');
+    if (btn) btn.style.display = 'none';
+    if (panel) panel.hidden = !slopeMode;
+  }
+
+  function currentSlopeDeg() {
+    return slopeMode ? slopeDeg : 0;
+  }
+
+  function boxLocalToPaper(lx, ly) {
+    const pivX = 0;
+    const pivY = GRID_BOX.top + GRID_BOX.h;
+    const rad = currentSlopeDeg() * Math.PI / 180;
+    const dx = lx - pivX;
+    const dy = ly - pivY;
+    const c = Math.cos(rad);
+    const s = Math.sin(rad);
+    return { x: pivX + dx * c - dy * s, y: pivY + dx * s + dy * c };
+  }
+
+  function paperToBoxLocal(px, py) {
+    const pivX = 0;
+    const pivY = GRID_BOX.top + GRID_BOX.h;
+    const rad = -currentSlopeDeg() * Math.PI / 180;
+    const dx = px - pivX;
+    const dy = py - pivY;
+    const c = Math.cos(rad);
+    const s = Math.sin(rad);
+    return { x: pivX + dx * c - dy * s, y: pivY + dx * s + dy * c };
+  }
+
+  function boxLocalToScreen(lx, ly) {
+    const p = boxLocalToPaper(lx, ly);
+    return { x: paperOrigin.x + p.x * scale, y: paperOrigin.y + p.y * scale };
+  }
+
+  function pinOriginToBoxTopRight() {
+    const p = boxLocalToScreen(GRID_BOX.left + GRID_BOX.w, GRID_BOX.top);
+    origin = { x: p.x, y: p.y };
+  }
+
+  function placeCenterBox() {
+    sceneObjects = sceneObjects.filter((o) => o.kind !== 'box');
+    sceneObjects.push({
+      id: nextObjId++,
+      kind: 'box',
+      left: GRID_BOX.left,
+      top: GRID_BOX.top,
+      w: GRID_BOX.w,
+      h: GRID_BOX.h
     });
-    canvas.style.cursor = stampKind ? 'copy' : 'crosshair';
+    selectedObjId = nextObjId - 1;
+    stampKind = null;
+    canvas.style.cursor = 'crosshair';
+    pinOriginToBoxTopRight();
+    syncBoxButton();
+    draw();
   }
 
-  document.querySelectorAll('.stamp-btn').forEach((btn) => {
-    btn.addEventListener('click', () => setStampKind(btn.dataset.kind));
-  });
+  function removeTheBox() {
+    sceneObjects = sceneObjects.filter((o) => o.kind !== 'box');
+    selectedObjId = null;
+    origin = { x: paperOrigin.x, y: paperOrigin.y };
+    syncBoxButton();
+    draw();
+  }
 
-  function syncObjSizeUI() {
-    const wrap = document.getElementById('obj-size-wrap');
-    const slider = document.getElementById('objSizeSlider');
-    const valEl = document.getElementById('obj-size-val');
-    const o = sceneObjects.find((x) => x.id === selectedObjId);
-    if (!o) {
-      wrap.hidden = true;
-      return;
+  function enterSlopeMode() {
+    slopeMode = true;
+    if (!hasBox()) placeCenterBox();
+    axisAngle = slopeDeg;
+    pinOriginToBoxTopRight();
+    syncBoxButton();
+    syncSlopeButton();
+    updateUI();
+  }
+
+  function exitSlopeMode() {
+    slopeMode = false;
+    slopeDeg = 0;
+    axisAngle = 0;
+    if (hasBox()) pinOriginToBoxTopRight();
+    syncBoxButton();
+    syncSlopeButton();
+    updateUI();
+  }
+
+  document.getElementById('stamp-box').addEventListener('click', () => {
+    if (hasBox()) {
+      removeTheBox();
+      if (slopeMode) exitSlopeMode();
+    } else {
+      enterSlopeMode();
     }
-    wrap.hidden = false;
-    const pct = Math.round((o.size || 1) * 100);
-    slider.value = String(pct);
-    valEl.textContent = `${pct}%`;
-  }
-
-  document.getElementById('objSizeSlider').addEventListener('input', (e) => {
-    const o = sceneObjects.find((x) => x.id === selectedObjId);
-    if (!o) return;
-    o.size = Math.max(0.4, Math.min(2.5, parseFloat(e.target.value) / 100));
-    document.getElementById('obj-size-val').textContent = `${Math.round(o.size * 100)}%`;
-    draw();
   });
 
-  function deleteSelectedObj() {
-    if (selectedObjId == null) return;
-    sceneObjects = sceneObjects.filter((o) => o.id !== selectedObjId);
-    selectedObjId = null;
-    syncObjSizeUI();
-    draw();
-  }
-
-  document.getElementById('btn-del-obj').addEventListener('click', deleteSelectedObj);
-  document.getElementById('btn-clear-obj').addEventListener('click', () => {
-    sceneObjects = [];
-    selectedObjId = null;
-    syncObjSizeUI();
-    draw();
+  document.getElementById('stamp-slope').addEventListener('click', () => {
+    if (slopeMode) exitSlopeMode();
+    else enterSlopeMode();
   });
+
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Delete' || e.key === 'Backspace') {
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
-      e.preventDefault();
-      deleteSelectedObj();
+    if (e.key === 'Escape') {
+      stampKind = null;
+      canvas.style.cursor = 'crosshair';
     }
-    if (e.key === 'Escape') setStampKind(null);
   });
 
   window.resetView = function () {
+    paperOrigin = { x: width / 2, y: height / 2 };
     origin = { x: width / 2, y: height / 2 };
     axisAngle = 0;
-    vector = { x: 6, y: -4 };
+    slopeMode = false;
+    slopeDeg = 0;
+    lastAngleDeg = 45;
+    setVectorFromRef(7.2, 45);
     angleRef = 'x';
     axisPolarity = 1;
-    compStyle = 'head-to-tail';
-    decompOrder = 'xy';
+    compStyle = 'origin';
+    decompOrder = 'yx';
     sceneObjects = [];
     selectedObjId = null;
-    setStampKind(null);
-    syncObjSizeUI();
-    inputs.angleRefs[0].checked = true;
-    inputs.axisPolarities[0].checked = true;
-    inputs.compStyles[0].checked = true;
-    inputs.decompOrders[0].checked = true;
-    updateUI();
+    stampKind = null;
+    canvas.style.cursor = 'crosshair';
+    enterSlopeMode();
   };
 
   function screenToLocal(screenX, screenY) {
@@ -1032,6 +939,13 @@
     let localX = dx * Math.cos(rad) - dy * Math.sin(rad);
     let localY = dx * Math.sin(rad) + dy * Math.cos(rad);
     return { x: localX / scale, y: localY / scale };
+  }
+
+  function screenToPaper(screenX, screenY) {
+    return {
+      x: (screenX - paperOrigin.x) / scale,
+      y: (screenY - paperOrigin.y) / scale
+    };
   }
 
   function getPointerPos(clientX, clientY) {
@@ -1048,110 +962,141 @@
 
   function tipScreenPos() {
     let rad = axisAngle * Math.PI / 180;
-    let tipLocalX = vector.x * scale;
-    let tipLocalY = vector.y * scale;
+    let tipLocalX = (vector.x / NEWTONS_PER_GRID) * scale;
+    let tipLocalY = (vector.y / NEWTONS_PER_GRID) * scale;
     return {
       x: origin.x + (tipLocalX * Math.cos(rad) - tipLocalY * Math.sin(rad)),
       y: origin.y + (tipLocalX * Math.sin(rad) + tipLocalY * Math.cos(rad))
     };
   }
 
-  /** Selection box half-extent in screen px (before object.size). */
-  function objectBaseHalf(kind) {
-    if (kind === 'ball') return 28;
-    if (kind === 'person') return 38;
-    if (kind === 'wedge') return 40;
-    return 34;
-  }
-
-  function objectHalf(o) {
-    return objectBaseHalf(o.kind) * (o.size || 1);
-  }
-
-  function resizeHandlePos(o) {
-    const h = objectHalf(o);
-    return { x: o.x + h, y: o.y + h };
-  }
-
-  function hitTestResizeHandle(pos, o) {
-    const h = resizeHandlePos(o);
-    return Math.hypot(pos.x - h.x, pos.y - h.y) <= 12;
-  }
-
   function hitTestObject(pos) {
+    const paper = screenToPaper(pos.x, pos.y);
+    const local = paperToBoxLocal(paper.x, paper.y);
     for (let i = sceneObjects.length - 1; i >= 0; i--) {
       const o = sceneObjects[i];
-      const half = objectHalf(o);
-      if (Math.abs(pos.x - o.x) <= half && Math.abs(pos.y - o.y) <= half) return o;
+      if (o.kind !== 'box') continue;
+      if (
+        local.x >= o.left && local.x <= o.left + o.w &&
+        local.y >= o.top && local.y <= o.top + o.h
+      ) return o;
     }
     return null;
   }
 
-  function beginDragAt(pos, forceOrigin) {
-    // Prefer interacting with existing objects (drag / resize) even if a stamp is selected
-    if (selectedObjId != null) {
-      const sel = sceneObjects.find((x) => x.id === selectedObjId);
-      if (sel && hitTestResizeHandle(pos, sel)) {
-        isResizingObject = true;
-        isDraggingObject = false;
-        isDraggingVector = false;
-        isDraggingOrigin = false;
-        return;
+  function distToSegment(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len2 = dx * dx + dy * dy;
+    if (len2 < 1e-6) return Math.hypot(px - x1, py - y1);
+    let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+  }
+
+  function isBoxInteriorPaper(px, py) {
+    if (!hasBox()) return false;
+    const b = GRID_BOX;
+    const loc = paperToBoxLocal(px, py);
+    return loc.x > b.left && loc.x < b.left + b.w && loc.y > b.top && loc.y < b.top + b.h;
+  }
+
+  function isBelowFloorPaper(px, py) {
+    if (!hasBox()) return false;
+    const loc = paperToBoxLocal(px, py);
+    return loc.y > GRID_BOX.top + GRID_BOX.h;
+  }
+
+  function isIllegalOriginPaper(px, py) {
+    return isBoxInteriorPaper(px, py) || isBelowFloorPaper(px, py);
+  }
+
+  function snapOriginToGrid(screenX, screenY) {
+    const p = screenToPaper(screenX, screenY);
+    let ix = Math.round(p.x);
+    let iy = Math.round(p.y);
+    if (isIllegalOriginPaper(ix, iy)) {
+      let best = null;
+      let bestD = Infinity;
+      for (let dx = -8; dx <= 8; dx++) {
+        for (let dy = -8; dy <= 8; dy++) {
+          const x = ix + dx;
+          const y = iy + dy;
+          if (isIllegalOriginPaper(x, y)) continue;
+          const d = (x - p.x) * (x - p.x) + (y - p.y) * (y - p.y);
+          if (d < bestD) {
+            bestD = d;
+            best = { x, y };
+          }
+        }
       }
+      if (best) {
+        ix = best.x;
+        iy = best.y;
+      }
+    }
+    let ox = paperOrigin.x + ix * scale;
+    let oy = paperOrigin.y + iy * scale;
+    let bestDist = (ix - p.x) * (ix - p.x) + (iy - p.y) * (iy - p.y);
+
+    if (slopeMode && hasBox()) {
+      const corners = [
+        boxLocalToPaper(GRID_BOX.left, GRID_BOX.top),
+        boxLocalToPaper(GRID_BOX.left + GRID_BOX.w, GRID_BOX.top)
+      ];
+      for (const corner of corners) {
+        const d = (corner.x - p.x) * (corner.x - p.x) + (corner.y - p.y) * (corner.y - p.y);
+        if (d < bestDist) {
+          bestDist = d;
+          ox = paperOrigin.x + corner.x * scale;
+          oy = paperOrigin.y + corner.y * scale;
+        }
+      }
+    }
+
+    origin.x = ox;
+    origin.y = oy;
+  }
+
+  function beginDragAt(pos, forceOrigin) {
+    selectedObjId = null;
+    if (isForceZero()) {
+      draw();
+      return;
+    }
+    const distOrigin = Math.hypot(pos.x - origin.x, pos.y - origin.y);
+    const tip = tipScreenPos();
+    const distTip = Math.hypot(pos.x - tip.x, pos.y - tip.y);
+    const distShaft = distToSegment(pos.x, pos.y, origin.x, origin.y, tip.x, tip.y);
+    const grab = 16;
+
+    if (distTip < grab) {
+      isDraggingVector = true;
+      isDraggingOrigin = false;
+      return;
+    }
+    if (forceOrigin || distOrigin < grab || distShaft < grab) {
+      isDraggingOrigin = true;
+      isDraggingVector = false;
+      snapOriginToGrid(pos.x, pos.y);
+      draw();
+      return;
     }
 
     const hit = hitTestObject(pos);
     if (hit) {
       selectedObjId = hit.id;
-      isDraggingObject = true;
-      isResizingObject = false;
+      isDraggingObject = false;
       isDraggingVector = false;
       isDraggingOrigin = false;
-      objDragOff = { x: pos.x - hit.x, y: pos.y - hit.y };
-      setStampKind(null);
-      syncObjSizeUI();
       draw();
       return;
     }
-
-    if (stampKind) {
-      sceneObjects.push({ id: nextObjId++, kind: stampKind, x: pos.x, y: pos.y, size: 1 });
-      selectedObjId = nextObjId - 1;
-      syncObjSizeUI();
-      draw();
-      return;
-    }
-
-    selectedObjId = null;
-    syncObjSizeUI();
-    const distOrigin = Math.hypot(pos.x - origin.x, pos.y - origin.y);
-    const tip = tipScreenPos();
-    const distTip = Math.hypot(pos.x - tip.x, pos.y - tip.y);
-    const grab = 16;
-
-    if (forceOrigin || distOrigin < grab) {
-      isDraggingOrigin = true;
-      isDraggingVector = false;
-    } else if (distTip < grab) {
-      isDraggingVector = true;
-      isDraggingOrigin = false;
-    } else {
-      draw();
-    }
+    draw();
   }
 
   function moveDragAt(pos) {
-    if (isResizingObject && selectedObjId != null) {
-      const o = sceneObjects.find((x) => x.id === selectedObjId);
-      if (o) {
-        const dx = Math.abs(pos.x - o.x);
-        const dy = Math.abs(pos.y - o.y);
-        const half = Math.max(dx, dy, 12);
-        o.size = Math.max(0.4, Math.min(2.5, half / objectBaseHalf(o.kind)));
-        syncObjSizeUI();
-        draw();
-      }
-    } else if (isDraggingObject && selectedObjId != null) {
+    if (isDraggingObject && selectedObjId != null) {
       const o = sceneObjects.find((x) => x.id === selectedObjId);
       if (o) {
         o.x = pos.x - objDragOff.x;
@@ -1159,21 +1104,14 @@
         draw();
       }
     } else if (isDraggingOrigin) {
-      origin.x = pos.x;
-      origin.y = pos.y;
+      snapOriginToGrid(pos.x, pos.y);
       draw();
     } else if (isDraggingVector) {
       const local = screenToLocal(pos.x, pos.y);
-      vector.x = Math.max(-20, Math.min(20, local.x));
-      vector.y = Math.max(-20, Math.min(20, local.y));
+      vector.x = Math.max(-40, Math.min(40, local.x * NEWTONS_PER_GRID));
+      vector.y = Math.max(-40, Math.min(40, local.y * NEWTONS_PER_GRID));
+      lastAngleDeg = getAngleFromRef();
       updateUI();
-    } else {
-      // Hover cursor feedback
-      const sel = selectedObjId != null ? sceneObjects.find((x) => x.id === selectedObjId) : null;
-      if (sel && hitTestResizeHandle(pos, sel)) canvas.style.cursor = 'nwse-resize';
-      else if (hitTestObject(pos)) canvas.style.cursor = 'move';
-      else if (stampKind) canvas.style.cursor = 'copy';
-      else canvas.style.cursor = 'crosshair';
     }
   }
 
@@ -1181,7 +1119,6 @@
     isDraggingVector = false;
     isDraggingOrigin = false;
     isDraggingObject = false;
-    isResizingObject = false;
   }
 
   canvas.addEventListener('mousedown', (e) => {
@@ -1199,7 +1136,7 @@
   }, { passive: false });
   canvas.addEventListener('touchmove', (e) => {
     if (e.touches.length !== 1) return;
-    if (!isDraggingOrigin && !isDraggingVector && !isDraggingObject && !isResizingObject) return;
+    if (!isDraggingOrigin && !isDraggingVector && !isDraggingObject) return;
     e.preventDefault();
     const touch = e.touches[0];
     moveDragAt(getPointerPos(touch.clientX, touch.clientY));
@@ -1209,20 +1146,6 @@
 
   // --- Drawing ---
 
-  function drawPaperBackground(c) {
-    // Graph-paper tint
-    c.fillStyle = '#f4f1e8';
-    c.fillRect(0, 0, width, height);
-    // Soft edge vignette
-    const g = c.createLinearGradient(0, 0, 0, height);
-    g.addColorStop(0, 'rgba(255,255,255,0.35)');
-    g.addColorStop(0.08, 'rgba(255,255,255,0)');
-    g.addColorStop(0.92, 'rgba(255,255,255,0)');
-    g.addColorStop(1, 'rgba(180,160,120,0.12)');
-    c.fillStyle = g;
-    c.fillRect(0, 0, width, height);
-  }
-
   function drawBackground(c) {
     if (!bgImage) return;
     const hRatio = width / bgImage.width;
@@ -1231,100 +1154,267 @@
     const centerShift_x = (width - bgImage.width * ratio) / 2;
     const centerShift_y = (height - bgImage.height * ratio) / 2;
     c.save();
-    c.globalAlpha = 0.45;
+    c.globalAlpha = 0.5;
     c.drawImage(bgImage, 0, 0, bgImage.width, bgImage.height,
       centerShift_x, centerShift_y, bgImage.width * ratio, bgImage.height * ratio);
     c.restore();
   }
 
   function drawSceneObject(c, o) {
-    const selected = o.id === selectedObjId;
-    const s = o.size || 1;
+    if (o.kind !== 'box') return;
+    const x = o.left * scale;
+    const y = o.top * scale;
+    const w = o.w * scale;
+    const h = o.h * scale;
     c.save();
-    c.translate(o.x, o.y);
-    c.scale(s, s);
-    if (selected) {
-      c.strokeStyle = '#2563eb';
-      c.lineWidth = 2 / s;
-      c.setLineDash([4 / s, 3 / s]);
-      const half = objectBaseHalf(o.kind);
-      c.strokeRect(-half, -half, half * 2, half * 2);
-      c.setLineDash([]);
-    }
-    if (o.kind === 'box') {
-      c.fillStyle = '#c4a484';
-      c.strokeStyle = '#7c5c3e';
-      c.lineWidth = 2 / s;
-      c.fillRect(-30, -22, 60, 44);
-      c.strokeRect(-30, -22, 60, 44);
-      c.strokeStyle = 'rgba(0,0,0,0.15)';
+    const fill = c.createLinearGradient(x, y, x + w, y + h);
+    fill.addColorStop(0, '#d4b896');
+    fill.addColorStop(0.45, '#c4a574');
+    fill.addColorStop(1, '#a67c52');
+    c.fillStyle = fill;
+    c.fillRect(x, y, w, h);
+    c.save();
+    c.beginPath();
+    c.rect(x, y, w, h);
+    c.clip();
+    c.strokeStyle = 'rgba(120, 80, 40, 0.18)';
+    c.lineWidth = 1;
+    for (let gx = x + 8; gx < x + w; gx += 10) {
       c.beginPath();
-      c.moveTo(-10, -22); c.lineTo(-10, 22);
-      c.moveTo(10, -22); c.lineTo(10, 22);
-      c.stroke();
-    } else if (o.kind === 'ball') {
-      c.fillStyle = '#94a3b8';
-      c.strokeStyle = '#475569';
-      c.lineWidth = 2 / s;
-      c.beginPath();
-      c.arc(0, 0, 26, 0, Math.PI * 2);
-      c.fill();
-      c.stroke();
-      c.fillStyle = 'rgba(255,255,255,0.35)';
-      c.beginPath();
-      c.arc(-8, -8, 8, 0, Math.PI * 2);
-      c.fill();
-    } else if (o.kind === 'person') {
-      c.fillStyle = '#1e293b';
-      c.beginPath();
-      c.arc(0, -28, 10, 0, Math.PI * 2);
-      c.fill();
-      c.fillRect(-9, -16, 18, 28);
-      c.fillRect(-14, 12, 8, 18);
-      c.fillRect(6, 12, 8, 18);
-      c.fillRect(-22, -10, 14, 6);
-      c.fillRect(8, -10, 14, 6);
-    } else if (o.kind === 'wedge') {
-      c.fillStyle = '#a8b5c4';
-      c.strokeStyle = '#64748b';
-      c.lineWidth = 2 / s;
-      c.beginPath();
-      c.moveTo(-36, 22);
-      c.lineTo(36, 22);
-      c.lineTo(36, -8);
-      c.closePath();
-      c.fill();
+      c.moveTo(gx, y);
+      c.lineTo(gx - 6, y + h);
       c.stroke();
     }
     c.restore();
+    c.strokeStyle = '#6b4423';
+    c.lineWidth = 2.5;
+    c.strokeRect(x, y, w, h);
+    c.restore();
+  }
 
-    // Resize handle in screen space (after restore)
-    if (selected) {
-      const h = resizeHandlePos(o);
-      c.fillStyle = '#2563eb';
-      c.strokeStyle = '#fff';
-      c.lineWidth = 2;
+  function drawSmoothFloor(c) {
+    if (!hasBox()) return;
+    const piv = boxLocalToScreen(0, GRID_BOX.top + GRID_BOX.h);
+    const ang = currentSlopeDeg() * Math.PI / 180;
+    const ext = Math.max(width, height) * 3;
+    const dx = Math.cos(ang);
+    const dy = Math.sin(ang);
+    const nx = -Math.sin(ang);
+    const ny = Math.cos(ang);
+    const x1 = piv.x - dx * ext;
+    const y1 = piv.y - dy * ext;
+    const x2 = piv.x + dx * ext;
+    const y2 = piv.y + dy * ext;
+    c.save();
+    resetLogicalTransform();
+    c.beginPath();
+    c.moveTo(x1, y1);
+    c.lineTo(x2, y2);
+    c.lineTo(x2 + nx * ext, y2 + ny * ext);
+    c.lineTo(x1 + nx * ext, y1 + ny * ext);
+    c.closePath();
+    c.fillStyle = '#f1f5f9';
+    c.fill();
+    c.strokeStyle = '#94a3b8';
+    c.lineWidth = 2;
+    c.beginPath();
+    c.moveTo(x1, y1);
+    c.lineTo(x2, y2);
+    c.stroke();
+    c.strokeStyle = 'rgba(100,116,139,0.45)';
+    c.lineWidth = 1;
+    for (let s = -ext; s < ext; s += 18) {
+      const fx = piv.x + dx * s;
+      const fy = piv.y + dy * s;
       c.beginPath();
-      c.rect(h.x - 6, h.y - 6, 12, 12);
-      c.fill();
+      c.moveTo(fx + nx * 6, fy + ny * 6);
+      c.lineTo(fx + nx * 18 - dx * 8, fy + ny * 18 - dy * 8);
       c.stroke();
     }
+    let fx;
+    let fy;
+    if (Math.abs(dx) > 0.05) {
+      const t = (16 - piv.x) / dx;
+      fx = 16;
+      fy = piv.y + t * dy;
+    } else {
+      fx = piv.x;
+      fy = Math.min(height - 40, Math.max(40, piv.y));
+    }
+    const labelX = fx + nx * 34;
+    const labelY = fy + ny * 34;
+    c.translate(labelX, labelY);
+    c.rotate(ang);
+    c.fillStyle = '#0f172a';
+    c.font = '800 16px Plus Jakarta Sans, system-ui, sans-serif';
+    c.textAlign = 'left';
+    c.textBaseline = 'alphabetic';
+    c.fillText(t().smoothFloor, 0, 0);
+    c.restore();
+  }
+
+  function drawSlopeHorizontalArc(c) {
+    if (!hasBox() || !slopeMode) return;
+    const phi = Math.abs(slopeDeg);
+    if (phi < 1) return;
+    const piv = boxLocalToScreen(0, GRID_BOX.top + GRID_BOX.h);
+    const ang = currentSlopeDeg() * Math.PI / 180;
+    const dx = Math.cos(ang);
+    const dy = Math.sin(ang);
+    const PHI = '#1e3a8a';
+    let ax;
+    let ay;
+    let needHoriz = false;
+    if (Math.abs(dy) > 0.08) {
+      const t = (height - piv.y) / dy;
+      const x = piv.x + dx * t;
+      if (x >= 0 && x <= width) {
+        ax = x;
+        ay = height;
+      }
+    }
+    if (ax == null) {
+      needHoriz = true;
+      const edgeX = slopeDeg > 0 ? width : 0;
+      if (Math.abs(dx) < 0.08) return;
+      const t = (edgeX - piv.x) / dx;
+      ax = edgeX;
+      ay = Math.max(0, Math.min(height, piv.y + dy * t));
+    }
+
+    const floorAng = Math.atan2(piv.y - ay, piv.x - ax);
+    const horizAng = (piv.x - ax) < 0 ? Math.PI : 0;
+    let diff = floorAng - horizAng;
+    while (diff > Math.PI) diff -= 2 * Math.PI;
+    while (diff < -Math.PI) diff += 2 * Math.PI;
+
+    c.save();
+    resetLogicalTransform();
+    const r = scale;
+    const hdir = (piv.x - ax) < 0 ? -1 : 1;
+    c.strokeStyle = PHI;
+    if (needHoriz) {
+      c.lineWidth = 2;
+      c.beginPath();
+      c.moveTo(ax, ay);
+      c.lineTo(ax + hdir * (r + 8), ay);
+      c.stroke();
+    }
+    c.lineWidth = 2.5;
+    c.beginPath();
+    c.arc(ax, ay, r, horizAng, floorAng, diff < 0);
+    c.stroke();
+    const midRad = horizAng + diff / 2;
+    const lx = ax + (r + 12) * Math.cos(midRad);
+    const ly = ay + (r + 12) * Math.sin(midRad);
+    drawSmartLabel(c, `φ = ${phi.toFixed(1)}°`, lx, ly, hdir < 0 ? 'right' : 'left', 'middle', PHI, 0);
+    c.restore();
+  }
+
+  function drawWeightArrow(c) {
+    if (!hasBox()) return;
+    const mid = boxLocalToScreen(GRID_BOX.left + GRID_BOX.w / 2, GRID_BOX.top + GRID_BOX.h / 2);
+    const tipX = mid.x;
+    const tipY = mid.y + 5 * scale;
+    c.save();
+    resetLogicalTransform();
+    drawArrow(c, mid.x, mid.y, tipX, tipY, '#111', 4, false);
+    drawSmartLabel(c, 'W', tipX, tipY + 18, 'center', 'top', '#111');
+    c.restore();
+  }
+
+  function drawWeightComponents(c) {
+    if (!hasBox() || !slopeMode) return;
+    const phi = Math.abs(slopeDeg);
+    if (phi < 1) return;
+    const phiRad = phi * Math.PI / 180;
+    const wLen = 5;
+    const cosLen = wLen * Math.cos(phiRad);
+    const sinLen = wLen * Math.sin(phiRad);
+    const sign = slopeDeg >= 0 ? 1 : -1;
+    const cx = GRID_BOX.left + GRID_BOX.w / 2;
+    const cy = GRID_BOX.top + GRID_BOX.h / 2;
+    const mid = boxLocalToScreen(cx, cy);
+    const cosTip = boxLocalToScreen(cx, cy + cosLen);
+    const sinTip = boxLocalToScreen(cx + sign * sinLen, cy);
+    const turn = currentSlopeDeg();
+    const GREEN = '#14532d';
+
+    c.save();
+    resetLogicalTransform();
+    drawArrow(c, mid.x, mid.y, cosTip.x, cosTip.y, GREEN, 2.5, false);
+    drawArrow(c, mid.x, mid.y, sinTip.x, sinTip.y, GREEN, 2.5, false);
+
+    function beyondTip(from, to, extra) {
+      const vx = to.x - from.x;
+      const vy = to.y - from.y;
+      const len = Math.hypot(vx, vy) || 1;
+      return { x: to.x + extra * vx / len, y: to.y + extra * vy / len };
+    }
+    const cosLab = beyondTip(mid, cosTip, 16);
+    drawSmartLabel(c, 'W cos φ', cosLab.x, cosLab.y, 'center', 'middle', GREEN, turn);
+    const svx = sinTip.x - mid.x;
+    const svy = sinTip.y - mid.y;
+    const slen = Math.hypot(svx, svy) || 1;
+    const past = 16;
+    let shaftAng = Math.atan2(svy, svx);
+    let align = 'left';
+    if (Math.cos(shaftAng) < 0) {
+      shaftAng += Math.PI;
+      align = 'right';
+    }
+    c.save();
+    resetLogicalTransform();
+    c.font = 'bold 14px system-ui, sans-serif';
+    c.fillStyle = GREEN;
+    c.textAlign = align;
+    c.textBaseline = 'middle';
+    c.translate(sinTip.x + past * svx / slen, sinTip.y + past * svy / slen);
+    c.rotate(shaftAng);
+    c.fillText('W sin φ', 0, 0);
+    c.restore();
+    c.restore();
+  }
+
+  function drawNormalArrow(c) {
+    if (!hasBox()) return;
+    const phi = slopeMode ? Math.abs(slopeDeg) : 0;
+    const wCos = 5 * Math.cos(phi * Math.PI / 180);
+    const nSquares = wCos + vector.y / NEWTONS_PER_GRID;
+    if (nSquares < 0.05) return;
+    const nx = GRID_BOX.left + GRID_BOX.w / 2 - 0.5;
+    const floorY = GRID_BOX.top + GRID_BOX.h;
+    const tail = boxLocalToScreen(nx, floorY);
+    const tip = boxLocalToScreen(nx, floorY - nSquares);
+    c.save();
+    resetLogicalTransform();
+    drawArrow(c, tail.x, tail.y, tip.x, tip.y, '#7c3aed', 4, false);
+    const vx = tip.x - tail.x;
+    const vy = tip.y - tail.y;
+    const len = Math.hypot(vx, vy) || 1;
+    drawSmartLabel(c, 'N', tip.x + 10 * vx / len, tip.y + 10 * vy / len, 'center', 'bottom', '#7c3aed', currentSlopeDeg());
+    c.restore();
   }
 
   function drawArrow(c, fromX, fromY, toX, toY, color, lineW, dashed) {
     const headLen = 14;
     const angle = Math.atan2(toY - fromY, toX - fromX);
+    const inset = headLen * Math.cos(Math.PI / 6);
+    const backX = toX - inset * Math.cos(angle);
+    const backY = toY - inset * Math.sin(angle);
     c.beginPath();
     c.lineWidth = lineW;
+    c.lineCap = 'butt';
     c.strokeStyle = color;
     c.fillStyle = color;
     if (dashed) c.setLineDash([5, 5]); else c.setLineDash([]);
-    c.moveTo(fromX, fromY); c.lineTo(toX, toY); c.stroke();
+    c.moveTo(fromX, fromY); c.lineTo(backX, backY); c.stroke();
     c.setLineDash([]);
     c.beginPath();
     c.moveTo(toX, toY);
     c.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), toY - headLen * Math.sin(angle - Math.PI / 6));
     c.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), toY - headLen * Math.sin(angle + Math.PI / 6));
+    c.closePath();
     c.fill();
   }
 
@@ -1332,10 +1422,20 @@
     return !(r2.x > r1.x + r1.w || r2.x + r2.w < r1.x || r2.y > r1.y + r1.h || r2.y + r2.h < r1.y);
   }
 
-  function drawSmartLabel(c, text, x, y, align, baseline, color = "#444") {
+  function drawSmartLabel(c, text, x, y, align, baseline, color = "#444", rotDeg = 0) {
     c.save();
     resetLogicalTransform();
     c.font = "bold 14px system-ui, sans-serif";
+    if (rotDeg) {
+      c.fillStyle = color;
+      c.textAlign = align === "right" ? "right" : align === "center" ? "center" : "left";
+      c.textBaseline = baseline === "middle" ? "middle" : baseline === "bottom" ? "bottom" : "top";
+      c.translate(x, y);
+      c.rotate(rotDeg * Math.PI / 180);
+      c.fillText(text, 0, 0);
+      c.restore();
+      return;
+    }
     c.textAlign = "left";
     c.textBaseline = "top";
 
@@ -1366,8 +1466,6 @@
       attempts++;
     }
     drawnLabels.push(box);
-    c.fillStyle = "rgba(255, 255, 255, 0.92)";
-    c.fillRect(box.x, box.y, box.w, box.h);
     c.fillStyle = color;
     c.fillText(text, box.x + padding, box.y + padding);
     c.restore();
@@ -1376,67 +1474,24 @@
   function drawGrid(c) {
     if (!showGrid) return;
     const gridSize = 40;
-
-    // Minor lines (every unit) — classic blue graph paper
-    c.strokeStyle = 'rgba(120, 160, 200, 0.35)';
+    c.strokeStyle = 'rgba(0,0,0,0.12)';
     c.lineWidth = 1;
     for (let i = -gridSize; i <= gridSize; i++) {
-      if (i % 5 === 0) continue;
       c.beginPath(); c.moveTo(i * scale, -gridSize * scale); c.lineTo(i * scale, gridSize * scale); c.stroke();
       c.beginPath(); c.moveTo(-gridSize * scale, i * scale); c.lineTo(gridSize * scale, i * scale); c.stroke();
     }
-
-    // Major lines (every 5 units)
-    c.strokeStyle = 'rgba(80, 130, 180, 0.55)';
-    c.lineWidth = 1.25;
-    for (let i = -gridSize; i <= gridSize; i += 5) {
-      if (i === 0) continue;
-      c.beginPath(); c.moveTo(i * scale, -gridSize * scale); c.lineTo(i * scale, gridSize * scale); c.stroke();
-      c.beginPath(); c.moveTo(-gridSize * scale, i * scale); c.lineTo(gridSize * scale, i * scale); c.stroke();
-    }
-
-    // Main axes
-    c.strokeStyle = '#334155';
-    c.lineWidth = 2.25;
-    c.beginPath();
-    c.moveTo(0, -gridSize * scale); c.lineTo(0, gridSize * scale);
-    c.moveTo(-gridSize * scale, 0); c.lineTo(gridSize * scale, 0);
-    c.stroke();
-
-    c.save();
-    resetLogicalTransform();
-    const pad = 20;
-    const bounds = { minX: pad, minY: pad, maxX: width - pad, maxY: height - pad };
-    const rad = axisAngle * Math.PI / 180;
-    const dir1 = { x: Math.cos(rad), y: Math.sin(rad) };
-    const dir2 = { x: -Math.sin(rad), y: Math.cos(rad) };
-
-    function getClampedPoint(dir) {
-      let tMax = Infinity;
-      if (dir.x > 0) tMax = Math.min(tMax, (bounds.maxX - origin.x) / dir.x);
-      else if (dir.x < 0) tMax = Math.min(tMax, (bounds.minX - origin.x) / dir.x);
-      if (dir.y > 0) tMax = Math.min(tMax, (bounds.maxY - origin.y) / dir.y);
-      else if (dir.y < 0) tMax = Math.min(tMax, (bounds.minY - origin.y) / dir.y);
-      return { x: origin.x + tMax * dir.x, y: origin.y + tMax * dir.y };
-    }
-
-    const p1 = getClampedPoint(dir1);
-    const p2 = getClampedPoint({ x: -dir2.x, y: -dir2.y });
-    const tr = t();
-    drawSmartLabel(c, tr.dir1, p1.x - dir1.x * 10, p1.y - dir1.y * 10, "right", "middle");
-    drawSmartLabel(c, tr.dir2, p2.x - (-dir2.x) * 10, p2.y - (-dir2.y) * 10, "left", "middle");
-    c.restore();
   }
 
   function drawAngle(c, tipX, tipY) {
-    const radius = 48;
+    if (isForceOnAxis()) return;
+    const radius = scale;
     const mathAngle = Math.atan2(tipY, tipX);
     c.beginPath();
     c.strokeStyle = '#f39c12';
     c.lineWidth = 2.5;
-    let startAngle = 0;
-    if (angleRef === 'x') startAngle = (axisPolarity === 1) ? 0 : Math.PI;
-    else startAngle = (axisPolarity === 1) ? -Math.PI / 2 : Math.PI / 2;
+    const deg = lastAngleDeg;
+    let startAngle = (deg <= 90 || deg > 270) ? 0 : Math.PI;
+    if (startAngle === Math.PI && mathAngle < 0) startAngle = -Math.PI;
 
     let diff = mathAngle - startAngle;
     while (diff > Math.PI) diff -= 2 * Math.PI;
@@ -1445,50 +1500,27 @@
     c.stroke();
 
     let midRad = startAngle + diff / 2;
-    let labelRadius = radius + 18;
+    const labelRadius = radius + 8;
     const lx = labelRadius * Math.cos(midRad);
     const ly = labelRadius * Math.sin(midRad);
     let rad = axisAngle * Math.PI / 180;
     let gx = origin.x + (lx * Math.cos(rad) - ly * Math.sin(rad));
     let gy = origin.y + (lx * Math.sin(rad) + ly * Math.cos(rad));
-    const theta = getAngleFromRef();
+    const theta = angleToHorizontal(lastAngleDeg);
+    const q2q3 = lastAngleDeg > 90 && lastAngleDeg < 270;
     c.save();
     resetLogicalTransform();
-    drawSmartLabel(c, `θ = ${theta.toFixed(1)}°`, gx, gy, "center", "middle", "#f39c12");
+    c.font = 'bold 14px system-ui, sans-serif';
+    c.fillStyle = '#f39c12';
+    c.textAlign = q2q3 ? 'right' : 'left';
+    c.textBaseline = 'middle';
+    c.translate(gx, gy);
+    c.rotate(currentSlopeDeg() * Math.PI / 180);
+    c.fillText(`θ = ${theta.toFixed(1)}°`, q2q3 ? -6 : 6, 0);
     c.restore();
   }
 
   function drawLabels(c, tipX, tipY) {
-    let labelH = angleRef === 'x' ? "F cos θ" : "F sin θ";
-    let labelV = angleRef === 'x' ? "F sin θ" : "F cos θ";
-    let hX, hY, vX, vY;
-    let hAlign = "center", hBase = "top";
-    let vAlign = "left", vBase = "middle";
-
-    if (compStyle === 'head-to-tail') {
-      if (decompOrder === 'xy') {
-        hX = tipX / 2;
-        hY = (tipY < 0) ? 12 : -22;
-        if (tipY >= 0) hBase = "bottom";
-        vX = tipX + 12;
-        vY = tipY / 2;
-      } else {
-        vX = -12;
-        vY = tipY / 2;
-        vAlign = "right";
-        hX = tipX / 2;
-        hY = tipY + ((tipY < 0) ? -22 : 12);
-        hBase = (tipY < 0) ? "bottom" : "top";
-      }
-    } else {
-      hX = tipX / 2;
-      hY = (tipY < 0) ? 12 : -22;
-      if (tipY >= 0) hBase = "bottom";
-      vX = -12;
-      vY = tipY / 2;
-      vAlign = "right";
-    }
-
     let rad = axisAngle * Math.PI / 180;
     function localToGlobal(lx, ly) {
       return {
@@ -1496,16 +1528,51 @@
         y: origin.y + (lx * Math.sin(rad) + ly * Math.cos(rad))
       };
     }
+    function beyond(from, to, extra) {
+      const vx = to.x - from.x;
+      const vy = to.y - from.y;
+      const len = Math.hypot(vx, vy) || 1;
+      return { x: to.x + extra * vx / len, y: to.y + extra * vy / len };
+    }
+    const originG = { x: origin.x, y: origin.y };
+    const cosTip = localToGlobal(tipX, 0);
+    const sinTip = localToGlobal(0, tipY);
     const mag = Math.hypot(vector.x, vector.y);
-    let gH = localToGlobal(hX, hY);
-    let gV = localToGlobal(vX, vY);
-    let gR = localToGlobal(tipX / 2 - 12, tipY / 2 - 12);
+    const tipLen = Math.hypot(tipX, tipY) || 1;
+    const gR = localToGlobal(tipX + 18 * tipX / tipLen, tipY + 18 * tipY / tipLen);
+    const q2q3 = lastAngleDeg > 90 && lastAngleDeg < 270;
+    const fAlign = q2q3 ? "right" : "left";
+    const RED = "#e74c3c";
+    const past = 16;
 
     c.save();
     resetLogicalTransform();
-    drawSmartLabel(c, labelH, gH.x, gH.y, hAlign, hBase, "#e74c3c");
-    drawSmartLabel(c, labelV, gV.x, gV.y, vAlign, vBase, "#e74c3c");
-    drawSmartLabel(c, `F = ${mag.toFixed(1)}`, gR.x, gR.y, "right", "bottom", "#2563eb");
+    const turn = currentSlopeDeg();
+    if (!isForceOnAxis()) {
+      const sinLab = beyond(originG, sinTip, past);
+      drawSmartLabel(c, "F sin θ", sinLab.x, sinLab.y, "center", "middle", RED, turn);
+
+      const cvx = cosTip.x - originG.x;
+      const cvy = cosTip.y - originG.y;
+      const clen = Math.hypot(cvx, cvy) || 1;
+      let shaftAng = Math.atan2(cvy, cvx);
+      let align = "left";
+      if (Math.cos(shaftAng) < 0) {
+        shaftAng += Math.PI;
+        align = "right";
+      }
+      c.save();
+      resetLogicalTransform();
+      c.font = "bold 14px system-ui, sans-serif";
+      c.fillStyle = RED;
+      c.textAlign = align;
+      c.textBaseline = "middle";
+      c.translate(cosTip.x + past * cvx / clen, cosTip.y + past * cvy / clen);
+      c.rotate(shaftAng);
+      c.fillText("F cos θ", 0, 0);
+      c.restore();
+    }
+    drawSmartLabel(c, `F = ${mag.toFixed(1)} N`, gR.x, gR.y, fAlign, "middle", "#2563eb", turn);
     c.restore();
   }
 
@@ -1521,58 +1588,77 @@
     } else {
       drawArrow(c, 0, 0, tipX, 0, '#e74c3c', 2.5, false);
       drawArrow(c, 0, 0, 0, tipY, '#e74c3c', 2.5, false);
-      c.setLineDash([5, 5]);
-      c.strokeStyle = '#e74c3c';
-      c.lineWidth = 1;
-      c.beginPath();
-      c.moveTo(tipX, 0); c.lineTo(tipX, tipY);
-      c.stroke();
-      c.beginPath();
-      c.moveTo(0, tipY); c.lineTo(tipX, tipY);
-      c.stroke();
-      c.setLineDash([]);
     }
   }
 
   function draw() {
     drawnLabels = [];
     resetLogicalTransform();
-    drawPaperBackground(ctx);
+    ctx.clearRect(0, 0, width, height);
+
     drawBackground(ctx);
+
+    ctx.translate(paperOrigin.x, paperOrigin.y);
+    drawGrid(ctx);
+    resetLogicalTransform();
+    drawSmoothFloor(ctx);
+    drawSlopeHorizontalArc(ctx);
+    ctx.translate(paperOrigin.x, paperOrigin.y);
+    const slopeRad = currentSlopeDeg() * Math.PI / 180;
+    if (slopeRad) {
+      ctx.translate(0, (GRID_BOX.top + GRID_BOX.h) * scale);
+      ctx.rotate(slopeRad);
+      ctx.translate(0, -(GRID_BOX.top + GRID_BOX.h) * scale);
+    }
     sceneObjects.forEach((o) => drawSceneObject(ctx, o));
 
-    ctx.translate(origin.x, origin.y);
-    ctx.rotate(axisAngle * Math.PI / 180);
+    resetLogicalTransform();
+    drawWeightArrow(ctx);
+    drawWeightComponents(ctx);
+    drawNormalArrow(ctx);
 
-    drawGrid(ctx);
+    if (!isForceZero()) {
+      resetLogicalTransform();
+      ctx.translate(origin.x, origin.y);
+      ctx.rotate(axisAngle * Math.PI / 180);
 
-    const tipX = vector.x * scale;
-    const tipY = vector.y * scale;
+      const tipX = (vector.x / NEWTONS_PER_GRID) * scale;
+      const tipY = (vector.y / NEWTONS_PER_GRID) * scale;
 
-    drawAngle(ctx, tipX, tipY);
-    drawComponents(ctx, tipX, tipY);
-    // Resultant force — thicker for classroom visibility
-    drawArrow(ctx, 0, 0, tipX, tipY, '#4a90e2', 4, false);
-    drawLabels(ctx, tipX, tipY);
+      drawAngle(ctx, tipX, tipY);
+      if (!isForceOnAxis()) drawComponents(ctx, tipX, tipY);
+      drawArrow(ctx, 0, 0, tipX, tipY, '#4a90e2', 4, false);
+      drawLabels(ctx, tipX, tipY);
 
-    ctx.beginPath();
-    ctx.arc(0, 0, 5, 0, Math.PI * 2);
-    ctx.fillStyle = "#333";
-    ctx.fill();
+      ctx.beginPath();
+      ctx.arc(0, 0, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#333";
+      ctx.fill();
+    }
   }
 
   window.addEventListener('resize', () => {
+    const pox = paperOrigin.x / width;
+    const poy = paperOrigin.y / height;
     const ox = origin.x / width;
     const oy = origin.y / height;
     fitCanvas();
-    origin.x = ox * width;
-    origin.y = oy * height;
+    paperOrigin.x = pox * width;
+    paperOrigin.y = poy * height;
+    if (hasBox()) pinOriginToBoxTopRight();
+    else {
+      origin.x = ox * width;
+      origin.y = oy * height;
+    }
     draw();
   });
 
   updateLanguageUI();
   fitCanvas();
-  updateUI();
+  paperOrigin = { x: width / 2, y: height / 2 };
+  origin = { x: width / 2, y: height / 2 };
+  setVectorFromRef(7.2, 45);
+  enterSlopeMode();
 })();
 </script>
 </body>
