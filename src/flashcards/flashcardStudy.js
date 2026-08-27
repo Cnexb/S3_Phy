@@ -170,6 +170,24 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
     restart: container.querySelector('[data-fc-restart]'),
   };
 
+  // ---- UNI+ tracker: 送 flashcard 自評結果去 uni-tracker.js ----
+  function trackAttempt(isCorrect) {
+    const card = session?.currentCard();
+    if (!card) return;
+    try {
+      window.postMessage({
+        type: 'uniplus:flashcardAttempt',
+        subject: 'PHY',
+        deck: deckKey,
+        cardId: String(card.id),
+        questionText: card.front,
+        answerText: card.back,
+        selfRatedCorrect: isCorrect,
+        attemptedAt: new Date().toISOString(),
+      }, '*');
+    } catch (_) {}
+  }
+
   async function makeSession() {
     const cards = await buildDeck(deckKey);
     session = createFlashcardSession(() => cards);
@@ -375,11 +393,13 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
   });
 
   els.again.addEventListener('click', () => {
+    trackAttempt(false);
     if (session.rateAgain()) renderUI();
     else renderCard();
   });
 
   els.gotit.addEventListener('click', () => {
+    trackAttempt(true);
     if (session.rateGotIt()) renderUI();
     else renderCard();
   });
@@ -415,6 +435,7 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
     }
     if (e.key === 'ArrowLeft') {
       if (session.isFlipped()) {
+        trackAttempt(false);
         if (session.rateAgain()) renderUI();
         else renderCard();
       } else {
@@ -425,6 +446,7 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
     }
     if (e.key === 'ArrowRight' || e.key === '1') {
       if (session.isFlipped()) {
+        trackAttempt(true);
         if (session.rateGotIt()) renderUI();
         else renderCard();
       } else if (session.nextNavigate()) {
@@ -433,6 +455,7 @@ export function mountFlashcardStudy(container, { deckOptions, buildDeck, initial
       return;
     }
     if (e.key === '2' && session.isFlipped()) {
+      trackAttempt(false);
       if (session.rateAgain()) renderUI();
       else renderCard();
     }
