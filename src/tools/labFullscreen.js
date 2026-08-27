@@ -26,47 +26,41 @@ function notifyLabResize(stage) {
   });
 }
 
-export function initLabFullscreen({ app, stage, button, t, setCollapsed, getCollapsed }) {
+export function initLabFullscreen({ app, stage, t, setCollapsed, getCollapsed }) {
   let overlayMode = false;
   let pickerWasCollapsed = false;
   let overlayBackdrop = null;
+  let floatBtn = null;
 
-  const icon = button.querySelector('.material-symbols-outlined');
-  const label = button.querySelector('[data-tool-fullscreen-label]');
-  let exitBtn = null;
+  const isActive = () =>
+    isFullscreenActive(stage) || overlayMode || Boolean(app?.classList.contains('is-lab-fullscreen'));
 
-  const syncExitButton = (active) => {
-    if (!active) {
-      exitBtn?.remove();
-      exitBtn = null;
-      return;
-    }
-    if (!exitBtn) {
-      exitBtn = document.createElement('button');
-      exitBtn.type = 'button';
-      exitBtn.className = 's3phy-fs-exit hub-fs-exit';
-      exitBtn.innerHTML =
-        '<span class="s3phy-fs-exit__icon material-symbols-outlined" aria-hidden="true">fullscreen_exit</span>' +
-        '<span class="s3phy-fs-exit__label"></span>';
-      exitBtn.addEventListener('click', (event) => {
+  const syncFloatButton = () => {
+    const active = isActive();
+    if (!floatBtn) {
+      floatBtn = document.createElement('button');
+      floatBtn.type = 'button';
+      floatBtn.className = 's3phy-fs-btn hub-fs-btn';
+      floatBtn.innerHTML =
+        '<span class="s3phy-fs-btn__icon material-symbols-outlined" aria-hidden="true">fullscreen</span>' +
+        '<span class="s3phy-fs-btn__label"></span>';
+      floatBtn.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        exitFullscreen();
+        if (isActive()) exitFullscreen();
+        else enterFullscreen();
       });
+      document.body.appendChild(floatBtn);
     }
-    const exitLabel = t('tools.exitFullscreen');
-    exitBtn.setAttribute('aria-label', exitLabel);
-    const exitLabelEl = exitBtn.querySelector('.s3phy-fs-exit__label');
-    if (exitLabelEl) exitLabelEl.textContent = exitLabel;
-    if (exitBtn.parentElement !== stage) stage.appendChild(exitBtn);
-  };
 
-  const updateButton = (active) => {
-    button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    const label = active ? t('tools.exitFullscreen') : t('tools.fullscreen');
+    floatBtn.setAttribute('aria-label', label);
+    floatBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    floatBtn.classList.toggle('s3phy-fs-btn--active', active);
+    const labelEl = floatBtn.querySelector('.s3phy-fs-btn__label');
+    if (labelEl) labelEl.textContent = label;
+    const icon = floatBtn.querySelector('.s3phy-fs-btn__icon');
     if (icon) icon.textContent = active ? 'fullscreen_exit' : 'fullscreen';
-    if (label) label.textContent = active ? t('tools.exitFullscreen') : t('tools.fullscreen');
-    button.title = label?.textContent || '';
-    syncExitButton(active);
   };
 
   const clearOverlay = () => {
@@ -84,7 +78,7 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
       clearOverlay();
       app?.classList.remove('is-lab-fullscreen');
       setCollapsed(pickerWasCollapsed);
-      updateButton(false);
+      syncFloatButton();
       return;
     }
 
@@ -95,6 +89,9 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
       } catch {
         /* ignore */
       }
+    } else {
+      app?.classList.remove('is-lab-fullscreen');
+      syncFloatButton();
     }
   };
 
@@ -105,7 +102,8 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
 
     overlayBackdrop = document.createElement('div');
     overlayBackdrop.className = 'tool-stage-overlay-backdrop';
-    overlayBackdrop.style.cssText = 'position:fixed;inset:0;z-index:' + OVERLAY_Z + ';background:rgba(15,23,42,0.45);';
+    overlayBackdrop.style.cssText =
+      'position:fixed;inset:0;z-index:' + OVERLAY_Z + ';background:rgba(15,23,42,0.45);';
     document.body.appendChild(overlayBackdrop);
     document.body.style.overflow = 'hidden';
 
@@ -118,7 +116,7 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
     stage.style.margin = '0';
 
     overlayMode = true;
-    updateButton(true);
+    syncFloatButton();
     requestAnimationFrame(() => notifyLabResize(stage));
 
     overlayBackdrop.addEventListener('click', () => {
@@ -143,7 +141,7 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
         enterOverlay();
         return;
       }
-      updateButton(true);
+      syncFloatButton();
       requestAnimationFrame(() => notifyLabResize(stage));
     } catch {
       app?.classList.remove('is-lab-fullscreen');
@@ -153,7 +151,7 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
   };
 
   const onFullscreenChange = () => {
-    const active = isFullscreenActive(stage) || overlayMode;
+    const active = isActive();
     if (!active) {
       app?.classList.remove('is-lab-fullscreen');
       if (overlayMode) clearOverlay();
@@ -165,25 +163,22 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
       stage.style.height = '';
       stage.style.margin = '';
     }
-    updateButton(active);
+    syncFloatButton();
     if (active) {
       requestAnimationFrame(() => notifyLabResize(stage));
     }
   };
 
-  button.addEventListener('click', () => {
-    if (isFullscreenActive(stage) || overlayMode) exitFullscreen();
-    else enterFullscreen();
-  });
-
   document.addEventListener('fullscreenchange', onFullscreenChange);
   document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
-  updateButton(false);
+  syncFloatButton();
 
   return () => {
     document.removeEventListener('fullscreenchange', onFullscreenChange);
     document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
+    floatBtn?.remove();
+    floatBtn = null;
     exitFullscreen();
   };
 }

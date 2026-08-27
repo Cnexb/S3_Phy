@@ -222,16 +222,17 @@ function renderMaterialCard(key, label) {
 function render() {
   if (!root) return;
   document.documentElement.lang = lang === 'zh' ? 'zh-HK' : 'en';
+  const showLabFullscreen = !document.documentElement.classList.contains('s3phy-embed');
   root.innerHTML = `
     <main class="bw-wrap">
       <header class="bw-head">
         <h1 class="bw-title">${t('title')}</h1>
         <p class="bw-subtitle">${t('subtitle')}</p>
         <div class="bw-head-actions">
-          <button class="bw-head-btn" type="button" data-fullscreen aria-pressed="false">
+          ${showLabFullscreen ? `<button class="bw-head-btn" type="button" data-fullscreen aria-pressed="false">
             <span class="bw-fullscreen-icon" aria-hidden="true">⛶</span>
             <span data-fullscreen-label>${t('fullscreen')}</span>
-          </button>
+          </button>` : ''}
           <button class="bw-head-btn" type="button" data-language>${t('switchLanguage')}</button>
         </div>
       </header>

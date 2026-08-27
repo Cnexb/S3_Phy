@@ -617,8 +617,8 @@ html.s3phy-embed select {
   }
 }
 
-/* Floating exit — shown whenever a lab enters fullscreen */
-.s3phy-fs-exit {
+/* Floating fullscreen — universal control for standalone labs */
+.s3phy-fs-btn {
   position: fixed;
   top: max(12px, env(safe-area-inset-top, 0px));
   right: max(12px, env(safe-area-inset-right, 0px));
@@ -640,21 +640,41 @@ html.s3phy-embed select {
   pointer-events: auto;
 }
 
-.s3phy-fs-exit:hover {
+.s3phy-fs-btn:hover {
   background: #ffffff;
   border-color: #64748b;
 }
 
-.s3phy-fs-exit:focus-visible {
+.s3phy-fs-btn:focus-visible {
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
 
-.s3phy-fs-exit__icon {
+.s3phy-fs-btn--active {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.s3phy-fs-btn--active:hover {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+.s3phy-fs-btn__icon {
   font-size: 1.05rem;
   line-height: 1;
 }
 
-.s3phy-fs-exit__icon.material-symbols-outlined {
+.s3phy-fs-btn__icon.material-symbols-outlined {
   font-size: 1.15rem;
+}
+
+/* Per-lab fullscreen controls replaced by universal button */
+#fullscreen-btn,
+#fullscreenBtn,
+.el-fs-btn,
+[data-fullscreen],
+.tl-fullscreen-btn {
+  display: none !important;
 }

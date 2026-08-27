@@ -151,6 +151,9 @@ function initFloatingControlsPanel(options) {
 }
 
 function attachFullscreenControl(wrap, t) {
+  if (document.documentElement.classList.contains('s3phy-embed')) {
+    return () => {};
+  }
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'tl-fullscreen-btn';

@@ -15,7 +15,7 @@
   var cur = document.currentScript;
   if (cur && cur.src) {
     var fsExit = document.createElement('script');
-    fsExit.src = cur.src.replace(/[^/]+$/, 'fullscreen-exit.js');
+    fsExit.src = cur.src.replace(/[^/]+$/, 's3phy-fullscreen.js');
     document.head.appendChild(fsExit);
   }
 })();
