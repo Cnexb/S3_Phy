@@ -313,7 +313,7 @@ html.s3phy-embed .app-root {
 
 .lab-controls-actions button.flex-1 {
   white-space: nowrap;
-  min-width: 0;
+  min-width: max-content;
 }
 
 .lab-controls-drag-handle {
@@ -615,4 +615,46 @@ html.s3phy-embed select {
   html.s3phy-embed .gap-3 {
     gap: 0.25rem !important;
   }
+}
+
+/* Floating exit — shown whenever a lab enters fullscreen */
+.s3phy-fs-exit {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  z-index: 2147483646;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.97);
+  color: #0f172a;
+  font-family: var(--s3-font, system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.2);
+  pointer-events: auto;
+}
+
+.s3phy-fs-exit:hover {
+  background: #ffffff;
+  border-color: #64748b;
+}
+
+.s3phy-fs-exit:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.s3phy-fs-exit__icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.s3phy-fs-exit__icon.material-symbols-outlined {
+  font-size: 1.15rem;
 }

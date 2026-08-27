@@ -33,12 +33,40 @@ export function initLabFullscreen({ app, stage, button, t, setCollapsed, getColl
 
   const icon = button.querySelector('.material-symbols-outlined');
   const label = button.querySelector('[data-tool-fullscreen-label]');
+  let exitBtn = null;
+
+  const syncExitButton = (active) => {
+    if (!active) {
+      exitBtn?.remove();
+      exitBtn = null;
+      return;
+    }
+    if (!exitBtn) {
+      exitBtn = document.createElement('button');
+      exitBtn.type = 'button';
+      exitBtn.className = 's3phy-fs-exit hub-fs-exit';
+      exitBtn.innerHTML =
+        '<span class="s3phy-fs-exit__icon material-symbols-outlined" aria-hidden="true">fullscreen_exit</span>' +
+        '<span class="s3phy-fs-exit__label"></span>';
+      exitBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        exitFullscreen();
+      });
+    }
+    const exitLabel = t('tools.exitFullscreen');
+    exitBtn.setAttribute('aria-label', exitLabel);
+    const exitLabelEl = exitBtn.querySelector('.s3phy-fs-exit__label');
+    if (exitLabelEl) exitLabelEl.textContent = exitLabel;
+    if (exitBtn.parentElement !== stage) stage.appendChild(exitBtn);
+  };
 
   const updateButton = (active) => {
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
     if (icon) icon.textContent = active ? 'fullscreen_exit' : 'fullscreen';
     if (label) label.textContent = active ? t('tools.exitFullscreen') : t('tools.fullscreen');
     button.title = label?.textContent || '';
+    syncExitButton(active);
   };
 
   const clearOverlay = () => {

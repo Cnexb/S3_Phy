@@ -633,7 +633,7 @@
             const shaftTop = Math.round(20 * s);
             const shaftPad = Math.round(20 * s);
             const shaftH = h - shaftTop - shaftPad;
-            const cabinH = Math.round(110 * s);
+            const cabinH = Math.round(158 * s);
             const travelPadTop = Math.round(20 * s);
             const travelPadBot = Math.round(30 * s);
             const travel = Math.max(24, shaftH - cabinH - travelPadTop - travelPadBot);
@@ -642,7 +642,7 @@
             const padL = Math.max(6, Math.min(100, w * 0.14));
             const padR = Math.max(6, Math.min(48, w * 0.08));
             const innerW = Math.max(120, w - padL - padR);
-            const sw = Math.max(64, Math.min(innerW * 0.72, innerW - 12));
+            const sw = Math.max(78, Math.min(innerW * 0.78, innerW - 12));
             const sx = padL + (innerW - sw) / 2;
             ctx.fillStyle = C.shaft;
             ctx.fillRect(sx, shaftTop, sw, shaftH);
@@ -662,8 +662,8 @@
             }
 
             const cabinTop = shaftTop + travelPadTop + (1 - cabinY) * travel;
-            const cabinInset = 12 * s;
-            const cabinW = Math.max(40, sw - 2 * cabinInset);
+            const cabinInset = 10 * s;
+            const cabinW = Math.max(52, sw - 2 * cabinInset);
             const cx = sx + (sw - cabinW) / 2;
             const cabinPad = 8 * s;
 
@@ -689,57 +689,66 @@
             ctx.stroke();
 
             // Floor of cabin
+            const floorH = 12 * s;
             ctx.fillStyle = C.panel;
-            ctx.fillRect(cx + 4 * s, cabinTop + cabinH - 14 * s, cabinW - 8 * s, 10 * s);
+            ctx.fillRect(cx + 4 * s, cabinTop + cabinH - floorH - 4 * s, cabinW - 8 * s, floorH);
             ctx.fillStyle = C.muted;
             ctx.font = uiFont(14, s);
             ctx.fillText(d.floor, cx + cabinPad, cabinTop + cabinH - 2 * s);
 
-            // Person (simple)
+            // Person — larger figure; N and mg attach on opposite sides of the torso
             const px = cx + cabinW / 2;
-            const py = cabinTop + cabinH - 18 * s;
+            const feetY = cabinTop + cabinH - 22 * s;
+            const headR = 14 * s;
+            const headCy = feetY - 78 * s;
+            const torsoW = 28 * s;
+            const torsoH = 46 * s;
+            const torsoTop = headCy + headR - 3 * s;
+            const legW = 11 * s;
+            const legTop = torsoTop + torsoH - 5 * s;
+
             ctx.fillStyle = C.text;
             ctx.beginPath();
-            ctx.arc(px, py - 52 * s, 10 * s, 0, Math.PI * 2);
+            ctx.arc(px, headCy, headR, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillRect(px - 9 * s, py - 42 * s, 18 * s, 28 * s);
-            ctx.fillRect(px - 12 * s, py - 14 * s, 8 * s, 14 * s);
-            ctx.fillRect(px + 4 * s, py - 14 * s, 8 * s, 14 * s);
+            ctx.fillRect(px - torsoW / 2, torsoTop, torsoW, torsoH);
+            ctx.fillRect(px - torsoW / 2 + 3 * s, legTop, legW, feetY - legTop);
+            ctx.fillRect(px + torsoW / 2 - legW - 3 * s, legTop, legW, feetY - legTop);
             ctx.fillStyle = C.accent;
             ctx.font = uiFont(14, s);
             ctx.textAlign = 'center';
-            ctx.fillText(d.man, px, py - 68 * s);
+            ctx.fillText(d.man, px, headCy - headR - 12 * s);
 
             const N = normal();
             const W = weight();
-            const baseLen = 88 * s;
+            const baseLen = 92 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
             const nSt = forceStyle(N, s);
             const wSt = forceStyle(W, s);
 
-            // Both forces from the person's centre of mass (torso)
-            const comX = px;
-            const comY = py - 36 * s;
+            const comY = feetY - 52 * s;
+            const comNX = px - 16 * s;
+            const comWX = px + 16 * s;
 
             if (nLen > 0) {
-                drawArrow(ctx, comX, comY, comX, comY - nLen, C.n, nSt.width, nSt.head);
+                drawArrow(ctx, comNX, comY, comNX, comY - nLen, C.n, nSt.width, nSt.head);
                 ctx.fillStyle = C.n;
                 ctx.textAlign = 'right';
                 ctx.font = uiFont(16, s);
-                ctx.fillText('N', comX - 10 * s, comY - nLen / 2);
+                ctx.fillText('N', comNX - 12 * s, comY - nLen / 2);
             } else {
                 ctx.fillStyle = C.n;
                 ctx.textAlign = 'right';
                 ctx.font = uiFont(15, s);
-                ctx.fillText('N', comX - 10 * s, comY - 8 * s);
+                ctx.fillText('N', comNX - 12 * s, comY - 10 * s);
             }
 
-            drawArrow(ctx, comX, comY, comX, comY + wLen, C.w, wSt.width, wSt.head);
+            drawArrow(ctx, comWX, comY, comWX, comY + wLen, C.w, wSt.width, wSt.head);
             ctx.fillStyle = C.w;
             ctx.textAlign = 'left';
             ctx.font = uiFont(16, s);
-            ctx.fillText('mg', comX + 10 * s, comY + Math.max(20 * s, wLen / 2));
+            ctx.fillText('mg', comWX + 12 * s, comY + Math.max(22 * s, wLen / 2));
             ctx.textAlign = 'left';
 
             // |v| on the LEFT of the shaft (only motion indicator on this graph)

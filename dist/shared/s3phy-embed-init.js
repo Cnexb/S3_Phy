@@ -12,4 +12,10 @@
   if (params.get('embed') === '1' || params.get('embed') === 'true') {
     document.documentElement.classList.add('s3phy-embed');
   }
+  var cur = document.currentScript;
+  if (cur && cur.src) {
+    var fsExit = document.createElement('script');
+    fsExit.src = cur.src.replace(/[^/]+$/, 'fullscreen-exit.js');
+    document.head.appendChild(fsExit);
+  }
 })();

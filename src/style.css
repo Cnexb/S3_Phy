@@ -1152,6 +1152,52 @@ button.brand-logo-wrap:hover .brand-logo-img {
   font-size: 1.1rem;
 }
 
+.s3phy-fs-exit {
+  position: fixed;
+  top: max(12px, env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  z-index: 2147483646;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+}
+
+.s3phy-fs-exit:hover {
+  background: var(--surface2);
+  border-color: var(--muted);
+}
+
+.s3phy-fs-exit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.s3phy-fs-exit__icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.s3phy-fs-exit__icon.material-symbols-outlined {
+  font-size: 1.15rem;
+}
+
+.tool-stage .s3phy-fs-exit,
+.tool-stage--overlay-fullscreen .s3phy-fs-exit {
+  z-index: 100010;
+}
+
 /* Fullscreen — iframe lab wrappers */
 .tool-stage:fullscreen .tool-lab-embed,
 .tool-stage:fullscreen .tool-lens-simulator,
