@@ -331,13 +331,20 @@ html.s3phy-embed .el-lang-btn { display: none; }
 
 .el-main-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1.75fr) minmax(220px, 0.75fr);
   gap: 16px;
   align-items: start;
 }
 
+.fbd-card {
+  max-width: 420px;
+  justify-self: end;
+  width: 100%;
+}
+
 @media (max-width: 820px) {
   .el-main-grid { grid-template-columns: 1fr; }
+  .fbd-card { max-width: none; justify-self: stretch; }
 }
 
 .el-viz-card {
@@ -398,7 +405,6 @@ canvas {
 
 .el-legend .ln::before { background: var(--el-n); }
 .el-legend .lw::before { background: var(--el-w); }
-.el-legend .la::before { background: var(--el-a); }
 .el-legend .lv::before { background: var(--el-v); }
 
 .el-phase-tag {

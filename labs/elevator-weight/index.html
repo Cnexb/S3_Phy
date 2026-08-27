@@ -7,7 +7,7 @@
     <title>電梯中的受力</title>
     <link rel="stylesheet" href="../shared/s3phy-embed.css">
     <script src="../shared/s3phy-embed-init.js"></script>
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
     <div class="el-wrap">
@@ -51,7 +51,6 @@
                 <div class="el-legend">
                     <span class="ln" id="leg-n">N (normal)</span>
                     <span class="lw" id="leg-w">W = mg (weight)</span>
-                    <span class="la" id="leg-a">a (acceleration)</span>
                     <span class="lv" id="leg-v">v (speed)</span>
                 </div>
                 <span class="el-phase-tag" id="phaseTag"></span>
@@ -89,8 +88,9 @@
         const V_REF = 24; // m/s — scale for v arrow (≈ max cruise = 5×3)
         const FORCE_REF = 70 * G; // pixel scale reference (70 kg · g)
         const A_REF = 8; // scale for a arrow length
-        const SCENE_ASPECT = 580 / 640;
-        const FBD_ASPECT = 1;
+        const SCENE_ASPECT = 620 / 640;
+        const FBD_ASPECT = 0.82;
+        const FBD_MAX_H = 380;
         const GRID_STACK_MQ = window.matchMedia('(max-width: 820px)');
         const SCENARIOS = [
             { id: 'upAccel' },   // from rest, a↑ — ends still accelerating (N > mg)
@@ -540,7 +540,6 @@
             if (labelNt) labelNt.innerText = d.nt;
             document.getElementById('leg-n').innerText = d.legN;
             document.getElementById('leg-w').innerText = d.legW;
-            document.getElementById('leg-a').innerText = d.legA;
             const legV = document.getElementById('leg-v');
             if (legV) legV.innerText = d.legV;
             const legNtN = document.getElementById('leg-nt-n');
@@ -639,11 +638,11 @@
             const travelPadBot = Math.round(30 * s);
             const travel = Math.max(24, shaftH - cabinH - travelPadTop - travelPadBot);
 
-            // Side lanes scale down on narrow canvases so labels stay inside
-            const padL = Math.max(6, Math.min(112, w * 0.17));
-            const padR = Math.max(6, Math.min(128, w * 0.20));
+            // Wider shaft — main focus of the left panel
+            const padL = Math.max(6, Math.min(100, w * 0.14));
+            const padR = Math.max(6, Math.min(48, w * 0.08));
             const innerW = Math.max(120, w - padL - padR);
-            const sw = Math.max(56, Math.min(innerW * 0.52, innerW - 16));
+            const sw = Math.max(64, Math.min(innerW * 0.72, innerW - 12));
             const sx = padL + (innerW - sw) / 2;
             ctx.fillStyle = C.shaft;
             ctx.fillRect(sx, shaftTop, sw, shaftH);
@@ -708,59 +707,42 @@
             ctx.fillRect(px + 4 * s, py - 14 * s, 8 * s, 14 * s);
             ctx.fillStyle = C.accent;
             ctx.font = uiFont(14, s);
-            ctx.textAlign = 'left';
-            // Sit right of the person so the label does not cover the N arrow
-            ctx.fillText(d.man, px + 16 * s, py - 64 * s);
+            ctx.textAlign = 'center';
+            ctx.fillText(d.man, px, py - 68 * s);
 
             const N = normal();
             const W = weight();
-            const a = accel();
-            // Longer base so N vs mg length difference is easy to read at start/stop
-            const baseLen = 72 * s;
+            const baseLen = 88 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
             const nSt = forceStyle(N, s);
             const wSt = forceStyle(W, s);
 
-            const nArrowX = px - 22 * s;
-            const nTextX = nArrowX - 8 * s;
+            // Both forces from the person's centre of mass (torso)
+            const comX = px;
+            const comY = py - 36 * s;
+
             if (nLen > 0) {
-                drawArrow(ctx, nArrowX, py, nArrowX, py - nLen, C.n, nSt.width, nSt.head);
+                drawArrow(ctx, comX, comY, comX, comY - nLen, C.n, nSt.width, nSt.head);
                 ctx.fillStyle = C.n;
                 ctx.textAlign = 'right';
                 ctx.font = uiFont(16, s);
-                ctx.fillText('N', nTextX, py - nLen / 2);
+                ctx.fillText('N', comX - 10 * s, comY - nLen / 2);
             } else {
                 ctx.fillStyle = C.n;
                 ctx.textAlign = 'right';
                 ctx.font = uiFont(15, s);
-                ctx.fillText('N', nTextX, py - 8 * s);
+                ctx.fillText('N', comX - 10 * s, comY - 8 * s);
             }
 
-            const wArrowX = px + 22 * s;
-            const wStartY = py - 30 * s;
-            drawArrow(ctx, wArrowX, wStartY, wArrowX, wStartY + wLen, C.w, wSt.width, wSt.head);
-            const wMidY = wStartY + wLen / 2;
-            const cabinBlackBottom = cabinTop + cabinH;
-            const mgLabelY = Math.min(wMidY, cabinBlackBottom - 10 * s);
-            const mgTextX = wArrowX + 12 * s;
+            drawArrow(ctx, comX, comY, comX, comY + wLen, C.w, wSt.width, wSt.head);
             ctx.fillStyle = C.w;
             ctx.textAlign = 'left';
             ctx.font = uiFont(16, s);
-            ctx.fillText('mg', mgTextX, mgLabelY);
+            ctx.fillText('mg', comX + 10 * s, comY + Math.max(20 * s, wLen / 2));
             ctx.textAlign = 'left';
 
-            const aLabelSample = 'a 0.0 ms⁻²';
-            ctx.font = uiFont(15, s);
-            const aTextW = ctx.measureText(aLabelSample).width + 14;
-            const gaugeW = 36 * s;
-            const gaugeX = Math.min(
-                sx + sw + 20 * s,
-                w - padR - gaugeW
-            );
-            drawNormalGauge(ctx, gaugeX, cabinTop + 8 * s, cabinH - 16 * s, N, W, d, s);
-
-            // |v| on the LEFT of the shaft
+            // |v| on the LEFT of the shaft (only motion indicator on this graph)
             const kvx = Math.max(padL + 14 * s, sx - 18 * s);
             const kvy = cabinTop + cabinH / 2;
             const speed = Math.abs(velocity);
@@ -779,30 +761,6 @@
                 ctx.fillText(vLabel, vLabelX + vLabelW, kvy + 6 * s);
             }
             ctx.textAlign = 'left';
-
-            // a — label above, arrow underneath; sit right of N gauge
-            const aLen = aPx(a, 110 * s);
-            ctx.fillStyle = C.a;
-            ctx.font = uiFont(15, s);
-            ctx.textAlign = 'left';
-            const aLabel = aLen > 2 ? `a ${a.toFixed(1)} ms⁻²` : 'a = 0 ms⁻²';
-            const aLabelW = ctx.measureText(aLabel).width;
-            const aLabelX = Math.min(
-                gaugeX + gaugeW + 10 * s,
-                w - padR - aLabelW
-            );
-            const aBlockH = (aLen > 2 ? aLen : 16 * s) + 22 * s;
-            const aLabelY = Math.max(
-                cabinTop + 18 * s,
-                cabinTop + cabinH / 2 - aBlockH / 2 + 14 * s
-            );
-            ctx.fillText(aLabel, aLabelX, aLabelY);
-            const kax = aLabelX + aLabelW / 2;
-            const arrowTop = aLabelY + 10 * s;
-            if (aLen > 2) {
-                if (a > 0) drawArrow(ctx, kax, arrowTop + aLen, kax, arrowTop, C.a, 3.5 * s);
-                else drawArrow(ctx, kax, arrowTop, kax, arrowTop + aLen, C.a, 3.5 * s);
-            }
         }
 
         function drawNormalGauge(ctx, x, yTop, height, N, W, d, s = 1, ts = s) {
@@ -860,77 +818,46 @@
             const h = fbdCanvas.clientHeight || fbdCanvas.height;
             ctx.clearRect(0, 0, w, h);
 
-            // Grow with canvas so the force arrows stay the visual focus
-            const s = Math.max(0.85, Math.min(1.55, Math.min(w, h) / 420));
+            // Compact FBD — N and mg from centre of mass only
+            const s = Math.max(0.72, Math.min(1.15, Math.min(w, h) / 320));
             const cx = w / 2;
-            const cy = h / 2 + 6 * s;
+            const cy = h / 2 + 4 * s;
             const N = normal();
             const W = weight();
-            const a = accel();
-            const baseLen = 130 * s;
+            const baseLen = 96 * s;
             const nLen = forcePx(N, baseLen);
             const wLen = forcePx(W, baseLen);
             const nSt = forceStyle(N, s);
             const wSt = forceStyle(W, s);
-            const forceFont = uiFont(22, s);
-            const sideFont = uiFont(15, s);
+            const forceFont = uiFont(18, s);
 
             ctx.fillStyle = C.panel;
             ctx.beginPath();
-            ctx.arc(cx, cy, 28 * s, 0, Math.PI * 2);
+            ctx.arc(cx, cy, 22 * s, 0, Math.PI * 2);
             ctx.fill();
             ctx.strokeStyle = C.text;
-            ctx.lineWidth = 2.5 * s;
+            ctx.lineWidth = 2 * s;
             ctx.stroke();
             ctx.fillStyle = C.text;
             ctx.font = forceFont;
             ctx.textAlign = 'center';
-            ctx.fillText('m', cx, cy + 7 * s);
+            ctx.fillText('m', cx, cy + 6 * s);
             ctx.textAlign = 'left';
 
             if (nLen > 0) {
                 drawArrow(ctx, cx, cy, cx, cy - nLen, C.n, nSt.width, nSt.head);
                 ctx.fillStyle = C.n;
                 ctx.font = forceFont;
-                ctx.fillText('N', cx + 26 * s, cy - Math.max(28 * s, nLen / 2));
+                ctx.fillText('N', cx + 18 * s, cy - Math.max(20 * s, nLen / 2));
             } else {
                 ctx.fillStyle = C.n;
                 ctx.font = forceFont;
-                ctx.fillText('N', cx + 32 * s, cy - 16 * s);
+                ctx.fillText('N', cx + 18 * s, cy - 12 * s);
             }
             drawArrow(ctx, cx, cy, cx, cy + wLen, C.w, wSt.width, wSt.head);
             ctx.fillStyle = C.w;
             ctx.font = forceFont;
-            ctx.fillText('mg', cx + 26 * s, cy + Math.max(34 * s, wLen / 2 + 4));
-
-            ctx.fillStyle = C.a;
-            ctx.font = sideFont;
-            const aFbdLabel = `a = ${a.toFixed(2)} ms⁻²`;
-            const aFbdX = 14 * s;
-            const sideLabelY = 22 + 6 * s;
-            ctx.textAlign = 'left';
-            ctx.fillText(aFbdLabel, aFbdX, sideLabelY);
-            const al = aPx(a, 110 * s);
-            const aArrowX = aFbdX + ctx.measureText(aFbdLabel).width / 2;
-            const sideArrowTop = sideLabelY + 12 * s;
-            if (al > 2) {
-                if (a > 0) drawArrow(ctx, aArrowX, sideArrowTop + al, aArrowX, sideArrowTop, C.a, 4 * s);
-                else drawArrow(ctx, aArrowX, sideArrowTop, aArrowX, sideArrowTop + al, C.a, 4 * s);
-            }
-
-            const speed = Math.abs(velocity);
-            const vl = vPx(velocity, 110 * s);
-            ctx.fillStyle = C.v;
-            ctx.font = sideFont;
-            const vFbdLabel = `|v| = ${speed.toFixed(2)} ms⁻¹`;
-            ctx.textAlign = 'right';
-            ctx.fillText(vFbdLabel, w - 14 * s, sideLabelY);
-            const vArrowX = w - 14 * s - ctx.measureText(vFbdLabel).width / 2;
-            if (vl > 2) {
-                if (velocity > 0) drawArrow(ctx, vArrowX, sideArrowTop + vl, vArrowX, sideArrowTop, C.v, 4 * s);
-                else drawArrow(ctx, vArrowX, sideArrowTop, vArrowX, sideArrowTop + vl, C.v, 4 * s);
-            }
-            ctx.textAlign = 'left';
+            ctx.fillText('mg', cx + 18 * s, cy + Math.max(24 * s, wLen / 2 + 4));
         }
 
         function drawNtGraph() {
@@ -1090,8 +1017,8 @@
                     }
                 }
             } else {
-                sceneH = Math.min(540, Math.max(340, sceneH));
-                fbdH = Math.min(540, Math.max(300, fbdH));
+                sceneH = Math.min(620, Math.max(400, sceneH));
+                fbdH = Math.min(FBD_MAX_H, Math.max(240, fbdH));
             }
 
             fitCanvas(sceneCanvas, sceneW, sceneH);
