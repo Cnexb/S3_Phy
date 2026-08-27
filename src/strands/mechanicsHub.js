@@ -1,7 +1,9 @@
-import { t } from '../i18n.js';
+import { t, getLang } from '../i18n.js';
 import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
+import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
+import { buildMechanicsDeck } from '../flashcards/flashcardDeck.js';
 
 const TOOL_STORAGE_KEY = 's3phy.mechanics.tool';
 
@@ -118,6 +120,14 @@ const MECHANICS_SUMMARY_ROWS = MECHANICS_TOPICS.map((r) => {
   };
 });
 
+const MECHANICS_DECK_OPTIONS = [
+  { value: 'all', labelKey: 'flashcards.all' },
+  ...MECHANICS_TOPICS.map((topic) => ({
+    value: topic.id,
+    labelKey: topic.titleKey,
+  })),
+];
+
 const TOOL_ORDER = ['vectorTool', 'newtonFirstLaw', 'elevatorWeight', 'stackedBoxes', 'projectileMotion', 'orbitalForces'];
 
 const TOOL_LOADERS = {
@@ -153,6 +163,7 @@ export function mountMechanicsHub(root) {
   let shell = null;
   let el = { main: null };
   let activeLabInstance = null;
+  let destroyFlashcards = null;
 
   function cleanupActiveLab() {
     cleanupLabInstance(activeLabInstance);
@@ -172,6 +183,9 @@ export function mountMechanicsHub(root) {
 
   function renderMain() {
     if (!el.main) return;
+
+    destroyFlashcards?.();
+    destroyFlashcards = null;
 
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
@@ -209,12 +223,14 @@ export function mountMechanicsHub(root) {
         </section>
       `;
     } else if (section === 'flashcards') {
-      el.main.innerHTML = `
-        <section class="panel">
-          <h2>${t('flashcards.title')}</h2>
-          <p class="lead">${t('flashcards.comingSoon')}</p>
-        </section>
-      `;
+      destroyFlashcards = mountFlashcardStudy(el.main, {
+        deckOptions: MECHANICS_DECK_OPTIONS.map((o) => ({
+          value: o.value,
+          label: t(o.labelKey),
+        })),
+        buildDeck: (key) => buildMechanicsDeck(key, getLang()),
+        introKey: 'flashcards.introMechanics',
+      });
     } else if (section === 'summary') {
       el.main.innerHTML = renderSummary();
     }
@@ -301,6 +317,7 @@ export function mountMechanicsHub(root) {
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
+    destroyFlashcards?.();
     cleanupActiveLab();
     shell?.destroy();
   };

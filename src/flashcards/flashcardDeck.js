@@ -8,6 +8,8 @@ let definitionsCardsPromise = null;
 let heatCardsPromise = null;
 /** @type {Promise<object[]> | null} */
 let foundationsCardsPromise = null;
+/** @type {Promise<object[]> | null} */
+let mechanicsCardsPromise = null;
 
 function loadLightCards() {
   if (!lightCardsPromise) {
@@ -43,6 +45,15 @@ function loadFoundationsCards() {
     ).then((m) => m.default);
   }
   return foundationsCardsPromise;
+}
+
+function loadMechanicsCards() {
+  if (!mechanicsCardsPromise) {
+    mechanicsCardsPromise = import(
+      '../../content/flashcards/data/flashcards-mechanics.json'
+    ).then((m) => m.default);
+  }
+  return mechanicsCardsPromise;
 }
 
 function langKey(lang) {
@@ -183,4 +194,18 @@ async function foundationsRawDeck(deckKey) {
  */
 export async function buildFoundationsDeck(deckKey, lang) {
   return normalizeDeck(await foundationsRawDeck(deckKey), lang);
+}
+
+async function mechanicsRawDeck(deckKey) {
+  const cards = await loadMechanicsCards();
+  if (deckKey === 'all') return cards.slice();
+  return cards.filter((card) => card.topic === deckKey);
+}
+
+/**
+ * @param {string} deckKey
+ * @param {string} lang
+ */
+export async function buildMechanicsDeck(deckKey, lang) {
+  return normalizeDeck(await mechanicsRawDeck(deckKey), lang);
 }

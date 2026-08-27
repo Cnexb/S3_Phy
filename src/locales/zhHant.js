@@ -283,6 +283,7 @@ export const zhHant = {
   'foundations.section.empty': '物理基礎單元內容即將推出。',
   'foundations.comingSoon': '此單元的互動實驗室將於日後推出。',
   'flashcards.introFoundations': '使用間隔重複習——難記的卡片在下一輪會更頻繁出現。涵蓋 Ch.00 物理量與單位，以及物理常用數學。',
+  'flashcards.introMechanics': '使用間隔重複習——難記的卡片在下一輪會更頻繁出現。涵蓋力學全部 13 章，由位置與運動至萬有引力。',
   'topic.quantitiesUnits': '物理量與單位',
   'topic.usefulMaths': '物理中常用的數學',
   'notes.card.quantitiesUnits': 'Ch.00 物理量與單位',

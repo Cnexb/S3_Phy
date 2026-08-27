@@ -283,6 +283,7 @@ export const en = {
   'foundations.section.empty': 'Foundations strand content is coming soon.',
   'foundations.comingSoon': 'Interactive labs for this strand are coming soon.',
   'flashcards.introFoundations': 'Study with spaced repetition — cards you find harder appear more often in later rounds. Ch.00 quantities and units, plus useful mathematics for physics.',
+  'flashcards.introMechanics': 'Study with spaced repetition — cards you find harder appear more often in later rounds. All 13 Mechanics chapters from position and movement through gravitation.',
   'topic.quantitiesUnits': 'Quantities and units',
   'topic.usefulMaths': 'Useful mathematics in physics',
   'notes.card.quantitiesUnits': 'Ch.00 Quantities and units',

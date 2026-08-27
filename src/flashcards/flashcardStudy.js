@@ -20,6 +20,19 @@ const SUBTOPIC_LABEL_KEYS = {
   rotatingMirror: 'topic.reflection',
   quantitiesUnits: 'topic.quantitiesUnits',
   usefulMaths: 'topic.usefulMaths',
+  positionMovement: 'topic.positionMovement',
+  equationOfMotion: 'topic.equationOfMotion',
+  verticalMotion: 'topic.verticalMotion',
+  motionGraph: 'topic.motionGraph',
+  forceI: 'topic.forceI',
+  forceII: 'topic.forceII',
+  forceIII: 'topic.forceIII',
+  moment: 'topic.moment',
+  workEnergyPower: 'topic.workEnergyPower',
+  momentum: 'topic.momentum',
+  projectileMotion: 'topic.projectileMotion',
+  circularMotion: 'topic.circularMotion',
+  gravitationalForce: 'topic.gravitationalForce',
 };
 
 function subtopicLabel(topic) {
