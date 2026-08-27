@@ -7,370 +7,81 @@
     <title>電梯中的受力</title>
     <link rel="stylesheet" href="../shared/s3phy-embed.css">
     <script src="../shared/s3phy-embed-init.js"></script>
-    <style>
-        html.s3phy-embed .lang-btn { display: none; }
-        html.s3phy-embed body { padding: 12px; }
-        :root {
-            --bg: #f8f9fa;
-            --panel: #ffffff;
-            --text: #1a1c2c;
-            --muted: #6b7280;
-            --border: #e8eaed;
-            --n: #059669;
-            --w: #dc2626;
-            --a: #7c3aed;
-            --accent: #0f766e;
-            --btn: #e9ecef;
-            --btn-text: #374151;
-            --active: #0f766e;
-        }
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            padding: 16px;
-            font-family: "Noto Sans TC", "Segoe UI", system-ui, sans-serif;
-            font-size: 17px;
-            background: var(--bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-        .header-top {
-            width: 100%;
-            max-width: 1080px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        h2 { margin: 0 0 4px; color: var(--accent); font-size: 1.75rem; font-weight: 800; }
-        #page-desc { margin: 0; color: var(--muted); font-size: 1.12rem; line-height: 1.45; }
-        .header-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-            flex-shrink: 0;
-        }
-        .lang-btn, .fs-btn {
-            background: var(--btn);
-            border: 1px solid var(--border);
-            color: var(--btn-text);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 16px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .fs-btn {
-            background: #0f766e;
-            border-color: #0f766e;
-            color: #fff;
-        }
-        .fs-btn:hover { filter: brightness(1.05); }
-        /* Fullscreen = same layout as normal, no N–t, fit one screen (no scroll) */
-        body.is-fullscreen {
-            height: 100dvh;
-            max-height: 100dvh;
-            padding: 6px 10px;
-            overflow: hidden;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        body.is-fullscreen .header-top,
-        body.is-fullscreen .container {
-            width: 100%;
-            max-width: 1080px;
-        }
-        body.is-fullscreen .header-top { flex: 0 0 auto; margin-bottom: 4px; }
-        body.is-fullscreen .container {
-            flex: 1 1 auto;
-            min-height: 0;
-            gap: 6px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        body.is-fullscreen .container > .card:first-child { flex: 0 0 auto; }
-        body.is-fullscreen #page-desc { display: none; }
-        body.is-fullscreen h2 { font-size: 1.3rem; margin: 0; }
-        body.is-fullscreen .card { padding: 6px 10px; }
-        body.is-fullscreen .controls-row { margin-top: 4px; gap: 6px 10px; }
-        body.is-fullscreen .slider-label { font-size: 0.82rem; }
-        body.is-fullscreen .val { font-size: 0.9rem; }
-        body.is-fullscreen .play-btn { padding: 7px 12px; font-size: 0.9rem; }
-        body.is-fullscreen .sc-btn { padding: 5px 10px; font-size: 0.85rem; }
-        body.is-fullscreen .canvas-label { font-size: 0.85rem; margin-bottom: 4px; }
-        body.is-fullscreen .main-grid {
-            flex: 1 1 auto;
-            min-height: 0;
-            gap: 8px;
-            align-items: stretch;
-        }
-        body.is-fullscreen .main-grid > .card {
-            min-height: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        /* Shaft card fills remaining height; canvas stretches into empty lower space */
-        body.is-fullscreen .main-grid > .card:first-child #sceneCanvas {
-            flex: 1 1 auto;
-            min-height: 0;
-            width: 100%;
-            height: auto; /* override fixed 580px so card can stretch, then JS sizes to fill */
-        }
-        body.is-fullscreen .main-grid > .card:first-child .legend { flex: 0 0 auto; }
-        body.is-fullscreen #case-cue { margin: 2px 0 0 !important; font-size: 0.9rem !important; }
-        body.is-fullscreen .fbd-card #fbdCanvas {
-            flex: 1 1 auto;
-            min-height: 0;
-            width: 100%;
-            height: auto;
-        }
-        body.is-fullscreen .nt-card { display: none !important; }
-        .container {
-            width: 100%;
-            max-width: 1080px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .card {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(26, 28, 44, 0.04);
-            padding: 14px 16px;
-        }
-        .scenarios {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .sc-btn {
-            border: 1.5px solid var(--border);
-            background: #fff;
-            color: var(--btn-text);
-            padding: 9px 14px;
-            border-radius: 999px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.15s;
-        }
-        .sc-btn:hover { border-color: #94a3b8; }
-        .sc-btn.active {
-            background: var(--active);
-            border-color: var(--active);
-            color: #fff;
-        }
-        .controls-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px 20px;
-            align-items: flex-end;
-            margin-top: 12px;
-        }
-        .control-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            min-width: 160px;
-            flex: 1 1 160px;
-        }
-        .slider-label {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--muted);
-            letter-spacing: 0.03em;
-        }
-        .slider-row { display: flex; align-items: center; gap: 8px; }
-        input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
-        .val {
-            font-variant-numeric: tabular-nums;
-            font-weight: 700;
-            min-width: 5rem;
-            text-align: right;
-            font-size: 1.05rem;
-        }
-        .play-btn {
-            background: var(--accent);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 18px;
-            font-weight: 800;
-            cursor: pointer;
-            font-size: 1.05rem;
-        }
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            align-items: stretch;
-        }
-        @media (max-width: 820px) {
-            .main-grid { grid-template-columns: 1fr; }
-        }
-        .main-grid > .card {
-            display: flex;
-            flex-direction: column;
-            min-height: 0;
-        }
-        .main-grid > .card:first-child #sceneCanvas,
-        .fbd-card #fbdCanvas {
-            flex: 1 1 auto;
-            width: 100%;
-            min-height: 640px;
-            height: auto;
-        }
-        .canvas-label {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--muted);
-            margin-bottom: 8px;
-            flex: 0 0 auto;
-        }
-        canvas {
-            width: 100%;
-            max-width: 100%;
-            display: block;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: #eef2f6;
-            box-sizing: border-box;
-        }
-        #sceneCanvas { height: 640px; }
-        #fbdCanvas { height: 640px; background: #fafafa; }
-        #ntCanvas { height: 380px; background: #fafafa; }
-        .nt-card { display: none !important; }
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 8px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--muted);
-            flex: 0 0 auto;
-        }
-        .legend span::before {
-            content: "";
-            display: inline-block;
-            width: 12px;
-            height: 3px;
-            margin-right: 6px;
-            vertical-align: middle;
-            border-radius: 2px;
-        }
-        .legend .ln::before { background: var(--n); }
-        .legend .lw::before { background: var(--w); }
-        .legend .la::before { background: var(--a); }
-        .legend .lv::before { background: #0369a1; }
-        .phase-tag {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 6px 12px;
-            border-radius: 999px;
-            font-size: 0.98rem;
-            font-weight: 700;
-            flex: 0 0 auto;
-            align-self: flex-start;
-            background: #ecfdf5;
-            color: #047857;
-            border: 1px solid #a7f3d0;
-        }
-        .why-modes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        #whyCaption {
-            margin: 10px 0 0;
-            min-height: 2.6em;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0f766e;
-            line-height: 1.45;
-        }
-        .why-eq {
-            margin-top: 8px;
-            font-family: "Roboto Mono", Consolas, monospace;
-            font-size: 1rem;
-            color: #475569;
-            background: #f1f5f9;
-            border-radius: 8px;
-            padding: 8px 10px;
-            line-height: 1.5;
-        }
-        #case-cue { font-size: 1.1rem !important; }
-    </style>
+    <link rel="stylesheet" href="styles.css?v=1">
 </head>
 <body>
-    <div class="header-top">
-        <div>
-            <h2 id="page-title">Forces in an elevator</h2>
-            <p id="page-desc">Normal force, weight and acceleration when a lift goes up or down.</p>
+    <div class="el-wrap">
+    <header class="el-head">
+        <h2 class="el-title" id="page-title">Forces in an elevator</h2>
+        <p class="el-sub" id="page-desc">Normal force, weight and acceleration when a lift goes up or down.</p>
+        <div class="el-head-actions">
+            <button type="button" class="el-fs-btn" id="fullscreen-btn">⛶ Full screen</button>
+            <button type="button" class="el-lang-btn" id="lang-toggle">🌐 English</button>
         </div>
-        <div class="header-actions">
-            <button type="button" class="fs-btn" id="fullscreen-btn">⛶ Full screen</button>
-            <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
-        </div>
-    </div>
+    </header>
 
-    <div class="container">
-        <div class="card">
-            <div class="scenarios" id="scenario-btns"></div>
-            <div class="controls-row">
-                <div class="control-group">
-                    <span class="slider-label" id="label-mass">Mass m</span>
-                    <div class="slider-row">
+    <div class="el-dash">
+        <div class="el-card">
+            <div class="el-scenarios" id="scenario-btns"></div>
+            <div class="el-controls-row">
+                <div class="el-control-group">
+                    <span class="el-slider-label" id="label-mass">Mass m</span>
+                    <div class="el-slider-row">
                         <input type="range" id="massSlider" min="40" max="100" step="1" value="70">
-                        <span class="val" id="massVal">70 kg</span>
+                        <span class="el-val" id="massVal">70 kg</span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <span class="slider-label" id="label-anim">Animation speed</span>
-                    <div class="slider-row">
+                <div class="el-control-group">
+                    <span class="el-slider-label" id="label-anim">Animation speed</span>
+                    <div class="el-slider-row">
                         <input type="range" id="animSpeedSlider" min="0.35" max="2.5" step="0.05" value="1">
-                        <span class="val" id="animSpeedVal">×1.00</span>
+                        <span class="el-val" id="animSpeedVal">×1.00</span>
                     </div>
                 </div>
-                <button type="button" class="play-btn" id="playBtn">▶ Play</button>
-                <button type="button" class="play-btn" id="resetBtn" style="background:#475569">↺ Reset</button>
+                <button type="button" class="el-play-btn" id="playBtn">▶ Play</button>
+                <button type="button" class="el-play-btn secondary" id="resetBtn">↺ Reset</button>
             </div>
-            <p id="case-cue" style="margin:12px 0 0;font-weight:700;color:#0f766e;font-size:0.92rem;"></p>
+            <p id="case-cue"></p>
         </div>
 
-        <div class="main-grid">
-            <div class="card">
-                <div class="canvas-label" id="label-scene">Elevator shaft (side view)</div>
+        <div class="el-main-grid">
+            <div class="el-card el-viz-card">
+                <div class="el-canvas-label" id="label-scene">Elevator shaft (side view)</div>
                 <canvas id="sceneCanvas" width="640" height="580"></canvas>
-                <div class="legend">
+                <div class="el-legend">
                     <span class="ln" id="leg-n">N (normal)</span>
                     <span class="lw" id="leg-w">W = mg (weight)</span>
                     <span class="la" id="leg-a">a (acceleration)</span>
                     <span class="lv" id="leg-v">v (speed)</span>
                 </div>
-                <span class="phase-tag" id="phaseTag"></span>
+                <span class="el-phase-tag" id="phaseTag"></span>
             </div>
-            <div class="card fbd-card">
-                <div class="canvas-label" id="label-fbd">Free-body diagram</div>
+            <div class="el-card el-viz-card fbd-card">
+                <div class="el-canvas-label" id="label-fbd">Free-body diagram</div>
                 <canvas id="fbdCanvas" width="640" height="640"></canvas>
             </div>
         </div>
     </div>
+    </div>
 
     <script>
         const G = 9.81;
+        const UI_FONT = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+        const C = {
+            n: '#10b981',
+            w: '#ef4444',
+            a: '#6366f1',
+            v: '#0891b2',
+            text: '#1f2937',
+            muted: '#64748b',
+            border: '#cbd5e1',
+            panel: '#f1f5f9',
+            shaft: '#e4e4e7',
+            accent: '#0891b2',
+        };
+        function uiFont(px, s = 1) {
+            return `bold ${Math.round(px * s)}px ${UI_FONT}`;
+        }
         // Physical shaft height so cabinY∈[0,1] maps to metres
         const SHAFT_H = 85; // m — room for accel + coast + brake at |a|=5, t=3 s
         const BRAKE_T = 3; // seconds of non-zero |a| while speeding up or braking
@@ -796,7 +507,7 @@
             SCENARIOS.forEach((s) => {
                 const b = document.createElement('button');
                 b.type = 'button';
-                b.className = 'sc-btn' + (s.id === scenarioId ? ' active' : '');
+                b.className = 'el-sc-btn' + (s.id === scenarioId ? ' active' : '');
                 b.textContent = labels[s.id];
                 b.dataset.id = s.id;
                 b.addEventListener('click', () => {
@@ -913,6 +624,9 @@
             const d = t();
             ctx.clearRect(0, 0, w, h);
 
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, w, h);
+
             const s = Math.max(0.52, Math.min(1, h / 580));
             const shaftTop = Math.round(20 * s);
             const shaftPad = Math.round(20 * s);
@@ -927,14 +641,14 @@
             const rightLane = Math.min(180, Math.max(110, w * 0.30));
             const sw = Math.max(72, Math.min(w * 0.40, w - leftLane - rightLane));
             const sx = leftLane;
-            ctx.fillStyle = '#dbe3ec';
+            ctx.fillStyle = C.shaft;
             ctx.fillRect(sx, shaftTop, sw, shaftH);
-            ctx.strokeStyle = '#94a3b8';
+            ctx.strokeStyle = C.border;
             ctx.lineWidth = Math.max(2, 3 * s);
             ctx.strokeRect(sx, shaftTop, sw, shaftH);
 
             // Floors marks
-            ctx.strokeStyle = 'rgba(100,116,139,0.35)';
+            ctx.strokeStyle = 'rgba(100,116,139,0.25)';
             ctx.lineWidth = 1;
             for (let i = 0; i < 6; i++) {
                 const y = shaftTop + travelPadTop + i * (travel / 5);
@@ -951,20 +665,20 @@
             const cabinPad = 8 * s;
 
             // Cable
-            ctx.strokeStyle = '#64748b';
+            ctx.strokeStyle = C.muted;
             ctx.lineWidth = Math.max(1.5, 2 * s);
             ctx.beginPath();
             ctx.moveTo(sx + sw / 2, shaftTop);
             ctx.lineTo(sx + sw / 2, cabinTop);
             ctx.stroke();
-            ctx.fillStyle = '#64748b';
-            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.fillStyle = C.muted;
+            ctx.font = uiFont(14, s);
             ctx.textAlign = 'left';
             ctx.fillText(d.cable, sx + sw / 2 + 8 * s, shaftTop + 18 * s);
 
             // Cabin body
-            ctx.fillStyle = '#f8fafc';
-            ctx.strokeStyle = '#334155';
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = C.text;
             ctx.lineWidth = Math.max(1.5, 2 * s);
             ctx.beginPath();
             ctx.roundRect(cx, cabinTop, cabinW, cabinH, 8 * s);
@@ -972,24 +686,24 @@
             ctx.stroke();
 
             // Floor of cabin
-            ctx.fillStyle = '#cbd5e1';
+            ctx.fillStyle = C.panel;
             ctx.fillRect(cx + 4 * s, cabinTop + cabinH - 14 * s, cabinW - 8 * s, 10 * s);
-            ctx.fillStyle = '#475569';
-            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.fillStyle = C.muted;
+            ctx.font = uiFont(14, s);
             ctx.fillText(d.floor, cx + cabinPad, cabinTop + cabinH - 2 * s);
 
             // Person (simple)
             const px = cx + cabinW / 2;
             const py = cabinTop + cabinH - 18 * s;
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = C.text;
             ctx.beginPath();
             ctx.arc(px, py - 52 * s, 10 * s, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillRect(px - 9 * s, py - 42 * s, 18 * s, 28 * s);
             ctx.fillRect(px - 12 * s, py - 14 * s, 8 * s, 14 * s);
             ctx.fillRect(px + 4 * s, py - 14 * s, 8 * s, 14 * s);
-            ctx.fillStyle = '#0f766e';
-            ctx.font = `bold ${Math.round(14 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.fillStyle = C.accent;
+            ctx.font = uiFont(14, s);
             ctx.textAlign = 'left';
             // Sit right of the person so the label does not cover the N arrow
             ctx.fillText(d.man, px + 16 * s, py - 64 * s);
@@ -1007,33 +721,33 @@
             const nArrowX = px - 22 * s;
             const nTextX = nArrowX - 8 * s;
             if (nLen > 0) {
-                drawArrow(ctx, nArrowX, py, nArrowX, py - nLen, '#059669', nSt.width, nSt.head);
-                ctx.fillStyle = '#059669';
+                drawArrow(ctx, nArrowX, py, nArrowX, py - nLen, C.n, nSt.width, nSt.head);
+                ctx.fillStyle = C.n;
                 ctx.textAlign = 'right';
-                ctx.font = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
+                ctx.font = uiFont(16, s);
                 ctx.fillText('N', nTextX, py - nLen / 2);
             } else {
-                ctx.fillStyle = '#059669';
+                ctx.fillStyle = C.n;
                 ctx.textAlign = 'right';
-                ctx.font = `bold ${Math.round(15 * s)}px "Noto Sans TC", sans-serif`;
+                ctx.font = uiFont(15, s);
                 ctx.fillText('N', nTextX, py - 8 * s);
             }
 
             const wArrowX = px + 22 * s;
             const wStartY = py - 30 * s;
-            drawArrow(ctx, wArrowX, wStartY, wArrowX, wStartY + wLen, '#dc2626', wSt.width, wSt.head);
+            drawArrow(ctx, wArrowX, wStartY, wArrowX, wStartY + wLen, C.w, wSt.width, wSt.head);
             const wMidY = wStartY + wLen / 2;
             const cabinBlackBottom = cabinTop + cabinH;
             const mgLabelY = Math.min(wMidY, cabinBlackBottom - 10 * s);
             const mgTextX = wArrowX + 12 * s;
-            ctx.fillStyle = '#dc2626';
+            ctx.fillStyle = C.w;
             ctx.textAlign = 'left';
-            ctx.font = `bold ${Math.round(16 * s)}px "Noto Sans TC", sans-serif`;
+            ctx.font = uiFont(16, s);
             ctx.fillText('mg', mgTextX, mgLabelY);
             ctx.textAlign = 'left';
 
             const aLabelSample = 'a 0.0 ms⁻²';
-            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            ctx.font = uiFont(15, s);
             const aTextW = ctx.measureText(aLabelSample).width + 14;
             const gaugeX = Math.min(sx + sw + 48 * s, w - aTextW - 56 * s);
             drawNormalGauge(ctx, gaugeX, cabinTop + 8 * s, cabinH - 16 * s, N, W, d, s);
@@ -1043,12 +757,12 @@
             const kvy = cabinTop + cabinH / 2;
             const speed = Math.abs(velocity);
             const vLen = vPx(velocity, 100 * s);
-            ctx.fillStyle = '#0369a1';
-            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            ctx.fillStyle = C.v;
+            ctx.font = uiFont(15, s);
             ctx.textAlign = 'right';
             if (vLen > 2) {
-                if (velocity > 0) drawArrow(ctx, kvx, kvy + vLen / 2, kvx, kvy - vLen / 2, '#0369a1', 3 * s);
-                else drawArrow(ctx, kvx, kvy - vLen / 2, kvx, kvy + vLen / 2, '#0369a1', 3 * s);
+                if (velocity > 0) drawArrow(ctx, kvx, kvy + vLen / 2, kvx, kvy - vLen / 2, C.v, 3 * s);
+                else drawArrow(ctx, kvx, kvy - vLen / 2, kvx, kvy + vLen / 2, C.v, 3 * s);
                 ctx.fillText(`|v| = ${speed.toFixed(2)} ms⁻¹`, Math.max(4, kvx - 8 * s), kvy + vLen / 2 + 18 * s);
             } else {
                 ctx.fillText('|v| = 0.00 ms⁻¹', Math.max(4, kvx - 8 * s), kvy + 6 * s);
@@ -1057,8 +771,8 @@
 
             // a — label above, arrow underneath; sit right of N gauge
             const aLen = aPx(a, 110 * s);
-            ctx.fillStyle = '#7c3aed';
-            ctx.font = `bold ${Math.round(15 * s)}px sans-serif`;
+            ctx.fillStyle = C.a;
+            ctx.font = uiFont(15, s);
             ctx.textAlign = 'left';
             const aLabel = aLen > 2 ? `a ${a.toFixed(1)} ms⁻²` : 'a = 0 ms⁻²';
             const aLabelW = ctx.measureText(aLabel).width;
@@ -1075,8 +789,8 @@
             const kax = aLabelX + aLabelW / 2;
             const arrowTop = aLabelY + 10 * s;
             if (aLen > 2) {
-                if (a > 0) drawArrow(ctx, kax, arrowTop + aLen, kax, arrowTop, '#7c3aed', 3.5 * s);
-                else drawArrow(ctx, kax, arrowTop, kax, arrowTop + aLen, '#7c3aed', 3.5 * s);
+                if (a > 0) drawArrow(ctx, kax, arrowTop + aLen, kax, arrowTop, C.a, 3.5 * s);
+                else drawArrow(ctx, kax, arrowTop, kax, arrowTop + aLen, C.a, 3.5 * s);
             }
         }
 
@@ -1089,33 +803,31 @@
             const nY = yBot - (nRatio / maxRatio) * height;
 
             // Track (butt edges so fill lines up exactly with ticks)
-            ctx.fillStyle = '#e2e8f0';
+            ctx.fillStyle = C.panel;
             ctx.fillRect(x - barW / 2, yTop, barW, height);
 
             // Green N fill — top edge is exactly nY
-            ctx.fillStyle = '#059669';
+            ctx.fillStyle = C.n;
             ctx.fillRect(x - barW / 2, nY, barW, yBot - nY);
 
-            ctx.strokeStyle = '#94a3b8';
+            ctx.strokeStyle = C.border;
             ctx.lineWidth = 1;
             ctx.strokeRect(x - barW / 2, yTop, barW, height);
 
             // Red mg reference line across the bar
-            ctx.strokeStyle = '#dc2626';
+            ctx.strokeStyle = C.w;
             ctx.lineWidth = Math.max(1.5, 2 * s);
             ctx.beginPath();
             ctx.moveTo(x - 16 * s, mgY);
             ctx.lineTo(x + 16 * s, mgY);
             ctx.stroke();
 
-            // "mg" on the LEFT of the vertical column (gap from lift box set by gaugeX)
-            ctx.fillStyle = '#dc2626';
-            ctx.font = `bold ${Math.round(16 * ts)}px "Noto Sans TC", sans-serif`;
+            ctx.fillStyle = C.w;
+            ctx.font = uiFont(16, ts);
             ctx.textAlign = 'right';
             ctx.fillText('mg', x - 18 * s, mgY + 5 * ts);
 
-            // Side marker at N level (tip on the bar edge at nY — aligns with red line when N = mg)
-            ctx.fillStyle = '#059669';
+            ctx.fillStyle = C.n;
             ctx.beginPath();
             ctx.moveTo(x + barW / 2, nY);          // tip touches bar at N height
             ctx.lineTo(x + barW / 2 + 12 * s, nY - 8 * s);
@@ -1125,8 +837,8 @@
 
             // Title "N" above the column — height vs mg line shows magnitude (no number)
             ctx.textAlign = 'center';
-            ctx.fillStyle = '#059669';
-            ctx.font = `bold ${Math.round(16 * ts)}px "Noto Sans TC", sans-serif`;
+            ctx.fillStyle = C.n;
+            ctx.font = uiFont(16, ts);
             ctx.fillText('N', x, yTop - 8 * ts);
             ctx.textAlign = 'left';
         }
@@ -1149,39 +861,38 @@
             const wLen = forcePx(W, baseLen);
             const nSt = forceStyle(N, s);
             const wSt = forceStyle(W, s);
-            const forceFont = `bold ${Math.round(22 * s)}px "Noto Sans TC", sans-serif`;
-            const sideFont = `bold ${Math.round(15 * s)}px sans-serif`;
+            const forceFont = uiFont(22, s);
+            const sideFont = uiFont(15, s);
 
-            ctx.fillStyle = '#e2e8f0';
+            ctx.fillStyle = C.panel;
             ctx.beginPath();
             ctx.arc(cx, cy, 28 * s, 0, Math.PI * 2);
             ctx.fill();
-            ctx.strokeStyle = '#334155';
+            ctx.strokeStyle = C.text;
             ctx.lineWidth = 2.5 * s;
             ctx.stroke();
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = C.text;
             ctx.font = forceFont;
             ctx.textAlign = 'center';
             ctx.fillText('m', cx, cy + 7 * s);
             ctx.textAlign = 'left';
 
             if (nLen > 0) {
-                drawArrow(ctx, cx, cy, cx, cy - nLen, '#059669', nSt.width, nSt.head);
-                ctx.fillStyle = '#059669';
+                drawArrow(ctx, cx, cy, cx, cy - nLen, C.n, nSt.width, nSt.head);
+                ctx.fillStyle = C.n;
                 ctx.font = forceFont;
                 ctx.fillText('N', cx + 26 * s, cy - Math.max(28 * s, nLen / 2));
             } else {
-                ctx.fillStyle = '#059669';
+                ctx.fillStyle = C.n;
                 ctx.font = forceFont;
                 ctx.fillText('N', cx + 32 * s, cy - 16 * s);
             }
-            drawArrow(ctx, cx, cy, cx, cy + wLen, '#dc2626', wSt.width, wSt.head);
-            ctx.fillStyle = '#dc2626';
+            drawArrow(ctx, cx, cy, cx, cy + wLen, C.w, wSt.width, wSt.head);
+            ctx.fillStyle = C.w;
             ctx.font = forceFont;
             ctx.fillText('mg', cx + 26 * s, cy + Math.max(34 * s, wLen / 2 + 4));
 
-            // a (left) and |v| (right): label above, arrow underneath — symmetric layout
-            ctx.fillStyle = '#7c3aed';
+            ctx.fillStyle = C.a;
             ctx.font = sideFont;
             const aFbdLabel = `a = ${a.toFixed(2)} ms⁻²`;
             const aFbdX = 14 * s;
@@ -1192,21 +903,21 @@
             const aArrowX = aFbdX + ctx.measureText(aFbdLabel).width / 2;
             const sideArrowTop = sideLabelY + 12 * s;
             if (al > 2) {
-                if (a > 0) drawArrow(ctx, aArrowX, sideArrowTop + al, aArrowX, sideArrowTop, '#7c3aed', 4 * s);
-                else drawArrow(ctx, aArrowX, sideArrowTop, aArrowX, sideArrowTop + al, '#7c3aed', 4 * s);
+                if (a > 0) drawArrow(ctx, aArrowX, sideArrowTop + al, aArrowX, sideArrowTop, C.a, 4 * s);
+                else drawArrow(ctx, aArrowX, sideArrowTop, aArrowX, sideArrowTop + al, C.a, 4 * s);
             }
 
             const speed = Math.abs(velocity);
             const vl = vPx(velocity, 110 * s);
-            ctx.fillStyle = '#0369a1';
+            ctx.fillStyle = C.v;
             ctx.font = sideFont;
             const vFbdLabel = `|v| = ${speed.toFixed(2)} ms⁻¹`;
             ctx.textAlign = 'right';
             ctx.fillText(vFbdLabel, w - 14 * s, sideLabelY);
             const vArrowX = w - 14 * s - ctx.measureText(vFbdLabel).width / 2;
             if (vl > 2) {
-                if (velocity > 0) drawArrow(ctx, vArrowX, sideArrowTop + vl, vArrowX, sideArrowTop, '#0369a1', 4 * s);
-                else drawArrow(ctx, vArrowX, sideArrowTop, vArrowX, sideArrowTop + vl, '#0369a1', 4 * s);
+                if (velocity > 0) drawArrow(ctx, vArrowX, sideArrowTop + vl, vArrowX, sideArrowTop, C.v, 4 * s);
+                else drawArrow(ctx, vArrowX, sideArrowTop, vArrowX, sideArrowTop + vl, C.v, 4 * s);
             }
             ctx.textAlign = 'left';
         }
@@ -1232,7 +943,7 @@
             const yOf = (N) => pad.t + plotH - (N / maxN) * plotH;
 
             // Axes
-            ctx.strokeStyle = '#334155';
+            ctx.strokeStyle = C.text;
             ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.moveTo(pad.l, pad.t);
@@ -1243,8 +954,7 @@
             const mgY = yOf(W);
             const nPhaseY = yOf(Nphase);
 
-            // Dashed mg reference across the plot
-            ctx.strokeStyle = '#dc2626';
+            ctx.strokeStyle = C.w;
             ctx.lineWidth = 1.5;
             ctx.setLineDash([6, 5]);
             ctx.beginPath();
@@ -1253,17 +963,15 @@
             ctx.stroke();
             ctx.setLineDash([]);
 
-            // Tick on Y-axis at the fixed brake-phase N level
-            ctx.strokeStyle = '#1e293b';
+            ctx.strokeStyle = C.text;
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(pad.l - 7, nPhaseY);
             ctx.lineTo(pad.l + 7, nPhaseY);
             ctx.stroke();
 
-            // N(t) polyline
             if (history.length >= 1) {
-                ctx.strokeStyle = '#059669';
+                ctx.strokeStyle = C.n;
                 ctx.lineWidth = 2.5;
                 ctx.beginPath();
                 history.forEach((p, i) => {
@@ -1275,14 +983,13 @@
                 ctx.stroke();
 
                 const cur = history[history.length - 1];
-                ctx.fillStyle = '#059669';
+                ctx.fillStyle = C.n;
                 ctx.beginPath();
                 ctx.arc(xOf(cur.t), yOf(cur.N), 5, 0, Math.PI * 2);
                 ctx.fill();
             }
 
-            // Left-axis labels: mg and N phase marks (length/height only — no numeric forces)
-            ctx.font = 'bold 14px "Noto Sans TC", sans-serif';
+            ctx.font = uiFont(14);
             ctx.textAlign = 'right';
             let yMgLbl = mgY + 5;
             let yNLbl = nPhaseY + 5;
@@ -1290,15 +997,14 @@
                 if (Nphase < W) yNLbl = yMgLbl + 18;
                 else yNLbl = yMgLbl - 18;
             }
-            ctx.fillStyle = '#dc2626';
+            ctx.fillStyle = C.w;
             ctx.fillText('mg', pad.l - 10, yMgLbl);
-            ctx.fillStyle = '#1e293b';
+            ctx.fillStyle = C.text;
             ctx.fillText('N', pad.l - 10, yNLbl);
-            ctx.fillStyle = '#64748b';
+            ctx.fillStyle = C.muted;
             ctx.fillText('0', pad.l - 10, pad.t + plotH + 5);
 
-            // Axis titles
-            ctx.fillStyle = '#334155';
+            ctx.fillStyle = C.text;
             ctx.textAlign = 'left';
             ctx.fillText('N (N)', 8, 18);
             ctx.fillText(t0.toFixed(1), pad.l, h - 12);
@@ -1335,13 +1041,13 @@
             let fbdH = 640;
             if (isFullscreen()) {
                 // Stretch both panels to use full remaining height
-                const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
-                const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
-                const phaseH = sParent.querySelector('.phase-tag')?.offsetHeight || 0;
+                const labelH = sParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
+                const legendH = sParent.querySelector('.el-legend')?.offsetHeight || 28;
+                const phaseH = sParent.querySelector('.el-phase-tag')?.offsetHeight || 0;
                 const cardPad = 16;
                 const extras = labelH + legendH + phaseH + cardPad + 8;
                 const cardH = sParent.clientHeight;
-                const gridH = document.querySelector('.main-grid')?.clientHeight || 0;
+                const gridH = document.querySelector('.el-main-grid')?.clientHeight || 0;
                 const fillH = Math.max(cardH, gridH);
                 if (fillH > extras + 120) {
                     sceneH = Math.floor(fillH - extras);
@@ -1349,7 +1055,7 @@
                     const vh = window.innerHeight;
                     sceneH = Math.max(280, vh - 150 - extras);
                 }
-                const fbdLabelH = fParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                const fbdLabelH = fParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
                 const fbdFill = fParent.clientHeight || fillH;
                 fbdH = Math.max(200, Math.min(sceneH, fbdFill - fbdLabelH - 24));
             }
@@ -1363,12 +1069,12 @@
                 draw();
                 requestAnimationFrame(() => {
                     if (isFullscreen()) return;
-                    const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
-                    const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
+                    const labelH = sParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
+                    const legendH = sParent.querySelector('.el-legend')?.offsetHeight || 28;
                     const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
                     const cs = getComputedStyle(sParent);
                     const padY = (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
-                    const fLabelH = fParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                    const fLabelH = fParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
                     const fCs = getComputedStyle(fParent);
                     const fPadY = (parseFloat(fCs.paddingTop) || 0) + (parseFloat(fCs.paddingBottom) || 0);
                     // Match both canvases to the taller card content area
@@ -1392,15 +1098,15 @@
             // Fullscreen: remeasure after layout so both panels fill leftover space
             requestAnimationFrame(() => {
                 if (!isFullscreen()) return;
-                const labelH = sParent.querySelector('.canvas-label')?.offsetHeight || 22;
-                const legendH = sParent.querySelector('.legend')?.offsetHeight || 28;
+                const labelH = sParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
+                const legendH = sParent.querySelector('.el-legend')?.offsetHeight || 28;
                 const phaseH = sParent.querySelector('#phaseTag')?.offsetHeight || 0;
                 const extras = labelH + legendH + phaseH + 24;
-                const fillH = Math.max(sParent.clientHeight, document.querySelector('.main-grid')?.clientHeight || 0);
+                const fillH = Math.max(sParent.clientHeight, document.querySelector('.el-main-grid')?.clientHeight || 0);
                 const nextH = Math.floor(fillH - extras);
                 if (nextH > 120 && Math.abs(nextH - sceneH) > 6) {
                     fitCanvas(sceneCanvas, sceneW, nextH);
-                    const fbdLabelH = fParent.querySelector('.canvas-label')?.offsetHeight || 22;
+                    const fbdLabelH = fParent.querySelector('.el-canvas-label')?.offsetHeight || 22;
                     const fbdFill = fParent.clientHeight || fillH;
                     const nextFbd = Math.max(200, Math.min(nextH, fbdFill - fbdLabelH - 24));
                     fitCanvas(fbdCanvas, fbdW, nextFbd);
