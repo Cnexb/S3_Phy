@@ -10,8 +10,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <meta name="description" content="HKDSE Physics learning hub: reflection, refraction, total internal reflection, lenses, and electromagnetic waves." />
     <title>Uni+ HKDSE Physics Hub</title>
-    <script type="module" crossorigin src="./assets/index-CaG8kA4T.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-D1cq4Sb3.css">
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('s3phy.theme') === 'dark') {
+            document.documentElement.dataset.theme = 'dark';
+            document.documentElement.style.colorScheme = 'dark';
+          }
+        } catch (_) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-C3sm1H6R.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CVaKlVPG.css">
   </head>
   <script src="https://uni-education-elearning.pages.dev/tracker/uni-tracker.js?v=2" defer></script>
   <body>

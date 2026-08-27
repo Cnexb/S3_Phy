@@ -10,6 +10,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <meta name="description" content="HKDSE Physics learning hub: reflection, refraction, total internal reflection, lenses, and electromagnetic waves." />
     <title>Uni+ HKDSE Physics Hub</title>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('s3phy.theme') === 'dark') {
+            document.documentElement.dataset.theme = 'dark';
+            document.documentElement.style.colorScheme = 'dark';
+          }
+        } catch (_) {}
+      })();
+    </script>
     <!--GH_REDIRECT-->
     <script>
       (function () {

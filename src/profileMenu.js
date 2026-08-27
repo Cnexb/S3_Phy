@@ -1,4 +1,5 @@
 import { t, getLang, setLang } from './i18n.js';
+import { getTheme, toggleTheme } from './theme.js';
 
 const SESSION_KEY = 'uniplus_session';
 
@@ -38,6 +39,12 @@ export function profileMenuMarkup() {
           <p class="profile-menu__label">${t('profile.settings')}</p>
           <p class="profile-menu__hint">${t('profile.language')}</p>
           <div class="lang-toggle" data-lang></div>
+        </div>
+        <div class="profile-menu__section" data-profile-appearance>
+          <p class="profile-menu__hint" data-appearance-hint>${t('profile.appearance')}</p>
+          <button type="button" class="theme-toggle-btn" data-theme-toggle aria-label="">
+            <span class="material-symbols-outlined" data-theme-icon aria-hidden="true"></span>
+          </button>
         </div>
         <button type="button" class="profile-menu__logout" data-profile-logout role="menuitem">${t('profile.logout')}</button>
       </div>
@@ -88,11 +95,19 @@ export function mountProfileMenu(root, { onLang } = {}) {
   const btn = root.querySelector('[data-profile-btn]');
   const panel = root.querySelector('[data-profile-panel]');
   const langEl = root.querySelector('[data-lang]');
+  const themeBtn = root.querySelector('[data-theme-toggle]');
+  const themeIcon = root.querySelector('[data-theme-icon]');
   const nameEl = root.querySelector('[data-profile-name]');
   const logoutBtn = root.querySelector('[data-profile-logout]');
-  if (!menu || !btn || !panel || !langEl || !logoutBtn) {
+  if (!menu || !btn || !panel || !langEl || !themeBtn || !themeIcon || !logoutBtn) {
     return { refreshLabels() {}, destroy() {} };
   }
+
+  const paintTheme = () => {
+    const dark = getTheme() === 'dark';
+    themeIcon.textContent = dark ? 'light_mode' : 'dark_mode';
+    themeBtn.setAttribute('aria-label', t(dark ? 'profile.themeToLight' : 'profile.themeToDark'));
+  };
 
   const paintName = () => {
     if (nameEl) nameEl.textContent = displayNameFromSession(readUniplusSession());
@@ -131,6 +146,15 @@ export function mountProfileMenu(root, { onLang } = {}) {
     if (event.key === 'Escape') setOpen(false);
   };
 
+  const onThemeClick = (event) => {
+    event.stopPropagation();
+    toggleTheme();
+  };
+
+  const onThemeChange = () => {
+    paintTheme();
+  };
+
   const onLogout = (event) => {
     event.stopPropagation();
     setOpen(false);
@@ -150,31 +174,39 @@ export function mountProfileMenu(root, { onLang } = {}) {
 
   paintName();
   paintLang();
+  paintTheme();
   btn.addEventListener('click', onBtnClick);
+  themeBtn.addEventListener('click', onThemeClick);
   logoutBtn.addEventListener('click', onLogout);
   document.addEventListener('click', onDocClick);
   document.addEventListener('keydown', onKey);
   window.addEventListener('message', onSessionMessage);
+  window.addEventListener('s3phy:theme', onThemeChange);
 
   return {
     refreshLabels() {
       btn.setAttribute('aria-label', t('profile.open'));
       const caption = menu.querySelector('.profile-menu__caption');
       const label = menu.querySelector('.profile-menu__label');
-      const hint = menu.querySelector('.profile-menu__hint');
+      const langHint = menu.querySelector('.profile-menu__section:first-of-type .profile-menu__hint');
+      const appearanceHint = menu.querySelector('[data-appearance-hint]');
       if (caption) caption.textContent = t('app.title');
       if (label) label.textContent = t('profile.settings');
-      if (hint) hint.textContent = t('profile.language');
+      if (langHint) langHint.textContent = t('profile.language');
+      if (appearanceHint) appearanceHint.textContent = t('profile.appearance');
       logoutBtn.textContent = t('profile.logout');
       paintName();
       paintLang();
+      paintTheme();
     },
     destroy() {
       btn.removeEventListener('click', onBtnClick);
+      themeBtn.removeEventListener('click', onThemeClick);
       logoutBtn.removeEventListener('click', onLogout);
       document.removeEventListener('click', onDocClick);
       document.removeEventListener('keydown', onKey);
       window.removeEventListener('message', onSessionMessage);
+      window.removeEventListener('s3phy:theme', onThemeChange);
     },
   };
 }

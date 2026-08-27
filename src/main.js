@@ -1,10 +1,12 @@
 import './style.css';
 import { initI18n, t } from './i18n.js';
+import { initTheme } from './theme.js';
 import { initHubScale } from './hubScale.js';
 import { mountStrandHub } from './strandHub.js';
 import { SPLASH_PHRASES } from './splashPhrases.js';
 
 initI18n();
+initTheme();
 const unmountHubScale = initHubScale();
 
 const SPLASH_KEY = 's3phy_splash_seen';
