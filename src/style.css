@@ -980,6 +980,17 @@ button.brand-logo-wrap:hover .brand-logo-img {
   line-height: 1;
 }
 
+.tool-picker-toggle .material-symbols-outlined {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.tool-picker-toggle.s3phy-fs-btn--active {
+  background: var(--navy);
+  color: #f8fafc;
+  border-color: var(--navy);
+}
+
 .tool-picker {
   overflow: hidden;
   max-height: 800px;
@@ -1105,8 +1116,7 @@ button.brand-logo-wrap:hover .brand-logo-img {
 
 #app.is-lab-fullscreen .site-header,
 #app.is-lab-fullscreen .main-nav,
-#app.is-lab-fullscreen .site-footer,
-#app.is-lab-fullscreen .tools-panel-head {
+#app.is-lab-fullscreen .site-footer {
   display: none;
 }
 
@@ -1172,10 +1182,24 @@ button.brand-logo-wrap:hover .brand-logo-img {
   flex-direction: column;
 }
 
-#app.is-lab-fullscreen .tools-layout {
+#app.is-lab-fullscreen .tools-panel-head,
+[data-main]:fullscreen .tools-panel-head,
+[data-main].hub-main--overlay-fullscreen .tools-panel-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+#app.is-lab-fullscreen .tools-layout,
+[data-main]:fullscreen .tools-layout,
+[data-main].hub-main--overlay-fullscreen .tools-layout {
   flex: 1;
   min-height: 0;
-  height: 100%;
+  height: auto;
   grid-template-columns: 1fr;
 }
 
@@ -1201,6 +1225,10 @@ button.brand-logo-wrap:hover .brand-logo-img {
 
 .tool-fullscreen-btn .material-symbols-outlined {
   font-size: 1.1rem;
+}
+
+body:has([data-hub-fullscreen]) .hub-fs-btn {
+  display: none !important;
 }
 
 .s3phy-fs-btn {

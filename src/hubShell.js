@@ -109,6 +109,7 @@ export function mountHubShell(root, { subtitleKey, activeSection, sections = HUB
       refreshLabels();
       paintNav(currentSection);
       profile.refreshLabels();
+      hubFullscreen.sync();
     },
     destroy() {
       backBtn.removeEventListener('click', onBack);

@@ -24,6 +24,10 @@ export function renderToolsShell({ toolOrder, toolId, getLabel, t }) {
               <span data-tool-picker-chevron aria-hidden="true">&#9650;</span>
               <span data-tool-picker-toggle-label>${t('tools.hideLabList')}</span>
             </button>
+            <button type="button" class="tool-picker-toggle" data-hub-fullscreen aria-pressed="false">
+              <span class="material-symbols-outlined" data-hub-fullscreen-icon aria-hidden="true">fullscreen</span>
+              <span data-hub-fullscreen-label>${t('tools.fullscreen')}</span>
+            </button>
           </div>
         </div>
         <div class="tools-layout">
