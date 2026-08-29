@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HKDSE 物理 Physics — Hand Rules 手定則</title>
+<link rel="stylesheet" href="../shared/s3phy-embed.css">
+<script src="../shared/s3phy-embed-init.js"></script>
+<style>
+  :root { --accent:#4da3ff; --panel:rgba(15,21,37,.86); --border:rgba(255,255,255,.09); }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; overflow:hidden; background:#0d1220;
+    font-family:"Segoe UI","Microsoft JhengHei","PingFang HK",sans-serif; color:#e8ecf4; }
+  canvas { display:block; }
+  #panel { position:fixed; top:16px; left:16px; width:335px; background:var(--panel);
+    border:1px solid var(--border); border-radius:16px; padding:16px 18px;
+    backdrop-filter:blur(10px); box-shadow:0 8px 30px rgba(0,0,0,.45); z-index:10;
+    max-height:calc(100vh - 32px); overflow-y:auto; }
+  h1 { font-size:15px; margin:0 0 2px; letter-spacing:.3px; }
+  h1 span { color:#9fb4d8; font-weight:500; font-size:12.5px; }
+  .seg { display:flex; gap:8px; margin-top:10px; }
+  .seg button { flex:1; padding:9px 6px; border-radius:11px; border:1px solid var(--border);
+    background:rgba(255,255,255,.05); color:#dfe6f2; cursor:pointer; font-size:12px; line-height:1.35;
+    transition:all .18s; }
+  .seg button small { color:#9fb4d8; font-size:11px; }
+  .seg button:hover { border-color:var(--accent); }
+  .seg button.active { background:linear-gradient(135deg,#2f6fd0,#4da3ff); color:#fff; border-color:transparent; }
+  .seg button.active small { color:#e3eeff; }
+  .row { display:flex; gap:8px; margin-top:10px; }
+  .row button { flex:1; padding:7px 6px; font-size:11.5px; border-radius:9px;
+    border:1px solid var(--border); background:rgba(255,255,255,.05); color:#cfd8e8; cursor:pointer; }
+  .row button.on { background:rgba(77,163,255,.18); border-color:var(--accent); color:#fff; }
+  #info { margin-top:12px; font-size:12.5px; line-height:1.55; background:rgba(255,255,255,.04);
+    border:1px solid var(--border); border-radius:12px; padding:10px 12px; }
+  #info ul { margin:6px 0 2px; padding-left:18px; }
+  #legend { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; font-size:11px; padding:4px 9px;
+    border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--border); }
+  .dot { width:10px; height:10px; border-radius:50%; }
+  #hint { position:fixed; bottom:12px; left:50%; transform:translateX(-50%); font-size:11.5px;
+    color:#8ea2c4; background:var(--panel); border:1px solid var(--border); padding:6px 14px;
+    border-radius:999px; z-index:10; white-space:nowrap; }
+  .lbl { pointer-events:none; background:rgba(10,15,28,.9); border:1px solid var(--border);
+    border-left:4px solid #fff; border-radius:9px; padding:5px 9px; font-size:12px; line-height:1.3;
+    white-space:nowrap; box-shadow:0 3px 12px rgba(0,0,0,.4); }
+  .lbl small { display:block; color:#a9bcd9; font-size:10.5px; }
+  .lbl.green{border-left-color:#2ecc71}.lbl.blue{border-left-color:#3498db}
+  .lbl.red{border-left-color:#e74c3c}.lbl.orange{border-left-color:#f39c12}
+  .lbl.purple{border-left-color:#9b59b6}.lbl.plain{border-left-color:#8ea2c4}
+  html.s3phy-embed, html.s3phy-embed body { height:100%; overflow:hidden; }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="panel">
+  <h1>HKDSE Physics 物理<br /><span>Fleming's Rules + Grip Rule 夫林明定則 · 握拳定則</span></h1>
+  <div class="seg">
+    <button id="btnLeft">Fleming's Left-hand Rule<br /><small>夫林明左手定則 · Motor 摩打</small></button>
+    <button id="btnFleming" class="active">Fleming's Right-hand Rule<br /><small>夫林明右手定則 · Generator 發電機</small></button>
+  </div>
+  <div class="seg">
+    <button id="btnGrip">Right-hand Grip Rule<br /><small>右手握拳定則</small></button>
+  </div>
+  <div class="seg" id="gripSub" style="display:none">
+    <button id="btnWire" class="active">Straight Wire<br /><small>直導線</small></button>
+    <button id="btnSolenoid">Solenoid<br /><small>螺線管</small></button>
+  </div>
+  <div class="row">
+    <button id="btnRotate">Auto-rotate 自動旋轉</button>
+    <button id="btnLabels" class="on">Labels 標籤</button>
+    <button id="btnReset">Reset view 重設視角</button>
+  </div>
+  <div id="info"></div>
+  <div id="legend"></div>
+</div>
+<div id="hint">Drag 拖曳：旋轉 Rotate · Wheel 滾輪：縮放 Zoom · Right-drag 右鍵拖曳：平移 Pan</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+const SKIN = 0xe8b48c, NAIL = 0xf6dcc8;
+const COL = { motion:0x2ecc71, field:0x3498db, current:0xe74c3c, bfield:0xf39c12, north:0x9b59b6 };
+const D = Math.PI / 180;
+
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
+
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(innerWidth, innerHeight);
+Object.assign(labelRenderer.domElement.style, { position:'fixed', top:'0', left:'0', pointerEvents:'none', zIndex:'5' });
+document.body.appendChild(labelRenderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1220);
+scene.fog = new THREE.Fog(0x0d1220, 28, 65);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 200);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 3.5;
+controls.maxDistance = 40;
+controls.autoRotateSpeed = 1.2;
+
+scene.add(new THREE.HemisphereLight(0xbfd4ff, 0x3a2f28, 0.95));
+const key = new THREE.DirectionalLight(0xffffff, 1.7);
+key.position.set(6, 11, 7);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left:-11, right:11, top:11, bottom:-11, near:1, far:40 });
+key.shadow.camera.updateProjectionMatrix();
+scene.add(key);
+const fill = new THREE.DirectionalLight(0x88aaff, 0.45);
+fill.position.set(-7, 4, -6);
+scene.add(fill);
+
+const ground = new THREE.Mesh(new THREE.CircleGeometry(11, 48), new THREE.ShadowMaterial({ opacity:0.32 }));
+ground.rotation.x = -Math.PI/2;
+ground.position.y = -5.5;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ---- labels (CSS2D; visibility managed manually against the parent chain) ----
+const allLabels = [];
+function mkLabel(html, cls, parent, pos) {
+  const div = document.createElement('div');
+  div.className = 'lbl ' + cls;
+  div.innerHTML = html;
+  const o = new CSS2DObject(div);
+  o.position.copy(pos);
+  parent.add(o);
+  allLabels.push(o);
+  return o;
+}
+let labelsOn = true;
+function refreshLabels() {
+  for (const o of allLabels) {
+    let p = o, vis = labelsOn;
+    while (p) { if (!p.visible) { vis = false; break; } p = p.parent; }
+    o.element.style.display = vis ? '' : 'none';
+  }
+}
+
+// ---- hand orientation basis maps: columns = images of local x,y,z axes ----
+function quatFromBasis(x, y, z) {
+  return new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(x, y, z));
+}
+// Right-hand Fleming: thumb(+X)->+Y (Motion up), index(+Y)->+X (Field right), middle(+Z)->-Z (Current away)
+const QUAT_FLEMING = quatFromBasis(new THREE.Vector3(0,1,0), new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,-1));
+// Left-hand Fleming: thumb(-X)->+Y (Motion up), index(+Y)->+X (Field right), middle(+Z)->+Z (Current toward viewer)
+const QUAT_LEFT = quatFromBasis(new THREE.Vector3(0,-1,0), new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,1));
+// Grip: thumb(local +X)->+Y world (up), knuckle line vertical, palm faces camera
+const QUAT_GRIP = quatFromBasis(new THREE.Vector3(0,1,0), new THREE.Vector3(-1,0,0), new THREE.Vector3(0,0,1));
+const dirQuat = (x,y,z) => new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0), new THREE.Vector3(x,y,z).normalize());
+
+// ---- hand factory: side = +1 right hand (thumb on +X), -1 left hand (thumb on -X) ----
+const skinMat = new THREE.MeshStandardMaterial({ color:SKIN, roughness:0.55, metalness:0.04 });
+const nailMat = new THREE.MeshStandardMaterial({ color:NAIL, roughness:0.35, metalness:0.05 });
+
+function makeFinger(lengths, radius) {
+  const base = new THREE.Group();
+  const joints = [base];
+  const mats = [];
+  let parent = base;
+  lengths.forEach((len, i) => {
+    const mat = new THREE.MeshStandardMaterial({ color:SKIN, roughness:0.55, metalness:0.04 });
+    mats.push(mat);
+    const seg = new THREE.Mesh(new THREE.CapsuleGeometry(radius, len, 6, 14), mat);
+    seg.position.y = len / 2;
+    seg.castShadow = true;
+    parent.add(seg);
+    if (i < lengths.length - 1) {
+      const j = new THREE.Group();
+      j.position.y = len;
+      parent.add(j);
+      parent = j;
+      joints.push(j);
+    } else {
+      const nail = new THREE.Mesh(new THREE.SphereGeometry(radius * 0.52, 12, 10), nailMat);
+      nail.scale.set(0.85, 1.15, 0.5);
+      nail.position.set(0, len * 0.72, -radius * 0.62);
+      parent.add(nail);
+    }
+  });
+  return { base, joints, mats, target:[0,0,0] };
+}
+
+function buildHand(side) {
+  const handGroup = new THREE.Group();
+  scene.add(handGroup);
+  const palm = new THREE.Mesh(new RoundedBoxGeometry(3.4, 3.8, 1.3, 4, 0.45), skinMat);
+  palm.castShadow = true;
+  handGroup.add(palm);
+  const thenar = new THREE.Mesh(new THREE.SphereGeometry(0.95, 20, 16), skinMat);
+  thenar.scale.set(0.9, 1.35, 0.72);
+  thenar.position.set(1.45 * side, -1.0, 0.3);
+  thenar.castShadow = true;
+  handGroup.add(thenar);
+  const wrist = new THREE.Mesh(new THREE.CylinderGeometry(1.12, 1.28, 1.8, 20), skinMat);
+  wrist.position.set(0, -2.7, 0);
+  wrist.castShadow = true;
+  handGroup.add(wrist);
+
+  const FINGER_DEFS = {
+    index:  { x: 1.20 * side, lens:[1.50,1.10,0.85], r:0.32 },
+    middle: { x: 0.42 * side, lens:[1.60,1.15,0.90], r:0.33 },
+    ring:   { x:-0.38 * side, lens:[1.50,1.10,0.85], r:0.32 },
+    pinky:  { x:-1.12 * side, lens:[1.15,0.90,0.70], r:0.27 }
+  };
+  const fingers = {};
+  for (const [name, cfg] of Object.entries(FINGER_DEFS)) {
+    const f = makeFinger(cfg.lens, cfg.r);
+    f.base.position.set(cfg.x, 1.85, 0);
+    handGroup.add(f.base);
+    fingers[name] = f;
+  }
+  const thumb = makeFinger([0.95, 0.75, 0.60], 0.42);
+  handGroup.add(thumb.base);
+  return { group:handGroup, fingers, thumb, allFingers:{ ...fingers, thumb } };
+}
+
+// ---- poses ----
+const FLEMING_CURLS = { index:[0,0,0], middle:[90*D,0,0], ring:[102*D,108*D,70*D], pinky:[104*D,110*D,72*D], thumb:[0,0,0] };
+const GRIP_CURLS = { index:[74*D,84*D,50*D], middle:[76*D,86*D,52*D], ring:[76*D,84*D,50*D], pinky:[78*D,86*D,52*D], thumb:[0,0,0] };
+const POSES = {
+  fleming: { curls:FLEMING_CURLS, thumbPos:new THREE.Vector3( 1.65,-0.75,0.35), thumbQuat:dirQuat(1,0,0), handQuat:QUAT_FLEMING },
+  grip:    { curls:GRIP_CURLS,    thumbPos:new THREE.Vector3( 1.25, 0.35,0.90), thumbQuat:dirQuat(1,0,0), handQuat:QUAT_GRIP }
+};
+
+// ---- right hand (animated: Fleming right-hand rule + grip rule) ----
+const RH = buildHand(1);
+let handQuatTarget = QUAT_FLEMING.clone();
+let thumbPosTarget = POSES.fleming.thumbPos.clone();
+let thumbQuatTarget = POSES.fleming.thumbQuat.clone();
+const skinColor = new THREE.Color(SKIN);
+const tintTargets = {};
+function applyTints(map) {
+  for (const name of Object.keys(RH.allFingers)) {
+    tintTargets[name] = new THREE.Color(map[name] !== undefined ? map[name] : SKIN);
+  }
+}
+function setCurlTargets(pose) {
+  for (const [name, f] of Object.entries(RH.allFingers)) f.target = pose.curls[name];
+}
+RH.group.quaternion.copy(QUAT_FLEMING);
+RH.thumb.base.position.copy(POSES.fleming.thumbPos);
+RH.thumb.base.quaternion.copy(POSES.fleming.thumbQuat);
+for (const [name, f] of Object.entries(RH.allFingers)) {
+  f.target = FLEMING_CURLS[name];
+  f.joints.forEach((j, i) => j.rotation.x = f.target[i]);
+}
+
+// ---- left hand (static: Fleming left-hand rule) ----
+const LH = buildHand(-1);
+LH.group.quaternion.copy(QUAT_LEFT);
+LH.thumb.base.position.set(-1.65, -0.75, 0.35);
+LH.thumb.base.quaternion.copy(dirQuat(-1, 0, 0));
+for (const [name, f] of Object.entries(LH.allFingers)) {
+  FLEMING_CURLS[name].forEach((a, i) => f.joints[i].rotation.x = a);
+}
+const LH_TINTS = { thumb:COL.motion, index:COL.field, middle:COL.current };
+for (const [name, f] of Object.entries(LH.allFingers)) {
+  const c = new THREE.Color(LH_TINTS[name] !== undefined ? LH_TINTS[name] : SKIN);
+  for (const m of f.mats) m.color.copy(c);
+}
+
+// ---- shared arrow helper ----
+function mkArrow(dir, origin, len, color, hl = 0.5, hw = 0.26) {
+  return new THREE.ArrowHelper(dir.clone().normalize(), origin, len, color, hl, hw);
+}
+
+// ---- Fleming arrows for each hand (local space, follow the hand) ----
+function addFlemingArrows(hand, side, thumbHtml) {
+  const g = new THREE.Group();
+  hand.group.add(g);
+  g.add(mkArrow(new THREE.Vector3(side,0,0), new THREE.Vector3( 1.65*side,-0.75,0.35), 4.0, COL.motion));
+  g.add(mkArrow(new THREE.Vector3(0,1,0),    new THREE.Vector3( 1.20*side, 1.85,0),    3.6, COL.field));
+  g.add(mkArrow(new THREE.Vector3(0,0,1),    new THREE.Vector3( 0.42*side, 1.85,0),    3.6, COL.current));
+  mkLabel(thumbHtml, 'green', g, new THREE.Vector3(5.95*side,-0.75,0.35));
+  mkLabel('<b>Field 磁場</b><small>index finger 食指 (N → S)</small>', 'blue', g, new THREE.Vector3(1.20*side,5.75,0));
+  mkLabel('<b>Current 電流</b><small>middle finger 中指</small>', 'red', g, new THREE.Vector3(0.42*side,1.85,3.95));
+  return g;
+}
+const rhFlemingArrows = addFlemingArrows(RH, 1, '<b>Motion 運動</b><small>thumb 拇指</small>');
+const lhFlemingArrows = addFlemingArrows(LH, -1, '<b>Force 力</b><small>thumb 拇指</small>');
+
+// ---- Fleming world props (shared by both Fleming modes): magnet poles + field lines ----
+const flemingWorld = new THREE.Group();
+scene.add(flemingWorld);
+const poleN = new THREE.Mesh(new RoundedBoxGeometry(2.2, 2.8, 1.4, 3, 0.25),
+  new THREE.MeshStandardMaterial({ color:0xc0392b, roughness:0.5 }));
+poleN.position.set(-6.6, 1.2, 0);
+poleN.castShadow = true;
+const poleS = new THREE.Mesh(new RoundedBoxGeometry(2.2, 2.8, 1.4, 3, 0.25),
+  new THREE.MeshStandardMaterial({ color:0x5d6d7e, roughness:0.5 }));
+poleS.position.set(6.6, 1.2, 0);
+poleS.castShadow = true;
+flemingWorld.add(poleN, poleS);
+mkLabel('<b>N</b>', 'red', flemingWorld, new THREE.Vector3(-6.6, 3.1, 0));
+mkLabel('<b>S</b>', 'plain', flemingWorld, new THREE.Vector3(6.6, 3.1, 0));
+for (const y of [2.75, -0.35]) {
+  const a = mkArrow(new THREE.Vector3(1,0,0), new THREE.Vector3(-5.4,y,0), 10.8, COL.field, 0.4, 0.2);
+  a.line.material.transparent = true; a.line.material.opacity = 0.45;
+  a.cone.material.transparent = true; a.cone.material.opacity = 0.45;
+  flemingWorld.add(a);
+}
+
+// ---- Grip mode props. Fist hole axis under QUAT_GRIP sits at world (WX, *, WZ). ----
+const WX = -1.9, WZ = 0.96;
+const gripWorld = new THREE.Group();
+scene.add(gripWorld);
+const wireGroup = new THREE.Group();
+const solenoidGroup = new THREE.Group();
+gripWorld.add(wireGroup, solenoidGroup);
+
+const copper = new THREE.MeshStandardMaterial({ color:0xb87333, metalness:0.85, roughness:0.35 });
+const fieldMat = new THREE.MeshStandardMaterial({ color:COL.bfield, roughness:0.4, emissive:0x3a2703 });
+
+const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 9, 24), copper);
+wire.position.set(WX, 0, WZ);
+wire.castShadow = true;
+wireGroup.add(wire);
+wireGroup.add(mkArrow(new THREE.Vector3(0,1,0), new THREE.Vector3(WX, 2.2, WZ), 1.8, COL.current, 0.5, 0.3));
+wireGroup.add(mkArrow(new THREE.Vector3(0,1,0), new THREE.Vector3(WX,-4.3, WZ), 1.4, COL.current, 0.45, 0.26));
+mkLabel('<b>Current I 電流</b><small>Thumb 拇指 (conventional 慣常電流)</small>', 'red', wireGroup, new THREE.Vector3(WX, 4.35, WZ));
+for (const [r, y] of [[1.7,-2.1],[2.4, 2.1]]) {
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.035, 10, 100), fieldMat);
+  ring.rotation.x = Math.PI/2;
+  ring.position.set(WX, y, WZ);
+  wireGroup.add(ring);
+  for (const deg of [30, 150, 270]) {
+    const th = deg * D;
+    const pos = new THREE.Vector3(WX + r*Math.cos(th), y, WZ + r*Math.sin(th));
+    // B direction around a +Y current (Biot-Savart: y-hat x r-hat)
+    const tangent = new THREE.Vector3(Math.sin(th), 0, -Math.cos(th));
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.10, 0.32, 10), fieldMat);
+    cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), tangent);
+    cone.position.copy(pos).addScaledVector(tangent, 0.16);
+    wireGroup.add(cone);
+  }
+}
+mkLabel('<b>Magnetic field B 磁場</b><small>Curled fingers 屈曲手指</small>', 'orange', wireGroup, new THREE.Vector3(WX+2.05, 2.1, WZ-1.35));
+
+// solenoid: coil wound CCW seen from +Y so the top end is North
+class HelixCurve extends THREE.Curve {
+  getPoint(t) {
+    const turns = 5, r = 1.7, y0 = -1.7, y1 = 2.3;
+    const ang = Math.PI/2 - 2*Math.PI*turns*t;
+    return new THREE.Vector3(WX + r*Math.cos(ang), y0 + (y1-y0)*t, WZ + r*Math.sin(ang));
+  }
+}
+const helix = new HelixCurve();
+const coil = new THREE.Mesh(new THREE.TubeGeometry(helix, 260, 0.085, 10), copper);
+coil.castShadow = true;
+solenoidGroup.add(coil);
+for (const t of [0.12, 0.5, 0.88]) {
+  const p = helix.getPoint(t), tan = helix.getTangent(t);
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.36, 10),
+    new THREE.MeshStandardMaterial({ color:COL.current, roughness:0.4 }));
+  cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), tan);
+  cone.position.copy(p).addScaledVector(tan, 0.18);
+  solenoidGroup.add(cone);
+}
+mkLabel('<b>N 北極</b><small>Thumb 拇指指向</small>', 'red', solenoidGroup, new THREE.Vector3(WX, 3.35, WZ));
+mkLabel('<b>S 南極</b>', 'blue', solenoidGroup, new THREE.Vector3(WX, -2.75, WZ));
+mkLabel('<b>Current 電流</b><small>Curled fingers 屈曲手指</small>', 'red', solenoidGroup, new THREE.Vector3(WX-2.35, -0.3, WZ));
+
+// ---- UI text ----
+const INFO = {
+  left: `<b>Fleming's Left-hand Rule 夫林明左手定則</b> — for <b>motors 摩打</b>（motor effect 電動機效應）。<br />
+    載流導體喺磁場中會受力：F = BIL（互相垂直時）。
+    <ul><li><b style="color:#3498db">Index finger 食指 → Field 磁場</b>（N → S）</li>
+    <li><b style="color:#e74c3c">Middle finger 中指 → Current 電流</b>（conventional 慣常電流）</li>
+    <li><b style="color:#2ecc71">Thumb 拇指 → Force 力</b></li></ul>
+    <b>記法</b>：左<b>手</b>＝摩打（有電流 → 產生運動）；右<b>手</b>＝發電機（有運動 → 產生電流）。`,
+  fleming: `<b>Fleming's Right-hand Rule 夫林明右手定則</b> — for <b>generators 發電機</b>（electromagnetic induction 電磁感應）。<br />
+    導體喺磁場中運動時會感生電動勢；有完整電路時就會有感生電流。
+    <ul><li><b style="color:#3498db">Index finger 食指 → Field 磁場</b>（N → S）</li>
+    <li><b style="color:#e74c3c">Middle finger 中指 → Current 電流</b>（conventional 慣常電流）</li>
+    <li><b style="color:#2ecc71">Thumb 拇指 → Motion 運動</b></li></ul>
+    <b>記法</b>：左<b>手</b>＝摩打（有電流 → 產生運動）；右<b>手</b>＝發電機（有運動 → 產生電流）。`,
+  wire: `<b>Right-hand Grip Rule 右手握拳定則</b> — <b>straight wire 直導線</b>。<br />
+    載流直導線周圍會產生環形磁場。
+    <ul><li><b style="color:#e74c3c">Thumb 拇指 → Current I 電流</b></li>
+    <li><b style="color:#f39c12">Curled fingers 屈曲手指 → B-field 磁場方向</b>（circular field lines 環形磁場線）</li></ul>`,
+  solenoid: `<b>Right-hand Grip Rule 右手握拳定則</b> — <b>solenoid 螺線管</b>。<br />
+    螺線管內部磁場強而均勻；磁場線離開嘅一端係北極。
+    <ul><li><b style="color:#e74c3c">Curled fingers 屈曲手指 → Current 電流</b>環繞方向</li>
+    <li><b style="color:#c0392b">Thumb 拇指 → North pole 北極</b>（紅色）</li>
+    <li><b style="color:#2471a3">Other end → South pole 南極</b>（藍色）</li></ul>`
+};
+const LEGEND = {
+  left: [['#2ecc71','Force 力 (thumb)'],['#3498db','Field 磁場 (index finger)'],['#e74c3c','Current 電流 (middle finger)']],
+  fleming: [['#2ecc71','Motion 運動 (thumb)'],['#3498db','Field 磁場 (index finger)'],['#e74c3c','Current 電流 (middle finger)']],
+  wire: [['#e74c3c','Current 電流 (Thumb 拇指)'],['#f39c12','B-field 磁場 (Fingers 手指)']],
+  solenoid: [['#e74c3c','Current 電流 (Fingers 手指)'],['#c0392b','North 北極 (Thumb 拇指)'],['#2471a3','South 南極']]
+};
+const infoEl = document.getElementById('info');
+const legendEl = document.getElementById('legend');
+function setInfoLegend(key) {
+  infoEl.innerHTML = INFO[key];
+  legendEl.innerHTML = LEGEND[key].map(([c,t]) =>
+    `<span class="chip"><span class="dot" style="background:${c}"></span>${t}</span>`).join('');
+}
+
+// ---- camera presets + tween ----
+const CAM = {
+  left:    { pos:new THREE.Vector3(6.8, 3.6, 10.2), tgt:new THREE.Vector3(0.6, 1.2, 0) },
+  fleming: { pos:new THREE.Vector3(6.8, 3.6, 10.2), tgt:new THREE.Vector3(0.6, 1.2, 0) },
+  grip:    { pos:new THREE.Vector3(6.2, 3.2, 10.0), tgt:new THREE.Vector3(-0.9, 0.2, 0.6) }
+};
+let camTween = null;
+function flyTo(mode) {
+  camTween = { t:0, fromPos:camera.position.clone(), fromTgt:controls.target.clone(),
+               toPos:CAM[mode].pos.clone(), toTgt:CAM[mode].tgt.clone() };
+}
+controls.addEventListener('start', () => { camTween = null; });
+
+// ---- mode / sub-mode state ----
+let mode = 'fleming', sub = 'wire';
+const btnLeft = document.getElementById('btnLeft');
+const btnFleming = document.getElementById('btnFleming');
+const btnGrip = document.getElementById('btnGrip');
+const btnWire = document.getElementById('btnWire');
+const btnSolenoid = document.getElementById('btnSolenoid');
+const gripSub = document.getElementById('gripSub');
+
+function setMode(m) {
+  mode = m;
+  LH.group.visible = (m === 'left');
+  RH.group.visible = (m !== 'left');
+  rhFlemingArrows.visible = (m === 'fleming');
+  lhFlemingArrows.visible = (m === 'left');
+  flemingWorld.visible = (m === 'left' || m === 'fleming');
+  gripWorld.visible = (m === 'grip');
+  gripSub.style.display = (m === 'grip') ? 'flex' : 'none';
+  btnLeft.classList.toggle('active', m === 'left');
+  btnFleming.classList.toggle('active', m === 'fleming');
+  btnGrip.classList.toggle('active', m === 'grip');
+  if (m === 'left') {
+    setInfoLegend('left');
+  } else if (m === 'fleming') {
+    const pose = POSES.fleming;
+    setCurlTargets(pose);
+    handQuatTarget = pose.handQuat.clone();
+    thumbPosTarget = pose.thumbPos.clone();
+    thumbQuatTarget = pose.thumbQuat.clone();
+    applyTints({ thumb:COL.motion, index:COL.field, middle:COL.current });
+    setInfoLegend('fleming');
+  } else {
+    const pose = POSES.grip;
+    setCurlTargets(pose);
+    handQuatTarget = pose.handQuat.clone();
+    thumbPosTarget = pose.thumbPos.clone();
+    thumbQuatTarget = pose.thumbQuat.clone();
+    setSub(sub);
+  }
+  flyTo(m);
+}
+function setSub(s) {
+  sub = s;
+  wireGroup.visible = (s === 'wire');
+  solenoidGroup.visible = (s === 'solenoid');
+  btnWire.classList.toggle('active', s === 'wire');
+  btnSolenoid.classList.toggle('active', s === 'solenoid');
+  applyTints({});
+  setInfoLegend(s);
+}
+btnLeft.onclick = () => setMode('left');
+btnFleming.onclick = () => setMode('fleming');
+btnGrip.onclick = () => setMode('grip');
+btnWire.onclick = () => setSub('wire');
+btnSolenoid.onclick = () => setSub('solenoid');
+
+const btnRotate = document.getElementById('btnRotate');
+const btnLabels = document.getElementById('btnLabels');
+const btnReset = document.getElementById('btnReset');
+btnRotate.onclick = () => {
+  controls.autoRotate = !controls.autoRotate;
+  btnRotate.classList.toggle('on', controls.autoRotate);
+};
+btnLabels.onclick = () => {
+  labelsOn = !labelsOn;
+  btnLabels.classList.toggle('on', labelsOn);
+};
+btnReset.onclick = () => flyTo(mode);
+
+// ---- init view (deep links: #left / #grip / #solenoid) ----
+function snapToTargets() {
+  for (const f of Object.values(RH.allFingers)) f.joints.forEach((j, i) => j.rotation.x = f.target[i]);
+  RH.thumb.base.position.copy(thumbPosTarget);
+  RH.thumb.base.quaternion.copy(thumbQuatTarget);
+  RH.group.quaternion.copy(handQuatTarget);
+  for (const [name, f] of Object.entries(RH.allFingers)) {
+    const c = tintTargets[name] || skinColor;
+    for (const m of f.mats) m.color.copy(c);
+  }
+  camera.position.copy(CAM[mode].pos);
+  controls.target.copy(CAM[mode].tgt);
+  camTween = null;
+}
+camera.position.copy(CAM.fleming.pos);
+controls.target.copy(CAM.fleming.tgt);
+setInfoLegend('fleming');
+applyTints({ thumb:COL.motion, index:COL.field, middle:COL.current });
+LH.group.visible = false;
+rhFlemingArrows.visible = true;
+lhFlemingArrows.visible = false;
+gripWorld.visible = false;
+solenoidGroup.visible = false;
+const hash = location.hash.replace('#', '');
+if (hash === 'left' || hash === 'grip' || hash === 'solenoid') {
+  setMode(hash === 'left' ? 'left' : 'grip');
+  if (hash === 'solenoid') setSub('solenoid');
+  snapToTargets();
+}
+
+// ---- animation ----
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const k = 1 - Math.exp(-6 * dt);
+  for (const f of Object.values(RH.allFingers)) {
+    f.joints.forEach((j, i) => { j.rotation.x += (f.target[i] - j.rotation.x) * k; });
+  }
+  RH.thumb.base.position.lerp(thumbPosTarget, k);
+  RH.thumb.base.quaternion.slerp(thumbQuatTarget, k);
+  RH.group.quaternion.slerp(handQuatTarget, k);
+  for (const [name, f] of Object.entries(RH.allFingers)) {
+    const c = tintTargets[name] || skinColor;
+    for (const m of f.mats) m.color.lerp(c, k);
+  }
+  if (camTween) {
+    camTween.t = Math.min(1, camTween.t + dt / 1.1);
+    const e = camTween.t * camTween.t * (3 - 2 * camTween.t);
+    camera.position.lerpVectors(camTween.fromPos, camTween.toPos, e);
+    controls.target.lerpVectors(camTween.fromTgt, camTween.toTgt, e);
+    if (camTween.t >= 1) camTween = null;
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  labelRenderer.render(scene, camera);
+  refreshLabels();
+}
+animate();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  labelRenderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
