@@ -28,8 +28,8 @@
     var lang = (document.documentElement.lang || 'en').toLowerCase();
     var zh = lang.indexOf('zh') >= 0;
     return {
-      enter: zh ? '全螢幕' : 'Full screen',
-      exit: zh ? '退出全螢幕' : 'Exit full screen',
+      enter: zh ? '全螢幕' : 'Fullscreen',
+      exit: zh ? '退出全螢幕' : 'Exit fullscreen',
     };
   }
 

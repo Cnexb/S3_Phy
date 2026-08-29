@@ -1205,9 +1205,9 @@ button.brand-logo-wrap:hover .brand-logo-img {
 
 .s3phy-fs-btn {
   position: fixed;
-  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  top: max(16px, env(safe-area-inset-top, 0px));
   right: max(16px, env(safe-area-inset-right, 0px));
-  top: auto;
+  bottom: auto;
   z-index: 2147483646;
   display: inline-flex;
   align-items: center;
@@ -1224,19 +1224,6 @@ button.brand-logo-wrap:hover .brand-logo-img {
   cursor: pointer;
   box-shadow: var(--shadow-md);
   pointer-events: auto;
-}
-
-/* Compact icon-only pill when not fullscreen — avoids covering lab controls */
-.s3phy-fs-btn:not(.s3phy-fs-btn--active) {
-  padding: 0;
-  width: 44px;
-  height: 44px;
-  justify-content: center;
-  border-radius: 50%;
-}
-
-.s3phy-fs-btn:not(.s3phy-fs-btn--active) .s3phy-fs-btn__label {
-  display: none;
 }
 
 .s3phy-fs-btn:hover {
