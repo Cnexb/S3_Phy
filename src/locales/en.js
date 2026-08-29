@@ -76,9 +76,6 @@ export const en = {
     'Image formation, minimum mirror size, seeing behind objects, wedge mirrors, and ray sketching with live formulas.',
   'tools.reflection3d.title': '3D Reflection Lab',
   'tools.reflection3d.subtitle': '3D simulation of regular and diffuse reflection with filling medium.',
-  'tools.flemingHandRules.title': 'Fleming hand rules',
-  'tools.flemingHandRules.subtitle':
-    '3D left-hand motor rule, right-hand generator rule, and right-hand grip rules for HKDSE.',
   'tools.rotatingMirror.toggle.origNormal': 'Orig. normal',
   'tools.rotatingMirror.toggle.origRay': 'Orig. reflected',
   'tools.rotatingMirror.toggle.newNormal': 'New normal',
