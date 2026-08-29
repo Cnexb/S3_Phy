@@ -11,104 +11,150 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <style>
-    :root {
-      --bg: #f4f7fb;
-      --panel: #ffffff;
-      --ink: #1e293b;
-      --muted: #64748b;
-      --line: #e2e8f0;
-      --b: #2563eb;
-      --i: #dc2626;
-      --fv: #16a34a;
-      --radius: 12px;
-    }
-
-    * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: "Segoe UI", "Noto Sans TC", "PingFang HK", sans-serif;
+      background: #ffffff;
     }
 
     #app {
-      display: flex;
-      flex-direction: column;
+      padding: 8px;
       height: 100%;
       min-height: 0;
-      padding: 10px;
-      gap: 10px;
+      box-sizing: border-box;
     }
 
-    .lab-head {
+    .fh-wrap {
+      --fh-bg: #ffffff;
+      --fh-panel: #f8f9fa;
+      --fh-border: #e4e4e7;
+      --fh-text: #1f2937;
+      --fh-muted: #6b7280;
+      --fh-primary: #6366f1;
+      --fh-primary-hover: #4f46e5;
+      --fh-cyan: #0891b2;
+      --fh-green: #10b981;
+      --b: #2563eb;
+      --i: #dc2626;
+      --fv: #16a34a;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: var(--fh-text);
+      background: var(--fh-bg);
+      border-radius: 16px;
+      padding: 14px;
+      height: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 12px;
-      flex-wrap: wrap;
+      min-height: 0;
     }
 
-    .lab-head h1 {
+    .fh-wrap * { box-sizing: border-box; }
+
+    .fh-head {
+      position: relative;
+      text-align: center;
       margin: 0;
-      font-size: 1.25rem;
-      font-weight: 700;
+      padding-inline: 96px;
+      flex: 0 0 auto;
+    }
+
+    .fh-title {
+      margin: 0;
+      font-weight: 850;
+      font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+      line-height: 1.15;
+      background: linear-gradient(135deg, #0891b2, #6366f1, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       letter-spacing: -0.02em;
     }
 
-    .lab-head p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-      max-width: 42rem;
+    .fh-sub {
+      color: var(--fh-muted);
+      font-size: clamp(0.82rem, 1.2vw, 0.95rem);
+      margin: 6px 0 0;
+      font-weight: 600;
     }
 
-    .head-actions { display: flex; gap: 8px; align-items: center; }
+    .fh-head-actions {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 7px;
+    }
 
-    .lang-btn, .ghost-btn {
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--ink);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
+    .fh-lang-btn,
+    .fh-btn {
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 7px 13px;
+      background: #ffffff;
+      color: #334155;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
       cursor: pointer;
     }
-    .lang-btn:hover, .ghost-btn:hover { background: #f8fafc; }
 
-    .dash {
+    .fh-lang-btn:hover,
+    .fh-btn:hover {
+      border-color: var(--fh-primary);
+      color: var(--fh-primary);
+      background: #eef2ff;
+    }
+
+    .fh-btn.primary {
+      border-color: transparent;
+      background: var(--fh-primary);
+      color: #ffffff;
+    }
+
+    .fh-btn.primary:hover {
+      background: var(--fh-primary-hover);
+      color: #ffffff;
+    }
+
+    .fh-dash {
       flex: 1;
       min-height: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+      gap: 14px;
+      align-items: stretch;
     }
 
-    .viz {
+    .fh-viz {
       position: relative;
       min-height: 360px;
-      border-radius: var(--radius);
+      border-radius: 14px;
       overflow: hidden;
-      background: radial-gradient(ellipse at 40% 30%, #e8f1ff 0%, #f7fafc 55%, #eef8f3 100%);
-      border: 1px solid var(--line);
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      background: #ffffff;
+      border: 1px solid var(--fh-border);
     }
 
     #canvas-host { position: absolute; inset: 0; }
 
-    .orbit-hint {
+    .fh-orbit-hint {
       position: absolute;
       left: 12px;
       bottom: 12px;
       z-index: 2;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid var(--line);
+      background: rgba(248, 249, 250, 0.95);
+      border: 1px solid var(--fh-border);
       border-radius: 999px;
       padding: 6px 12px;
       font-size: 0.75rem;
-      color: var(--muted);
+      font-weight: 700;
+      color: var(--fh-muted);
       pointer-events: none;
     }
 
@@ -121,202 +167,254 @@
       align-items: center;
       justify-content: center;
       gap: 12px;
-      background: rgba(244, 247, 251, 0.92);
+      background: rgba(255, 255, 255, 0.92);
       transition: opacity 0.35s ease;
     }
     #loading.hide { opacity: 0; pointer-events: none; }
     .spinner {
       width: 40px;
       height: 40px;
-      border: 3px solid #cbd5e1;
-      border-top-color: #0f766e;
+      border: 3px solid #e4e4e7;
+      border-top-color: var(--fh-primary);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    #loading-text { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+    #loading-text {
+      font-size: 0.85rem;
+      color: var(--fh-muted);
+      font-weight: 700;
+    }
 
-    .side {
+    .fh-side {
       min-height: 0;
       overflow: auto;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
+      background: var(--fh-panel);
+      border: 1px solid var(--fh-border);
+      border-radius: 14px;
       padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      gap: 12px;
     }
 
-    .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .fh-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    .mode-btn {
-      border: 1px solid var(--line);
-      background: #f8fafc;
-      color: var(--ink);
+    .fh-mode-btn {
+      border: 1px solid var(--fh-border);
+      background: #ffffff;
+      color: var(--fh-text);
       border-radius: 10px;
       padding: 10px 8px;
+      font: inherit;
       font-size: 0.78rem;
-      font-weight: 650;
+      font-weight: 700;
       line-height: 1.25;
       cursor: pointer;
       text-align: left;
       white-space: pre-line;
-      transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
-    }
-    .mode-btn.active {
-      background: #ecfdf5;
-      border-color: #5eead4;
-      box-shadow: inset 0 0 0 1px #99f6e4;
-      color: #115e59;
     }
 
-    .section-label {
+    .fh-mode-btn:hover {
+      border-color: #c7d2fe;
+      background: #eef2ff;
+    }
+
+    .fh-mode-btn.active {
+      background: #eef2ff;
+      border-color: var(--fh-primary);
+      color: #4338ca;
+      box-shadow: inset 0 0 0 1px #c7d2fe;
+    }
+
+    .fh-section-label {
       margin: 0;
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--fh-muted);
     }
 
-    .rule-box {
-      background: #f8fafc;
-      border: 1px solid var(--line);
+    .fh-rule-box {
+      background: #ffffff;
+      border: 1px solid var(--fh-border);
       border-radius: 10px;
       padding: 12px;
     }
-    .rule-box h2 { margin: 0 0 6px; font-size: 0.95rem; }
-    .rule-box p { margin: 0; font-size: 0.84rem; line-height: 1.45; color: #334155; }
 
-    .legend { display: flex; flex-direction: column; gap: 8px; }
-    .legend-row { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; }
-    .swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
-    .swatch.b { background: var(--b); }
-    .swatch.i { background: var(--i); }
-    .swatch.fv { background: var(--fv); }
+    .fh-rule-box h2 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--fh-text);
+    }
 
-    .toggles { display: flex; flex-direction: column; gap: 8px; }
-    .toggle-row {
+    .fh-rule-box p {
+      margin: 0;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .fh-legend { display: flex; flex-direction: column; gap: 8px; }
+    .fh-legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 650;
+    }
+    .fh-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+    .fh-swatch.b { background: var(--b); }
+    .fh-swatch.i { background: var(--i); }
+    .fh-swatch.fv { background: var(--fv); }
+
+    .fh-toggles { display: flex; flex-direction: column; gap: 8px; }
+    .fh-toggle-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      font-size: 0.84rem;
-    }
-    .toggle-row button {
-      min-width: 72px;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 8px;
-      padding: 6px 10px;
+      font-size: 0.82rem;
       font-weight: 650;
-      cursor: pointer;
     }
-    .toggle-row button.on {
+
+    .fh-toggle-row button {
+      min-width: 76px;
+      border: 1px solid var(--fh-border);
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 800;
+      cursor: pointer;
+      color: #334155;
+    }
+
+    .fh-toggle-row button:hover {
+      border-color: var(--fh-primary);
+      background: #eef2ff;
+      color: #4338ca;
+    }
+
+    .fh-toggle-row button.on {
       background: #fef2f2;
       border-color: #fecaca;
-      color: #991b1b;
+      color: #b91c1c;
     }
 
-    .mnemonic {
+    .fh-mnemonic {
       font-size: 0.8rem;
       line-height: 1.45;
-      color: var(--muted);
+      font-weight: 600;
+      color: var(--fh-muted);
       margin: 0;
     }
 
-    .credit {
+    .fh-credit {
       margin: 0;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       line-height: 1.4;
-      color: #94a3b8;
+      font-weight: 600;
+      color: #9ca3af;
     }
 
     @media (max-width: 900px) {
-      .dash {
+      .fh-head { padding-inline: 12px 88px; text-align: left; }
+      .fh-dash {
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(320px, 48vh) auto;
+        grid-template-rows: minmax(300px, 48vh) auto;
       }
     }
 
-    html.s3phy-embed .lang-btn { display: none; }
+    html.s3phy-embed .fh-lang-btn { display: none; }
     html.s3phy-embed,
     html.s3phy-embed body {
       height: 100%;
       overflow: hidden;
-      background: var(--bg);
+      background: #ffffff;
     }
     html.s3phy-embed body { padding: 0; }
-    html.s3phy-embed #app { padding: 4px; height: 100%; }
-    html.s3phy-embed .lab-head { display: none; }
+    html.s3phy-embed #app {
+      padding: 4px;
+      height: 100%;
+    }
+    html.s3phy-embed .fh-head { display: none; }
+    html.s3phy-embed .fh-wrap {
+      padding: 8px;
+      box-shadow: none;
+      border-radius: 12px;
+      max-width: none;
+    }
   </style>
 </head>
 <body>
   <div id="app">
-    <header class="lab-head">
-      <div>
-        <h1 id="page-title">Fleming Hand Rules</h1>
-        <p id="page-sub">HKDSE electromagnetism — left-hand motor, right-hand generator, and right-hand grip rules.</p>
-      </div>
-      <div class="head-actions">
-        <button type="button" class="lang-btn" id="lang-toggle">中文</button>
-      </div>
-    </header>
-
-    <div class="dash">
-      <div class="viz">
-        <div id="canvas-host"></div>
-        <div id="loading">
-          <div class="spinner" aria-hidden="true"></div>
-          <div id="loading-text">Loading 3D hand…</div>
+    <div class="fh-wrap">
+      <header class="fh-head">
+        <h1 class="fh-title" id="page-title">Fleming Hand Rules</h1>
+        <p class="fh-sub" id="page-sub">HKDSE electromagnetism — left-hand motor, right-hand generator, and right-hand grip rules.</p>
+        <div class="fh-head-actions">
+          <button type="button" class="fh-lang-btn" id="lang-toggle">中文</button>
         </div>
-        <div class="orbit-hint" id="orbit-hint">Drag to rotate · Scroll to zoom</div>
-      </div>
+      </header>
 
-      <aside class="side">
-        <p class="section-label" id="sec-modes">Rule</p>
-        <div class="modes" role="tablist">
-          <button type="button" class="mode-btn active" data-mode="left" id="mode-left"></button>
-          <button type="button" class="mode-btn" data-mode="right" id="mode-right"></button>
-          <button type="button" class="mode-btn" data-mode="gripWire" id="mode-grip-wire"></button>
-          <button type="button" class="mode-btn" data-mode="gripSolenoid" id="mode-grip-solenoid"></button>
-        </div>
-
-        <div class="rule-box">
-          <h2 id="rule-title"></h2>
-          <p id="rule-body"></p>
-        </div>
-
-        <p class="section-label" id="sec-legend">Legend</p>
-        <div class="legend">
-          <div class="legend-row"><span class="swatch b"></span><span id="leg-b"></span></div>
-          <div class="legend-row"><span class="swatch i"></span><span id="leg-i"></span></div>
-          <div class="legend-row" id="leg-fv-row"><span class="swatch fv"></span><span id="leg-fv"></span></div>
-        </div>
-
-        <p class="mnemonic" id="mnemonic"></p>
-
-        <p class="section-label" id="sec-toggles">Directions</p>
-        <div class="toggles">
-          <div class="toggle-row">
-            <span id="lbl-rev-b">Reverse B</span>
-            <button type="button" id="btn-rev-b">B</button>
+      <div class="fh-dash">
+        <div class="fh-viz">
+          <div id="canvas-host"></div>
+          <div id="loading">
+            <div class="spinner" aria-hidden="true"></div>
+            <div id="loading-text">Loading 3D hand…</div>
           </div>
-          <div class="toggle-row">
-            <span id="lbl-rev-i">Reverse I</span>
-            <button type="button" id="btn-rev-i">I</button>
-          </div>
-          <div class="toggle-row" id="row-rev-m">
-            <span id="lbl-rev-m">Reverse motion / force</span>
-            <button type="button" id="btn-rev-m">F / v</button>
-          </div>
+          <div class="fh-orbit-hint" id="orbit-hint">Drag to rotate · Scroll to zoom</div>
         </div>
 
-        <button type="button" class="ghost-btn" id="btn-reset" style="width:100%"></button>
-        <p class="credit" id="model-credit"></p>
-      </aside>
+        <aside class="fh-side">
+          <p class="fh-section-label" id="sec-modes">Rule</p>
+          <div class="fh-modes" role="tablist">
+            <button type="button" class="fh-mode-btn active" data-mode="left" id="mode-left"></button>
+            <button type="button" class="fh-mode-btn" data-mode="right" id="mode-right"></button>
+            <button type="button" class="fh-mode-btn" data-mode="gripWire" id="mode-grip-wire"></button>
+            <button type="button" class="fh-mode-btn" data-mode="gripSolenoid" id="mode-grip-solenoid"></button>
+          </div>
+
+          <div class="fh-rule-box">
+            <h2 id="rule-title"></h2>
+            <p id="rule-body"></p>
+          </div>
+
+          <p class="fh-section-label" id="sec-legend">Legend</p>
+          <div class="fh-legend">
+            <div class="fh-legend-row"><span class="fh-swatch b"></span><span id="leg-b"></span></div>
+            <div class="fh-legend-row"><span class="fh-swatch i"></span><span id="leg-i"></span></div>
+            <div class="fh-legend-row" id="leg-fv-row"><span class="fh-swatch fv"></span><span id="leg-fv"></span></div>
+          </div>
+
+          <p class="fh-mnemonic" id="mnemonic"></p>
+
+          <p class="fh-section-label" id="sec-toggles">Directions</p>
+          <div class="fh-toggles">
+            <div class="fh-toggle-row">
+              <span id="lbl-rev-b">Reverse B</span>
+              <button type="button" id="btn-rev-b">B</button>
+            </div>
+            <div class="fh-toggle-row">
+              <span id="lbl-rev-i">Reverse I</span>
+              <button type="button" id="btn-rev-i">I</button>
+            </div>
+            <div class="fh-toggle-row" id="row-rev-m">
+              <span id="lbl-rev-m">Reverse motion / force</span>
+              <button type="button" id="btn-rev-m">F / v</button>
+            </div>
+          </div>
+
+          <button type="button" class="fh-btn primary" id="btn-reset" style="width:100%"></button>
+          <p class="fh-credit" id="model-credit"></p>
+        </aside>
+      </div>
     </div>
   </div>
 
@@ -829,7 +927,7 @@
   function initThree() {
     const host = document.getElementById('canvas-host');
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf4f7fb);
+    scene.background = new THREE.Color(0xffffff);
 
     const w = host.clientWidth || 640;
     const h = host.clientHeight || 480;
@@ -984,14 +1082,14 @@
 
   function setMode(next) {
     mode = next;
-    document.querySelectorAll('.mode-btn').forEach((btn) => {
+    document.querySelectorAll('.fh-mode-btn').forEach((btn) => {
       btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
     });
     updateModeCopy();
     applyPoseAndHelpers();
   }
 
-  document.querySelectorAll('.mode-btn').forEach((btn) => {
+  document.querySelectorAll('.fh-mode-btn').forEach((btn) => {
     btn.addEventListener('click', () => setMode(btn.getAttribute('data-mode')));
   });
   document.getElementById('btn-rev-b').addEventListener('click', () => {
