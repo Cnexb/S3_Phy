@@ -9,6 +9,7 @@
   <script src="../shared/s3phy-embed-init.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <style>
     :root {
       --bg: #f4f7fb;
@@ -16,7 +17,6 @@
       --ink: #1e293b;
       --muted: #64748b;
       --line: #e2e8f0;
-      --accent: #0f766e;
       --b: #2563eb;
       --i: #dc2626;
       --fv: #16a34a;
@@ -64,11 +64,7 @@
       max-width: 42rem;
     }
 
-    .head-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .head-actions { display: flex; gap: 8px; align-items: center; }
 
     .lang-btn, .ghost-btn {
       border: 1px solid var(--line);
@@ -80,7 +76,6 @@
       font-weight: 600;
       cursor: pointer;
     }
-
     .lang-btn:hover, .ghost-btn:hover { background: #f8fafc; }
 
     .dash {
@@ -96,22 +91,19 @@
       min-height: 360px;
       border-radius: var(--radius);
       overflow: hidden;
-      background: linear-gradient(160deg, #eef6ff 0%, #f8fafc 45%, #ecfdf5 100%);
+      background: radial-gradient(ellipse at 40% 30%, #e8f1ff 0%, #f7fafc 55%, #eef8f3 100%);
       border: 1px solid var(--line);
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     }
 
-    #canvas-host {
-      position: absolute;
-      inset: 0;
-    }
+    #canvas-host { position: absolute; inset: 0; }
 
     .orbit-hint {
       position: absolute;
       left: 12px;
       bottom: 12px;
       z-index: 2;
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
       border: 1px solid var(--line);
       border-radius: 999px;
       padding: 6px 12px;
@@ -119,6 +111,30 @@
       color: var(--muted);
       pointer-events: none;
     }
+
+    #loading {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(244, 247, 251, 0.92);
+      transition: opacity 0.35s ease;
+    }
+    #loading.hide { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #cbd5e1;
+      border-top-color: #0f766e;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading-text { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
 
     .side {
       min-height: 0;
@@ -133,11 +149,7 @@
       box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
     }
 
-    .modes {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .mode-btn {
       border: 1px solid var(--line);
@@ -153,7 +165,6 @@
       white-space: pre-line;
       transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
     }
-
     .mode-btn.active {
       background: #ecfdf5;
       border-color: #5eead4;
@@ -176,49 +187,17 @@
       border-radius: 10px;
       padding: 12px;
     }
+    .rule-box h2 { margin: 0 0 6px; font-size: 0.95rem; }
+    .rule-box p { margin: 0; font-size: 0.84rem; line-height: 1.45; color: #334155; }
 
-    .rule-box h2 {
-      margin: 0 0 6px;
-      font-size: 0.95rem;
-    }
-
-    .rule-box p {
-      margin: 0;
-      font-size: 0.84rem;
-      line-height: 1.45;
-      color: #334155;
-    }
-
-    .legend {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .legend-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.84rem;
-    }
-
-    .swatch {
-      width: 14px;
-      height: 14px;
-      border-radius: 4px;
-      flex-shrink: 0;
-    }
-
+    .legend { display: flex; flex-direction: column; gap: 8px; }
+    .legend-row { display: flex; align-items: center; gap: 8px; font-size: 0.84rem; }
+    .swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
     .swatch.b { background: var(--b); }
     .swatch.i { background: var(--i); }
     .swatch.fv { background: var(--fv); }
 
-    .toggles {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
+    .toggles { display: flex; flex-direction: column; gap: 8px; }
     .toggle-row {
       display: flex;
       align-items: center;
@@ -226,7 +205,6 @@
       gap: 8px;
       font-size: 0.84rem;
     }
-
     .toggle-row button {
       min-width: 72px;
       border: 1px solid var(--line);
@@ -236,7 +214,6 @@
       font-weight: 650;
       cursor: pointer;
     }
-
     .toggle-row button.on {
       background: #fef2f2;
       border-color: #fecaca;
@@ -250,14 +227,18 @@
       margin: 0;
     }
 
-    .mnemonic strong { color: var(--ink); }
+    .credit {
+      margin: 0;
+      font-size: 0.68rem;
+      line-height: 1.4;
+      color: #94a3b8;
+    }
 
     @media (max-width: 900px) {
       .dash {
         grid-template-columns: 1fr;
         grid-template-rows: minmax(320px, 48vh) auto;
       }
-      .side { max-height: none; }
     }
 
     html.s3phy-embed .lang-btn { display: none; }
@@ -268,10 +249,7 @@
       background: var(--bg);
     }
     html.s3phy-embed body { padding: 0; }
-    html.s3phy-embed #app {
-      padding: 4px;
-      height: 100%;
-    }
+    html.s3phy-embed #app { padding: 4px; height: 100%; }
     html.s3phy-embed .lab-head { display: none; }
   </style>
 </head>
@@ -290,6 +268,10 @@
     <div class="dash">
       <div class="viz">
         <div id="canvas-host"></div>
+        <div id="loading">
+          <div class="spinner" aria-hidden="true"></div>
+          <div id="loading-text">Loading 3D hand…</div>
+        </div>
         <div class="orbit-hint" id="orbit-hint">Drag to rotate · Scroll to zoom</div>
       </div>
 
@@ -333,22 +315,30 @@
         </div>
 
         <button type="button" class="ghost-btn" id="btn-reset" style="width:100%"></button>
+        <p class="credit" id="model-credit"></p>
       </aside>
     </div>
   </div>
 
   <script>
 (function () {
+  const HAND_URL = './assets/hand_model.glb';
   const COLOR = {
-    skin: 0xf1c27d,
-    skinDark: 0xe0a868,
-    nail: 0xf8d7b0,
     B: 0x2563eb,
     I: 0xdc2626,
     FV: 0x16a34a,
     wire: 0x475569,
     coil: 0xb45309,
   };
+
+  const BONE_NAMES = [
+    'radius_ulna',
+    'thumb_trapez', 'thumb_meta', 'thumb_prox', 'thumb_dist',
+    'index_meta', 'index_prox', 'index_midd', 'index_dist',
+    'midd_meta', 'midd_prox', 'midd_midd', 'midd_dist',
+    'ring_meta', 'ring_prox', 'ring_midd', 'ring_dist',
+    'pinky_meta', 'pinky_prox', 'pinky_midd', 'pinky_dist',
+  ];
 
   const dict = {
     zh: {
@@ -357,6 +347,7 @@
       pageSub: 'HKDSE 電磁學 — 左手定則（電動機）、右手定則（發電機）及右手握拳定則。',
       langBtn: 'English',
       orbitHint: '拖曳旋轉 · 滾輪縮放',
+      loading: '正在載入 3D 手部模型…',
       secModes: '定則',
       secLegend: '圖例',
       secToggles: '方向',
@@ -388,6 +379,7 @@
       btnReset: '重設視角與方向',
       revOn: '已反轉',
       revOff: '正常',
+      credit: '3D 手部模型 © 2026 Emma L. D. Lieker（CC BY-NC 4.0）',
     },
     en: {
       docTitle: 'Fleming Hand Rules — HKDSE',
@@ -395,6 +387,7 @@
       pageSub: 'HKDSE electromagnetism — left-hand motor rule, right-hand generator rule, and right-hand grip rules.',
       langBtn: '中文',
       orbitHint: 'Drag to rotate · Scroll to zoom',
+      loading: 'Loading 3D hand model…',
       secModes: 'Rule',
       secLegend: 'Legend',
       secToggles: 'Directions',
@@ -426,6 +419,7 @@
       btnReset: 'Reset view & directions',
       revOn: 'Reversed',
       revOff: 'Normal',
+      credit: '3D Rigged Hand Model © 2026 Emma L. D. Lieker (CC BY-NC 4.0)',
     },
   };
 
@@ -449,179 +443,108 @@
   let revM = false;
 
   let scene, camera, renderer, controls;
-  let handGroup, helpersGroup;
-  let animId = 0;
+  let handPivot;      // mirrors left/right + reverse orientation
+  let handModel;      // loaded glTF scene
+  let helpersGroup;
+  let bones = {};
+  let restQuat = {};
+  let modelReady = false;
+  const _q = new THREE.Quaternion();
+  const _e = new THREE.Euler();
+  const _v = new THREE.Vector3();
 
-  function makeSegment(len, rProx, rDist) {
-    const g = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color: COLOR.skin, roughness: 0.55, metalness: 0.05 });
-    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(rDist, rProx, len, 14), mat);
-    cyl.rotation.z = -Math.PI / 2;
-    cyl.position.x = len / 2;
-    cyl.castShadow = true;
-    g.add(cyl);
-    const tip = new THREE.Mesh(new THREE.SphereGeometry(rDist, 12, 10), mat);
-    tip.position.x = len;
-    tip.castShadow = true;
-    g.add(tip);
-    return g;
-  }
+  function sign(rev) { return rev ? -1 : 1; }
 
-  function buildHand(isLeft) {
-    const root = new THREE.Group();
-    root.userData.isLeft = isLeft;
-
-    const palmMat = new THREE.MeshStandardMaterial({ color: COLOR.skin, roughness: 0.55, metalness: 0.04 });
-    const palm = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.38, 1.55), palmMat);
-    palm.castShadow = true;
-    palm.position.set(0, 0, 0);
-    root.add(palm);
-
-    const wrist = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.7, 14), palmMat);
-    wrist.rotation.z = Math.PI / 2;
-    wrist.position.set(-0.95, -0.02, 0);
-    wrist.castShadow = true;
-    root.add(wrist);
-
-    const side = isLeft ? 1 : -1;
-
-    // Thumb base on side of palm
-    const thumb = new THREE.Group();
-    thumb.name = 'thumb';
-    thumb.position.set(-0.15, 0.05, side * 0.72);
-    const t1 = makeSegment(0.55, 0.13, 0.11);
-    const t2 = makeSegment(0.42, 0.11, 0.09);
-    t2.position.x = 0.55;
-    thumb.add(t1);
-    thumb.add(t2);
-    root.add(thumb);
-
-    const fingerMeta = [
-      { name: 'index', z: side * 0.48, lens: [0.52, 0.42, 0.32], r: [0.1, 0.09, 0.08] },
-      { name: 'middle', z: side * 0.16, lens: [0.58, 0.46, 0.34], r: [0.105, 0.095, 0.08] },
-      { name: 'ring', z: side * -0.16, lens: [0.52, 0.42, 0.3], r: [0.1, 0.09, 0.075] },
-      { name: 'pinky', z: side * -0.46, lens: [0.42, 0.34, 0.26], r: [0.085, 0.075, 0.065] },
-    ];
-
-    fingerMeta.forEach((fm) => {
-      const finger = new THREE.Group();
-      finger.name = fm.name;
-      finger.position.set(0.68, 0.02, fm.z);
-      let offset = 0;
-      for (let i = 0; i < 3; i++) {
-        const seg = makeSegment(fm.lens[i], fm.r[i], fm.r[Math.min(i + 1, 2)]);
-        seg.position.x = offset;
-        seg.name = 'seg' + i;
-        finger.add(seg);
-        offset += fm.lens[i];
+  function collectBones(root) {
+    bones = {};
+    restQuat = {};
+    root.traverse((o) => {
+      if (o.isBone || BONE_NAMES.includes(o.name)) {
+        bones[o.name] = o;
       }
-      root.add(finger);
     });
-
-    root.userData.parts = {
-      thumb,
-      index: root.getObjectByName('index'),
-      middle: root.getObjectByName('middle'),
-      ring: root.getObjectByName('ring'),
-      pinky: root.getObjectByName('pinky'),
-    };
-    return root;
-  }
-
-  function setEuler(obj, x, y, z) {
-    obj.rotation.set(x, y, z);
-  }
-
-  function curlFinger(finger, amount) {
-    // amount 0 = straight along +x, 1 = fully curled
-    const a = amount * 0.95;
-    finger.children.forEach((seg, i) => {
-      if (i === 0) setEuler(seg, 0, 0, a * 0.85);
-      else setEuler(seg, 0, 0, a * 1.05);
+    BONE_NAMES.forEach((name) => {
+      const b = bones[name];
+      if (b) restQuat[name] = b.quaternion.clone();
     });
   }
 
-  function straightenFingers(parts) {
-    ['index', 'middle', 'ring', 'pinky'].forEach((n) => {
-      const f = parts[n];
-      f.rotation.set(0, 0, 0);
-      f.children.forEach((seg) => seg.rotation.set(0, 0, 0));
+  function resetBones() {
+    BONE_NAMES.forEach((name) => {
+      const b = bones[name];
+      if (b && restQuat[name]) b.quaternion.copy(restQuat[name]);
     });
-    parts.thumb.rotation.set(0, 0, 0);
-    parts.thumb.children.forEach((seg) => seg.rotation.set(0, 0, 0));
   }
 
-  /** Classic Fleming pose: thumb up (+Y), first finger forward (+Z), second across. */
-  function poseFleming(hand, isLeft) {
-    const parts = hand.userData.parts;
-    const side = isLeft ? 1 : -1;
-    straightenFingers(parts);
-
-    // Palm faces camera-ish; fingers along +X from wrist
-    hand.rotation.set(0, 0, 0);
-
-    // Thumb: point mostly +Y
-    parts.thumb.position.set(-0.05, 0.12, side * 0.55);
-    parts.thumb.rotation.set(0, side * 0.35, Math.PI / 2.15);
-    parts.thumb.children.forEach((seg) => seg.rotation.set(0, 0, 0));
-
-    // Index (first finger): point mostly +Z (into scene forward)
-    parts.index.position.set(0.55, 0.05, side * 0.35);
-    parts.index.rotation.set(0, side * (-Math.PI / 2.05), 0);
-    parts.index.children.forEach((seg) => seg.rotation.set(0, 0, 0));
-
-    // Middle (second finger): point along ±X (current)
-    parts.middle.position.set(0.7, 0.02, side * 0.05);
-    parts.middle.rotation.set(0, 0, 0);
-    parts.middle.children.forEach((seg) => seg.rotation.set(0, 0, 0));
-
-    // Ring & pinky tucked slightly
-    curlFinger(parts.ring, 0.55);
-    curlFinger(parts.pinky, 0.7);
-    parts.ring.rotation.z = 0.15;
-    parts.pinky.rotation.z = 0.25;
+  /** Apply local-axis rotation on top of rest pose. */
+  function twist(name, axis, radians) {
+    const b = bones[name];
+    if (!b || !restQuat[name]) return;
+    b.quaternion.copy(restQuat[name]);
+    _e.set(
+      axis === 'x' ? radians : 0,
+      axis === 'y' ? radians : 0,
+      axis === 'z' ? radians : 0,
+    );
+    _q.setFromEuler(_e);
+    b.quaternion.multiply(_q);
   }
 
-  function poseGrip(hand, isLeft, style) {
-    const parts = hand.userData.parts;
-    const side = isLeft ? 1 : -1;
-    straightenFingers(parts);
-    hand.rotation.set(0, 0, 0);
+  function curlFinger(prefix, amount) {
+    // amount 0..1 — flexion along local X (Blender→glTF finger convention for this model)
+    const a = amount;
+    twist(prefix + '_meta', 'x', a * 0.15);
+    twist(prefix + '_prox', 'x', a * 0.95);
+    twist(prefix + '_midd', 'x', a * 1.15);
+    twist(prefix + '_dist', 'x', a * 0.85);
+  }
 
-    if (style === 'wire') {
-      // Thumb along +Y (current); fingers curl around Y
-      parts.thumb.position.set(-0.1, 0.15, side * 0.55);
-      parts.thumb.rotation.set(0, side * 0.2, Math.PI / 2);
-      parts.thumb.children.forEach((seg) => seg.rotation.set(0, 0, 0));
+  function straightenFinger(prefix) {
+    twist(prefix + '_meta', 'x', 0);
+    twist(prefix + '_prox', 'x', 0);
+    twist(prefix + '_midd', 'x', 0);
+    twist(prefix + '_dist', 'x', 0);
+  }
 
-      ['index', 'middle', 'ring', 'pinky'].forEach((n, i) => {
-        const f = parts[n];
-        f.position.x = 0.55;
-        f.rotation.set(side * (0.2 + i * 0.05), 0, 0.15);
-        curlFinger(f, 0.85);
-      });
-    } else {
-      // Solenoid: fingers curl as coil; thumb along +Y (B / N)
-      parts.thumb.position.set(-0.1, 0.15, side * 0.55);
-      parts.thumb.rotation.set(0, side * 0.2, Math.PI / 2);
-      parts.thumb.children.forEach((seg) => seg.rotation.set(0, 0, 0));
+  function poseFlemingBones() {
+    resetBones();
+    // Index (first finger) and middle (second) extended; ring/pinky tucked
+    straightenFinger('index');
+    straightenFinger('midd');
+    curlFinger('ring', 0.75);
+    curlFinger('pinky', 0.9);
+    // Slight spread so middle vs index read clearly
+    twist('index_meta', 'z', -0.12);
+    twist('midd_meta', 'z', 0.08);
+    // Thumb: abduct / extend to stand roughly perpendicular to palm
+    twist('thumb_trapez', 'y', -0.55);
+    twist('thumb_meta', 'x', -0.35);
+    twist('thumb_prox', 'x', -0.15);
+    twist('thumb_dist', 'x', 0.05);
+  }
 
-      ['index', 'middle', 'ring', 'pinky'].forEach((n, i) => {
-        const f = parts[n];
-        f.position.x = 0.5;
-        f.rotation.set(side * (0.35 + i * 0.08), -0.1, 0.2);
-        curlFinger(f, 0.92);
-      });
-    }
+  function poseGripBones() {
+    resetBones();
+    curlFinger('index', 0.95);
+    curlFinger('midd', 1.0);
+    curlFinger('ring', 1.05);
+    curlFinger('pinky', 1.1);
+    // Thumb extended along grip axis
+    twist('thumb_trapez', 'y', -0.25);
+    twist('thumb_meta', 'x', -0.55);
+    twist('thumb_prox', 'x', -0.1);
+    twist('thumb_dist', 'x', 0);
   }
 
   function makeArrow(color, length) {
     const g = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.4, metalness: 0.1, emissive: color, emissiveIntensity: 0.15 });
+    const mat = new THREE.MeshStandardMaterial({
+      color, roughness: 0.35, metalness: 0.15, emissive: color, emissiveIntensity: 0.18,
+    });
     const shaftLen = length * 0.72;
-    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, shaftLen, 10), mat);
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, shaftLen, 12), mat);
     shaft.position.y = shaftLen / 2;
-    const head = new THREE.Mesh(new THREE.ConeGeometry(0.11, length * 0.28, 12), mat);
+    const head = new THREE.Mesh(new THREE.ConeGeometry(0.1, length * 0.28, 14), mat);
     head.position.y = shaftLen + length * 0.14;
     g.add(shaft);
     g.add(head);
@@ -634,7 +557,7 @@
     canvas.height = 64;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 128, 64);
-    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.fillStyle = 'rgba(255,255,255,0.94)';
     roundRect(ctx, 8, 10, 112, 44, 10);
     ctx.fill();
     ctx.strokeStyle = colorHex;
@@ -647,9 +570,8 @@
     ctx.textBaseline = 'middle';
     ctx.fillText(text, 64, 34);
     const tex = new THREE.CanvasTexture(canvas);
-    const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
-    const spr = new THREE.Sprite(mat);
-    spr.scale.set(0.7, 0.35, 1);
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
+    spr.scale.set(0.55, 0.28, 1);
     return spr;
   }
 
@@ -669,17 +591,13 @@
     for (let i = 0; i < count; i++) {
       const r = radius * (0.55 + i * 0.35);
       const pts = [];
-      const n = 64;
-      for (let k = 0; k <= n; k++) {
-        const a = (k / n) * Math.PI * 2;
+      for (let k = 0; k <= 64; k++) {
+        const a = (k / 64) * Math.PI * 2;
         pts.push(new THREE.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r));
       }
-      const geo = new THREE.BufferGeometry().setFromPoints(pts);
-      const line = new THREE.Line(geo, mat);
-      // small arrow tip on ring
-      g.add(line);
+      g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
       const tip = new THREE.Mesh(
-        new THREE.ConeGeometry(0.08, 0.22, 8),
+        new THREE.ConeGeometry(0.07, 0.2, 8),
         new THREE.MeshBasicMaterial({ color }),
       );
       tip.position.set(r, 0, 0);
@@ -690,26 +608,40 @@
   }
 
   function makeWire(length) {
-    const mat = new THREE.MeshStandardMaterial({ color: COLOR.wire, metalness: 0.6, roughness: 0.35 });
-    const mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, length, 12), mat);
-    return mesh;
+    return new THREE.Mesh(
+      new THREE.CylinderGeometry(0.05, 0.05, length, 12),
+      new THREE.MeshStandardMaterial({ color: COLOR.wire, metalness: 0.55, roughness: 0.35 }),
+    );
   }
 
   function makeSolenoid() {
     const g = new THREE.Group();
-    const core = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.35, 0.35, 2.2, 20),
+    g.add(new THREE.Mesh(
+      new THREE.CylinderGeometry(0.32, 0.32, 2.0, 20),
       new THREE.MeshStandardMaterial({ color: 0xcbd5e1, metalness: 0.2, roughness: 0.5 }),
-    );
-    g.add(core);
+    ));
     const coilMat = new THREE.MeshStandardMaterial({ color: COLOR.coil, metalness: 0.55, roughness: 0.35 });
     for (let i = 0; i < 10; i++) {
-      const tor = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.045, 8, 24), coilMat);
+      const tor = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.04, 8, 24), coilMat);
       tor.rotation.y = Math.PI / 2;
-      tor.position.y = -0.9 + i * 0.2;
+      tor.position.y = -0.85 + i * 0.18;
       g.add(tor);
     }
     return g;
+  }
+
+  function disposeObject(obj) {
+    obj.traverse((o) => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) {
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach((m) => {
+          if (m.map) m.map.dispose();
+          if (m.normalMap) m.normalMap.dispose();
+          m.dispose();
+        });
+      }
+    });
   }
 
   function clearGroup(g) {
@@ -720,150 +652,178 @@
     }
   }
 
-  function sign(rev) {
-    return rev ? -1 : 1;
+  function fitHandInView() {
+    if (!handModel) return;
+    const box = new THREE.Box3().setFromObject(handModel);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    handModel.position.sub(center);
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const scale = 2.4 / maxDim;
+    handModel.scale.setScalar(scale);
   }
 
-  function disposeObject(obj) {
-    obj.traverse((o) => {
-      if (o.geometry) o.geometry.dispose();
-      if (o.material) {
-        if (Array.isArray(o.material)) o.material.forEach((m) => {
-          if (m.map) m.map.dispose();
-          m.dispose();
-        });
-        else {
-          if (o.material.map) o.material.map.dispose();
-          o.material.dispose();
-        }
-      }
-    });
-  }
-
-  function rebuildSceneContent() {
-    clearGroup(helpersGroup);
-    if (handGroup) {
-      scene.remove(handGroup);
-      disposeObject(handGroup);
-      handGroup = null;
-    }
-
+  function applyHandOrientation() {
+    if (!handPivot) return;
     const isLeft = mode === 'left';
-    handGroup = buildHand(isLeft);
+    // Mirror for left hand
+    handPivot.scale.set(isLeft ? -1 : 1, 1, 1);
 
-    if (mode === 'left' || mode === 'right') poseFleming(handGroup, isLeft);
-    else poseGrip(handGroup, false, mode === 'gripWire' ? 'wire' : 'solenoid');
-
-    // Orient hand with reverse toggles (arrows update separately).
+    // Base orientation: palm readable, fingers forwardish for Fleming
+    // Model rests as anatomical right hand; we rotate the pivot for teaching axes.
     if (mode === 'left' || mode === 'right') {
-      // Base: thumb +Y (F/v), index +Z (B), middle +X (I)
-      handGroup.rotation.set(
-        revM ? Math.PI : 0,
-        revB ? Math.PI : 0,
-        revI ? Math.PI : 0,
+      // Thumb ≈ +Y (F/v), index ≈ +Z (B), middle ≈ +X (I) after pose + this orientation
+      handPivot.rotation.set(
+        -0.35 + (revM ? Math.PI : 0),
+        0.55 + (revB ? Math.PI : 0),
+        0.15 + (revI ? Math.PI : 0),
       );
     } else {
-      // Thumb along +Y; reverse I (and independent B for rings) flips hand 180° about Y when I reverses
-      handGroup.rotation.set(0, revI ? Math.PI : 0, 0);
+      // Grip: thumb along +Y
+      handPivot.rotation.set(
+        -0.2,
+        (revI ? Math.PI : 0) + 0.35,
+        0.1,
+      );
     }
+    handPivot.position.set(0, 0.15, 0);
+  }
 
-    handGroup.position.set(0, 0.1, 0);
-    scene.add(handGroup);
+  function rebuildHelpers() {
+    clearGroup(helpersGroup);
+    if (!modelReady) return;
 
     const sB = sign(revB);
     const sI = sign(revI);
     const sM = sign(revM);
+    const origin = new THREE.Vector3(0.15, 0.35, 0.1);
 
     if (mode === 'left' || mode === 'right') {
-      // Arrows from palm centre along finger directions (world after pose)
-      const origin = new THREE.Vector3(0.2, 0.1, 0);
-
-      const arrowB = makeArrow(COLOR.B, 1.6);
+      const arrowB = makeArrow(COLOR.B, 1.35);
       arrowB.position.copy(origin);
-      // +Z
       arrowB.rotation.x = sB > 0 ? Math.PI / 2 : -Math.PI / 2;
       helpersGroup.add(arrowB);
       const labB = makeLabelSprite('B', '#2563eb');
-      labB.position.set(origin.x, origin.y, origin.z + sB * 1.85);
+      labB.position.set(origin.x, origin.y, origin.z + sB * 1.55);
       helpersGroup.add(labB);
 
-      const arrowI = makeArrow(COLOR.I, 1.6);
+      const arrowI = makeArrow(COLOR.I, 1.35);
       arrowI.position.copy(origin);
-      // along +X for left second finger visual; right hand geometry mirrored so still +X in local after mirror... 
-      // For right hand isLeft=false, fingers on -z side but middle still +X
-      if (sI > 0) arrowI.rotation.z = -Math.PI / 2;
-      else arrowI.rotation.z = Math.PI / 2;
+      arrowI.rotation.z = sI > 0 ? -Math.PI / 2 : Math.PI / 2;
       helpersGroup.add(arrowI);
       const labI = makeLabelSprite('I', '#dc2626');
-      labI.position.set(origin.x + sI * 1.85, origin.y, origin.z);
+      labI.position.set(origin.x + sI * 1.55, origin.y, origin.z);
       helpersGroup.add(labI);
 
-      const arrowFV = makeArrow(COLOR.FV, 1.6);
+      const arrowFV = makeArrow(COLOR.FV, 1.35);
       arrowFV.position.copy(origin);
-      // +Y
       if (sM < 0) arrowFV.rotation.x = Math.PI;
       helpersGroup.add(arrowFV);
       const labFV = makeLabelSprite(mode === 'left' ? 'F' : 'v', '#16a34a');
-      labFV.position.set(origin.x, origin.y + sM * 1.85, origin.z);
+      labFV.position.set(origin.x, origin.y + sM * 1.55, origin.z);
       helpersGroup.add(labFV);
 
-      // Thin conductor along I for motor/generator context
-      const cond = makeWire(2.4);
+      const cond = makeWire(2.2);
       cond.rotation.z = Math.PI / 2;
       cond.position.copy(origin);
       helpersGroup.add(cond);
     } else if (mode === 'gripWire') {
-      const wire = makeWire(3.2);
-      wire.position.set(0, 0, 0);
+      const wire = makeWire(3.0);
       helpersGroup.add(wire);
-
-      const arrowI = makeArrow(COLOR.I, 1.8);
+      const arrowI = makeArrow(COLOR.I, 1.6);
       if (sI < 0) arrowI.rotation.x = Math.PI;
-      arrowI.position.set(0, -0.2, 0);
+      arrowI.position.set(0, -0.15, 0);
       helpersGroup.add(arrowI);
       const labI = makeLabelSprite('I', '#dc2626');
-      labI.position.set(0.15, sI * 1.7, 0);
+      labI.position.set(0.2, sI * 1.55, 0);
       helpersGroup.add(labI);
-
-      const rings = makeFieldRings(0.85, 3, COLOR.B);
-      // rings in XZ plane; reverse B flips tip direction by rotating 180 about Y
+      const rings = makeFieldRings(0.8, 3, COLOR.B);
       if ((sI > 0 && sB < 0) || (sI < 0 && sB > 0)) rings.rotation.y = Math.PI;
       if (sI < 0) rings.rotation.y += Math.PI;
       helpersGroup.add(rings);
       const labB = makeLabelSprite('B', '#2563eb');
-      labB.position.set(1.5, 0.2, 0);
+      labB.position.set(1.35, 0.25, 0);
       helpersGroup.add(labB);
     } else {
       const sol = makeSolenoid();
-      sol.position.set(1.6, 0, 0);
+      sol.position.set(1.45, 0, 0);
       helpersGroup.add(sol);
-
-      const arrowB = makeArrow(COLOR.B, 2.0);
+      const arrowB = makeArrow(COLOR.B, 1.8);
       if (sB < 0) arrowB.rotation.x = Math.PI;
-      arrowB.position.set(1.6, -1.0, 0);
+      arrowB.position.set(1.45, -0.95, 0);
       helpersGroup.add(arrowB);
       const labB = makeLabelSprite('B', '#2563eb');
-      labB.position.set(1.85, sB * 1.5, 0);
+      labB.position.set(1.7, sB * 1.35, 0);
       helpersGroup.add(labB);
-
-      // Current loop indicator around solenoid
       const loop = new THREE.Mesh(
-        new THREE.TorusGeometry(0.7, 0.04, 8, 40),
+        new THREE.TorusGeometry(0.65, 0.035, 8, 40),
         new THREE.MeshStandardMaterial({ color: COLOR.I, emissive: COLOR.I, emissiveIntensity: 0.2 }),
       );
       loop.rotation.x = Math.PI / 2;
-      loop.position.set(1.6, 0.2, 0);
+      loop.position.set(1.45, 0.15, 0);
       helpersGroup.add(loop);
-      const arrowI = makeArrow(COLOR.I, 0.7);
-      arrowI.position.set(1.6 + 0.7, 0.2, 0);
+      const arrowI = makeArrow(COLOR.I, 0.65);
+      arrowI.position.set(1.45 + 0.65, 0.15, 0);
       arrowI.rotation.z = sI > 0 ? -Math.PI / 2 : Math.PI / 2;
       helpersGroup.add(arrowI);
       const labI = makeLabelSprite('I', '#dc2626');
-      labI.position.set(1.6 + 1.05, 0.45, 0);
+      labI.position.set(1.45 + 1.0, 0.4, 0);
       helpersGroup.add(labI);
-
       if (sI < 0) loop.scale.x = -1;
     }
+  }
+
+  function applyPoseAndHelpers() {
+    if (!modelReady) return;
+    if (mode === 'left' || mode === 'right') poseFlemingBones();
+    else poseGripBones();
+    applyHandOrientation();
+    // Force skeleton update after bone edits
+    handModel.updateMatrixWorld(true);
+    handModel.traverse((o) => {
+      if (o.isSkinnedMesh && o.skeleton) o.skeleton.update();
+    });
+    rebuildHelpers();
+  }
+
+  function loadHand() {
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+      HAND_URL,
+      (gltf) => {
+        handModel = gltf.scene;
+        handModel.traverse((o) => {
+          if (o.isMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+            if (o.material) {
+              const mats = Array.isArray(o.material) ? o.material : [o.material];
+              mats.forEach((m) => {
+                m.side = THREE.DoubleSide;
+                if (m.map) m.map.encoding = THREE.sRGBEncoding;
+                m.needsUpdate = true;
+              });
+            }
+          }
+        });
+        collectBones(handModel);
+        fitHandInView();
+        handPivot.add(handModel);
+        modelReady = true;
+        document.getElementById('loading').classList.add('hide');
+        applyPoseAndHelpers();
+      },
+      (xhr) => {
+        if (!xhr.total) return;
+        const pct = Math.round((xhr.loaded / xhr.total) * 100);
+        document.getElementById('loading-text').textContent = t().loading + ' ' + pct + '%';
+      },
+      (err) => {
+        console.error(err);
+        document.getElementById('loading-text').textContent =
+          currentLang === 'zh' ? '手部模型載入失敗' : 'Failed to load hand model';
+      },
+    );
   }
 
   function initThree() {
@@ -873,45 +833,49 @@
 
     const w = host.clientWidth || 640;
     const h = host.clientHeight || 480;
-    camera = new THREE.PerspectiveCamera(42, w / h, 0.1, 100);
-    camera.position.set(3.8, 2.6, 4.2);
+    camera = new THREE.PerspectiveCamera(40, w / h, 0.05, 100);
+    camera.position.set(3.2, 2.2, 3.6);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.setSize(w, h);
+    renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     host.appendChild(renderer.domElement);
 
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.minDistance = 2.5;
-    controls.maxDistance = 12;
-    controls.target.set(0.3, 0.2, 0);
+    controls.minDistance = 1.8;
+    controls.maxDistance = 10;
+    controls.target.set(0, 0.25, 0);
 
-    const amb = new THREE.AmbientLight(0xffffff, 0.55);
-    scene.add(amb);
-    const dir = new THREE.DirectionalLight(0xffffff, 0.85);
-    dir.position.set(4, 8, 5);
-    dir.castShadow = true;
-    scene.add(dir);
-    const fill = new THREE.DirectionalLight(0xbfdbfe, 0.35);
-    fill.position.set(-4, 2, -3);
-    scene.add(fill);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const key = new THREE.DirectionalLight(0xffffff, 0.95);
+    key.position.set(3.5, 6, 4);
+    key.castShadow = true;
+    key.shadow.mapSize.set(1024, 1024);
+    scene.add(key);
+    scene.add(new THREE.DirectionalLight(0xc7d2fe, 0.4).translateX(-4).translateY(2).translateZ(-2));
+    const hemi = new THREE.HemisphereLight(0xf8fafc, 0xcbd5e1, 0.35);
+    scene.add(hemi);
 
-    const grid = new THREE.GridHelper(8, 16, 0xcbd5e1, 0xe2e8f0);
-    grid.position.y = -1.2;
+    const grid = new THREE.GridHelper(7, 14, 0xcbd5e1, 0xe2e8f0);
+    grid.position.y = -1.05;
     scene.add(grid);
 
+    handPivot = new THREE.Group();
+    scene.add(handPivot);
     helpersGroup = new THREE.Group();
     scene.add(helpersGroup);
 
-    rebuildSceneContent();
+    loadHand();
     animate();
   }
 
   function animate() {
-    animId = requestAnimationFrame(animate);
+    requestAnimationFrame(animate);
     controls.update();
     renderer.render(scene, camera);
   }
@@ -930,20 +894,15 @@
   function resetViewAndDirs() {
     revB = revI = revM = false;
     syncToggleButtons();
-    camera.position.set(3.8, 2.6, 4.2);
-    controls.target.set(0.3, 0.2, 0);
+    camera.position.set(3.2, 2.2, 3.6);
+    controls.target.set(0, 0.25, 0);
     controls.update();
-    rebuildSceneContent();
+    applyPoseAndHelpers();
   }
 
   function syncToggleButtons() {
     const tr = t();
-    const map = [
-      ['btn-rev-b', revB],
-      ['btn-rev-i', revI],
-      ['btn-rev-m', revM],
-    ];
-    map.forEach(([id, on]) => {
+    [['btn-rev-b', revB], ['btn-rev-i', revI], ['btn-rev-m', revM]].forEach(([id, on]) => {
       const el = document.getElementById(id);
       el.classList.toggle('on', on);
       el.textContent = on ? tr.revOn : tr.revOff;
@@ -968,6 +927,10 @@
     document.getElementById('lbl-rev-b').textContent = tr.lblRevB;
     document.getElementById('lbl-rev-i').textContent = tr.lblRevI;
     document.getElementById('btn-reset').textContent = tr.btnReset;
+    document.getElementById('model-credit').textContent = tr.credit;
+    if (!document.getElementById('loading').classList.contains('hide')) {
+      document.getElementById('loading-text').textContent = tr.loading;
+    }
     syncToggleButtons();
     updateModeCopy();
   }
@@ -990,7 +953,7 @@
     if (mode === 'left') {
       title.textContent = tr.ruleLeftTitle;
       body.textContent = tr.ruleLeftBody;
-      mnemonic.innerHTML = tr.mnemonicLeft;
+      mnemonic.textContent = tr.mnemonicLeft;
       legFV.textContent = tr.legF;
       legFVRow.style.display = '';
       rowRevM.style.display = '';
@@ -998,7 +961,7 @@
     } else if (mode === 'right') {
       title.textContent = tr.ruleRightTitle;
       body.textContent = tr.ruleRightBody;
-      mnemonic.innerHTML = tr.mnemonicRight;
+      mnemonic.textContent = tr.mnemonicRight;
       legFV.textContent = tr.legV;
       legFVRow.style.display = '';
       rowRevM.style.display = '';
@@ -1006,13 +969,13 @@
     } else if (mode === 'gripWire') {
       title.textContent = tr.ruleGripWireTitle;
       body.textContent = tr.ruleGripWireBody;
-      mnemonic.innerHTML = tr.mnemonicGripWire;
+      mnemonic.textContent = tr.mnemonicGripWire;
       legFVRow.style.display = 'none';
       rowRevM.style.display = 'none';
     } else {
       title.textContent = tr.ruleGripSolenoidTitle;
       body.textContent = tr.ruleGripSolenoidBody;
-      mnemonic.innerHTML = tr.mnemonicGripSolenoid;
+      mnemonic.textContent = tr.mnemonicGripSolenoid;
       legB.textContent = tr.legBN;
       legFVRow.style.display = 'none';
       rowRevM.style.display = 'none';
@@ -1025,42 +988,32 @@
       btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
     });
     updateModeCopy();
-    rebuildSceneContent();
+    applyPoseAndHelpers();
   }
 
   document.querySelectorAll('.mode-btn').forEach((btn) => {
     btn.addEventListener('click', () => setMode(btn.getAttribute('data-mode')));
   });
-
   document.getElementById('btn-rev-b').addEventListener('click', () => {
-    revB = !revB;
-    syncToggleButtons();
-    rebuildSceneContent();
+    revB = !revB; syncToggleButtons(); applyPoseAndHelpers();
   });
   document.getElementById('btn-rev-i').addEventListener('click', () => {
-    revI = !revI;
-    syncToggleButtons();
-    rebuildSceneContent();
+    revI = !revI; syncToggleButtons(); applyPoseAndHelpers();
   });
   document.getElementById('btn-rev-m').addEventListener('click', () => {
-    revM = !revM;
-    syncToggleButtons();
-    rebuildSceneContent();
+    revM = !revM; syncToggleButtons(); applyPoseAndHelpers();
   });
   document.getElementById('btn-reset').addEventListener('click', resetViewAndDirs);
-
   document.getElementById('lang-toggle').addEventListener('click', () => {
     currentLang = currentLang === 'zh' ? 'en' : 'zh';
     try { localStorage.setItem('s3phy.flemingHandRules.lang', currentLang); } catch (_) { /* ignore */ }
     updateLanguageUI();
   });
-
   window.addEventListener('message', (ev) => {
     if (ev.data?.type !== 's3phy:lang') return;
     currentLang = hubLangToLocal(ev.data.lang);
     updateLanguageUI();
   });
-
   window.addEventListener('resize', resize);
 
   updateLanguageUI();

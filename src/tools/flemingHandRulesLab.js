@@ -6,6 +6,6 @@ export function createFlemingHandRulesLab(t) {
     slug: 'fleming-hand-rules',
     titleKey: 'tools.flemingHandRules.title',
     className: 'tool-fleming-hand-rules-lab',
-    extraParams: () => '&v=20260829',
+    extraParams: () => '&v=20260829hand',
   });
 }
