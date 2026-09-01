@@ -13,7 +13,7 @@ export function createThermometerLab(t, options = {}) {
     slug: 'thermometer',
     titleKey: TYPE_TITLE_KEYS[type] || TYPE_TITLE_KEYS.liquid,
     className: 'tool-thermometer-lab',
-    extraParams: () => `&mode=${encodeURIComponent(type)}&labv=49`,
+    extraParams: () => `&mode=${encodeURIComponent(type)}&labv=50`,
   });
 }
 
@@ -23,6 +23,6 @@ export function createFaultyScaleCalibrationLab(t) {
     slug: 'thermometer',
     titleKey: 'tools.faultyCalibration.title',
     className: 'tool-thermometer-lab',
-    extraParams: () => '&mode=faulty&labv=49',
+    extraParams: () => '&mode=faulty&labv=50',
   });
 }

@@ -1,1 +1,0 @@
-import{c as a}from"./createLabIframe-D8o5sCa9.js";import"./index-Sk6vVDvP.js";function o(t){return a(t,{slug:"radiation-deflection",titleKey:"tools.radiationDeflection.title",className:"tool-radiation-deflection-lab",extraParams:()=>"&v=20260901-nc"})}export{o as createRadiationDeflectionLab};
