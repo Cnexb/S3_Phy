@@ -44,9 +44,10 @@ export function initHubFullscreen({ app, stage, t }) {
     btn.setAttribute('aria-pressed', active ? 'true' : 'false');
     btn.classList.toggle('s3phy-fs-btn--active', active);
     const labelEl = btn.querySelector('[data-hub-fullscreen-label], .s3phy-fs-btn__label');
-    if (labelEl) labelEl.textContent = label;
+    if (labelEl && labelEl.textContent !== label) labelEl.textContent = label;
     const icon = btn.querySelector('[data-hub-fullscreen-icon], .s3phy-fs-btn__icon');
-    if (icon) icon.textContent = active ? 'fullscreen_exit' : 'fullscreen';
+    const iconText = active ? 'fullscreen_exit' : 'fullscreen';
+    if (icon && icon.textContent !== iconText) icon.textContent = iconText;
   };
 
   const ensureFloatButton = () => {

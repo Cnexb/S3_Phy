@@ -1,0 +1,54 @@
+---
+description: Keep UniPlus UI and teaching-content changes minimal, safe, and verified before push
+alwaysApply: true
+---
+
+# UniPlus UI and content rule
+
+This repository is maintained by subject teachers and teaching assistants.
+Keep work inside teaching content, browser-only tools, or shared UI. If a
+request changes product integrations, stop and ask the technical owner.
+
+## Minimal implementation
+
+- Inspect the nearest existing helper or template before writing code.
+- Make the smallest change that fixes the root cause. Reuse existing code,
+  browser APIs, and installed dependencies before adding anything.
+- Do not add speculative abstractions, packages, build tools, routes, IDs, or
+  generated files. Delete duplication when safe.
+- Keep routes, file names, IDs, and folder structure stable.
+- Do not edit `dist/` when a source file exists. Run the existing build instead.
+
+## Allowed scope
+
+- Teaching text, translations, images, PDFs, content JSON, HTML, CSS, and
+  browser-only simulation interaction.
+- Non-personal local UI preferences such as language, theme, panel state, or
+  unfinished local practice, using a subject-prefixed key.
+
+## Protected integration seam
+
+Never change authentication, analytics, tracking, data passing, or deployment.
+This includes Supabase, `uni-tracker.js`, `postMessage`, `uniplus:*` events,
+identity/session fields, `fetch`, XHR, `sendBeacon`, WebSocket, external
+scripts/APIs, `functions/`, `supabase/`, `.github/workflows/`, middleware,
+redirects, CSP/CORS, access gates, production URLs, secrets, and settings.
+
+Interactive tools must stay browser-only, self-contained, and must not send
+identity, scores, progress, clicks, answers, or telemetry anywhere.
+
+## Before push
+
+For every UI or interaction change:
+
+1. Review the diff. Confirm every file is in scope and no protected term or
+   network call was added.
+2. Run the repository build or validation command.
+3. Open the affected page locally at desktop and tablet widths.
+4. Exercise every changed button, link, input, and keyboard path. Assert each
+   produces visible output or the expected navigation within a bounded wait.
+5. Check accessible names, labels, focus order, keyboard activation, visible
+   focus, and console errors.
+
+Do not push or claim the change is ready if any check fails. If no suitable
+automated seam exists, report that instead of adding a fake passing test.
