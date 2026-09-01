@@ -6,6 +6,6 @@ export function createRadiationDeflectionLab(t) {
     slug: 'radiation-deflection',
     titleKey: 'tools.radiationDeflection.title',
     className: 'tool-radiation-deflection-lab',
-    extraParams: () => '&v=20260829',
+    extraParams: () => '&v=20260901',
   });
 }

@@ -164,6 +164,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-ping, .animate-pulse { animation: none !important; }
 }
+button:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
 html.s3phy-embed header,
 html.s3phy-embed footer,
 body.embed-mode header,
@@ -234,7 +238,7 @@ body.embed-mode #rad-canvas-wrap {
             </div>
           </div>
           <div id="rad-canvas-wrap" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-[calc(100dvh-12.5rem)] min-h-[24rem]">
-            <canvas id="radCanvas" class="w-full h-full block bg-slate-950"></canvas>
+            <canvas id="radCanvas" class="w-full h-full block bg-slate-950" role="img" aria-label="α β γ Deflection Sandbox"></canvas>
           </div>
         </div>
       </div>
@@ -243,16 +247,16 @@ body.embed-mode #rad-canvas-wrap {
         <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-rose-500">
           <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.species">Radiation emitted</h4>
           <div class="grid grid-cols-3 gap-2">
-            <button type="button" id="btn-alpha" onclick="toggleSpecies('alpha')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">α</button>
-            <button type="button" id="btn-beta" onclick="toggleSpecies('beta')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">β</button>
-            <button type="button" id="btn-gamma" onclick="toggleSpecies('gamma')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">γ</button>
+            <button type="button" id="btn-alpha" onclick="toggleSpecies('alpha')" class="px-2 py-2.5 rounded-xl border text-xs font-bold" aria-pressed="true">α</button>
+            <button type="button" id="btn-beta" onclick="toggleSpecies('beta')" class="px-2 py-2.5 rounded-xl border text-xs font-bold" aria-pressed="true">β</button>
+            <button type="button" id="btn-gamma" onclick="toggleSpecies('gamma')" class="px-2 py-2.5 rounded-xl border text-xs font-bold" aria-pressed="true">γ</button>
           </div>
           <p class="text-[10px] text-slate-500 mt-2" data-i18n="ctrl.speciesHint">Turn each on or off. All three can fire together.</p>
         </div>
 
         <div class="glass-panel rounded-2xl p-5">
           <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.efield">Electric field</h4>
-          <button type="button" id="btn-e-on" onclick="toggleEField()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold flex items-center justify-between mb-2">
+          <button type="button" id="btn-e-on" onclick="toggleEField()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold flex items-center justify-between mb-2" aria-pressed="false">
             <span data-i18n="ctrl.eToggle">E-field</span>
             <span id="lbl-e-state" class="px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600">OFF</span>
           </button>
@@ -264,7 +268,7 @@ body.embed-mode #rad-canvas-wrap {
 
         <div class="glass-panel rounded-2xl p-5">
           <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.bfield">Magnetic field</h4>
-          <button type="button" id="btn-b-on" onclick="toggleBField()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold flex items-center justify-between mb-2">
+          <button type="button" id="btn-b-on" onclick="toggleBField()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold flex items-center justify-between mb-2" aria-pressed="false">
             <span data-i18n="ctrl.bToggle">B-field</span>
             <span id="lbl-b-state" class="px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600">OFF</span>
           </button>
@@ -275,6 +279,11 @@ body.embed-mode #rad-canvas-wrap {
         </div>
 
         <button type="button" onclick="resetAll()" class="w-full px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.reset">Reset</button>
+
+        <div class="glass-panel rounded-2xl p-5">
+          <h4 class="font-bold text-sm text-slate-800 mb-2" data-i18n="concept.title">Curriculum concept</h4>
+          <p id="concept-body" class="text-xs text-slate-600 leading-relaxed" aria-live="polite"></p>
+        </div>
       </div>
     </div>
     </div>
@@ -431,6 +440,8 @@ body.embed-mode #rad-canvas-wrap {
     });
     document.getElementById('lang-en').classList.toggle('lang-active', currentLang === 'en');
     document.getElementById('lang-zh').classList.toggle('lang-active', currentLang === 'zh-Hant');
+    const canvasEl = document.getElementById('radCanvas');
+    if (canvasEl) canvasEl.setAttribute('aria-label', t('sim.title'));
     refreshControls();
     syncFsUi();
     if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -474,9 +485,9 @@ body.embed-mode #rad-canvas-wrap {
   };
 
   window.resetAll = function () {
-    emitAlpha = false;
-    emitBeta = false;
-    emitGamma = false;
+    emitAlpha = true;
+    emitBeta = true;
+    emitGamma = true;
     eOn = false;
     bOn = false;
     eDir = null;
@@ -498,13 +509,28 @@ body.embed-mode #rad-canvas-wrap {
     }
   };
 
+  function conceptPath() {
+    const eReady = eOn && !!eDir;
+    const bReady = bOn && !!bDir;
+    if (!eReady && !bReady) return 'concept.off';
+    if (eReady && !bReady) return 'concept.eOnly';
+    if (!eReady && bReady) return 'concept.bOnly';
+    const oppose = (eDir === 'up') === (bDir === 'into');
+    if (eDir === 'up' && bDir === 'into') return 'concept.eUpBInto';
+    return oppose ? 'concept.cancel' : 'concept.add';
+  }
+
   function refreshControls() {
     const onCls = 'px-2 py-0.5 rounded text-[9px] font-black bg-indigo-600 text-white';
     const offCls = 'px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600';
     const eReady = eOn && !!eDir;
     const bReady = bOn && !!bDir;
-    document.getElementById('btn-e-on').classList.toggle('ctrl-on', eOn);
-    document.getElementById('btn-b-on').classList.toggle('ctrl-on', bOn);
+    const eBtn = document.getElementById('btn-e-on');
+    const bBtn = document.getElementById('btn-b-on');
+    eBtn.classList.toggle('ctrl-on', eReady);
+    bBtn.classList.toggle('ctrl-on', bReady);
+    eBtn.setAttribute('aria-pressed', eReady ? 'true' : 'false');
+    bBtn.setAttribute('aria-pressed', bReady ? 'true' : 'false');
     const eLbl = document.getElementById('lbl-e-state');
     const bLbl = document.getElementById('lbl-b-state');
     eLbl.textContent = eReady ? t('common.on') : t('common.off');
@@ -515,10 +541,22 @@ body.embed-mode #rad-canvas-wrap {
     document.getElementById('btn-e-down').classList.toggle('ctrl-on', eOn && eDir === 'down');
     document.getElementById('btn-b-into').classList.toggle('ctrl-on', bOn && bDir === 'into');
     document.getElementById('btn-b-out').classList.toggle('ctrl-on', bOn && bDir === 'out');
+    document.getElementById('btn-e-up').setAttribute('aria-pressed', eOn && eDir === 'up' ? 'true' : 'false');
+    document.getElementById('btn-e-down').setAttribute('aria-pressed', eOn && eDir === 'down' ? 'true' : 'false');
+    document.getElementById('btn-b-into').setAttribute('aria-pressed', bOn && bDir === 'into' ? 'true' : 'false');
+    document.getElementById('btn-b-out').setAttribute('aria-pressed', bOn && bDir === 'out' ? 'true' : 'false');
     const idle = 'px-2 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold text-slate-500';
-    document.getElementById('btn-alpha').className = emitAlpha ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-alpha' : idle;
-    document.getElementById('btn-beta').className = emitBeta ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-beta' : idle;
-    document.getElementById('btn-gamma').className = emitGamma ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-gamma' : idle;
+    const alphaBtn = document.getElementById('btn-alpha');
+    const betaBtn = document.getElementById('btn-beta');
+    const gammaBtn = document.getElementById('btn-gamma');
+    alphaBtn.className = emitAlpha ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-alpha' : idle;
+    betaBtn.className = emitBeta ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-beta' : idle;
+    gammaBtn.className = emitGamma ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-gamma' : idle;
+    alphaBtn.setAttribute('aria-pressed', emitAlpha ? 'true' : 'false');
+    betaBtn.setAttribute('aria-pressed', emitBeta ? 'true' : 'false');
+    gammaBtn.setAttribute('aria-pressed', emitGamma ? 'true' : 'false');
+    const conceptBody = document.getElementById('concept-body');
+    if (conceptBody) conceptBody.textContent = t(conceptPath());
   }
 
   window.toggleSpecies = function (kind) {
@@ -530,11 +568,13 @@ body.embed-mode #rad-canvas-wrap {
   window.toggleEField = function () {
     eOn = !eOn;
     if (!eOn) eDir = null;
+    else if (!eDir) eDir = 'up';
     refreshControls();
   };
   window.toggleBField = function () {
     bOn = !bOn;
     if (!bOn) bDir = null;
+    else if (!bDir) bDir = 'into';
     refreshControls();
   };
   window.setEDir = function (dir) {

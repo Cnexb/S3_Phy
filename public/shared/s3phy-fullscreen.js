@@ -112,10 +112,15 @@
   document.addEventListener('mozfullscreenchange', sync);
 
   if (typeof MutationObserver === 'function') {
-    new MutationObserver(sync).observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    function observeBody() {
+      if (!document.body) return;
+      new MutationObserver(sync).observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+    }
+    if (document.body) observeBody();
+    else document.addEventListener('DOMContentLoaded', observeBody);
   }
 
   window.addEventListener('s3phy:exit-fullscreen', sync);
