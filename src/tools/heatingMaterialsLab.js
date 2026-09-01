@@ -6,6 +6,6 @@ export function createHeatingMaterialsLab(t) {
     slug: 'boiling-water',
     titleKey: 'tools.heatingMaterials.title',
     className: 'tool-heating-materials',
-    extraParams: () => '&mode=heatCapacity&v=20',
+    extraParams: () => '&mode=heatCapacity&v=21',
   });
 }

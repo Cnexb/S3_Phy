@@ -15,7 +15,7 @@ const STRINGS = {
   en: {
     title: 'Heating Energy Labs',
     titlePowerTime: 'Boiling Water Energy Lab',
-    titleHeatCapacity: 'Relationship of specific heat capacity and temperature difference',
+    titleHeatCapacity: 'The relationship between specific heat capacity and temperature difference',
     subtitle: 'Explore energy transfer through interactive heating experiments.',
     subtitlePowerTime: 'Change heater power and time to see whether the water boils.',
     subtitleHeatCapacity: 'Give the same energy to different materials and compare the temperature rise.',
@@ -95,7 +95,7 @@ const STRINGS = {
   zh: {
     title: '加熱能量實驗室',
     titlePowerTime: '煲水能量實驗室',
-    titleHeatCapacity: '比熱容量與溫度差的關係',
+    titleHeatCapacity: '比熱容量與溫度差之間的關係',
     subtitle: '透過互動加熱實驗探索能量傳送。',
     subtitlePowerTime: '調校發熱器功率與時間，觀察水會否沸騰。',
     subtitleHeatCapacity: '輸入相同能量，比較不同物料的升溫幅度。',
