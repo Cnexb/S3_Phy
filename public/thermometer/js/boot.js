@@ -1,4 +1,4 @@
-import { createThermometerLab, createFaultyScaleCalibrationLab } from './lab.js?v=48';
+import { createThermometerLab, createFaultyScaleCalibrationLab } from './lab.js?v=49';
 import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js';
 
 const root = document.getElementById('app');

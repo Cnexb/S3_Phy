@@ -224,7 +224,6 @@ export function createThermometerLab(t, options = {}) {
   wrap.innerHTML = isLiquidDesign ? `
     <div class="tl-head">
       <h2 class="tl-title">${title}</h2>
-      <div class="tl-sub">${subtitle}</div>
     </div>
     <div class="tl-part-tabs" id="tl-part-tabs" role="tablist">
       <button type="button" class="tl-part-tab active" data-part="bulb" role="tab" aria-selected="true">
@@ -242,17 +241,16 @@ export function createThermometerLab(t, options = {}) {
     </div>
     <div class="tl-dash tl-dash--design-simple">
       <div class="tl-viz-phys tl-viz-phys--large">
-        <button type="button" class="tl-design-controls-toggle" id="tl-design-controls-toggle" aria-expanded="true">
+        <button type="button" class="tl-design-controls-toggle" id="tl-design-controls-toggle" aria-expanded="true" aria-label="${t('tools.floatingControls.hideParams')}">
           <span aria-hidden="true">⚙</span>
-          <strong data-design-toggle-text>${t('tools.floatingControls.hideParams')}</strong>
+          <strong data-design-toggle-text class="tl-sr-only">${t('tools.floatingControls.hideParams')}</strong>
         </button>
         <canvas class="tl-canvas-phys" id="tl-thermometerCanvas" width="720" height="720"></canvas>
       </div>
 
       <aside class="tl-design-simple-side">
         <div class="tl-focus-card" id="tl-focus-card" data-focus="bulb">
-          <div class="tl-focus-badge" id="tl-focus-badge">${t('tools.thermometerLab.design.tabBulb')}</div>
-          <p class="tl-focus-explain" id="tl-focus-explain"></p>
+          <p class="tl-focus-explain" id="tl-focus-explain" hidden></p>
           <div class="tl-focus-effect" id="tl-focus-effect">
             <span class="tl-focus-effect-k" id="tl-focus-effect-k"></span>
             <b class="tl-focus-effect-v" id="tl-focus-effect-v"></b>
@@ -271,7 +269,7 @@ export function createThermometerLab(t, options = {}) {
               <b class="tl-design-v" id="tl-val-response-time">0.65 s</b>
             </div>
           </div>
-          <p class="tl-design-cue" id="tl-design-cue"></p>
+          <p class="tl-design-cue" id="tl-design-cue" hidden></p>
 
           <div class="tl-focus-control" data-control="bulb">
             <div class="tl-lr">
@@ -279,10 +277,7 @@ export function createThermometerLab(t, options = {}) {
               <input type="number" id="tl-input-bulb-vol" class="tl-param-num" min="10" max="1000" step="10" value="200">
             </div>
             <input type="range" id="tl-slider-bulb-vol" min="10" max="1000" step="10" value="200">
-            <div class="tl-reset-row">
-              <p class="tl-hint">${t('tools.thermometerLab.design.bulbHint')}</p>
-              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bulb">${t('tools.thermometerLab.design.resetPart')}</button>
-            </div>
+            <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bulb">${t('tools.thermometerLab.design.resetPart')}</button>
           </div>
           <div class="tl-focus-control" data-control="bore" hidden>
             <div class="tl-lr">
@@ -290,10 +285,7 @@ export function createThermometerLab(t, options = {}) {
               <input type="number" id="tl-input-capillary-bore" class="tl-param-num" min="0.05" max="2.0" step="0.05" value="0.3">
             </div>
             <input type="range" id="tl-slider-capillary-bore" min="0.05" max="2.0" step="0.05" value="0.3">
-            <div class="tl-reset-row">
-              <p class="tl-hint">${t('tools.thermometerLab.design.boreHint')}</p>
-              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bore">${t('tools.thermometerLab.design.resetPart')}</button>
-            </div>
+            <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bore">${t('tools.thermometerLab.design.resetPart')}</button>
           </div>
           <div class="tl-focus-control" data-control="wall" hidden>
             <div class="tl-lr">
@@ -301,36 +293,27 @@ export function createThermometerLab(t, options = {}) {
               <input type="number" id="tl-input-wall-thick" class="tl-param-num" min="0.05" max="3.0" step="0.05" value="0.5">
             </div>
             <input type="range" id="tl-slider-wall-thick" min="0.05" max="3.0" step="0.05" value="0.5">
-            <div class="tl-reset-row">
-              <p class="tl-hint">${t('tools.thermometerLab.design.wallHint')}</p>
-              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-wall">${t('tools.thermometerLab.design.resetPart')}</button>
-            </div>
+            <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-wall">${t('tools.thermometerLab.design.resetPart')}</button>
           </div>
           <button type="button" class="tl-btn tl-reset-all-btn" id="tl-btn-reset-design">${t('tools.thermometerLab.design.resetAll')}</button>
         </div>
 
         <div class="tl-bath-bar tl-bath-bar--simple">
           <div class="tl-beaker-overlay">
-            <span>${t('tools.thermometerLab.design.bath')}: <b id="tl-bath-state">${t('tools.thermometerLab.design.bathStateWater')}</b></span>
             <span><b class="tl-temp-badge" id="tl-bath-temp-display">25.0°C</b></span>
           </div>
-          <div class="tl-lr">
-            <span>T<sub>bath</sub></span>
-            <span class="tl-badge tl-lr-value tl-val-bath-temp" id="tl-val-bath-temp">25.0 °C</span>
-          </div>
-          <input type="range" id="tl-bath-temp-slider" min="0" max="200" step="0.5" value="25.0">
+          <span id="tl-bath-state" hidden>${t('tools.thermometerLab.design.bathStateWater')}</span>
+          <span class="tl-val-bath-temp" id="tl-val-bath-temp" hidden>25.0 °C</span>
+          <input type="range" id="tl-bath-temp-slider" min="0" max="200" step="0.5" value="25.0" aria-label="T">
           <div class="tl-btn-group">
-            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice" type="button">0°C</button>
-            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room" type="button">25°C</button>
-            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam" type="button">100°C</button>
-            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil" type="button">150°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice" type="button">0°</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room" type="button">25°</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam" type="button">100°</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil" type="button">150°</button>
           </div>
-          <div class="tl-cg" style="margin-top:6px">
-            <span class="tl-section-label">${t('tools.thermometerLab.design.liquid')}</span>
-            <div class="tl-seg" role="group">
-              <button type="button" class="tl-seg-btn" id="tl-card-mercury">Hg</button>
-              <button type="button" class="tl-seg-btn active-alcohol" id="tl-card-alcohol">Alcohol</button>
-            </div>
+          <div class="tl-seg" role="group" aria-label="${t('tools.thermometerLab.design.liquid')}">
+            <button type="button" class="tl-seg-btn" id="tl-card-mercury">Hg</button>
+            <button type="button" class="tl-seg-btn active-alcohol" id="tl-card-alcohol">Alc</button>
           </div>
           <div class="tl-warning-banner" id="tl-alcohol-boiling-warning">
             ${t('tools.thermometerLab.design.alcoholWarn')}
@@ -634,9 +617,9 @@ export function createThermometerLab(t, options = {}) {
     input.addEventListener('blur', () => applyValue(parseFloat(input.value)));
   }
 
-  // Design mode: wide scene for side-by-side reference vs current thermometer
-  const DESIGN_SCENE_W = 780;
-  const DESIGN_SCENE_H = 600;
+  // Design mode: compact scene so the two thermometers fill the canvas
+  const DESIGN_SCENE_W = 520;
+  const DESIGN_SCENE_H = 580;
   const PHYS_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : 460;
   const PHYS_HEIGHT = isLiquidDesign ? DESIGN_SCENE_H : 340;
   const LABEL_MARGIN = 8;
@@ -645,7 +628,7 @@ export function createThermometerLab(t, options = {}) {
   const PHYS_SCENE_OFFSET_Y = isLiquidDesign ? 0 : 44;
   let activeSceneW = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
   const SCENE_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
-  const BEAKER_W = isLiquidDesign ? 560 : 130;
+  const BEAKER_W = isLiquidDesign ? 380 : 130;
   const GRAPH_WIDTH = 640;
   const GRAPH_HEIGHT = 420;
 
@@ -657,8 +640,8 @@ export function createThermometerLab(t, options = {}) {
         beakerX: sceneW / 2 - beakerW / 2,
         beakerW,
         thermometerX: sceneW / 2,
-        leftThermometerX: sceneW * 0.30,
-        rightThermometerX: sceneW * 0.70,
+        leftThermometerX: sceneW * 0.28,
+        rightThermometerX: sceneW * 0.72,
         sceneW,
       };
     }
@@ -1491,8 +1474,8 @@ export function createThermometerLab(t, options = {}) {
     const isCompare = design.role === 'reference' || design.role === 'current';
     // Design mode: tall stem + oversized bulb for classroom / TV visibility
     // Compare mode leaves room for the Ref / Your-design caption badges at the top
-    const stemTop = isLiquidDesign ? (isCompare ? 72 : 14) : 20;
-    const bulbScale = isLiquidDesign ? (isCompare ? 3.2 : 4.4) : 1;
+    const stemTop = isLiquidDesign ? (isCompare ? 34 : 14) : 20;
+    const bulbScale = isLiquidDesign ? (isCompare ? 3.95 : 4.4) : 1;
     const bulbRadius = getBulbVisualRadiusFor(design.bulbVolume) * bulbScale;
     const bulbCenterY = isLiquidDesign
       ? 520 + Math.max(0, bulbRadius - BULB_RADIUS_REF * bulbScale) * 0.15
@@ -2266,28 +2249,25 @@ export function createThermometerLab(t, options = {}) {
     return `${t('tools.thermometerLab.design.range')} ≈ ${rangeC.toFixed(0)} °C`;
   }
 
-  function drawCompareCaption(ctx, x, y, title, metric, temperature, accent) {
+  function drawCompareCaption(ctx, x, y, title, temperature, accent) {
     ctx.save();
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const boxW = 200;
-    const boxH = 60;
+    const boxW = 86;
+    const boxH = 32;
     ctx.fillStyle = '#ffffff';
     ctx.strokeStyle = accent;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 10);
+    ctx.roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 8);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = accent;
-    ctx.font = 'bold 14px "Noto Sans TC", Arial, sans-serif';
-    ctx.fillText(title, x, y - 17);
-    ctx.fillStyle = '#334155';
-    ctx.font = '12px "Noto Sans TC", Arial, sans-serif';
-    ctx.fillText(metric, x, y + 1);
+    ctx.font = 'bold 12px "Noto Sans TC", Arial, sans-serif';
+    ctx.fillText(title, x, y - 7);
     ctx.fillStyle = '#0f766e';
-    ctx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
-    ctx.fillText(`T = ${temperature.toFixed(1)} °C`, x, y + 19);
+    ctx.font = 'bold 11px "Noto Sans TC", Arial, sans-serif';
+    ctx.fillText(`${temperature.toFixed(0)} °C`, x, y + 8);
     ctx.restore();
   }
 
@@ -2296,7 +2276,7 @@ export function createThermometerLab(t, options = {}) {
       const { cssW, cssH, ratio } = syncDesignCanvasSize();
       physCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
       physCtx.clearRect(0, 0, cssW, cssH);
-      const pad = 8;
+      const pad = 4;
       const availW = Math.max(1, cssW - pad * 2);
       const availH = Math.max(1, cssH - pad * 2);
       activeSceneW = DESIGN_SCENE_W;
@@ -2323,8 +2303,8 @@ export function createThermometerLab(t, options = {}) {
       physCtx.lineWidth = 2;
       physCtx.setLineDash([6, 6]);
       physCtx.beginPath();
-      physCtx.moveTo(sceneW / 2, 10);
-      physCtx.lineTo(sceneW / 2, 440);
+      physCtx.moveTo(sceneW / 2, 8);
+      physCtx.lineTo(sceneW / 2, 510);
       physCtx.stroke();
       physCtx.setLineDash([]);
       physCtx.restore();
@@ -2352,18 +2332,16 @@ export function createThermometerLab(t, options = {}) {
       drawCompareCaption(
         physCtx,
         physLayout.leftThermometerX,
-        34,
+        22,
         t('tools.thermometerLab.design.compareRef'),
-        getCompareMetricLine(refDesign),
         refTemp,
         '#64748b'
       );
       drawCompareCaption(
         physCtx,
         physLayout.rightThermometerX,
-        34,
+        22,
         t('tools.thermometerLab.design.compareCurrent'),
-        getCompareMetricLine(curDesign),
         curTemp,
         state.focusPart === 'bore' ? '#9333ea'
           : state.focusPart === 'wall' ? '#0284c7'
@@ -3164,6 +3142,12 @@ export function createThermometerLab(t, options = {}) {
       dash.classList.toggle('controls-collapsed', designCollapsed);
       designSide?.classList.toggle('is-collapsed', designCollapsed);
       designToggle?.setAttribute('aria-expanded', String(!designCollapsed));
+      designToggle?.setAttribute(
+        'aria-label',
+        designCollapsed
+          ? t('tools.floatingControls.showParams')
+          : t('tools.floatingControls.hideParams'),
+      );
       if (designToggleText) {
         designToggleText.textContent = designCollapsed
           ? t('tools.floatingControls.showParams')
