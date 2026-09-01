@@ -18,7 +18,7 @@ const HEAT_TOPICS = [
     titleKey: 'topic.heatInternalEnergy',
     fileEn: 'heat-internal-energy-en.pdf',
     fileZh: 'heat-internal-energy-zhHant.pdf',
-    tool: 'specificHeat',
+    tool: 'heatingMaterials',
   },
   {
     id: 'changeOfState',
@@ -54,19 +54,14 @@ const HEAT_SUMMARY_ROWS = HEAT_TOPICS.map((r) => {
 });
 
 const TOOL_ORDER = [
-  'liquid', 'resistance', 'thermistor', 'faultyCalibration',
-  'boilingWater', 'specificHeat', 'thermalMixing', 'changeOfState', 'heatFlow', 'heatTransfer'
+  'liquid', 'boilingWater', 'heatingMaterials', 'changeOfState', 'heatFlow', 'heatTransfer',
 ];
 const TOOL_STORAGE_KEY = 's3phy.heat.tool';
 
 const TOOL_LOADERS = {
-  faultyCalibration: () => import('../tools/thermometerLab.js').then((m) => m.createFaultyScaleCalibrationLab),
   liquid: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
-  resistance: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
-  thermistor: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
   boilingWater: () => import('../tools/boilingWaterLab.js').then((m) => m.createBoilingWaterLab),
-  specificHeat: () => import('../tools/specificHeatLab.js').then((m) => m.createSpecificHeatLab),
-  thermalMixing: () => import('../tools/thermalMixingLab.js').then((m) => m.createThermalMixingLab),
+  heatingMaterials: () => import('../tools/heatingMaterialsLab.js').then((m) => m.createHeatingMaterialsLab),
   changeOfState: () => import('../tools/changeOfStateLab.js').then((m) => m.createChangeOfStateLab),
   heatFlow: () => import('../tools/heatFlowLab.js').then((m) => m.createHeatFlowLab),
   heatTransfer: () => import('../tools/heatTransferLab.js').then((m) => m.createHeatTransferLab),
@@ -74,13 +69,9 @@ const TOOL_LOADERS = {
 
 function toolLabel(id) {
   const map = {
-    faultyCalibration: 'tools.faultyCalibration.title',
     liquid: 'tools.thermometerLab.liquid.title',
-    resistance: 'tools.thermometerLab.resistance.title',
-    thermistor: 'tools.thermometerLab.thermistor.title',
     boilingWater: 'tools.boilingWater.title',
-    specificHeat: 'tools.specificHeat.title',
-    thermalMixing: 'tools.thermalMixing.title',
+    heatingMaterials: 'tools.heatingMaterials.title',
     changeOfState: 'tools.changeOfState.title',
     heatFlow: 'tools.heatFlow.title',
     heatTransfer: 'tools.heatTransfer.title',
@@ -106,12 +97,6 @@ export function mountHeatHub(root) {
     { value: 'heatTransfer', labelKey: 'flashcards.deck.heatTransfer' },
   ];
 
-  const THERMOMETER_TYPES = {
-    liquid: 'liquid',
-    resistance: 'resistance',
-    thermistor: 'thermistor',
-  };
-
   function cleanupActiveLab() {
     cleanupLabInstance(activeLabInstance);
     activeLabInstance = null;
@@ -123,11 +108,7 @@ export function mountHeatHub(root) {
     const loader = TOOL_LOADERS[toolId];
     if (!loader) return;
     const factory = await loader();
-    if (THERMOMETER_TYPES[toolId]) {
-      activeLabInstance = factory(t, { type: THERMOMETER_TYPES[toolId] });
-    } else {
-      activeLabInstance = factory(t);
-    }
+    activeLabInstance = toolId === 'liquid' ? factory(t, { type: 'liquid' }) : factory(t);
     stage.appendChild(activeLabInstance);
   }
 

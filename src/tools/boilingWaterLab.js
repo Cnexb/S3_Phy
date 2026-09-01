@@ -6,6 +6,6 @@ export function createBoilingWaterLab(t) {
     slug: 'boiling-water',
     titleKey: 'tools.boilingWater.title',
     className: 'tool-boiling-water',
-    extraParams: () => '&v=18',
+    extraParams: () => '&mode=powerTime&v=19',
   });
 }

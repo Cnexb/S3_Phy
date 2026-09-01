@@ -14,7 +14,11 @@ const MEDIA = {
 const STRINGS = {
   en: {
     title: 'Heating Energy Labs',
+    titlePowerTime: 'Boiling Water Energy Lab',
+    titleHeatCapacity: 'Heating materials',
     subtitle: 'Explore energy transfer through interactive heating experiments.',
+    subtitlePowerTime: 'Change heater power and time to see whether the water boils.',
+    subtitleHeatCapacity: 'Give the same energy to different materials and compare the temperature rise.',
     tabPowerTime: 'Boiling water',
     tabHeatCapacity: 'Heating materials',
     switchLanguage: '繁體中文',
@@ -90,7 +94,11 @@ const STRINGS = {
   },
   zh: {
     title: '加熱能量實驗室',
+    titlePowerTime: '煲水能量實驗室',
+    titleHeatCapacity: '加熱物料',
     subtitle: '透過互動加熱實驗探索能量傳送。',
+    subtitlePowerTime: '調校發熱器功率與時間，觀察水會否沸騰。',
+    subtitleHeatCapacity: '輸入相同能量，比較不同物料的升溫幅度。',
     tabPowerTime: '煲水',
     tabHeatCapacity: '加熱物料',
     switchLanguage: 'English',
@@ -167,14 +175,20 @@ const STRINGS = {
 };
 
 const root = document.getElementById('app');
-let lang = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'zh';
+const pageParams = new URLSearchParams(location.search);
+const LAB_MODES = new Set(['powerTime', 'heatCapacity']);
+function modeFromUrl() {
+  const mode = pageParams.get('mode');
+  return LAB_MODES.has(mode) ? mode : 'powerTime';
+}
+let lang = pageParams.get('lang') === 'en' ? 'en' : 'zh';
 let power = 0;
 let duration = 0;
 let elapsed = 0;
 let running = false;
 let animationFrame = 0;
 let lastFrame = 0;
-let activeTab = 'powerTime';
+let activeTab = modeFromUrl();
 let controlsCollapsed = sessionStorage.getItem('s3phy-boiling-water-controls-collapsed') === 'true';
 let mass = 1;
 let inputEnergyJ = 20_000;
@@ -219,15 +233,24 @@ function renderMaterialCard(key, label) {
     </article>`;
 }
 
+function pageTitle() {
+  return activeTab === 'heatCapacity' ? t('titleHeatCapacity') : t('titlePowerTime');
+}
+
+function pageSubtitle() {
+  return activeTab === 'heatCapacity' ? t('subtitleHeatCapacity') : t('subtitlePowerTime');
+}
+
 function render() {
   if (!root) return;
   document.documentElement.lang = lang === 'zh' ? 'zh-HK' : 'en';
+  document.title = pageTitle();
   const showLabFullscreen = !document.documentElement.classList.contains('s3phy-embed');
   root.innerHTML = `
     <main class="bw-wrap">
       <header class="bw-head">
-        <h1 class="bw-title">${t('title')}</h1>
-        <p class="bw-subtitle">${t('subtitle')}</p>
+        <h1 class="bw-title">${pageTitle()}</h1>
+        <p class="bw-subtitle">${pageSubtitle()}</p>
         <div class="bw-head-actions">
           ${showLabFullscreen ? `<button class="bw-head-btn" type="button" data-fullscreen aria-pressed="false">
             <span class="bw-fullscreen-icon" aria-hidden="true">⛶</span>
@@ -237,16 +260,7 @@ function render() {
         </div>
       </header>
 
-      <nav class="bw-tabs" aria-label="Energy labs">
-        <button class="bw-tab ${activeTab === 'powerTime' ? 'is-active' : ''}" type="button" data-tab="powerTime">
-          ${t('tabPowerTime')}
-        </button>
-        <button class="bw-tab ${activeTab === 'heatCapacity' ? 'is-active' : ''}" type="button" data-tab="heatCapacity">
-          ${t('tabHeatCapacity')}
-        </button>
-      </nav>
-
-      <section class="bw-dashboard ${controlsCollapsed ? 'controls-collapsed' : ''} ${activeTab === 'powerTime' ? '' : 'is-hidden'}" data-panel="powerTime">
+      ${activeTab === 'heatCapacity' ? '' : `<section class="bw-dashboard ${controlsCollapsed ? 'controls-collapsed' : ''}" data-panel="powerTime">
         <div class="bw-card bw-viz">
           <button class="bw-controls-toggle bw-controls-toggle--overlay" type="button" data-toggle-controls aria-expanded="${String(!controlsCollapsed)}">
             <span aria-hidden="true">⚙</span>
@@ -349,9 +363,9 @@ function render() {
           </div>
         </aside>
 
-      </section>
+      </section>`}
 
-      <section class="bw-dashboard bw-heat-dashboard ${controlsCollapsed ? 'controls-collapsed' : ''} ${activeTab === 'heatCapacity' ? '' : 'is-hidden'}" data-panel="heatCapacity">
+      ${activeTab === 'heatCapacity' ? `<section class="bw-dashboard bw-heat-dashboard ${controlsCollapsed ? 'controls-collapsed' : ''}" data-panel="heatCapacity">
         <div class="bw-card bw-parallel-demo">
           <button class="bw-controls-toggle bw-controls-toggle--overlay" type="button" data-toggle-controls aria-expanded="${String(!controlsCollapsed)}">
             <span aria-hidden="true">⚙</span>
@@ -401,25 +415,15 @@ function render() {
           <p class="bw-threshold-note">${t('heatCapacityNote')}</p>
         </aside>
 
-      </section>
+      </section>` : ''}
     </main>`;
 
   bindEvents();
-  updateDisplay();
-  updateHeatCapacityDisplay();
+  if (activeTab === 'heatCapacity') updateHeatCapacityDisplay();
+  else updateDisplay();
 }
 
 function bindEvents() {
-  root.querySelectorAll('[data-tab]').forEach((button) => {
-    button.addEventListener('click', () => {
-      activeTab = button.dataset.tab;
-      running = false;
-      shcRunning = false;
-      cancelAnimationFrame(animationFrame);
-      cancelAnimationFrame(shcAnimationFrame);
-      render();
-    });
-  });
   root.querySelector('[data-language]')?.addEventListener('click', () => {
     lang = lang === 'en' ? 'zh' : 'en';
     render();
@@ -597,7 +601,7 @@ function stepShcHeating(now) {
 }
 
 function updateDisplay() {
-  if (!root) return;
+  if (!root || activeTab !== 'powerTime') return;
   const energy = power * elapsed;
   const predictedEnergy = power * duration;
   const boilingProgress = Math.min(energy / BOILING_THRESHOLD_J, 1);
@@ -664,7 +668,7 @@ function updateDisplay() {
 }
 
 function updateHeatCapacityDisplay() {
-  if (!root) return;
+  if (!root || activeTab !== 'heatCapacity') return;
   const deliveredEnergy = inputEnergyJ * shcProgress;
   const maximumTargetRise = inputEnergyJ / (mass * MEDIA.copper.c);
   root.querySelector('[data-mass]').value = String(mass);

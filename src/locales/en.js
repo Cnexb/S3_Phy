@@ -240,6 +240,7 @@ export const en = {
   'flashcards.deck.heatTransfer': 'Heat transfer',
   'tools.thermometerLab.title': 'Thermometry & Calibration Lab',
   'tools.boilingWater.title': 'Boiling Water Energy Lab',
+  'tools.heatingMaterials.title': 'Heating materials',
   'tools.specificHeat.title': 'Specific Heat Capacity Lab',
   'tools.thermalMixing.title': 'Thermal Mixing Lab',
   'tools.changeOfState.title': 'Change of State Lab',
