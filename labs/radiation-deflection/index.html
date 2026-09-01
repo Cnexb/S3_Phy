@@ -192,11 +192,6 @@ body.embed-mode #rad-canvas-wrap {
         </div>
 
         <button type="button" onclick="resetAll()" class="w-full px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.reset">Reset</button>
-
-        <div class="glass-panel rounded-2xl p-5">
-          <h4 class="font-bold text-sm text-slate-800 mb-2" data-i18n="concept.title">Curriculum concept</h4>
-          <p id="concept-body" class="text-xs text-slate-600 leading-relaxed" aria-live="polite"></p>
-        </div>
       </div>
     </div>
     </div>
@@ -250,15 +245,6 @@ body.embed-mode #rad-canvas-wrap {
         bOut: 'Out of paper ⊙',
         reset: 'Reset'
       },
-      concept: {
-        title: 'Curriculum concept',
-        off: 'Fields are off. α, β and γ all travel in a straight horizontal line. Turn E and B on separately, or together.',
-        eOnly: 'E-field only: the path is a parabola. α (red) and β (blue) curve opposite ways. β bends much more because it is much lighter. γ (yellow) is uncharged — no deflection.',
-        bOnly: 'B-field only: the path is a circular arc. Force is always perpendicular to velocity. β has a much smaller radius than α, so it deflects more. γ goes straight.',
-        cancel: 'E and B are both on and the forces oppose. |FE| = |FB|, so net force is zero. α, β and γ all stay on a horizontal line.',
-        add: 'E and B are both on and the forces add. Net force is twice one field, so α and β bend more than with E or B alone. β still bends more than α. γ stays straight.',
-        eUpBInto: 'E up + B into paper: forces on α oppose — |FE| = |FB|, so the path stays horizontal. E down + B into: both forces on α point down — more bend. β is opposite.'
-      },
       draw: {
         source: 'SOURCE',
         detector: 'DETECTOR',
@@ -293,15 +279,6 @@ body.embed-mode #rad-canvas-wrap {
         bInto: '入紙 ⊗',
         bOut: '出紙 ⊙',
         reset: '重設'
-      },
-      concept: {
-        title: '課程概念',
-        off: '電場與磁場均關閉。α、β、γ 都沿水平直線前進。可分開或同時開啟 E 與 B。',
-        eOnly: '只有電場：軌跡為拋物線。α（紅）與 β（藍）向相反方向彎曲。β 遠較輕，偏轉明顯較大。γ（黃）不帶電，不偏轉。',
-        bOnly: '只有磁場：軌跡為圓弧。磁力永遠垂直速度。β 半徑遠小於 α，故偏轉較大。γ 直線前進。',
-        cancel: 'E 與 B 同時開啟且兩力相反。|FE| = |FB|，淨力為零。α、β、γ 都沿水平線前進。',
-        add: 'E 與 B 同時開啟且兩力同向。淨力為單一場的兩倍，α 與 β 比單獨開 E 或 B 時更彎。β 仍比 α 彎得更多。γ 保持直線。',
-        eUpBInto: '電場向上 + 磁進入紙：α 的兩力相反——|FE| = |FB|，沿水平線。電場向下 + 磁進入紙：α 的兩力都向下——更彎。β 方向相反。'
       },
       draw: {
         source: '放射源',
@@ -383,17 +360,6 @@ body.embed-mode #rad-canvas-wrap {
     refreshControls();
   };
 
-  function conceptPath() {
-    const eReady = eOn && !!eDir;
-    const bReady = bOn && !!bDir;
-    if (!eReady && !bReady) return 'concept.off';
-    if (eReady && !bReady) return 'concept.eOnly';
-    if (!eReady && bReady) return 'concept.bOnly';
-    const oppose = (eDir === 'up') === (bDir === 'into');
-    if (eDir === 'up' && bDir === 'into') return 'concept.eUpBInto';
-    return oppose ? 'concept.cancel' : 'concept.add';
-  }
-
   function refreshControls() {
     const onCls = 'px-2 py-0.5 rounded text-[9px] font-black bg-indigo-600 text-white';
     const offCls = 'px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600';
@@ -429,8 +395,6 @@ body.embed-mode #rad-canvas-wrap {
     alphaBtn.setAttribute('aria-pressed', emitAlpha ? 'true' : 'false');
     betaBtn.setAttribute('aria-pressed', emitBeta ? 'true' : 'false');
     gammaBtn.setAttribute('aria-pressed', emitGamma ? 'true' : 'false');
-    const conceptBody = document.getElementById('concept-body');
-    if (conceptBody) conceptBody.textContent = t(conceptPath());
   }
 
   window.toggleSpecies = function (kind) {
