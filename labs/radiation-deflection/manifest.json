@@ -1,0 +1,5 @@
+{
+  "slug": "radiation-deflection",
+  "syncAll": true,
+  "exclude": ["manifest.json"]
+}

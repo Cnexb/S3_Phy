@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radiation Deflection Laboratory (HKDSE Physics)</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap");
+
+:root {
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+  --s3-radius: 14px;
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --tab-accent: #f43f5e;
+  --tab-accent-glow: rgba(244, 63, 94, 0.35);
+  --glass-bg: rgba(255, 255, 255, 0.82);
+}
+
+html { scrollbar-gutter: stable; }
+body {
+  font-family: "Plus Jakarta Sans", var(--s3-font), sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+.mono { font-family: "JetBrains Mono", monospace; }
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+}
+.cdn-warning {
+  background: linear-gradient(90deg, #b45309, #d97706);
+  color: #fffbeb;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 12px;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+
+.bg-slate-950, canvas.bg-slate-950 {
+  background-color: #ffffff !important;
+}
+.bg-slate-950\/40 { background-color: rgba(255, 255, 255, 0.72) !important; }
+.bg-slate-900, .bg-slate-900\/95, .bg-slate-900\/60 {
+  background-color: #f1f5f9 !important;
+}
+.border-slate-800, .border-slate-800\/80, .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+.text-slate-100, .text-slate-200, .text-slate-300, h1.text-white, h3.text-white {
+  color: #0f172a !important;
+}
+.text-slate-400 { color: #475569 !important; }
+.text-slate-500 { color: #64748b !important; }
+.bg-slate-800 { background-color: #e2e8f0 !important; color: #0f172a !important; }
+.bg-slate-800:hover { background-color: #cbd5e1 !important; }
+.lang-btn { color: #475569 !important; }
+.lang-btn:hover { color: #0f172a !important; background-color: #cbd5e1 !important; }
+.lang-active {
+  background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.1) !important;
+}
+
+.ctrl-on {
+  border-color: #6366f1 !important;
+  background: #e0e7ff !important;
+  color: #312e81 !important;
+}
+.species-on-alpha { border-color: #ef4444 !important; background: #fee2e2 !important; color: #9f1239 !important; }
+.species-on-beta { border-color: #3b82f6 !important; background: #dbeafe !important; color: #1e3a8a !important; }
+.species-on-gamma { border-color: #ca8a04 !important; background: #fef9c3 !important; color: #854d0e !important; }
+
+#btn-show-controls { display: none; }
+#rad-fs-root:fullscreen #btn-show-controls,
+#rad-fs-root:-webkit-full-screen #btn-show-controls {
+  display: inline-flex;
+}
+#rad-fs-root:fullscreen,
+#rad-fs-root:-webkit-full-screen {
+  background: #f8fafc;
+  padding: 12px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+#rad-fs-root:fullscreen .rad-fs-grid,
+#rad-fs-root:-webkit-full-screen .rad-fs-grid {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  gap: 0;
+  align-items: stretch;
+}
+#rad-fs-root:fullscreen .rad-sim-col,
+#rad-fs-root:-webkit-full-screen .rad-sim-col {
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+#rad-fs-root:fullscreen .rad-sim-card,
+#rad-fs-root:-webkit-full-screen .rad-sim-card {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+#rad-fs-root:fullscreen #rad-side-panel,
+#rad-fs-root:-webkit-full-screen #rad-side-panel {
+  display: none;
+}
+#rad-fs-root:fullscreen #rad-canvas-wrap,
+#rad-fs-root:-webkit-full-screen #rad-canvas-wrap {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+}
+#rad-fs-root:fullscreen.show-fs-controls .rad-fs-grid,
+#rad-fs-root:-webkit-full-screen.show-fs-controls .rad-fs-grid {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+}
+#rad-fs-root:fullscreen.show-fs-controls .rad-sim-col,
+#rad-fs-root:-webkit-full-screen.show-fs-controls .rad-sim-col {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  height: calc(100% - 24px);
+}
+#rad-fs-root:fullscreen.show-fs-controls .rad-sim-card,
+#rad-fs-root:-webkit-full-screen.show-fs-controls .rad-sim-card {
+  height: 100%;
+  overflow: hidden;
+}
+#rad-fs-root:fullscreen.show-fs-controls #rad-side-panel,
+#rad-fs-root:-webkit-full-screen.show-fs-controls #rad-side-panel {
+  display: flex;
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  width: min(380px, 36vw);
+  height: calc(100% - 24px);
+  flex-shrink: 0;
+  overflow-y: auto;
+  z-index: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping, .animate-pulse { animation: none !important; }
+}
+html.s3phy-embed header,
+html.s3phy-embed footer,
+body.embed-mode header,
+body.embed-mode footer { display: none !important; }
+html.s3phy-embed body,
+body.embed-mode {
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+html.s3phy-embed main,
+body.embed-mode main {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+html.s3phy-embed #rad-canvas-wrap,
+body.embed-mode #rad-canvas-wrap {
+  height: calc(100dvh - 8rem);
+}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <div id="cdn-warning" class="cdn-warning hidden" role="alert">Some CDN resources failed to load. Please connect to the internet and refresh.</div>
+  <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-40" style="background: var(--tab-accent-glow);"></div>
+  <div class="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-2.5 bg-rose-500/10 rounded-2xl border border-rose-500/20 text-rose-500 shadow-inner">
+          <i data-lucide="atom" class="w-7 h-7 animate-pulse text-rose-500"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-white" data-i18n="app.title">Radiation Deflection Laboratory</h1>
+            <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 border border-rose-500/30 rounded text-[10px] font-bold tracking-wider uppercase">HKDSE Physics</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-0.5" data-i18n="app.subtitle">HKDSE Physics · Deflection of α, β, γ in E-field and B-field</p>
+        </div>
+      </div>
+      <div class="flex bg-slate-900/95 p-1 rounded-xl border border-slate-800/80">
+        <button type="button" onclick="setLanguage('en')" id="lang-en" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active">EN</button>
+        <button type="button" onclick="setLanguage('zh-Hant')" id="lang-zh" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div id="rad-fs-root" class="relative">
+    <div class="rad-fs-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="rad-sim-col lg:col-span-8 flex flex-col gap-6 w-full">
+        <div class="rad-sim-card glass-panel rounded-2xl p-5 flex flex-col relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+              <h3 class="font-bold text-sm tracking-wide text-slate-200" data-i18n="sim.title">α β γ Deflection Sandbox</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btn-show-controls" onclick="toggleFsControls()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold border border-indigo-700">
+                <span id="lbl-show-controls" data-i18n="common.showControls">Show controls</span>
+              </button>
+              <button type="button" id="btn-fullscreen" onclick="toggleFullscreen()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-700">
+                <span id="lbl-fullscreen" data-i18n="common.fullscreen">Full screen</span>
+              </button>
+            </div>
+          </div>
+          <div id="rad-canvas-wrap" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-[calc(100dvh-12.5rem)] min-h-[24rem]">
+            <canvas id="radCanvas" class="w-full h-full block bg-slate-950"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="rad-side-panel" class="lg:col-span-4 flex flex-col gap-4">
+        <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-rose-500">
+          <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.species">Radiation emitted</h4>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" id="btn-alpha" onclick="toggleSpecies('alpha')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">α</button>
+            <button type="button" id="btn-beta" onclick="toggleSpecies('beta')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">β</button>
+            <button type="button" id="btn-gamma" onclick="toggleSpecies('gamma')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">γ</button>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2" data-i18n="ctrl.speciesHint">Turn each on or off. All three can fire together.</p>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-5">
+          <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.efield">Electric field</h4>
+          <button type="button" id="btn-e-on" onclick="toggleEField()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold flex items-center justify-between mb-2">
+            <span data-i18n="ctrl.eToggle">E-field</span>
+            <span id="lbl-e-state" class="px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600">OFF</span>
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btn-e-up" onclick="setEDir('up')" class="px-3 py-2 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold" data-i18n="ctrl.eUp">Up</button>
+            <button type="button" id="btn-e-down" onclick="setEDir('down')" class="px-3 py-2 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold" data-i18n="ctrl.eDown">Down</button>
+          </div>
+        </div>
+
+        <div class="glass-panel rounded-2xl p-5">
+          <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.bfield">Magnetic field</h4>
+          <button type="button" id="btn-b-on" onclick="toggleBField()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold flex items-center justify-between mb-2">
+            <span data-i18n="ctrl.bToggle">B-field</span>
+            <span id="lbl-b-state" class="px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600">OFF</span>
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btn-b-into" onclick="setBDir('into')" class="px-3 py-2 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold" data-i18n="ctrl.bInto">Into paper ⊗</button>
+            <button type="button" id="btn-b-out" onclick="setBDir('out')" class="px-3 py-2 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold" data-i18n="ctrl.bOut">Out of paper ⊙</button>
+          </div>
+        </div>
+
+        <button type="button" onclick="resetAll()" class="w-full px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.reset">Reset</button>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 text-slate-500 py-5 text-center text-xs mt-auto">
+    <span data-i18n="app.footer">© 2026 Radiation Deflection Lab · HKDSE Physics classroom suite</span>
+  </footer>
+
+  <script>
+(function () {
+  'use strict';
+
+  const VW = 800;
+  const VH = 560;
+  const SPEED = 2.8;
+  const B_MAG = 0.0144;
+  const E_MAG = SPEED * B_MAG;
+
+  const SPECIES = {
+    alpha: { q: 2, m: 14, color: '#ef4444', radius: 14.8, glow: 28, stroke: 'rgba(255,220,220,0.8)' },
+    beta:  { q: -1, m: 1.35, color: '#3b82f6', radius: 9.36, glow: 22, stroke: 'rgba(186,230,253,0.85)' },
+    gamma: { q: 0, m: 1, color: '#eab308', radius: 5.8, glow: 12, stroke: 'rgba(254,240,138,0.85)' }
+  };
+
+  const I18N = {
+    en: {
+      app: {
+        title: 'Radiation Deflection Laboratory',
+        subtitle: 'HKDSE Physics · Deflection of α, β, γ in E-field and B-field',
+        pageTitle: 'Radiation Deflection Laboratory (HKDSE Physics)',
+        footer: '© 2026 Radiation Deflection Lab · HKDSE Physics classroom suite'
+      },
+      sim: { title: 'α β γ Deflection Sandbox' },
+      legend: {
+        alpha: 'α Alpha (+2e, heavy)',
+        beta: 'β Beta (−e, light)',
+        gamma: 'γ Gamma (uncharged)'
+      },
+      common: { fullscreen: 'Full screen', exitFullscreen: 'Exit', showControls: 'Show controls', hideControls: 'Hide controls', on: 'ON', off: 'OFF', reset: 'Reset' },
+      ctrl: {
+        species: 'Radiation emitted',
+        speciesHint: 'Turn each on or off. All three can fire together.',
+        efield: 'Electric field',
+        eToggle: 'E-field',
+        eUp: 'Up',
+        eDown: 'Down',
+        bfield: 'Magnetic field',
+        bToggle: 'B-field',
+        bInto: 'Into paper ⊗',
+        bOut: 'Out of paper ⊙',
+        reset: 'Reset'
+      },
+      concept: {
+        title: 'Curriculum concept',
+        off: 'Fields are off. α, β and γ all travel in a straight horizontal line. Turn E and B on separately, or together.',
+        eOnly: 'E-field only: the path is a parabola. α (red) and β (blue) curve opposite ways. β bends much more because it is much lighter. γ (yellow) is uncharged — no deflection.',
+        bOnly: 'B-field only: the path is a circular arc. Force is always perpendicular to velocity. β has a much smaller radius than α, so it deflects more. γ goes straight.',
+        cancel: 'E and B are both on and the forces oppose. |FE| = |FB|, so net force is zero. α, β and γ all stay on a horizontal line.',
+        add: 'E and B are both on and the forces add. Net force is twice one field, so α and β bend more than with E or B alone. β still bends more than α. γ stays straight.',
+        eUpBInto: 'E up + B into paper: forces on α oppose — |FE| = |FB|, so the path stays horizontal. E down + B into: both forces on α point down — more bend. β is opposite.'
+      },
+      draw: {
+        source: 'SOURCE',
+        detector: 'DETECTOR',
+        field: 'FIELD REGION',
+        bInto: 'B ⊗ into paper',
+        bOut: 'B ⊙ out of paper'
+      }
+    },
+    'zh-Hant': {
+      app: {
+        title: '輻射偏轉實驗室',
+        subtitle: 'HKDSE 物理 · α、β、γ 在電場與磁場中的偏轉',
+        pageTitle: '輻射偏轉實驗室 (HKDSE Physics)',
+        footer: '© 2026 輻射偏轉實驗室 · HKDSE 物理課堂套件'
+      },
+      sim: { title: 'α β γ 偏轉沙盒' },
+      legend: {
+        alpha: 'α 阿爾法（+2e，重）',
+        beta: 'β 貝塔（−e，輕）',
+        gamma: 'γ 伽馬（不帶電）'
+      },
+      common: { fullscreen: '全畫面', exitFullscreen: '離開', showControls: '顯示控制', hideControls: '隱藏控制', on: '開', off: '關', reset: '重設' },
+      ctrl: {
+        species: '放出的輻射',
+        speciesHint: '可各自開關，亦可三種一齊放出。',
+        efield: '電場',
+        eToggle: '電場',
+        eUp: '向上',
+        eDown: '向下',
+        bfield: '磁場',
+        bToggle: '磁場',
+        bInto: '入紙 ⊗',
+        bOut: '出紙 ⊙',
+        reset: '重設'
+      },
+      concept: {
+        title: '課程概念',
+        off: '電場與磁場均關閉。α、β、γ 都沿水平直線前進。可分開或同時開啟 E 與 B。',
+        eOnly: '只有電場：軌跡為拋物線。α（紅）與 β（藍）向相反方向彎曲。β 遠較輕，偏轉明顯較大。γ（黃）不帶電，不偏轉。',
+        bOnly: '只有磁場：軌跡為圓弧。磁力永遠垂直速度。β 半徑遠小於 α，故偏轉較大。γ 直線前進。',
+        cancel: 'E 與 B 同時開啟且兩力相反。|FE| = |FB|，淨力為零。α、β、γ 都沿水平線前進。',
+        add: 'E 與 B 同時開啟且兩力同向。淨力為單一場的兩倍，α 與 β 比單獨開 E 或 B 時更彎。β 仍比 α 彎得更多。γ 保持直線。',
+        eUpBInto: '電場向上 + 磁進入紙：α 的兩力相反——|FE| = |FB|，沿水平線。電場向下 + 磁進入紙：α 的兩力都向下——更彎。β 方向相反。'
+      },
+      draw: {
+        source: '放射源',
+        detector: '探測器',
+        field: '場區',
+        bInto: 'B ⊗ 入紙',
+        bOut: 'B ⊙ 出紙'
+      }
+    }
+  };
+
+  let currentLang = 'en';
+  const pageParams = new URLSearchParams(location.search);
+  const langParam = pageParams.get('lang');
+  if (langParam === 'zh' || langParam === 'zh-Hant' || langParam === 'zhHant') currentLang = 'zh-Hant';
+  else if (langParam === 'en') currentLang = 'en';
+
+  let emitAlpha = true;
+  let emitBeta = true;
+  let emitGamma = true;
+  let eOn = false;
+  let bOn = false;
+  let eDir = null;
+  let bDir = null;
+  let running = true;
+  let animId = 0;
+  let particles = [];
+  let emitClock = 0;
+  let fsControlsOpen = false;
+  let canvas, ctx;
+
+  const FIELD = { x: 200, y: 78, w: 380, h: 380 };
+  const DETECTOR_X = 48;
+  const SOURCE = { x: 760, y: VH / 2 };
+  let gammaSegs = [];
+
+  function t(path) {
+    const parts = path.split('.');
+    let node = I18N[currentLang];
+    for (const p of parts) node = node && node[p];
+    return node || path;
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = currentLang === 'zh-Hant' ? 'zh-Hant' : 'en';
+    document.title = t('app.pageTitle');
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.getElementById('lang-en').classList.toggle('lang-active', currentLang === 'en');
+    document.getElementById('lang-zh').classList.toggle('lang-active', currentLang === 'zh-Hant');
+    refreshControls();
+    syncFsUi();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  window.setLanguage = function (lang) {
+    currentLang = lang === 'zh-Hant' || lang === 'zhHant' || lang === 'zh' ? 'zh-Hant' : 'en';
+    applyLanguage();
+  };
+
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 's3phy:lang') {
+      window.setLanguage(event.data.lang);
+    }
+  });
+
+  function isFullscreen() {
+    const root = document.getElementById('rad-fs-root');
+    return document.fullscreenElement === root || document.webkitFullscreenElement === root;
+  }
+
+  function syncFsUi() {
+    const root = document.getElementById('rad-fs-root');
+    const fs = isFullscreen();
+    const fsLbl = document.getElementById('lbl-fullscreen');
+    const showLbl = document.getElementById('lbl-show-controls');
+    if (fsLbl) fsLbl.textContent = fs ? t('common.exitFullscreen') : t('common.fullscreen');
+    if (!fs) {
+      fsControlsOpen = false;
+      if (root) root.classList.remove('show-fs-controls');
+    }
+    if (showLbl) showLbl.textContent = fsControlsOpen ? t('common.hideControls') : t('common.showControls');
+  }
+
+  window.toggleFsControls = function () {
+    if (!isFullscreen()) return;
+    fsControlsOpen = !fsControlsOpen;
+    document.getElementById('rad-fs-root').classList.toggle('show-fs-controls', fsControlsOpen);
+    syncFsUi();
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  };
+
+  window.resetAll = function () {
+    emitAlpha = false;
+    emitBeta = false;
+    emitGamma = false;
+    eOn = false;
+    bOn = false;
+    eDir = null;
+    bDir = null;
+    particles = [];
+    emitClock = 0;
+    gammaSegs = [];
+    refreshControls();
+  };
+
+  window.toggleFullscreen = function () {
+    const root = document.getElementById('rad-fs-root');
+    if (!isFullscreen()) {
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document);
+    }
+  };
+
+  function refreshControls() {
+    const onCls = 'px-2 py-0.5 rounded text-[9px] font-black bg-indigo-600 text-white';
+    const offCls = 'px-2 py-0.5 rounded text-[9px] font-black bg-slate-200 text-slate-600';
+    const eReady = eOn && !!eDir;
+    const bReady = bOn && !!bDir;
+    document.getElementById('btn-e-on').classList.toggle('ctrl-on', eOn);
+    document.getElementById('btn-b-on').classList.toggle('ctrl-on', bOn);
+    const eLbl = document.getElementById('lbl-e-state');
+    const bLbl = document.getElementById('lbl-b-state');
+    eLbl.textContent = eReady ? t('common.on') : t('common.off');
+    bLbl.textContent = bReady ? t('common.on') : t('common.off');
+    eLbl.className = eReady ? onCls : offCls;
+    bLbl.className = bReady ? onCls : offCls;
+    document.getElementById('btn-e-up').classList.toggle('ctrl-on', eOn && eDir === 'up');
+    document.getElementById('btn-e-down').classList.toggle('ctrl-on', eOn && eDir === 'down');
+    document.getElementById('btn-b-into').classList.toggle('ctrl-on', bOn && bDir === 'into');
+    document.getElementById('btn-b-out').classList.toggle('ctrl-on', bOn && bDir === 'out');
+    const idle = 'px-2 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold text-slate-500';
+    document.getElementById('btn-alpha').className = emitAlpha ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-alpha' : idle;
+    document.getElementById('btn-beta').className = emitBeta ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-beta' : idle;
+    document.getElementById('btn-gamma').className = emitGamma ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-gamma' : idle;
+  }
+
+  window.toggleSpecies = function (kind) {
+    if (kind === 'alpha') emitAlpha = !emitAlpha;
+    if (kind === 'beta') emitBeta = !emitBeta;
+    if (kind === 'gamma') emitGamma = !emitGamma;
+    refreshControls();
+  };
+  window.toggleEField = function () {
+    eOn = !eOn;
+    if (!eOn) eDir = null;
+    refreshControls();
+  };
+  window.toggleBField = function () {
+    bOn = !bOn;
+    if (!bOn) bDir = null;
+    refreshControls();
+  };
+  window.setEDir = function (dir) {
+    eOn = true;
+    eDir = dir;
+    refreshControls();
+  };
+  window.setBDir = function (dir) {
+    bOn = true;
+    bDir = dir;
+    refreshControls();
+  };
+
+  function setupCanvas(el) {
+    if (!el) return null;
+    const c = el.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = el.getBoundingClientRect();
+    const nextW = Math.max(1, Math.round(rect.width * dpr));
+    const nextH = Math.max(1, Math.round(rect.height * dpr));
+    if (el.width !== nextW || el.height !== nextH) {
+      el.width = nextW;
+      el.height = nextH;
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.scale(dpr, dpr);
+    return { ctx: c, rect, dpr };
+  }
+
+  let viewRect = { width: VW, height: VH };
+
+  function getSquareField(rect) {
+    const r = rect || viewRect;
+    const sx = r.width / VW;
+    const sy = Math.max(1e-6, r.height / VH);
+    const w = FIELD.w;
+    const h = FIELD.w * sx / sy;
+    const cy = FIELD.y + FIELD.h / 2;
+    return { x: FIELD.x, y: cy - h / 2, w: w, h: h };
+  }
+
+  function inField(x, y) {
+    const f = getSquareField(viewRect);
+    return x >= f.x && x <= f.x + f.w && y >= f.y && y <= f.y + f.h;
+  }
+
+  function getEy() {
+    if (!eOn || !eDir) return 0;
+    // Canvas y increases downward. E down pushes +q toward the bottom of the screen.
+    return eDir === 'up' ? -E_MAG : E_MAG;
+  }
+
+  // Beam goes left (vx < 0). Canvas y increases downward.
+  // B into paper (Bz > 0) → Lorentz force on +q is down. α down, β up.
+  function getBz() {
+    if (!bOn || !bDir) return 0;
+    return bDir === 'into' ? B_MAG : -B_MAG;
+  }
+
+  function spawn(type) {
+    const spec = SPECIES[type];
+    particles.push({
+      type,
+      x: SOURCE.x,
+      y: SOURCE.y,
+      vx: -SPEED,
+      vy: 0,
+      trail: [],
+      radius: spec.radius
+    });
+  }
+
+  function emit() {
+    emitClock += 1;
+    const slot = emitClock % 18;
+    if (emitAlpha && slot === 1) spawn('alpha');
+    if (emitBeta && slot === 10) spawn('beta');
+  }
+
+  function stepParticle(p) {
+    const spec = SPECIES[p.type];
+    let fx = 0;
+    let fy = 0;
+    if (inField(p.x, p.y) && spec.q !== 0) {
+      const q = spec.q;
+      const Ey = getEy();
+      const Bz = getBz();
+      fy += q * Ey;
+      fx += q * p.vy * Bz;
+      fy += q * (-p.vx) * Bz;
+    }
+    p.vx += fx / spec.m;
+    p.vy += fy / spec.m;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.trail.push({ x: p.x, y: p.y });
+    if (p.trail.length > 32) p.trail.shift();
+  }
+
+  function stepGamma() {
+    if (emitGamma) {
+      let attached = null;
+      for (let i = 0; i < gammaSegs.length; i++) {
+        if (gammaSegs[i].attached) {
+          attached = gammaSegs[i];
+          break;
+        }
+      }
+      if (!attached) {
+        attached = { front: SOURCE.x, rear: SOURCE.x, attached: true };
+        gammaSegs.push(attached);
+      }
+      attached.rear = SOURCE.x;
+      attached.front = Math.max(DETECTOR_X, attached.front - SPEED);
+    } else {
+      for (let i = 0; i < gammaSegs.length; i++) gammaSegs[i].attached = false;
+    }
+    const next = [];
+    for (let i = 0; i < gammaSegs.length; i++) {
+      const s = gammaSegs[i];
+      if (!s.attached) {
+        s.front = Math.max(DETECTOR_X, s.front - SPEED);
+        s.rear = Math.max(s.front, s.rear - SPEED);
+      }
+      if (s.rear > DETECTOR_X + 0.5 && s.rear - s.front >= 0.5) next.push(s);
+    }
+    gammaSegs = next;
+  }
+
+  function drawGammaRay(sx, sy, fieldUnit) {
+    const y = SOURCE.y * sy;
+    const thick = 12 * fieldUnit;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (let i = 0; i < gammaSegs.length; i++) {
+      const s = gammaSegs[i];
+      if (s.rear - s.front < 2) continue;
+      const x1 = s.front * sx;
+      const x2 = s.rear * sx;
+      ctx.strokeStyle = '#eab308';
+      ctx.shadowColor = '#eab308';
+      ctx.shadowBlur = 12 * fieldUnit;
+      ctx.lineWidth = thick;
+      ctx.beginPath();
+      ctx.moveTo(x1, y);
+      ctx.lineTo(x2, y);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = 'rgba(254, 240, 138, 0.95)';
+      ctx.lineWidth = thick * 0.45;
+      ctx.beginPath();
+      ctx.moveTo(x1, y);
+      ctx.lineTo(x2, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawParticle(p, sx, sy, fieldUnit) {
+    const spec = SPECIES[p.type];
+    const speed = Math.hypot(p.vx, p.vy);
+    const u = fieldUnit || 1;
+    ctx.save();
+    if (p.trail.length > 1) {
+      ctx.beginPath();
+      ctx.strokeStyle = spec.color;
+      ctx.globalAlpha = 0.32;
+      ctx.lineWidth = 2.2 * u;
+      p.trail.forEach((pt, i) => {
+        const x = pt.x * sx;
+        const y = pt.y * sy;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+    const x = p.x * sx;
+    const y = p.y * sy;
+    const r = Math.max(spec.radius, spec.radius + Math.abs(p.vy) * 0.3) * u;
+    ctx.shadowColor = spec.color;
+    ctx.shadowBlur = spec.glow * u;
+    ctx.fillStyle = spec.color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = spec.stroke;
+    ctx.lineWidth = 1.4 * u;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    if (speed > 0.8) {
+      ctx.strokeStyle = 'rgba(15,23,42,0.35)';
+      ctx.lineWidth = 1 * u;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - p.vx * 5 * sx, y - p.vy * 5 * sy);
+      ctx.stroke();
+    }
+    if (p.type === 'alpha' || p.type === 'beta') {
+      const arm = r * 0.55;
+      const thick = Math.max(1.6, r * 0.22);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x - arm, y - thick / 2, arm * 2, thick);
+      if (p.type === 'alpha') {
+        ctx.fillRect(x - thick / 2, y - arm, thick, arm * 2);
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawScene(rect) {
+    const sx = rect.width / VW;
+    const sy = rect.height / VH;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    const f = getSquareField(rect);
+    const fx = f.x * sx, fy = f.y * sy, fw = f.w * sx, fh = f.h * sy;
+
+    ctx.fillStyle = 'rgba(241, 245, 249, 0.95)';
+    ctx.fillRect(fx, fy, fw, fh);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([6, 5]);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(fx, fy, fw, fh);
+    ctx.setLineDash([]);
+
+    const fieldUnit = Math.min(fw, fh) / 380;
+
+    if (bOn && bDir) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(fx, fy, fw, fh);
+      ctx.clip();
+      ctx.fillStyle = bDir === 'into' ? 'rgba(79, 70, 229, 0.55)' : 'rgba(2, 132, 199, 0.65)';
+      const bCols = 14;
+      const bRows = 14;
+      const stepX = fw / bCols;
+      const stepY = fh / bRows;
+      const markSize = Math.max(8, stepX * (14 / 26));
+      ctx.font = 'bold ' + markSize + 'px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const mark = bDir === 'into' ? '×' : '•';
+      for (let i = 0; i < bCols; i++) {
+        for (let j = 0; j < bRows; j++) {
+          ctx.fillText(mark, fx + stepX * (i + 0.5), fy + stepY * (j + 0.5));
+        }
+      }
+      ctx.restore();
+    }
+
+    const plateH = 22 * fieldUnit;
+    if (eOn && eDir) {
+      const topPlus = eDir === 'down';
+      ctx.fillStyle = topPlus ? '#f87171' : '#60a5fa';
+      ctx.fillRect(fx, fy - plateH, fw, plateH);
+      ctx.fillStyle = topPlus ? '#60a5fa' : '#f87171';
+      ctx.fillRect(fx, fy + fh, fw, plateH);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold ' + Math.max(12, plateH * 0.78) + 'px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(topPlus ? '+' : '−', fx + fw / 2, fy - plateH / 2);
+      ctx.fillText(topPlus ? '−' : '+', fx + fw / 2, fy + fh + plateH / 2);
+      ctx.textAlign = 'start';
+      ctx.textBaseline = 'alphabetic';
+      ctx.strokeStyle = 'rgba(180, 83, 9, 0.75)';
+      ctx.lineWidth = 1.5 * fieldUnit;
+      const dir = eDir === 'down' ? 1 : -1;
+      const headW = 5 * fieldUnit;
+      const headL = 8 * fieldUnit;
+      const inset = 26 * fieldUnit;
+      for (let i = 1; i <= 5; i++) {
+        const ax = fx + (fw * i) / 6;
+        const y1 = fy + inset;
+        const y2 = fy + fh - inset;
+        ctx.beginPath();
+        if (dir > 0) {
+          ctx.moveTo(ax, y1);
+          ctx.lineTo(ax, y2);
+          ctx.moveTo(ax, y2);
+          ctx.lineTo(ax - headW, y2 - headL);
+          ctx.moveTo(ax, y2);
+          ctx.lineTo(ax + headW, y2 - headL);
+        } else {
+          ctx.moveTo(ax, y2);
+          ctx.lineTo(ax, y1);
+          ctx.moveTo(ax, y1);
+          ctx.lineTo(ax - headW, y1 + headL);
+          ctx.moveTo(ax, y1);
+          ctx.lineTo(ax + headW, y1 + headL);
+        }
+        ctx.stroke();
+      }
+    }
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'start';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(t('draw.field'), fx + 8, fy + fh + ((eOn && eDir) ? plateH + 22 : 36));
+
+    const dx = DETECTOR_X * sx;
+    const detW = 18 * fieldUnit;
+    const detFont = 10 * fieldUnit;
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(dx - detW / 2, 18 * sy, detW, (VH - 36) * sy);
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2 * fieldUnit;
+    ctx.strokeRect(dx - detW / 2, 18 * sy, detW, (VH - 36) * sy);
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold ' + detFont + 'px "Plus Jakarta Sans", sans-serif';
+    ctx.save();
+    ctx.translate(dx - detW / 2 - detFont * 1.1, VH * sy / 2 + detFont * 2.8);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(t('draw.detector'), 0, 0);
+    ctx.restore();
+
+    const sxw = SOURCE.x * sx;
+    const syw = SOURCE.y * sy;
+    const grd = ctx.createRadialGradient(sxw, syw, 2, sxw, syw, 20);
+    grd.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+    grd.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(sxw, syw, 20, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.arc(sxw, syw, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#92400e';
+    ctx.font = 'bold 10px "Plus Jakarta Sans", sans-serif';
+    ctx.fillText(t('draw.source'), sxw - 24, syw + 26);
+
+    ctx.strokeStyle = 'rgba(100, 116, 139, 0.4)';
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.moveTo(sxw - 12, syw);
+    ctx.lineTo((FIELD.x + FIELD.w) * sx, syw);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    drawGammaRay(sx, sy, fieldUnit);
+    particles.forEach((p) => drawParticle(p, sx, sy, fieldUnit));
+  }
+
+  function loop() {
+    if (!running) return;
+    const setup = setupCanvas(canvas);
+    if (!setup) {
+      animId = requestAnimationFrame(loop);
+      return;
+    }
+    ctx = setup.ctx;
+    viewRect = setup.rect;
+    emit();
+    stepGamma();
+    const next = [];
+    for (const p of particles) {
+      stepParticle(p);
+      if (p.x <= DETECTOR_X) {
+        continue;
+      }
+      if (p.x < -30 || p.x > VW + 40 || p.y < -50 || p.y > VH + 50) continue;
+      next.push(p);
+    }
+    particles = next;
+    drawScene(setup.rect);
+    animId = requestAnimationFrame(loop);
+  }
+
+  function checkCDN() {
+    const warn = document.getElementById('cdn-warning');
+    if (typeof lucide === 'undefined' && warn) warn.classList.remove('hidden');
+  }
+
+  window.addEventListener('resize', () => {
+    if (canvas) setupCanvas(canvas);
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    syncFsUi();
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    syncFsUi();
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (pageParams.get('embed') === '1' || pageParams.get('embed') === 'true' || window.self !== window.top) {
+      document.documentElement.classList.add('s3phy-embed');
+      document.body.classList.add('embed-mode');
+    }
+    canvas = document.getElementById('radCanvas');
+    applyLanguage();
+    refreshControls();
+    checkCDN();
+    setTimeout(checkCDN, 400);
+    loop();
+  });
+})();
+  </script>
+</body>
+</html>

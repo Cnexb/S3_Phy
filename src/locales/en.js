@@ -79,6 +79,9 @@ export const en = {
   'tools.flemingHandRules.title': 'Fleming hand rules',
   'tools.flemingHandRules.subtitle':
     '3D left-hand motor rule, right-hand generator rule, and right-hand grip rules for HKDSE.',
+  'tools.radiationDeflection.title': 'Radiation deflection (α β γ)',
+  'tools.radiationDeflection.subtitle':
+    'Deflection of alpha, beta and gamma radiation in electric and magnetic fields.',
   'tools.rotatingMirror.toggle.origNormal': 'Orig. normal',
   'tools.rotatingMirror.toggle.origRay': 'Orig. reflected',
   'tools.rotatingMirror.toggle.newNormal': 'New normal',
@@ -410,10 +413,10 @@ export const en = {
   'summary.item.electromagneticInduction': 'Electromagnetic induction',
   // Radioactivity and nuclear energy
   'strand.radioactivity.title': 'Radioactivity and Nuclear Energy',
-  'strand.radioactivity.desc': 'Radiation, the atomic model, and nuclear energy. (Coming soon — not ready yet.)',
+  'strand.radioactivity.desc': 'Radiation, the atomic model, and nuclear energy. An α β γ deflection lab is ready; other materials are coming soon.',
   'strand.radioactivity.subtitle': 'Radioactivity and Nuclear Energy — radiation and the nucleus',
   'radioactivity.section.empty': 'Radioactivity and Nuclear Energy strand content is coming soon.',
-  'radioactivity.comingSoon': 'Interactive labs, worksheets, quizzes, and flashcards for this strand are coming soon.',
+  'radioactivity.comingSoon': 'Worksheets, quizzes, and flashcards for this strand are coming soon.',
   'topic.radiationRadioactivity': 'Radiation and radioactivity',
   'topic.atomicModel': 'Atomic model',
   'topic.nuclearEnergy': 'Nuclear energy',

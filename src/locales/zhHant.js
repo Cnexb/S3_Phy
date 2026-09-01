@@ -79,6 +79,9 @@ export const zhHant = {
   'tools.flemingHandRules.title': '\u5f17\u6797\u660e\u5de6\u53f3\u624b\u6cd5\u5247',
   'tools.flemingHandRules.subtitle':
     '3D \u5de6\u624b\u5b9a\u5247\uff08\u96fb\u52d5\u6a5f\uff09\u3001\u53f3\u624b\u5b9a\u5247\uff08\u767c\u96fb\u6a5f\uff09\u53ca\u53f3\u624b\u63e1\u62f3\u5b9a\u5247\uff08HKDSE\uff09\u3002',
+  'tools.radiationDeflection.title': '\u8f3b\u5c04\u504f\u8f49\uff08\u03b1 \u03b2 \u03b3\uff09',
+  'tools.radiationDeflection.subtitle':
+    '\u03b1\u3001\u03b2\u3001\u03b3 \u5728\u96fb\u5834\u8207\u78c1\u5834\u4e2d\u7684\u504f\u8f49\u3002',
   'tools.rotatingMirror.toggle.origNormal': '\u539f\u6cd5\u7dda',
   'tools.rotatingMirror.toggle.origRay': '\u539f\u53cd\u5c04\u5149',
   'tools.rotatingMirror.toggle.newNormal': '\u65b0\u6cd5\u7dda',
@@ -410,10 +413,10 @@ export const zhHant = {
   'summary.item.electromagneticInduction': '電磁感應',
   // Radioactivity and nuclear energy
   'strand.radioactivity.title': '放射現象與核能',
-  'strand.radioactivity.desc': '輻射、原子模型與核能。（即將推出，尚未開放。）',
+  'strand.radioactivity.desc': '輻射、原子模型與核能。α β γ 偏轉實驗室已開放；其他教材即將推出。',
   'strand.radioactivity.subtitle': '放射現象與核能 — 輻射與原子核',
   'radioactivity.section.empty': '放射現象與核能單元內容即將推出。',
-  'radioactivity.comingSoon': '此單元的互動實驗室、工作紙、測驗及閃卡將於日後推出。',
+  'radioactivity.comingSoon': '此單元的工作紙、測驗及閃卡將於日後推出。',
   'topic.radiationRadioactivity': '輻射與放射現象',
   'topic.atomicModel': '原子模型',
   'topic.nuclearEnergy': '核能',

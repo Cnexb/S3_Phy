@@ -1,6 +1,22 @@
 import { t } from '../i18n.js';
-import { hydrateNoteCards } from './hubHelpers.js';
+import { cleanupLabInstance, hydrateNoteCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell, resolveHubSection } from '../hubShell.js';
+import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
+
+const TOOL_STORAGE_KEY = 's3phy.radioactivity.tool';
+const TOOL_ORDER = ['radiationDeflection'];
+
+const TOOL_LOADERS = {
+  radiationDeflection: () =>
+    import('../tools/radiationDeflectionLab.js').then((m) => m.createRadiationDeflectionLab),
+};
+
+function toolLabel(id) {
+  const map = {
+    radiationDeflection: 'tools.radiationDeflection.title',
+  };
+  return t(map[id] || id);
+}
 
 const RADIOACTIVITY_TOPICS = [
   {
@@ -25,8 +41,25 @@ const RADIOACTIVITY_TOPICS = [
 
 export function mountRadioactivityHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.radioactivity.section'));
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'radiationDeflection');
   let shell = null;
   let el = { main: null };
+  let activeLabInstance = null;
+
+  function cleanupActiveLab() {
+    cleanupLabInstance(activeLabInstance);
+    activeLabInstance = null;
+  }
+
+  async function mountActiveTool(stage) {
+    stage.innerHTML = '';
+    cleanupActiveLab();
+    const loader = TOOL_LOADERS[toolId];
+    if (!loader) return;
+    const factory = await loader();
+    activeLabInstance = factory(t);
+    stage.appendChild(activeLabInstance);
+  }
 
   function renderMain() {
     if (!el.main) return;
@@ -34,6 +67,25 @@ export function mountRadioactivityHub(root) {
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
+    } else if (section === 'tools') {
+      el.main.innerHTML = renderToolsShell({
+        toolOrder: TOOL_ORDER,
+        toolId,
+        getLabel: toolLabel,
+        t,
+      });
+      hydrateToolsShell(root, {
+        getLabel: toolLabel,
+        t,
+        getActiveToolId: () => toolId,
+        onSelectTool: (id) => {
+          toolId = id;
+          saveToolId(TOOL_STORAGE_KEY, toolId);
+        },
+        mountTool: (stage) => {
+          void mountActiveTool(stage);
+        },
+      });
     } else {
       el.main.innerHTML = `
         <section class="panel">
@@ -57,6 +109,9 @@ export function mountRadioactivityHub(root) {
       subtitleKey: 'strand.radioactivity.subtitle',
       activeSection: section,
       onSection: (id) => {
+        if (section === 'tools' && id !== 'tools') {
+          cleanupActiveLab();
+        }
         section = id;
         sessionStorage.setItem('s3phy.radioactivity.section', id);
         shell.updateSection(section);
@@ -101,6 +156,7 @@ export function mountRadioactivityHub(root) {
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
+    cleanupActiveLab();
     shell?.destroy();
   };
 }
