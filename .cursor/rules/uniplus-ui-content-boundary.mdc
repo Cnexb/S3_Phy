@@ -1,54 +1,116 @@
 ---
-description: Keep UniPlus UI and teaching-content changes minimal, safe, and verified before push
+description: Keep subject-team Cursor work inside UI and teaching content without changing UniPlus data passing
 alwaysApply: true
 ---
 
-# UniPlus UI and content rule
+# UniPlus UI and content-only rule
 
-This repository is maintained by subject teachers and teaching assistants.
-Keep work inside teaching content, browser-only tools, or shared UI. If a
-request changes product integrations, stop and ask the technical owner.
+This repository is maintained by subject teachers and teaching assistants. Your job is to help them create and edit teaching content without changing authentication, analytics, tracking, deployment, or data passing.
+
+## First classify the request
+
+Before editing, classify the task as one of these content types:
+
+- Note or summary: PDF, image, caption, translation, or navigation entry.
+- Flashcard: card wording, answer wording, image, ordering, deck label, or visual presentation.
+- Quiz or worksheet: question wording, options, answer explanation, image, ordering, or visual presentation.
+- Interactive tool or game: browser-only visual interaction that does not send learning data.
+- Shared UI: layout, colour, typography, responsive behaviour, accessibility, or navigation.
+
+If the request does not fit one of these types, stop and ask the technical owner.
+
+## Allowed changes
+
+- Edit teaching text, translations, images, PDFs, content JSON, HTML markup, and CSS.
+- Edit browser-only interaction code for simulations, tools, and games.
+- Reuse an existing approved template from this repository.
+- Keep changes inside the smallest relevant content folder.
+- Preserve existing file names, routes, IDs, and folder structure unless the user explicitly asks for a content rename and it has no tracking impact.
+- Use local or same-origin assets already committed to the repository.
+- Use localStorage only for non-personal UI preferences such as language, theme, panel state, or unfinished local practice state. Use a subject-specific key prefix.
 
 ## Minimal implementation
 
-- Inspect the nearest existing helper or template before writing code.
-- Make the smallest change that fixes the root cause. Reuse existing code,
-  browser APIs, and installed dependencies before adding anything.
-- Do not add speculative abstractions, packages, build tools, routes, IDs, or
-  generated files. Delete duplication when safe.
+- Inspect the nearest existing helper or approved template before writing code.
+- Make the smallest change that fixes the root cause. Reuse existing code, browser APIs, and installed dependencies before adding anything.
+- Do not add speculative abstractions, packages, build tools, routes, IDs, or generated files. Delete duplication when safe.
 - Keep routes, file names, IDs, and folder structure stable.
-- Do not edit `dist/` when a source file exists. Run the existing build instead.
-
-## Allowed scope
-
-- Teaching text, translations, images, PDFs, content JSON, HTML, CSS, and
-  browser-only simulation interaction.
-- Non-personal local UI preferences such as language, theme, panel state, or
-  unfinished local practice, using a subject-prefixed key.
+- Do not rewrite an entire page for a small content change.
+- Do not edit generated `dist/` files when source files exist.
 
 ## Protected integration seam
 
-Never change authentication, analytics, tracking, data passing, or deployment.
-This includes Supabase, `uni-tracker.js`, `postMessage`, `uniplus:*` events,
-identity/session fields, `fetch`, XHR, `sendBeacon`, WebSocket, external
-scripts/APIs, `functions/`, `supabase/`, `.github/workflows/`, middleware,
-redirects, CSP/CORS, access gates, production URLs, secrets, and settings.
+Never add, edit, remove, move, or regenerate any code involving:
+
+- Supabase URLs, keys, clients, tables, queries, RPCs, RLS, Auth, Storage, or Edge Functions.
+- `uni-tracker.js` or another analytics or tracking script.
+- `postMessage`, message listeners, `uniplus:*` event names, or their payload fields.
+- `accessToken`, `userId`, `epStudentId`, `uniplus_session`, auth state, or sessionStorage session handling.
+- `IFRAME_ORIGIN`, iframe origin checks, CORS, CSP, middleware, redirects, or access gates.
+- `fetch`, XMLHttpRequest, axios, sendBeacon, WebSocket, or a new external script or API.
+- Files under `functions/`, `supabase/`, or `.github/workflows/`.
+- Deployment commands, Cloudflare Pages settings, GitHub Pages settings, secrets, environment variables, or production URLs.
+
+If a requested UI change appears to require any protected item, stop. Explain which protected item is involved and ask the technical owner to handle that part. Do not work around the restriction.
 
 Interactive tools must stay browser-only, self-contained, and must not send
 identity, scores, progress, clicks, answers, or telemetry anywhere.
 
-## Before push
+## Quiz and worksheet rules
 
-For every UI or interaction change:
+- Start from an approved quiz or worksheet template in the same subject repository.
+- Edit only question content, choices, answer explanations, images, and UI styling.
+- Do not hand-write, copy, delete, or modify a tracking block.
+- Do not change `subject`, event type, attempt fields, or tracking calls.
+- Content editors may update question wording, choices, answer explanations, images, and the correct answer without editing `uni-tracker.js` or any tracking block.
+- Keep the existing `quizId` and `questionId` for spelling, translation, formatting, image, or clarification changes that preserve what the question assesses.
+- If an already-published question changes its assessed concept or correct answer, first tell the user that previous attempts will not be recalculated and reports using the same `quizId` and `questionId` will combine the old and new versions.
+- Use a new versioned `questionId` only when the user wants old and new results reported separately. Keeping the existing ID is allowed when combining the history is intentional.
+- If no approved template exists, stop and request one. Do not invent a new quiz data format.
 
-1. Review the diff. Confirm every file is in scope and no protected term or
-   network call was added.
-2. Run the repository build or validation command.
-3. Open the affected page locally at desktop and tablet widths.
-4. Exercise every changed button, link, input, and keyboard path. Assert each
-   produces visible output or the expected navigation within a bounded wait.
-5. Check accessible names, labels, focus order, keyboard activation, visible
-   focus, and console errors.
+## Flashcard rules
 
-Do not push or claim the change is ready if any check fails. If no suitable
-automated seam exists, report that instead of adding a fake passing test.
+- Start from an approved flashcard template in the same subject repository.
+- Edit only deck content, card content, images, ordering, translations, and UI styling.
+- Do not hand-write, copy, delete, or modify a tracking block.
+- Do not change an existing `subject`, deck identifier, `cardId`, event type, self-rating field, or tracking call.
+- Treat every existing card ID as permanent.
+- If no approved template exists, stop and request one. Do not invent a new flashcard data format.
+
+## Interactive tool and game rules
+
+- Keep the tool browser-only and self-contained.
+- Do not read user identity or session data.
+- Do not send scores, progress, clicks, answers, or telemetry anywhere.
+- Do not add login, database, analytics, tracking, or external network access.
+- A tool may save non-personal settings locally with a clearly namespaced localStorage key.
+- If the user wants results recorded, stop and ask the technical owner. That changes the protected integration seam.
+
+## Notes, summaries, and media rules
+
+- Keep them static. Use committed PDF, image, audio, or video files, or an already approved media host.
+- Do not add a new third-party host, embed, analytics tag, upload flow, or remote API.
+- Preserve existing routes and file names when replacing an asset.
+
+## Editing discipline
+
+- Inspect the relevant existing content and its nearest approved example before editing.
+- Do not rewrite an entire page for a small content change.
+- Do not add frameworks, packages, build tools, or dependencies for content work.
+- Do not edit generated `dist/` files when source files exist.
+- Do not use direct production upload as part of a content task.
+- Do not silently fix unrelated code.
+
+## Required checks before finishing
+
+- Review the final diff and confirm every changed file belongs to the requested UI or content task.
+- Confirm the diff adds no protected integration term or network call.
+- Run the repository's existing build or validation command if one exists.
+- Open the affected page locally and check desktop and tablet layouts.
+- For every changed button, link, input, and keyboard path, verify it is reachable, has a clear accessible name or label, has visible focus, and produces visible output or the expected navigation within a bounded wait.
+- For quiz and flashcard UI changes, confirm the existing tracking block is unchanged. Also report whether any content ID changed and why.
+- Check the browser console for errors and warnings introduced by the change.
+- Report the files changed, the checks performed, and any item left for the technical owner.
+- Do not push or claim the change is ready if any check fails. If no suitable automated seam exists, report that instead of adding a fake passing test.
+
+These rules protect the interface between subject content and the UniPlus platform. Never weaken them to complete a task faster.
