@@ -82,6 +82,13 @@ body {
 .species-on-beta { border-color: #3b82f6 !important; background: #dbeafe !important; color: #1e3a8a !important; }
 .species-on-gamma { border-color: #ca8a04 !important; background: #fef9c3 !important; color: #854d0e !important; }
 
+#rad-fs-root.controls-hidden #rad-side-panel {
+  display: none;
+}
+#rad-fs-root.controls-hidden .rad-sim-col {
+  grid-column: 1 / -1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-ping, .animate-pulse { animation: none !important; }
 }
@@ -144,11 +151,14 @@ body.embed-mode #rad-canvas-wrap {
     <div class="rad-fs-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       <div class="rad-sim-col lg:col-span-8 flex flex-col gap-6 w-full">
         <div class="rad-sim-card glass-panel rounded-2xl p-5 flex flex-col relative overflow-hidden">
-          <div class="flex items-center mb-4 border-b border-slate-800 pb-3">
-            <div class="flex items-center gap-2.5">
+          <div class="flex items-center justify-between gap-3 mb-4 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2.5 min-w-0">
               <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
               <h3 class="font-bold text-sm tracking-wide text-slate-200" data-i18n="sim.title">α β γ Deflection Sandbox</h3>
             </div>
+            <button type="button" id="btn-toggle-controls" onclick="toggleControlsPanel()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-700 shrink-0" aria-controls="rad-side-panel" aria-expanded="true">
+              <span id="lbl-toggle-controls" data-i18n="common.hideControls">Hide controls</span>
+            </button>
           </div>
           <div id="rad-canvas-wrap" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-[calc(100dvh-12.5rem)] min-h-[24rem]">
             <canvas id="radCanvas" class="w-full h-full block bg-slate-950" role="img" aria-label="α β γ Deflection Sandbox"></canvas>
@@ -230,7 +240,7 @@ body.embed-mode #rad-canvas-wrap {
         beta: 'β Beta (−e, light)',
         gamma: 'γ Gamma (uncharged)'
       },
-      common: { on: 'ON', off: 'OFF', reset: 'Reset' },
+      common: { on: 'ON', off: 'OFF', reset: 'Reset', hideControls: 'Hide controls', showControls: 'Show controls' },
       ctrl: {
         species: 'Radiation emitted',
         efield: 'Electric field',
@@ -264,7 +274,7 @@ body.embed-mode #rad-canvas-wrap {
         beta: 'β 貝塔（−e，輕）',
         gamma: 'γ 伽馬（不帶電）'
       },
-      common: { on: '開', off: '關', reset: '重設' },
+      common: { on: '開', off: '關', reset: '重設', hideControls: '隱藏控制', showControls: '顯示控制' },
       ctrl: {
         species: '放出的輻射',
         efield: '電場',
@@ -329,6 +339,7 @@ body.embed-mode #rad-canvas-wrap {
     const canvasEl = document.getElementById('radCanvas');
     if (canvasEl) canvasEl.setAttribute('aria-label', t('sim.title'));
     refreshControls();
+    syncControlsPanel();
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
@@ -342,6 +353,38 @@ body.embed-mode #rad-canvas-wrap {
       window.setLanguage(event.data.lang);
     }
   });
+
+  const PANEL_KEY = 's3phy.radiation-deflection.controlsHidden';
+  let controlsHidden = false;
+  try {
+    controlsHidden = localStorage.getItem(PANEL_KEY) === '1';
+  } catch {
+    controlsHidden = false;
+  }
+
+  function persistControlsHidden() {
+    try {
+      localStorage.setItem(PANEL_KEY, controlsHidden ? '1' : '0');
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function syncControlsPanel() {
+    const root = document.getElementById('rad-fs-root');
+    const btn = document.getElementById('btn-toggle-controls');
+    const lbl = document.getElementById('lbl-toggle-controls');
+    if (root) root.classList.toggle('controls-hidden', controlsHidden);
+    if (btn) btn.setAttribute('aria-expanded', controlsHidden ? 'false' : 'true');
+    if (lbl) lbl.textContent = controlsHidden ? t('common.showControls') : t('common.hideControls');
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  }
+
+  window.toggleControlsPanel = function () {
+    controlsHidden = !controlsHidden;
+    persistControlsHidden();
+    syncControlsPanel();
+  };
 
   window.resetAll = function () {
     emitAlpha = true;
