@@ -1,6 +1,6 @@
 import { getLang } from '../i18n.js';
 
-const FOUNDATIONS_WORKSHEET_VERSION = '20260826a';
+const FOUNDATIONS_WORKSHEET_VERSION = '20260901a';
 
 /** @param {(key: string) => string} t */
 export function createFoundationsNotesWorksheet(t) {

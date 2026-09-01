@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-D8o5sCa9.js";import"./index-Sk6vVDvP.js";function a(o){return t(o,{slug:"vector-tool",titleKey:"tools.vectorTool.title",className:"tool-vector-tool-lab",extraParams:()=>"&v=20260827_vector_box_slope_v40"})}export{a as createVectorToolLab};

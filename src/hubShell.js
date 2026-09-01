@@ -5,6 +5,7 @@ import { initHubFullscreen } from './tools/labFullscreen.js';
 
 export const HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'summary'];
 export const OPTICS_HUB_SECTIONS = ['notes', 'tools', 'worksheets', 'quiz', 'flashcards', 'comics', 'summary'];
+export const FOUNDATIONS_HUB_SECTIONS = ['notes', 'worksheets', 'quiz', 'flashcards', 'summary'];
 
 const NAV_LABELS = {
   notes: 'nav.notes',

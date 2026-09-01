@@ -1,6 +1,6 @@
 import { t, getLang } from '../i18n.js';
 import { hydrateNoteCards, hydrateSummaryCards } from './hubHelpers.js';
-import { mountHubShell, resolveHubSection } from '../hubShell.js';
+import { FOUNDATIONS_HUB_SECTIONS, mountHubShell, resolveHubSection } from '../hubShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildFoundationsDeck } from '../flashcards/flashcardDeck.js';
 
@@ -48,7 +48,11 @@ function resolveQuizId(raw) {
 }
 
 export function mountFoundationsHub(root) {
-  let section = resolveHubSection(sessionStorage.getItem('s3phy.foundations.section'));
+  let section = resolveHubSection(
+    sessionStorage.getItem('s3phy.foundations.section'),
+    'notes',
+    FOUNDATIONS_HUB_SECTIONS,
+  );
   let quizId = resolveQuizId(sessionStorage.getItem(QUIZ_STORAGE_KEY));
   let shell = null;
   let el = { main: null };
@@ -128,15 +132,6 @@ export function mountFoundationsHub(root) {
         buildDeck: (key) => buildFoundationsDeck(key, getLang()),
         introKey: 'flashcards.introFoundations',
       });
-    } else {
-      el.main.innerHTML = `
-        <section class="panel">
-          <h2>${t(`nav.${section}`)}</h2>
-          <div class="card" style="padding: 2rem; text-align: center; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
-            <p class="lead" style="margin-bottom: 0;">${t('foundations.comingSoon')}</p>
-          </div>
-        </section>
-      `;
     }
   }
 
@@ -150,6 +145,7 @@ export function mountFoundationsHub(root) {
     shell = mountHubShell(root, {
       subtitleKey: 'strand.foundations.subtitle',
       activeSection: section,
+      sections: FOUNDATIONS_HUB_SECTIONS,
       onSection: (id) => {
         section = id;
         sessionStorage.setItem('s3phy.foundations.section', id);

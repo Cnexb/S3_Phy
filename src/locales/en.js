@@ -1,9 +1,9 @@
 /** @type {Record<string, string>} */
 export const en = {
   'app.title': 'Uni+ HKDSE Physics Hub',
-  'app.subtitle': 'S3 Physics — Optics & Heat',
+  'app.subtitle': 'S3 Physics — Foundations, Optics & Heat',
   'strands.title': 'Choose a strand',
-  'strands.intro': 'Optics (light) and Heat are ready. Other strands are coming soon, but you can still open them.',
+  'strands.intro': 'Foundations, Optics (light), and Heat are ready. Other strands are coming soon, but you can still open them.',
   'strand.optics.title': 'Optics',
   'strand.optics.desc': 'Light and waves: reflection, refraction, lenses, and electromagnetic waves.',
   'strand.optics.subtitle': 'Optics — light and waves',
@@ -290,7 +290,7 @@ export const en = {
   'tools.faultyCalibration.invalidInterval': 'C_u must differ from C_f (interval cannot be zero).',
   // Foundations translations
   'strand.foundations.title': 'Foundations',
-  'strand.foundations.desc': 'Physical quantities, SI units, and the mathematics used in S3 physics. Notes, worksheets, a short quiz, and flashcards are ready; labs are coming soon.',
+  'strand.foundations.desc': 'Physical quantities, SI units, and the mathematics used in S3 physics. Notes, worksheets, a short quiz, and flashcards are ready.',
   'strand.foundations.subtitle': 'Foundations — quantities, units, and maths for physics',
   'foundations.section.empty': 'Foundations strand content is coming soon.',
   'foundations.comingSoon': 'Interactive labs for this strand are coming soon.',

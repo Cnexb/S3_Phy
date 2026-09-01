@@ -2,7 +2,7 @@ import { t } from './i18n.js';
 import { mountProfileMenu, profileMenuMarkup } from './profileMenu.js';
 
 const STRANDS = [
-  { id: 'foundations', titleKey: 'strand.foundations.title', descKey: 'strand.foundations.desc', ready: false },
+  { id: 'foundations', titleKey: 'strand.foundations.title', descKey: 'strand.foundations.desc', ready: true },
   { id: 'optics', titleKey: 'strand.optics.title', descKey: 'strand.optics.desc', ready: true },
   { id: 'heat', titleKey: 'strand.heat.title', descKey: 'strand.heat.desc', ready: true },
   { id: 'mechanics', titleKey: 'strand.mechanics.title', descKey: 'strand.mechanics.desc', ready: false },

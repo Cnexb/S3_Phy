@@ -1,9 +1,9 @@
 /** @type {Record<string, string>} */
 export const zhHant = {
   'app.title': 'Uni+ HKDSE \u7269\u7406\u5b78\u7fd2\u4e2d\u5fc3',
-  'app.subtitle': '\u4e2d\u4e09\u7269\u7406 \u2014 \u5149\u8207\u71b1',
+  'app.subtitle': '\u4e2d\u4e09\u7269\u7406 \u2014 \u57fa\u790e\u3001\u5149\u8207\u71b1',
   'strands.title': '\u9078\u64c7\u55ae\u5143',
-  'strands.intro': '\u5149\u5b78\uff08\u5149\uff09\u8207\u71b1\u5b78\u5df2\u53ef\u4f7f\u7528\u3002\u5176\u4ed6\u55ae\u5143\u5373\u5c07\u63a8\u51fa\uff0c\u4ecd\u53ef\u9032\u5165\u9810\u89bd\u3002',
+  'strands.intro': '\u7269\u7406\u57fa\u790e\u3001\u5149\u5b78\uff08\u5149\uff09\u8207\u71b1\u5b78\u5df2\u53ef\u4f7f\u7528\u3002\u5176\u4ed6\u55ae\u5143\u5373\u5c07\u63a8\u51fa\uff0c\u4ecd\u53ef\u9032\u5165\u9810\u89bd\u3002',
   'strand.optics.title': '\u5149\u5b78',
   'strand.optics.desc': '\u5149\u8207\u6ce2\u52d5\uff1a\u53cd\u5c04\u3001\u6298\u5c04\u3001\u900f\u93e1\u8207\u96fb\u78c1\u6ce2\u3002',
   'strand.optics.subtitle': '\u5149\u5b78 \u2014 \u5149\u8207\u6ce2\u52d5',
@@ -290,11 +290,11 @@ export const zhHant = {
   'tools.faultyCalibration.invalidInterval': 'C<sub>u</sub> \u8207 C<sub>f</sub> \u4e0d\u53ef\u76f8\u540c\uff08\u5340\u9593\u4e0d\u53ef\u70ba\u96f6\uff09\u3002',
   // Foundations translations
   'strand.foundations.title': '物理基礎',
-  'strand.foundations.desc': '物理量、國際單位制，以及中三物理常用數學。筆記、工作紙、短測驗與閃卡已開放；實驗室即將推出。',
+  'strand.foundations.desc': '物理量、國際單位制，以及中三物理常用數學。筆記、工作紙、短測驗與閃卡已開放。',
   'strand.foundations.subtitle': '物理基礎 — 物理量、單位與常用數學',
   'foundations.section.empty': '物理基礎單元內容即將推出。',
   'foundations.comingSoon': '此單元的互動實驗室將於日後推出。',
-  'flashcards.introFoundations': '使用間隔重複習——難記的卡片在下一輪會更頻繁出現。涵蓋 Ch.00 物理量與單位，以及物理常用數學。',
+  'flashcards.introFoundations': '使用間隔重複學習——難記的卡片在下一輪會更頻繁出現。涵蓋 Ch.00 物理量與單位，以及物理常用數學。',
   'flashcards.introMechanics': '使用間隔重複習——難記的卡片在下一輪會更頻繁出現。涵蓋力學全部 13 章，由位置與運動至萬有引力。',
   'topic.quantitiesUnits': '物理量與單位',
   'topic.usefulMaths': '物理中常用的數學',
