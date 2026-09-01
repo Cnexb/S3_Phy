@@ -625,9 +625,83 @@ html.s3phy-embed select {
   }
 }
 
+/* Floating fullscreen — universal control for standalone labs */
+.s3phy-fs-btn {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: auto;
+  z-index: 2147483646;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.97);
+  color: #0f172a;
+  font-family: var(--s3-font, system-ui, sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.2);
+  pointer-events: auto;
+}
+
+.s3phy-fs-btn:hover {
+  background: #ffffff;
+  border-color: #64748b;
+}
+
+.s3phy-fs-btn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.s3phy-fs-btn--active {
+  background: #0f172a;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.s3phy-fs-btn--active:hover {
+  background: #1e293b;
+  border-color: #475569;
+}
+
+.s3phy-fs-btn__icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.s3phy-fs-btn__icon.material-symbols-outlined {
+  font-size: 1.15rem;
+}
+
+/* Per-lab fullscreen controls replaced by universal button */
+#fullscreen-btn,
+#fullscreenBtn,
+.el-fs-btn,
+[data-fullscreen],
+.tl-fullscreen-btn {
+  display: none !important;
+}
+
 
 html, body { margin: 0; padding: 0; background: #ffffff; }
 #app { padding: 8px; }
+.tl-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 html.s3phy-embed,
 html.s3phy-embed body,
 html:has(.tl-wrap--design-simple),
@@ -641,20 +715,22 @@ html:has(.tl-wrap--design-simple) body {
 .tl-wrap--design-simple .tl-design-controls-toggle {
   display: flex;
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 6px;
+  right: 6px;
   z-index: 10;
-  min-height: 42px;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  padding: 8px 10px;
+  gap: 0;
+  padding: 0;
   border: 1px solid #c7d2fe;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #eef2ff;
   color: #4338ca;
   font: inherit;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 
@@ -677,9 +753,9 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
 }
 
 .tl-wrap--design-simple .tl-design-simple-side.is-collapsed .tl-design-controls-toggle {
-  min-height: 110px;
+  min-height: 28px;
   flex-direction: column;
-  padding-inline: 6px;
+  padding-inline: 0;
 }
 
 @media (max-width: 900px) {
@@ -690,7 +766,7 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
   }
 
   .tl-wrap--design-simple .tl-design-simple-side.is-collapsed .tl-design-controls-toggle {
-    min-height: 42px;
+    min-height: 28px;
     flex-direction: row;
   }
 }
@@ -760,7 +836,7 @@ html:has(.tl-wrap--design-simple) #app {
   background: #eef2ff;
 }
 .tl-wrap .tl-fullscreen-btn span { font-size: 1.05rem; line-height: 1; }
-html.s3phy-embed .tl-wrap--design-simple .tl-fullscreen-btn { top: 48px; }
+html.s3phy-embed .tl-wrap--design-simple .tl-fullscreen-btn { top: 6px; left: 6px; min-height: 28px; padding: 0 8px; }
 
 html:fullscreen,
 html:fullscreen body,
@@ -1462,42 +1538,46 @@ html:fullscreen .tl-wrap {
   flex-direction: column;
   min-height: 0;
   height: 100%;
-  padding: 10px;
+  padding: 6px;
 }
 .tl-wrap--design-simple .tl-head {
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 .tl-wrap--design-simple .tl-title {
-  font-size: 1.25rem;
+  font-size: 0.95rem;
+  margin: 0;
+}
+html.s3phy-embed .tl-wrap--design-simple .tl-head {
+  display: none;
 }
 .tl-wrap--design-simple .tl-sub {
-  font-size: 0.8rem;
-  margin-top: 2px;
+  display: none;
 }
 .tl-wrap--design-simple .tl-part-tabs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  margin: 0 0 8px;
+  gap: 4px;
+  margin: 0 0 6px;
   flex: 0 0 auto;
 }
 .tl-wrap--design-simple .tl-part-tab {
   display: flex;
   min-width: 0;
+  min-height: 28px;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  border: 2px solid #e2e8f0;
+  gap: 5px;
+  border: 1px solid #e2e8f0;
   background: #fff;
   color: #334155;
-  border-radius: 12px;
-  padding: 7px 6px;
+  border-radius: 8px;
+  padding: 3px 4px;
   font-weight: 800;
-  font-size: 0.82rem;
-  line-height: 1.2;
+  font-size: 0.72rem;
+  line-height: 1.15;
   overflow-wrap: anywhere;
   text-align: center;
-  white-space: normal;
+  white-space: nowrap;
   cursor: pointer;
   transition: 0.15s ease;
 }
@@ -1523,8 +1603,8 @@ html:fullscreen .tl-wrap {
   box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 .tl-wrap--design-simple .tl-part-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
   flex-shrink: 0;
 }
@@ -1534,8 +1614,8 @@ html:fullscreen .tl-wrap {
 
 .tl-wrap--design-simple .tl-dash--design-simple {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.9fr);
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) 168px;
+  gap: 8px;
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
@@ -1545,7 +1625,7 @@ html:fullscreen .tl-wrap {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
   min-width: 0;
   width: 100%;
   min-height: 280px;
@@ -1553,8 +1633,9 @@ html:fullscreen .tl-wrap {
   max-height: none;
   background: linear-gradient(160deg, #ecfeff 0%, #fff7ed 50%, #fdf2f8 100%);
   border: 1px solid var(--tl-border);
-  border-radius: 12px;
-  padding: 6px;
+  border-radius: 10px;
+  padding: 4px;
+  position: relative;
 }
 .tl-wrap--design-simple .tl-viz-phys--large .tl-canvas-phys {
   width: 100%;
@@ -1571,7 +1652,7 @@ html:fullscreen .tl-wrap {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
   max-width: none;
   width: 100%;
@@ -1589,11 +1670,11 @@ html:fullscreen .tl-wrap {
 @media (max-width: 900px) {
   .tl-wrap--design-simple .tl-dash--design-simple {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(260px, 48vh) minmax(0, 1fr);
+    grid-template-rows: minmax(280px, 58vh) minmax(0, 1fr);
   }
   .tl-wrap--design-simple .tl-viz-phys--large {
-    min-height: 260px;
-    max-height: 48vh;
+    min-height: 280px;
+    max-height: 58vh;
   }
 }
 .tl-wrap--design-simple .tl-reset-row {
@@ -1607,19 +1688,17 @@ html:fullscreen .tl-wrap {
   margin: 0;
 }
 .tl-wrap--design-simple .tl-reset-part-btn {
-  flex-shrink: 0;
-  max-width: 48%;
-  font-size: 0.78rem;
+  width: 100%;
+  max-width: none;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 3px 6px;
+  border-radius: 6px;
   border: 1px solid #cbd5e1;
   background: #f8fafc;
   color: #334155;
   cursor: pointer;
-  line-height: 1.25;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  line-height: 1.2;
 }
 .tl-wrap--design-simple .tl-reset-part-btn:hover {
   background: #e2e8f0;
@@ -1627,11 +1706,11 @@ html:fullscreen .tl-wrap {
 }
 .tl-wrap--design-simple .tl-reset-all-btn {
   width: 100%;
-  margin-top: 4px;
-  font-size: 0.82rem;
+  margin-top: 2px;
+  font-size: 0.68rem;
   font-weight: 750;
-  padding: 8px 12px;
-  border-radius: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
   border: 1px solid #fdba74;
   background: #fff7ed;
   color: #c2410c;
@@ -1645,11 +1724,11 @@ html:fullscreen .tl-wrap {
   flex: 0 0 auto;
   background: #fff;
   border: 2px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 10px;
+  border-radius: 10px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
   max-width: 100%;
   min-height: 0;
 }
@@ -1685,16 +1764,16 @@ html:fullscreen .tl-wrap {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 10px;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 8px;
   background: #f8fafc;
   border: 1px dashed #cbd5e1;
 }
 .tl-wrap--design-simple .tl-focus-effect-k {
   min-width: 0;
-  flex: 1 1 110px;
-  font-size: 0.78rem;
+  flex: 1 1 70px;
+  font-size: 0.68rem;
   font-weight: 700;
   color: #64748b;
   overflow-wrap: anywhere;
@@ -1702,7 +1781,7 @@ html:fullscreen .tl-wrap {
 .tl-wrap--design-simple .tl-focus-effect-v {
   min-width: 0;
   max-width: 100%;
-  font-size: 1.05rem;
+  font-size: 0.88rem;
   color: #0f766e;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
@@ -1719,7 +1798,7 @@ html:fullscreen .tl-wrap {
 }
 .tl-wrap--design-simple .tl-focus-card[data-focus="wall"] .tl-focus-effect-v {
   color: #075985;
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 900;
   line-height: 1.2;
   white-space: nowrap;
@@ -1754,16 +1833,21 @@ html:fullscreen .tl-wrap {
   line-height: 1.2;
 }
 .tl-wrap--design-simple .tl-focus-control .tl-lr {
-  align-items: flex-start;
-  gap: 8px;
+  align-items: center;
+  gap: 6px;
 }
 .tl-wrap--design-simple .tl-focus-control .tl-lr > span {
   min-width: 0;
   overflow-wrap: anywhere;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 .tl-wrap--design-simple .tl-focus-control .tl-param-num {
-  flex: 0 0 80px;
+  flex: 0 0 58px;
   max-width: 42%;
+  height: 26px;
+  font-size: 0.75rem;
+  padding: 2px 4px;
 }
 @container (max-width: 420px) {
   .tl-wrap--design-simple .tl-design-grid--mini {
@@ -1790,11 +1874,11 @@ html:fullscreen .tl-wrap {
   flex: 0 0 auto;
   background: #fff;
   border: 1px solid var(--tl-border);
-  border-radius: 12px;
-  padding: 10px;
+  border-radius: 10px;
+  padding: 6px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   min-height: 0;
 }
 .tl-wrap--design-simple .tl-bath-bar--simple .tl-beaker-overlay {
@@ -1814,10 +1898,23 @@ html:fullscreen .tl-wrap {
 .tl-wrap--design-simple .tl-bath-bar--simple .tl-preset-btn,
 .tl-wrap--design-simple .tl-bath-bar--simple .tl-seg-btn {
   min-width: 0;
+  min-height: 24px;
   height: auto;
-  line-height: 1.2;
+  line-height: 1.15;
+  font-size: 0.68rem;
+  padding: 2px 4px;
   overflow-wrap: anywhere;
-  white-space: normal;
+  white-space: nowrap;
+}
+.tl-wrap--design-simple .tl-bath-bar--simple .tl-seg {
+  padding: 2px;
+  border-radius: 8px;
+}
+.tl-wrap--design-simple .tl-warning-banner {
+  font-size: 0.64rem;
+  line-height: 1.25;
+  padding: 4px 6px;
+  margin: 0;
 }
 @container (max-width: 360px) {
   .tl-wrap--design-simple .tl-reset-row {
@@ -1848,7 +1945,7 @@ html:fullscreen .tl-wrap {
 }
 html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) 168px;
   flex: 1 1 auto;
   min-height: 0;
   height: 100%;
@@ -1876,7 +1973,7 @@ html.s3phy-embed .tl-wrap--design-simple .tl-design-simple-side {
 @media (max-width: 900px) {
   html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(260px, 48vh) minmax(0, 1fr);
+    grid-template-rows: minmax(280px, 58vh) minmax(0, 1fr);
   }
 }
 .tl-wrap .tl-info-label {
@@ -2512,6 +2609,10 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
     return { setCollapsed, refreshMode, isCollapsed: () => collapsed };
   }
   function attachFullscreenControl(wrap, t) {
+    if (document.documentElement.classList.contains("s3phy-embed")) {
+      return () => {
+      };
+    }
     const button = document.createElement("button");
     button.type = "button";
     button.className = "tl-fullscreen-btn";
@@ -2591,9 +2692,9 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
     </div>
     <div class="tl-dash tl-dash--design-simple">
       <div class="tl-viz-phys tl-viz-phys--large">
-        <button type="button" class="tl-design-controls-toggle" id="tl-design-controls-toggle" aria-expanded="true">
+        <button type="button" class="tl-design-controls-toggle" id="tl-design-controls-toggle" aria-expanded="true" aria-label="${t("tools.floatingControls.hideParams")}">
           <span aria-hidden="true">\u2699</span>
-          <strong data-design-toggle-text>${t("tools.floatingControls.hideParams")}</strong>
+          <strong data-design-toggle-text class="tl-sr-only">${t("tools.floatingControls.hideParams")}</strong>
         </button>
         <canvas class="tl-canvas-phys" id="tl-thermometerCanvas" width="720" height="720"></canvas>
       </div>
@@ -2970,8 +3071,8 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
       input.addEventListener("change", () => applyValue(parseFloat(input.value)));
       input.addEventListener("blur", () => applyValue(parseFloat(input.value)));
     }
-    const DESIGN_SCENE_W = 780;
-    const DESIGN_SCENE_H = 600;
+    const DESIGN_SCENE_W = 520;
+    const DESIGN_SCENE_H = 580;
     const PHYS_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : 460;
     const PHYS_HEIGHT = isLiquidDesign ? DESIGN_SCENE_H : 340;
     const LABEL_MARGIN = 8;
@@ -2980,7 +3081,7 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
     const PHYS_SCENE_OFFSET_Y = isLiquidDesign ? 0 : 44;
     let activeSceneW = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
     const SCENE_WIDTH = isLiquidDesign ? DESIGN_SCENE_W : PHYS_WIDTH - PHYS_SCENE_OFFSET_X;
-    const BEAKER_W = isLiquidDesign ? 560 : 130;
+    const BEAKER_W = isLiquidDesign ? 380 : 130;
     const GRAPH_WIDTH = 640;
     const GRAPH_HEIGHT = 420;
     function getPhysLayout() {
@@ -2991,8 +3092,8 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
           beakerX: sceneW / 2 - beakerW / 2,
           beakerW,
           thermometerX: sceneW / 2,
-          leftThermometerX: sceneW * 0.3,
-          rightThermometerX: sceneW * 0.7,
+          leftThermometerX: sceneW * 0.28,
+          rightThermometerX: sceneW * 0.72,
           sceneW
         };
       }
@@ -3698,8 +3799,8 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
       const x = layout.thermometerX;
       const sceneW = layout.sceneW || activeSceneW || SCENE_WIDTH;
       const isCompare = design.role === "reference" || design.role === "current";
-      const stemTop = isLiquidDesign ? isCompare ? 72 : 14 : 20;
-      const bulbScale = isLiquidDesign ? isCompare ? 3.2 : 4.4 : 1;
+      const stemTop = isLiquidDesign ? isCompare ? 34 : 14 : 20;
+      const bulbScale = isLiquidDesign ? isCompare ? 3.95 : 4.4 : 1;
       const bulbRadius = getBulbVisualRadiusFor(design.bulbVolume) * bulbScale;
       const bulbCenterY = isLiquidDesign ? 520 + Math.max(0, bulbRadius - BULB_RADIUS_REF * bulbScale) * 0.15 : 250 + Math.max(0, bulbRadius - BULB_RADIUS_REF) * 0.35;
       const stemBottom = bulbCenterY - bulbRadius - 1;
@@ -4354,28 +4455,25 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
       }
       return `${t("tools.thermometerLab.design.range")} \u2248 ${rangeC.toFixed(0)} \xB0C`;
     }
-    function drawCompareCaption(ctx, x, y, title2, metric, temperature, accent) {
+    function drawCompareCaption(ctx, x, y, title2, temperature, accent) {
       ctx.save();
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const boxW = 200;
-      const boxH = 60;
+      const boxW = 86;
+      const boxH = 32;
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = accent;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 10);
+      ctx.roundRect(x - boxW / 2, y - boxH / 2, boxW, boxH, 8);
       ctx.fill();
       ctx.stroke();
       ctx.fillStyle = accent;
-      ctx.font = 'bold 14px "Noto Sans TC", Arial, sans-serif';
-      ctx.fillText(title2, x, y - 17);
-      ctx.fillStyle = "#334155";
-      ctx.font = '12px "Noto Sans TC", Arial, sans-serif';
-      ctx.fillText(metric, x, y + 1);
+      ctx.font = 'bold 12px "Noto Sans TC", Arial, sans-serif';
+      ctx.fillText(title2, x, y - 7);
       ctx.fillStyle = "#0f766e";
-      ctx.font = 'bold 13px "Noto Sans TC", Arial, sans-serif';
-      ctx.fillText(`T = ${temperature.toFixed(1)} \xB0C`, x, y + 19);
+      ctx.font = 'bold 11px "Noto Sans TC", Arial, sans-serif';
+      ctx.fillText(`${temperature.toFixed(0)} \xB0C`, x, y + 8);
       ctx.restore();
     }
     function drawVisuals() {
@@ -4383,7 +4481,7 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
         const { cssW, cssH, ratio } = syncDesignCanvasSize();
         physCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
         physCtx.clearRect(0, 0, cssW, cssH);
-        const pad = 8;
+        const pad = 4;
         const availW = Math.max(1, cssW - pad * 2);
         const availH = Math.max(1, cssH - pad * 2);
         activeSceneW = DESIGN_SCENE_W;
@@ -4404,8 +4502,8 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
         physCtx.lineWidth = 2;
         physCtx.setLineDash([6, 6]);
         physCtx.beginPath();
-        physCtx.moveTo(sceneW / 2, 10);
-        physCtx.lineTo(sceneW / 2, 440);
+        physCtx.moveTo(sceneW / 2, 8);
+        physCtx.lineTo(sceneW / 2, 510);
         physCtx.stroke();
         physCtx.setLineDash([]);
         physCtx.restore();
@@ -4427,18 +4525,16 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
         drawCompareCaption(
           physCtx,
           physLayout2.leftThermometerX,
-          34,
+          22,
           t("tools.thermometerLab.design.compareRef"),
-          getCompareMetricLine(refDesign),
           refTemp,
           "#64748b"
         );
         drawCompareCaption(
           physCtx,
           physLayout2.rightThermometerX,
-          34,
+          22,
           t("tools.thermometerLab.design.compareCurrent"),
-          getCompareMetricLine(curDesign),
           curTemp,
           state.focusPart === "bore" ? "#9333ea" : state.focusPart === "wall" ? "#0284c7" : "#ea580c"
         );
@@ -5172,6 +5268,10 @@ html.s3phy-embed .tl-wrap--design-simple .tl-dash--design-simple.controls-collap
         dash.classList.toggle("controls-collapsed", designCollapsed);
         designSide?.classList.toggle("is-collapsed", designCollapsed);
         designToggle?.setAttribute("aria-expanded", String(!designCollapsed));
+        designToggle?.setAttribute(
+          "aria-label",
+          designCollapsed ? t("tools.floatingControls.showParams") : t("tools.floatingControls.hideParams")
+        );
         if (designToggleText) {
           designToggleText.textContent = designCollapsed ? t("tools.floatingControls.showParams") : t("tools.floatingControls.hideParams");
         }

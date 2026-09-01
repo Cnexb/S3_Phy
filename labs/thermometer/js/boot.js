@@ -1,5 +1,5 @@
-import { createThermometerLab, createFaultyScaleCalibrationLab } from './lab.js?v=50';
-import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js';
+import { createThermometerLab, createFaultyScaleCalibrationLab } from './lab.js?v=51';
+import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=51';
 
 const root = document.getElementById('app');
 const MODES = new Set(['liquid', 'resistance', 'thermistor', 'faulty']);

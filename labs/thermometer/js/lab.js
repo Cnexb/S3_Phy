@@ -217,11 +217,149 @@ export function createThermometerLab(t, options = {}) {
     subtitle = t('tools.thermometerLab.thermistor.subtitle') || t('tools.thermometerLab.subtitle');
   }
 
-  const isLiquidDesign = false;
+  const isLiquidDesign = defaultType === 'liquid';
 
   const wrap = document.createElement('div');
-  wrap.className = 'tl-wrap';
-  wrap.innerHTML = `
+  wrap.className = 'tl-wrap' + (isLiquidDesign ? ' tl-wrap--design-simple' : '');
+  wrap.innerHTML = isLiquidDesign ? `
+    <div class="tl-head">
+      <h2 class="tl-title">${title}</h2>
+      <div class="tl-sub">${subtitle}</div>
+    </div>
+    <div class="tl-part-tabs" id="tl-part-tabs" role="tablist">
+      <button type="button" class="tl-part-tab active" data-part="bulb" role="tab" aria-selected="true">
+        <span class="tl-part-dot tl-part-dot--bulb"></span>
+        ${t('tools.thermometerLab.design.tabBulb')}
+      </button>
+      <button type="button" class="tl-part-tab" data-part="bore" role="tab" aria-selected="false">
+        <span class="tl-part-dot tl-part-dot--bore"></span>
+        ${t('tools.thermometerLab.design.tabBore')}
+      </button>
+      <button type="button" class="tl-part-tab" data-part="wall" role="tab" aria-selected="false">
+        <span class="tl-part-dot tl-part-dot--wall"></span>
+        ${t('tools.thermometerLab.design.tabWall')}
+      </button>
+    </div>
+    <div class="tl-dash tl-dash--design-simple">
+      <div class="tl-viz-phys tl-viz-phys--large">
+        <button type="button" class="tl-design-controls-toggle" id="tl-design-controls-toggle" aria-expanded="true" aria-label="${t('tools.floatingControls.hideParams')}">
+          <span aria-hidden="true">⚙</span>
+          <strong data-design-toggle-text class="tl-sr-only">${t('tools.floatingControls.hideParams')}</strong>
+        </button>
+        <canvas class="tl-canvas-phys" id="tl-thermometerCanvas" width="720" height="720"></canvas>
+      </div>
+
+      <aside class="tl-design-simple-side">
+        <div class="tl-focus-card" id="tl-focus-card" data-focus="bulb">
+          <div class="tl-focus-badge" id="tl-focus-badge">${t('tools.thermometerLab.design.tabBulb')}</div>
+          <p class="tl-focus-explain" id="tl-focus-explain"></p>
+          <div class="tl-focus-effect" id="tl-focus-effect">
+            <span class="tl-focus-effect-k" id="tl-focus-effect-k"></span>
+            <b class="tl-focus-effect-v" id="tl-focus-effect-v"></b>
+          </div>
+          <div class="tl-design-grid tl-design-grid--mini" hidden>
+            <div class="tl-design-stat" data-stat="sensitivity" hidden>
+              <span class="tl-design-k">${t('tools.thermometerLab.design.sensitivity')}</span>
+              <b class="tl-design-v" id="tl-val-sensitivity">0.100 cm/°C</b>
+            </div>
+            <div class="tl-design-stat is-focus" data-stat="range">
+              <span class="tl-design-k">${t('tools.thermometerLab.design.range')}</span>
+              <b class="tl-design-v" id="tl-val-range">180 °C</b>
+            </div>
+            <div class="tl-design-stat" data-stat="response" hidden>
+              <span class="tl-design-k">${t('tools.thermometerLab.design.response')}</span>
+              <b class="tl-design-v" id="tl-val-response-time">0.65 s</b>
+            </div>
+          </div>
+          <p class="tl-design-cue" id="tl-design-cue"></p>
+
+          <div class="tl-focus-control" data-control="bulb">
+            <div class="tl-lr">
+              <span>${t('tools.thermometerLab.design.bulbShort')}</span>
+              <input type="number" id="tl-input-bulb-vol" class="tl-param-num" min="10" max="1000" step="10" value="200">
+            </div>
+            <input type="range" id="tl-slider-bulb-vol" min="10" max="1000" step="10" value="200">
+            <div class="tl-reset-row">
+              <p class="tl-hint">${t('tools.thermometerLab.design.bulbHint')}</p>
+              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bulb">${t('tools.thermometerLab.design.resetPart')}</button>
+            </div>
+          </div>
+          <div class="tl-focus-control" data-control="bore" hidden>
+            <div class="tl-lr">
+              <span>${t('tools.thermometerLab.design.boreShort')}</span>
+              <input type="number" id="tl-input-capillary-bore" class="tl-param-num" min="0.05" max="2.0" step="0.05" value="0.3">
+            </div>
+            <input type="range" id="tl-slider-capillary-bore" min="0.05" max="2.0" step="0.05" value="0.3">
+            <div class="tl-reset-row">
+              <p class="tl-hint">${t('tools.thermometerLab.design.boreHint')}</p>
+              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-bore">${t('tools.thermometerLab.design.resetPart')}</button>
+            </div>
+          </div>
+          <div class="tl-focus-control" data-control="wall" hidden>
+            <div class="tl-lr">
+              <span>${t('tools.thermometerLab.design.wallShort')}</span>
+              <input type="number" id="tl-input-wall-thick" class="tl-param-num" min="0.05" max="3.0" step="0.05" value="0.5">
+            </div>
+            <input type="range" id="tl-slider-wall-thick" min="0.05" max="3.0" step="0.05" value="0.5">
+            <div class="tl-reset-row">
+              <p class="tl-hint">${t('tools.thermometerLab.design.wallHint')}</p>
+              <button type="button" class="tl-btn tl-reset-part-btn" id="tl-btn-reset-wall">${t('tools.thermometerLab.design.resetPart')}</button>
+            </div>
+          </div>
+          <button type="button" class="tl-btn tl-reset-all-btn" id="tl-btn-reset-design">${t('tools.thermometerLab.design.resetAll')}</button>
+        </div>
+
+        <div class="tl-bath-bar tl-bath-bar--simple">
+          <div class="tl-beaker-overlay">
+            <span>${t('tools.thermometerLab.design.bath')}: <b id="tl-bath-state">${t('tools.thermometerLab.design.bathStateWater')}</b></span>
+            <span><b class="tl-temp-badge" id="tl-bath-temp-display">25.0°C</b></span>
+          </div>
+          <div class="tl-lr">
+            <span>T<sub>bath</sub></span>
+            <span class="tl-badge tl-lr-value tl-val-bath-temp" id="tl-val-bath-temp">25.0 °C</span>
+          </div>
+          <input type="range" id="tl-bath-temp-slider" min="0" max="200" step="0.5" value="25.0">
+          <div class="tl-btn-group">
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-ice" type="button">0°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-room" type="button">25°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-steam" type="button">100°C</button>
+            <button class="tl-btn tl-preset-btn" id="tl-btn-preset-oil" type="button">150°C</button>
+          </div>
+          <div class="tl-cg" style="margin-top:6px">
+            <span class="tl-section-label">${t('tools.thermometerLab.design.liquid')}</span>
+            <div class="tl-seg" role="group">
+              <button type="button" class="tl-seg-btn" id="tl-card-mercury">Hg</button>
+              <button type="button" class="tl-seg-btn active-alcohol" id="tl-card-alcohol">Alcohol</button>
+            </div>
+          </div>
+          <div class="tl-warning-banner" id="tl-alcohol-boiling-warning">
+            ${t('tools.thermometerLab.design.alcoholWarn')}
+          </div>
+        </div>
+      </aside>
+
+      <div class="tl-design-simple-hidden" hidden aria-hidden="true">
+        <canvas id="tl-graphCanvas" width="2" height="2"></canvas>
+        <button id="tl-btn-toggle-labels" type="button"><span id="tl-lbl-toggle-labels"></span></button>
+        <div id="tl-design-panel"></div>
+        <span id="tl-live-liquid-lt"></span>
+        <span id="tl-live-liquid-t-sub"></span>
+        <span id="tl-display-liquid-l100"></span>
+        <input type="number" id="tl-input-liquid-l0" value="3.0">
+        <input type="range" id="tl-slider-liquid-l0" min="0.5" max="15" step="0.1" value="3.0">
+        <div id="tl-svg-formula-liquid"></div>
+        <div id="tl-svg-formula-liquid-sub"></div>
+        <div id="tl-svg-formula-t-to-l"></div>
+        <div id="tl-live-liquid" class="tl-live-tab active"></div>
+        <div id="tl-live-resistance" class="tl-live-tab"></div>
+        <div id="tl-live-thermistor" class="tl-live-tab"></div>
+        <div id="tl-tab-liquid" class="tl-tab-content active"></div>
+        <div id="tl-tab-resistance" class="tl-tab-content"></div>
+        <div id="tl-tab-thermistor" class="tl-tab-content"></div>
+        <div class="tl-controls" id="tl-controls-panel"></div>
+      </div>
+    </div>
+  ` : `
     <div class="tl-head">
       <h2 class="tl-title">${title}</h2>
       <div class="tl-sub">${subtitle}</div>
@@ -324,67 +462,7 @@ export function createThermometerLab(t, options = {}) {
           </button>
         </div>
         <div class="tl-controls-body">
-        <div class="tl-tab-content active" id="tl-tab-liquid">
-          <details class="tl-details" open>
-            <summary>${t('tools.thermometerLab.paramSettings')}</summary>
-            <div class="tl-details-body">
-              <div class="tl-cg">
-                <span class="tl-section-label">${t('tools.thermometerLab.design.liquid')}</span>
-                <div class="tl-seg" role="group" aria-label="${t('tools.thermometerLab.design.liquid')}">
-                  <button type="button" class="tl-seg-btn active-mercury" id="tl-card-mercury">
-                    <span class="tl-dot mercury"></span> Hg
-                  </button>
-                  <button type="button" class="tl-seg-btn" id="tl-card-alcohol">
-                    <span class="tl-dot alcohol"></span> Alcohol
-                  </button>
-                </div>
-              </div>
-              <div class="tl-warning-banner" id="tl-alcohol-boiling-warning">
-                ${t('tools.thermometerLab.design.alcoholWarn')}
-              </div>
-              <div class="tl-param-grid">
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Bulb volume V<sub>b</sub> [mm³]</span>
-                    <input type="number" id="tl-input-bulb-vol" class="tl-param-num" min="10" max="1000" step="10" value="200">
-                  </div>
-                  <input type="range" id="tl-slider-bulb-vol" min="10" max="1000" step="10" value="200">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Wall thickness w [mm]</span>
-                    <input type="number" id="tl-input-wall-thick" class="tl-param-num" min="0.05" max="3.0" step="0.05" value="0.5">
-                  </div>
-                  <input type="range" id="tl-slider-wall-thick" min="0.05" max="3.0" step="0.05" value="0.5">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Capillary bore d [mm]</span>
-                    <input type="number" id="tl-input-capillary-bore" class="tl-param-num" min="0.05" max="2.0" step="0.05" value="0.3">
-                  </div>
-                  <input type="range" id="tl-slider-capillary-bore" min="0.05" max="2.0" step="0.05" value="0.3">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Ice-point length L<sub>0</sub> [cm]</span>
-                    <input type="number" id="tl-input-liquid-l0" class="tl-param-num" min="0.5" max="15.0" step="0.1" value="3.0">
-                  </div>
-                  <input type="range" id="tl-slider-liquid-l0" min="0.5" max="15.0" step="0.1" value="3.0">
-                </div>
-                <div class="tl-cg">
-                  <div class="tl-lr">
-                    <span>Steam-point length L<sub>100</sub> [cm]</span>
-                    <input type="number" id="tl-input-liquid-l100" class="tl-param-num" min="5.0" max="30.0" step="0.1" value="13.0">
-                  </div>
-                  <input type="range" id="tl-slider-liquid-l100" min="5.0" max="30.0" step="0.1" value="13.0">
-                </div>
-              </div>
-              <div class="tl-info-card tl-info-card--compact">
-                τ = <b id="tl-val-response-time">0.65 s</b>
-              </div>
-            </div>
-          </details>
-        </div>
+        <div class="tl-tab-content active" id="tl-tab-liquid"></div>
         <div class="tl-tab-content" id="tl-tab-resistance">
           <details class="tl-details" open>
             <summary>${t('tools.thermometerLab.paramSettings')}</summary>
@@ -485,7 +563,7 @@ export function createThermometerLab(t, options = {}) {
   } catch (err) {}
 
   const state = {
-    liquidType: 'mercury',
+    liquidType: 'alcohol',
     thermometerType: defaultType,
     bulbVolume: 200,
     wallThickness: 0.5,
@@ -762,7 +840,6 @@ export function createThermometerLab(t, options = {}) {
   }
 
   function applyDesignToLengths() {
-    if (!isLiquidDesign) return;
     const S = getDesignSensitivity();
     state.liquidL100 = Math.round((state.liquidL0 + S * 100) * 10) / 10;
     const l100El = wrap.querySelector('#tl-display-liquid-l100');
@@ -2940,18 +3017,6 @@ export function createThermometerLab(t, options = {}) {
         onUpdate: (v) => {
           state.liquidL0 = v;
           applyDesignToLengths();
-          updateCalculations();
-        }
-      }
-    );
-
-    bindParamPair(
-      wrap.querySelector('#tl-slider-liquid-l100'),
-      wrap.querySelector('#tl-input-liquid-l100'),
-      {
-        min: 5.0, max: 30.0, step: 0.1, decimals: 1,
-        onUpdate: (v) => {
-          state.liquidL100 = v;
           updateCalculations();
         }
       }
