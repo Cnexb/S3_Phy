@@ -240,7 +240,7 @@ export const zhHant = {
   'flashcards.deck.heatTransfer': '\u71b1\u50b3\u5165',
   'tools.thermometerLab.title': '\u6eab\u5ea6\u8a08\u8207\u6821\u6e96\u5be6\u9a57\u5ba4',
   'tools.boilingWater.title': '煲水能量實驗室',
-  'tools.heatingMaterials.title': '加熱物料',
+  'tools.heatingMaterials.title': '比熱容量與溫度差的關係',
   'tools.specificHeat.title': '比熱容量實驗室',
   'tools.thermalMixing.title': '熱混合實驗室',
   'tools.changeOfState.title': '物態變化實驗室',
