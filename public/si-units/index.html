@@ -66,10 +66,76 @@
     .bad { color: var(--bad); font-weight: 700; }
     .seed { cursor: pointer; }
     .seed:hover { background: #d7e3ff; }
-    .prefix-row { cursor: pointer; }
-    .prefix-row.on td { background: #d7e3ff; }
     input[type="text"], input[type="number"] { min-width: 7rem; }
     footer { color: var(--muted); font-size: 0.8rem; margin-top: 0.5rem; }
+
+    .match { margin: 0.35rem 0 0.55rem; }
+    .match-help { font-size: 0.9rem; }
+    .match-slots { display: flex; flex-direction: column; gap: 0.45rem; }
+    .match-slots.cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 640px) {
+      .match-slots.cols { grid-template-columns: 1fr; }
+    }
+    .match-slot {
+      border: 2px dashed var(--line);
+      border-radius: 10px;
+      padding: 0.45rem 0.55rem 0.5rem;
+      background: #f7f9fb;
+      min-height: 3.1rem;
+    }
+    .match-slot.ok { border-style: solid; border-color: var(--ok); background: #e8f6ee; }
+    .match-slot.bad { border-color: var(--bad); background: #fde8ec; }
+    .match-slot.aim { border-color: var(--primary); background: #e8f0ff; }
+    .match-slot.on { border-color: var(--primary); background: #d7e3ff; }
+    .match-slot-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 0.7rem; align-items: baseline; }
+    .match-slot-label { font-weight: 700; color: var(--primary); }
+    .match-slot-hint { color: var(--muted); font-size: 0.85rem; }
+    .match-slot-reveal { color: var(--ok); font-weight: 700; }
+    .match-pocket { display: flex; flex-wrap: wrap; gap: 0.3rem; min-height: 2.1rem; margin-top: 0.3rem; }
+    .match-tray {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.65rem 0 0.25rem;
+      min-height: 2.5rem;
+      padding: 0.45rem;
+      background: #eef2f8;
+      border-radius: 10px;
+    }
+    .match-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+      cursor: grab;
+      font-weight: 700;
+      color: var(--primary);
+      user-select: none;
+      touch-action: pan-y;
+    }
+    .match-chip.sel { outline: 2px solid var(--primary); background: #d7e3ff; }
+    .match-chip.lock {
+      cursor: default;
+      background: #e8f6ee;
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+    .match-chip.lift { opacity: 0.35; }
+    .match-chip.match-ghost {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      margin: 0;
+      opacity: 0.95;
+      box-shadow: 0 8px 18px rgba(25, 28, 30, 0.18);
+      cursor: grabbing;
+    }
+    .match-status { font-weight: 700; color: var(--primary); }
+
     html.s3phy-embed,
     html.s3phy-embed body {
       height: 100% !important;
@@ -105,118 +171,37 @@
     <section>
       <h2><span class="en">1. Physical quantities</span><span class="zh">1. 物理量</span></h2>
       <p>
-        <span class="en">Example 1. Suggest two different units for each quantity.</span>
-        <span class="zh">例一：為下列各物理量建議兩個不同單位。</span>
+        <span class="en">Example 1. Put each unit onto the matching quantity. (Notes: suggest two different units for each.)</span>
+        <span class="zh">例一：把每個單位放到對應的物理量。（筆記：為各量建議兩個不同單位。）</span>
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th><span class="en">Quantity</span><span class="zh">物理量</span></th>
-            <th><span class="en">Example units</span><span class="zh">單位例子</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="en">Length</span><span class="zh">長度</span></td><td class="sym">m, cm, mm, km · inch, mile</td></tr>
-          <tr><td><span class="en">Volume</span><span class="zh">體積</span></td><td class="sym">cm³, m³, dm³</td></tr>
-          <tr><td><span class="en">Time</span><span class="zh">時間</span></td><td class="sym">s, min, hr, yr</td></tr>
-          <tr><td><span class="en">Speed</span><span class="zh">速率</span></td><td class="sym">m s⁻¹, km h⁻¹</td></tr>
-        </tbody>
-      </table>
+      <div class="match" id="match-qty"></div>
     </section>
 
     <section>
       <h2><span class="en">2. Base SI units and symbols</span><span class="zh">2. SI 基本單位與符號</span></h2>
-      <table>
-        <thead>
-          <tr>
-            <th><span class="en">Fundamental quantity</span><span class="zh">基本量</span></th>
-            <th><span class="en">Base SI unit</span><span class="zh">SI 基本單位</span></th>
-            <th><span class="en">Symbol</span><span class="zh">符號</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="en">Length</span><span class="zh">長度</span></td><td><span class="en">metre</span><span class="zh">米</span></td><td class="sym">m</td></tr>
-          <tr><td><span class="en">Mass</span><span class="zh">質量</span></td><td><span class="en">kilogram</span><span class="zh">千克</span></td><td class="sym">kg</td></tr>
-          <tr><td><span class="en">Time</span><span class="zh">時間</span></td><td><span class="en">second</span><span class="zh">秒</span></td><td class="sym">s</td></tr>
-          <tr><td><span class="en">Temperature</span><span class="zh">溫度</span></td><td><span class="en">Kelvin / degree Celsius</span><span class="zh">開爾文／攝氏度</span></td><td class="sym">K / °C</td></tr>
-          <tr><td><span class="en">Electric current</span><span class="zh">電流</span></td><td><span class="en">ampere</span><span class="zh">安培</span></td><td class="sym">A</td></tr>
-        </tbody>
-      </table>
+      <p>
+        <span class="en">Match each symbol to its fundamental quantity. The unit name appears when you are right.</span>
+        <span class="zh">把符號配到基本量。配對正確後會顯示單位名稱。</span>
+      </p>
+      <div class="match" id="match-base"></div>
     </section>
 
     <section>
       <h2><span class="en">3. Derived units in base SI</span><span class="zh">3. 以基本單位寫出導出單位</span></h2>
       <p>
-        <span class="en">Type the SI unit, then Check. Energy may be J or W s.</span>
-        <span class="zh">輸入 SI 單位後按核對。能量可寫 J 或 W s。</span>
+        <span class="en">Match each unit to its quantity. Energy may be J or W s.</span>
+        <span class="zh">把單位配到物理量。能量可寫 J 或 W s。</span>
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th><span class="en">Quantity</span><span class="zh">物理量</span></th>
-            <th><span class="en">Formula</span><span class="zh">關係</span></th>
-            <th><span class="en">Your unit</span><span class="zh">你的單位</span></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="en">Density</span><span class="zh">密度</span></td>
-            <td><span class="en">mass / volume</span><span class="zh">質量／體積</span></td>
-            <td><input id="d-dens" type="text" placeholder="kg m⁻³"></td>
-            <td><span id="fb-dens"></span></td>
-          </tr>
-          <tr>
-            <td><span class="en">Speed</span><span class="zh">速率</span></td>
-            <td><span class="en">distance / time</span><span class="zh">距離／時間</span></td>
-            <td><input id="d-spd" type="text" placeholder="m s⁻¹"></td>
-            <td><span id="fb-spd"></span></td>
-          </tr>
-          <tr>
-            <td><span class="en">Rate of temperature change</span><span class="zh">溫度變化率</span></td>
-            <td><span class="en">temperature change / time</span><span class="zh">溫度變化／時間</span></td>
-            <td><input id="d-dT" type="text" placeholder="°C s⁻¹"></td>
-            <td><span id="fb-dT"></span></td>
-          </tr>
-          <tr>
-            <td><span class="en">Rate of change of speed</span><span class="zh">速率變化率</span></td>
-            <td><span class="en">speed / time</span><span class="zh">速率／時間</span></td>
-            <td><input id="d-acc" type="text" placeholder="m s⁻²"></td>
-            <td><span id="fb-acc"></span></td>
-          </tr>
-          <tr>
-            <td><span class="en">Energy</span><span class="zh">能量</span></td>
-            <td><span class="en">power × time</span><span class="zh">功率 × 時間</span></td>
-            <td><input id="d-energy" type="text" placeholder="J"></td>
-            <td><span id="fb-energy"></span></td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="row">
-        <button type="button" class="btn" id="check-der"><span class="en">Check</span><span class="zh">核對</span></button>
-        <button type="button" class="ghost" id="show-der"><span class="en">Show answers</span><span class="zh">顯示答案</span></button>
-      </div>
+      <div class="match" id="match-der"></div>
     </section>
 
     <section>
       <h2><span class="en">4. Power of ten notation (scientific notation)</span><span class="zh">4. 十的次方記法（科學記數法）</span></h2>
       <p>
-        <span class="en">Large or small numbers can be written using powers of ten. The index on 10 is the power of 10. 1 = 10⁰. Numbers less than 1 have negative indices.</span>
-        <span class="zh">很大或很小的數可用十的次方表示。10 右上的指數就是十的次方。1 = 10⁰。小於 1 的數用負指數。</span>
+        <span class="en">Large or small numbers can be written using powers of ten. The index on 10 is the power of 10. 1 = 10⁰. Numbers less than 1 have negative indices. Match each ordinary number to 10<sup>n</sup>.</span>
+        <span class="zh">很大或很小的數可用十的次方表示。10 右上的指數就是十的次方。1 = 10⁰。小於 1 的數用負指數。把普通寫法配到 10<sup>n</sup>。</span>
       </p>
-      <table>
-        <tbody>
-          <tr><td>1 000 000</td><td class="sym">10⁶</td></tr>
-          <tr><td>100 000</td><td class="sym">10⁵</td></tr>
-          <tr><td>10 000</td><td class="sym">10⁴</td></tr>
-          <tr><td>1 000</td><td class="sym">10³</td></tr>
-          <tr><td>1</td><td class="sym">10⁰</td></tr>
-          <tr><td>0.1 = 1/10</td><td class="sym">10⁻¹</td></tr>
-          <tr><td>0.01 = 1/100</td><td class="sym">10⁻²</td></tr>
-          <tr><td>0.001 = 1/1 000</td><td class="sym">10⁻³</td></tr>
-          <tr><td>0.0001 = 1/10 000</td><td class="sym">10⁻⁴</td></tr>
-        </tbody>
-      </table>
+      <div class="match" id="match-ten"></div>
       <p>
         400 = 4 × 10² &nbsp;·&nbsp; 30 000 = 3 × 10⁴ &nbsp;·&nbsp; 7 200 000 = 7.2 × 10⁶<br>
         0.05 = 5 × 10⁻² &nbsp;·&nbsp; 0.00002 = 2 × 10⁻⁵
@@ -251,27 +236,10 @@
     <section>
       <h2><span class="en">5. Prefixes</span><span class="zh">5. 前標</span></h2>
       <p>
-        <span class="en">When a unit is too large or too small, use multiples or sub-multiples. These usually change by a factor of 1000 (sometimes 10 or 100). Tap a row to apply it.</span>
-        <span class="zh">當單位太大或太小時，用倍數或分數倍數。通常以 1000 倍增減（有時是 10 或 100）。點一列即可套用該前標。</span>
+        <span class="en">When a unit is too large or too small, use multiples or sub-multiples. These usually change by a factor of 1000 (sometimes 10 or 100). Match each prefix, then Rewrite. Tap a matched row to try that prefix.</span>
+        <span class="zh">當單位太大或太小時，用倍數或分數倍數。通常以 1000 倍增減（有時是 10 或 100）。先配對前標，再按改寫。點已配對的一列可套用該前標。</span>
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th><span class="en">Factor</span><span class="zh">倍數</span></th>
-            <th><span class="en">Prefix</span><span class="zh">前標</span></th>
-            <th><span class="en">Symbol</span><span class="zh">符號</span></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="prefix-body">
-          <tr class="prefix-row" data-e="6"><td>1 000 000 = 10⁶</td><td>mega</td><td class="sym">M</td><td>兆</td></tr>
-          <tr class="prefix-row" data-e="3"><td>1 000 = 10³</td><td>kilo</td><td class="sym">k</td><td>千</td></tr>
-          <tr class="prefix-row" data-e="-1"><td>0.1</td><td>deci</td><td class="sym">d</td><td>分</td></tr>
-          <tr class="prefix-row" data-e="-2"><td>0.01</td><td>centi</td><td class="sym">c</td><td>厘</td></tr>
-          <tr class="prefix-row on" data-e="-3"><td>0.001 = 10⁻³</td><td>milli</td><td class="sym">m</td><td>毫</td></tr>
-          <tr class="prefix-row" data-e="-6"><td>0.000 001 = 10⁻⁶</td><td>micro</td><td class="sym">μ</td><td>微</td></tr>
-        </tbody>
-      </table>
+      <div class="match" id="match-pref"></div>
       <div class="row">
         <label><span class="en">Value</span><span class="zh">數值</span><br>
           <input id="pv" type="text" value="0.007">
@@ -355,13 +323,321 @@
   </div>
 
   <script>
-    const DER = {
-      dens: { accept: ["kgm-3", "kg/m3"], show: "kg m⁻³" },
-      spd: { accept: ["ms-1", "m/s"], show: "m s⁻¹" },
-      dT: { accept: ["cs-1", "ks-1", "c/s", "k/s"], show: "°C s⁻¹ or K s⁻¹" },
-      acc: { accept: ["ms-2", "m/s2"], show: "m s⁻²" },
-      energy: { accept: ["j", "ws", "kgm2s-2"], show: "J or W s" }
-    };
+    const HELP = '<p class="match-help"><span class="en">Tap a chip, then a box — or drag it. Wrong answers bounce back.</span><span class="zh">先點單位再點格子，或拖進去。錯的會彈回。</span></p>';
+
+    function shuffle(list) {
+      const a = list.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const t = a[i];
+        a[i] = a[j];
+        a[j] = t;
+      }
+      return a;
+    }
+
+    function MatchBoard(root, spec) {
+      const expected = {};
+      spec.chips.forEach((c) => { expected[c.slot] = (expected[c.slot] || 0) + 1; });
+      root.innerHTML =
+        HELP +
+        '<div class="match-slots' + (spec.cols ? " cols" : "") + '"></div>' +
+        '<div class="match-tray"></div>' +
+        '<div class="row">' +
+          '<button type="button" class="ghost" data-reset><span class="en">Reset</span><span class="zh">重設</span></button>' +
+          '<button type="button" class="ghost" data-show><span class="en">Show</span><span class="zh">顯示</span></button>' +
+          '<span class="match-status"></span>' +
+        "</div>";
+      const slotsEl = root.querySelector(".match-slots");
+      const trayEl = root.querySelector(".match-tray");
+      const statusEl = root.querySelector(".match-status");
+      const multi = !!spec.multi;
+      let selected = null;
+      let drag = null;
+
+      spec.slots.forEach((s) => {
+        const slot = document.createElement("div");
+        slot.className = "match-slot";
+        slot.dataset.id = s.id;
+        if (s.e != null) slot.dataset.e = String(s.e);
+        slot.innerHTML =
+          '<div class="match-slot-head">' +
+            '<span class="match-slot-label">' + s.label + "</span>" +
+            (s.hint ? '<span class="match-slot-hint">' + s.hint + "</span>" : "") +
+            (s.reveal ? '<span class="match-slot-reveal" hidden>' + s.reveal + "</span>" : "") +
+          "</div>" +
+          '<div class="match-pocket"></div>';
+        slotsEl.appendChild(slot);
+      });
+
+      function chips() {
+        return [...root.querySelectorAll(".match-chip")].filter((c) => !c.classList.contains("match-ghost"));
+      }
+      function slotById(id) {
+        return slotsEl.querySelector('.match-slot[data-id="' + id + '"]');
+      }
+      function clearSelect() {
+        selected = null;
+        root.querySelectorAll(".match-chip.sel").forEach((c) => c.classList.remove("sel"));
+      }
+      function flashBad(slot) {
+        slot.classList.add("bad");
+        setTimeout(function () { slot.classList.remove("bad"); }, 420);
+      }
+      function updateStatus() {
+        const all = chips();
+        const done = all.filter((c) => c.classList.contains("lock")).length;
+        statusEl.textContent = done + " / " + all.length;
+        spec.slots.forEach((s) => {
+          const slot = slotById(s.id);
+          const n = slot.querySelector(".match-pocket").children.length;
+          const full = n >= (expected[s.id] || 0) && (expected[s.id] || 0) > 0;
+          slot.classList.toggle("ok", full);
+          const rev = slot.querySelector(".match-slot-reveal");
+          if (rev) rev.hidden = !full;
+        });
+        if (spec.onChange) spec.onChange();
+      }
+      function place(chip, slot, force) {
+        if (!chip || !slot) return false;
+        if (chip.classList.contains("lock") && !force) return false;
+        const pocket = slot.querySelector(".match-pocket");
+        const ok = chip.dataset.slot === slot.dataset.id;
+        if (!force && !ok) {
+          flashBad(slot);
+          return false;
+        }
+        const cap = expected[slot.dataset.id] || 0;
+        if (!force && pocket.children.length >= cap) {
+          flashBad(slot);
+          return false;
+        }
+        if (!force && !multi && pocket.children.length) {
+          flashBad(slot);
+          return false;
+        }
+        pocket.appendChild(chip);
+        chip.classList.add("lock");
+        chip.classList.remove("sel");
+        selected = null;
+        updateStatus();
+        return true;
+      }
+      function toTray(chip) {
+        chip.classList.remove("lock", "sel");
+        trayEl.appendChild(chip);
+      }
+      function reset() {
+        clearSelect();
+        shuffle(chips()).forEach(toTray);
+        updateStatus();
+      }
+      function showAll() {
+        spec.chips.forEach((c) => {
+          place(root.querySelector('.match-chip[data-id="' + c.id + '"]'), slotById(c.slot), true);
+        });
+      }
+      function slotFromPoint(x, y) {
+        const hit = document.elementsFromPoint(x, y);
+        for (let i = 0; i < hit.length; i++) {
+          const slot = hit[i].closest ? hit[i].closest(".match-slot") : null;
+          if (slot && root.contains(slot)) return slot;
+        }
+        return null;
+      }
+
+      function onChipPointerDown(e) {
+        const chip = e.currentTarget;
+        if (chip.classList.contains("lock")) {
+          if (spec.onSlotTap) spec.onSlotTap(chip.closest(".match-slot"));
+          return;
+        }
+        if (e.button) return;
+        drag = { chip: chip, x: e.clientX, y: e.clientY, moved: false, ghost: null, pointerId: e.pointerId };
+      }
+      function onPointerMove(e) {
+        if (!drag || e.pointerId !== drag.pointerId) return;
+        const dx = e.clientX - drag.x;
+        const dy = e.clientY - drag.y;
+        if (!drag.moved) {
+          if (dx * dx + dy * dy < 256) return;
+          if (Math.abs(dy) > Math.abs(dx) * 1.2) {
+            drag = null;
+            return;
+          }
+          drag.moved = true;
+          try { drag.chip.setPointerCapture(e.pointerId); } catch (err) {}
+          drag.chip.classList.add("lift");
+          const ghost = drag.chip.cloneNode(true);
+          ghost.classList.add("match-ghost");
+          ghost.style.width = drag.chip.offsetWidth + "px";
+          document.body.appendChild(ghost);
+          drag.ghost = ghost;
+        }
+        e.preventDefault();
+        const g = drag.ghost;
+        g.style.left = (e.clientX - g.offsetWidth / 2) + "px";
+        g.style.top = (e.clientY - 22) + "px";
+        root.querySelectorAll(".match-slot.aim").forEach((s) => s.classList.remove("aim"));
+        const slot = slotFromPoint(e.clientX, e.clientY);
+        if (slot) slot.classList.add("aim");
+      }
+      function onPointerUp(e) {
+        if (!drag || (e.pointerId != null && e.pointerId !== drag.pointerId)) return;
+        const chip = drag.chip;
+        const moved = drag.moved;
+        const x = e.clientX;
+        const y = e.clientY;
+        root.querySelectorAll(".match-slot.aim").forEach((s) => s.classList.remove("aim"));
+        if (drag.ghost) drag.ghost.remove();
+        chip.classList.remove("lift");
+        drag = null;
+        if (moved) {
+          if (Number.isFinite(x) && Number.isFinite(y)) place(chip, slotFromPoint(x, y), false);
+          clearSelect();
+          return;
+        }
+        if (selected === chip) {
+          clearSelect();
+        } else {
+          clearSelect();
+          selected = chip;
+          chip.classList.add("sel");
+        }
+      }
+
+      slotsEl.addEventListener("click", (e) => {
+        const slot = e.target.closest(".match-slot");
+        if (!slot) return;
+        if (selected) {
+          place(selected, slot, false);
+          return;
+        }
+        if (spec.onSlotTap) spec.onSlotTap(slot);
+      });
+      root.querySelector("[data-reset]").onclick = reset;
+      root.querySelector("[data-show]").onclick = showAll;
+      document.addEventListener("pointermove", onPointerMove, { passive: false });
+      document.addEventListener("pointerup", onPointerUp);
+      document.addEventListener("pointercancel", onPointerUp);
+
+      spec.chips.forEach((c) => {
+        const el = document.createElement("button");
+        el.type = "button";
+        el.className = "match-chip";
+        el.dataset.id = c.id;
+        el.dataset.slot = c.slot;
+        el.innerHTML = c.html;
+        el.addEventListener("pointerdown", onChipPointerDown);
+        trayEl.appendChild(el);
+      });
+      reset();
+      return { reset: reset, showAll: showAll };
+    }
+
+    function setLang(lang) {
+      document.documentElement.classList.remove("lang-en", "lang-zh");
+      document.documentElement.classList.add("lang-" + lang);
+      document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
+      document.getElementById("btn-en").classList.toggle("on", lang === "en");
+      document.getElementById("btn-zh").classList.toggle("on", lang === "zh");
+    }
+    document.getElementById("btn-en").onclick = () => setLang("en");
+    document.getElementById("btn-zh").onclick = () => setLang("zh");
+    const params = new URLSearchParams(location.search);
+    setLang(params.get("lang") === "en" ? "en" : "zh");
+    window.addEventListener("message", (ev) => {
+      if (ev.data?.type !== "s3phy:lang") return;
+      setLang(ev.data.lang === "en" ? "en" : "zh");
+    });
+
+    MatchBoard(document.getElementById("match-qty"), {
+      multi: true,
+      slots: [
+        { id: "len", label: '<span class="en">Length</span><span class="zh">長度</span>' },
+        { id: "vol", label: '<span class="en">Volume</span><span class="zh">體積</span>' },
+        { id: "time", label: '<span class="en">Time</span><span class="zh">時間</span>' },
+        { id: "spd", label: '<span class="en">Speed</span><span class="zh">速率</span>' }
+      ],
+      chips: [
+        { id: "m", slot: "len", html: "m" },
+        { id: "cm", slot: "len", html: "cm" },
+        { id: "mm", slot: "len", html: "mm" },
+        { id: "km", slot: "len", html: "km" },
+        { id: "inch", slot: "len", html: "inch" },
+        { id: "mile", slot: "len", html: "mile" },
+        { id: "cm3", slot: "vol", html: "cm³" },
+        { id: "m3", slot: "vol", html: "m³" },
+        { id: "dm3", slot: "vol", html: "dm³" },
+        { id: "s", slot: "time", html: "s" },
+        { id: "min", slot: "time", html: "min" },
+        { id: "hr", slot: "time", html: "hr" },
+        { id: "yr", slot: "time", html: "yr" },
+        { id: "ms-1", slot: "spd", html: "m s⁻¹" },
+        { id: "kmh-1", slot: "spd", html: "km h⁻¹" }
+      ]
+    });
+
+    MatchBoard(document.getElementById("match-base"), {
+      slots: [
+        { id: "len", label: '<span class="en">Length</span><span class="zh">長度</span>', reveal: '<span class="en">metre</span><span class="zh">米</span>' },
+        { id: "mass", label: '<span class="en">Mass</span><span class="zh">質量</span>', reveal: '<span class="en">kilogram</span><span class="zh">千克</span>' },
+        { id: "time", label: '<span class="en">Time</span><span class="zh">時間</span>', reveal: '<span class="en">second</span><span class="zh">秒</span>' },
+        { id: "temp", label: '<span class="en">Temperature</span><span class="zh">溫度</span>', reveal: '<span class="en">Kelvin / degree Celsius</span><span class="zh">開爾文／攝氏度</span>' },
+        { id: "cur", label: '<span class="en">Electric current</span><span class="zh">電流</span>', reveal: '<span class="en">ampere</span><span class="zh">安培</span>' }
+      ],
+      chips: [
+        { id: "m", slot: "len", html: "m" },
+        { id: "kg", slot: "mass", html: "kg" },
+        { id: "s", slot: "time", html: "s" },
+        { id: "K", slot: "temp", html: "K / °C" },
+        { id: "A", slot: "cur", html: "A" }
+      ]
+    });
+
+    MatchBoard(document.getElementById("match-der"), {
+      slots: [
+        { id: "dens", label: '<span class="en">Density</span><span class="zh">密度</span>', hint: '<span class="en">mass / volume</span><span class="zh">質量／體積</span>' },
+        { id: "spd", label: '<span class="en">Speed</span><span class="zh">速率</span>', hint: '<span class="en">distance / time</span><span class="zh">距離／時間</span>' },
+        { id: "dT", label: '<span class="en">Rate of temperature change</span><span class="zh">溫度變化率</span>', hint: '<span class="en">temperature change / time</span><span class="zh">溫度變化／時間</span>' },
+        { id: "acc", label: '<span class="en">Rate of change of speed</span><span class="zh">速率變化率</span>', hint: '<span class="en">speed / time</span><span class="zh">速率／時間</span>' },
+        { id: "energy", label: '<span class="en">Energy</span><span class="zh">能量</span>', hint: '<span class="en">power × time</span><span class="zh">功率 × 時間</span>' }
+      ],
+      chips: [
+        { id: "dens", slot: "dens", html: "kg m⁻³" },
+        { id: "spd", slot: "spd", html: "m s⁻¹" },
+        { id: "dT", slot: "dT", html: "°C s⁻¹" },
+        { id: "acc", slot: "acc", html: "m s⁻²" },
+        { id: "energy", slot: "energy", html: "J or W s" }
+      ]
+    });
+
+    MatchBoard(document.getElementById("match-ten"), {
+      cols: true,
+      slots: [
+        { id: "e6", label: "1 000 000" },
+        { id: "e5", label: "100 000" },
+        { id: "e4", label: "10 000" },
+        { id: "e3", label: "1 000" },
+        { id: "e0", label: "1" },
+        { id: "e-1", label: "0.1 = 1/10" },
+        { id: "e-2", label: "0.01 = 1/100" },
+        { id: "e-3", label: "0.001 = 1/1 000" },
+        { id: "e-4", label: "0.0001 = 1/10 000" }
+      ],
+      chips: [
+        { id: "e6", slot: "e6", html: "10⁶" },
+        { id: "e5", slot: "e5", html: "10⁵" },
+        { id: "e4", slot: "e4", html: "10⁴" },
+        { id: "e3", slot: "e3", html: "10³" },
+        { id: "e0", slot: "e0", html: "10⁰" },
+        { id: "e-1", slot: "e-1", html: "10⁻¹" },
+        { id: "e-2", slot: "e-2", html: "10⁻²" },
+        { id: "e-3", slot: "e-3", html: "10⁻³" },
+        { id: "e-4", slot: "e-4", html: "10⁻⁴" }
+      ]
+    });
+
     const Q4 = {
       a: ["7ms"], b: ["3kg"], c: ["4mw"], d: ["90km"], e: ["30kv"],
       f: ["85um", "85μm"], g: ["2.4ka"], h: ["70kg"], i: ["4.8ms"], j: ["0.4uw", "0.4μw"]
@@ -384,22 +660,6 @@
       { e: -2, s: "c" }, { e: -3, s: "m" }, { e: -6, s: "μ" }
     ];
     let prefExp = -3;
-
-    function setLang(lang) {
-      document.documentElement.classList.remove("lang-en", "lang-zh");
-      document.documentElement.classList.add("lang-" + lang);
-      document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
-      document.getElementById("btn-en").classList.toggle("on", lang === "en");
-      document.getElementById("btn-zh").classList.toggle("on", lang === "zh");
-    }
-    document.getElementById("btn-en").onclick = () => setLang("en");
-    document.getElementById("btn-zh").onclick = () => setLang("zh");
-    const params = new URLSearchParams(location.search);
-    setLang(params.get("lang") === "en" ? "en" : "zh");
-    window.addEventListener("message", (ev) => {
-      if (ev.data?.type !== "s3phy:lang") return;
-      setLang(ev.data.lang === "en" ? "en" : "zh");
-    });
 
     function sup(n) {
       const m = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
@@ -448,20 +708,6 @@
       const k = key(val);
       return list.some((a) => k === key(a));
     }
-
-    document.getElementById("check-der").onclick = () => {
-      Object.keys(DER).forEach((id) => {
-        const val = document.getElementById("d-" + id).value;
-        const good = match(val, DER[id].accept.concat([DER[id].show]));
-        mark("fb-" + id, good, good ? okMsg() : badMsg());
-      });
-    };
-    document.getElementById("show-der").onclick = () => {
-      Object.keys(DER).forEach((id) => {
-        document.getElementById("d-" + id).value = DER[id].show;
-        mark("fb-" + id, true, DER[id].show);
-      });
-    };
 
     function showSci() {
       const c = parseFloat(document.getElementById("coef").value);
@@ -514,17 +760,40 @@
       const shown = n / Math.pow(10, prefExp);
       document.getElementById("pref-out").textContent =
         `${plain(n)} ${u} = ${times(p.c, p.e)} ${u} = ${coef(shown)} ${pref ? pref.s : ""}${u}`;
-      document.querySelectorAll(".prefix-row").forEach((row) => {
-        row.classList.toggle("on", Number(row.dataset.e) === prefExp);
+      document.querySelectorAll("#match-pref .match-slot").forEach((slot) => {
+        slot.classList.toggle("on", Number(slot.dataset.e) === prefExp);
       });
     }
     document.getElementById("rewrite").onclick = () => rewrite(false);
     document.getElementById("pv").onchange = () => rewrite(false);
     document.getElementById("pu").onchange = () => rewrite(false);
-    document.querySelectorAll(".prefix-row").forEach((row) => {
-      row.onclick = () => { prefExp = Number(row.dataset.e); rewrite(true); };
+
+    MatchBoard(document.getElementById("match-pref"), {
+      cols: true,
+      slots: [
+        { id: "e6", e: 6, label: "1 000 000 = 10⁶" },
+        { id: "e3", e: 3, label: "1 000 = 10³" },
+        { id: "e-1", e: -1, label: "0.1" },
+        { id: "e-2", e: -2, label: "0.01" },
+        { id: "e-3", e: -3, label: "0.001 = 10⁻³" },
+        { id: "e-6", e: -6, label: "0.000 001 = 10⁻⁶" }
+      ],
+      chips: [
+        { id: "M", slot: "e6", html: '<span class="sym">M</span> <span class="en">mega</span><span class="zh">兆</span>' },
+        { id: "k", slot: "e3", html: '<span class="sym">k</span> <span class="en">kilo</span><span class="zh">千</span>' },
+        { id: "d", slot: "e-1", html: '<span class="sym">d</span> <span class="en">deci</span><span class="zh">分</span>' },
+        { id: "c", slot: "e-2", html: '<span class="sym">c</span> <span class="en">centi</span><span class="zh">厘</span>' },
+        { id: "m", slot: "e-3", html: '<span class="sym">m</span> <span class="en">milli</span><span class="zh">毫</span>' },
+        { id: "u", slot: "e-6", html: '<span class="sym">μ</span> <span class="en">micro</span><span class="zh">微</span>' }
+      ],
+      onSlotTap: function (slot) {
+        if (!slot || slot.dataset.e == null) return;
+        prefExp = Number(slot.dataset.e);
+        rewrite(true);
+      },
+      onChange: function () { rewrite(true); }
     });
-    rewrite(false);
+    rewrite(true);
 
     function checkMap(map, ans, inP, fbP) {
       Object.keys(map).forEach((id) => {
