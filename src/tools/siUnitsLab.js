@@ -6,6 +6,6 @@ export function createSiUnitsLab(t) {
     slug: 'si-units',
     titleKey: 'tools.siUnits.title',
     className: 'tool-si-units-lab',
-    extraParams: () => '&v=20260902',
+    extraParams: () => '&v=20260902b',
   });
 }
