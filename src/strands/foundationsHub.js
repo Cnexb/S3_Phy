@@ -1,8 +1,20 @@
 import { t, getLang } from '../i18n.js';
-import { hydrateNoteCards, hydrateSummaryCards } from './hubHelpers.js';
+import { cleanupLabInstance, hydrateNoteCards, hydrateSummaryCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { FOUNDATIONS_HUB_SECTIONS, mountHubShell, resolveHubSection } from '../hubShell.js';
+import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildFoundationsDeck } from '../flashcards/flashcardDeck.js';
+
+const TOOL_ORDER = ['siUnits'];
+const TOOL_STORAGE_KEY = 's3phy.foundations.tool';
+const TOOL_LOADERS = {
+  siUnits: () => import('../tools/siUnitsLab.js').then((m) => m.createSiUnitsLab),
+};
+
+function toolLabel(id) {
+  const map = { siUnits: 'tools.siUnits.title' };
+  return t(map[id] || id);
+}
 
 const FOUNDATIONS_TOPICS = [
   {
@@ -54,11 +66,28 @@ export function mountFoundationsHub(root) {
     FOUNDATIONS_HUB_SECTIONS,
   );
   let quizId = resolveQuizId(sessionStorage.getItem(QUIZ_STORAGE_KEY));
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'siUnits');
   let shell = null;
   let el = { main: null };
+  let activeLabInstance = null;
   let destroyQuiz = null;
   let destroyWorksheet = null;
   let destroyFlashcards = null;
+
+  function cleanupActiveLab() {
+    cleanupLabInstance(activeLabInstance);
+    activeLabInstance = null;
+  }
+
+  async function mountActiveTool(stage) {
+    stage.innerHTML = '';
+    cleanupActiveLab();
+    const loader = TOOL_LOADERS[toolId];
+    if (!loader) return;
+    const factory = await loader();
+    activeLabInstance = factory(t);
+    stage.appendChild(activeLabInstance);
+  }
 
   async function mountWorksheet(panel) {
     const { createFoundationsNotesWorksheet } = await import('../worksheets/foundationsNotesWorksheet.js');
@@ -109,10 +138,30 @@ export function mountFoundationsHub(root) {
     destroyWorksheet = null;
     destroyFlashcards?.();
     destroyFlashcards = null;
+    cleanupActiveLab();
 
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
+    } else if (section === 'tools') {
+      el.main.innerHTML = renderToolsShell({
+        toolOrder: TOOL_ORDER,
+        toolId,
+        getLabel: toolLabel,
+        t,
+      });
+      hydrateToolsShell(root, {
+        getLabel: toolLabel,
+        t,
+        getActiveToolId: () => toolId,
+        onSelectTool: (id) => {
+          toolId = id;
+          saveToolId(TOOL_STORAGE_KEY, toolId);
+        },
+        mountTool: (stage) => {
+          void mountActiveTool(stage);
+        },
+      });
     } else if (section === 'summary') {
       el.main.innerHTML = renderSummary();
       void hydrateSummary();
@@ -147,6 +196,9 @@ export function mountFoundationsHub(root) {
       activeSection: section,
       sections: FOUNDATIONS_HUB_SECTIONS,
       onSection: (id) => {
+        if (section === 'tools' && id !== 'tools') {
+          cleanupActiveLab();
+        }
         section = id;
         sessionStorage.setItem('s3phy.foundations.section', id);
         shell.updateSection(section);
@@ -228,6 +280,7 @@ export function mountFoundationsHub(root) {
     destroyQuiz?.();
     destroyWorksheet?.();
     destroyFlashcards?.();
+    cleanupActiveLab();
     shell?.destroy();
   };
 }

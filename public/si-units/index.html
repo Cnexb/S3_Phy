@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="zh-HK" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SI Units Lab · 物理量與單位</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <style>
+    :root {
+      --primary: #004e9f;
+      --primary-container: #0066cc;
+      --primary-fixed: #d7e3ff;
+      --secondary: #006d37;
+      --secondary-container: #c8f5d6;
+      --tertiary: #a50018;
+      --error-container: #ffdad6;
+      --bg: #f7f9fb;
+      --surface: #ffffff;
+      --on: #191c1e;
+      --muted: #414753;
+      --outline: #c1c6d5;
+      --shadow: 0 1px 3px rgba(25, 28, 30, 0.08);
+      --radius: 14px;
+      --font: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--on);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+    .app { max-width: 1080px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+    header.app-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin: 0 0 0.2rem;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--primary);
+    }
+    .subtitle { margin: 0.35rem 0 0; color: var(--muted); max-width: 40rem; }
+    .lang-toggle {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: #eceef0;
+      border: 1px solid rgba(193, 198, 213, 0.6);
+      flex-shrink: 0;
+    }
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      padding: 0.4rem 0.85rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .lang-toggle button.active {
+      background: #fff;
+      color: var(--primary);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+    nav.tabs {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding: 0.15rem 0 0.85rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    nav.tabs button {
+      flex: 0 0 auto;
+      border: 1px solid var(--outline);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0.55rem 0.95rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    nav.tabs button.active {
+      background: var(--primary-container);
+      border-color: var(--primary-container);
+      color: #fff;
+    }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 0.85rem;
+    }
+    .card h2 {
+      margin: 0 0 0.45rem;
+      font-size: 1.05rem;
+      color: var(--primary);
+    }
+    .lead { color: var(--muted); margin: 0 0 0.85rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.65rem; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.55rem; }
+    @media (max-width: 780px) {
+      .grid-2, .grid-4, .grid-5 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px) {
+      .grid-5 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: 1fr; }
+    }
+    .flip {
+      perspective: 900px;
+      min-height: 132px;
+      cursor: pointer;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 132px;
+      transform-style: preserve-3d;
+      transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1.15);
+    }
+    .flip.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border: 1px solid var(--outline);
+      border-radius: 12px;
+      padding: 0.85rem;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .flip-face.back {
+      transform: rotateY(180deg);
+      background: var(--primary-fixed);
+      border-color: #b7c9ee;
+    }
+    .flip .qty { font-weight: 800; font-size: 1.05rem; }
+    .flip .hint { color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem; }
+    .flip .units { font-weight: 700; color: var(--primary); font-size: 1.02rem; }
+    .si-tile {
+      background: #fff;
+      border: 1px solid var(--outline);
+      border-radius: 12px;
+      padding: 0.75rem 0.6rem;
+      text-align: center;
+    }
+    .si-tile .sym {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+    .si-tile .name { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .si-tile .unit { font-size: 0.82rem; font-weight: 700; }
+    table.ref {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    table.ref th, table.ref td {
+      border-bottom: 1px solid var(--outline);
+      padding: 0.45rem 0.4rem;
+      text-align: left;
+    }
+    table.ref th { color: var(--muted); font-size: 0.78rem; font-weight: 700; }
+    table.ref tr.sel td { background: var(--primary-fixed); }
+    .mono { font-variant-numeric: tabular-nums; font-family: ui-monospace, Consolas, monospace; }
+    .pow { white-space: nowrap; }
+    input[type="text"], input[type="number"], select {
+      font: inherit;
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--outline);
+      border-radius: 10px;
+      background: #fff;
+      min-width: 0;
+    }
+    input:focus, select:focus, button:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 1px;
+    }
+    .row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .btn {
+      border: 0;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      padding: 0.5rem 0.9rem;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .btn.ghost {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--outline);
+    }
+    .btn.ok { background: var(--secondary); }
+    .btn.warn { background: var(--tertiary); }
+    .chip {
+      border: 1px solid var(--outline);
+      background: #fff;
+      border-radius: 999px;
+      padding: 0.28rem 0.65rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--on);
+    }
+    .chip.on, .prefix-row.on {
+      background: var(--primary-container);
+      color: #fff;
+      border-color: var(--primary-container);
+    }
+    .feedback { min-height: 1.35rem; font-weight: 700; font-size: 0.9rem; margin-top: 0.35rem; }
+    .feedback.good { color: var(--secondary); }
+    .feedback.bad { color: var(--tertiary); }
+    .big-eq {
+      font-size: clamp(1.25rem, 3.2vw, 1.85rem);
+      font-weight: 800;
+      color: var(--primary);
+      text-align: center;
+      padding: 0.7rem 0.4rem;
+      letter-spacing: 0.01em;
+    }
+    .stepper { display: flex; gap: 0.45rem; justify-content: center; flex-wrap: wrap; }
+    .stepper button { min-width: 3rem; }
+    .derived-item {
+      border: 1px solid var(--outline);
+      border-radius: 12px;
+      padding: 0.75rem;
+      margin-bottom: 0.55rem;
+      background: #fff;
+    }
+    .derived-item .formula { color: var(--muted); font-size: 0.9rem; margin: 0.15rem 0 0.45rem; }
+    .unit-build { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.35rem 0; }
+    .prefix-row {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 0.6fr 0.7fr;
+      gap: 0.35rem;
+      align-items: center;
+      padding: 0.55rem 0.7rem;
+      border: 1px solid var(--outline);
+      border-radius: 10px;
+      cursor: pointer;
+      background: #fff;
+      margin-bottom: 0.4rem;
+      font-weight: 650;
+    }
+    .eng-panel {
+      background: #111827;
+      color: #d1fae5;
+      border-radius: 12px;
+      padding: 0.85rem;
+      font-family: ui-monospace, Consolas, monospace;
+    }
+    .eng-panel .lcd {
+      background: #052e16;
+      color: #86efac;
+      padding: 0.7rem 0.85rem;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.65rem;
+      min-height: 2.6rem;
+    }
+    .q-item {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr auto;
+      gap: 0.45rem;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+    @media (max-width: 640px) {
+      .q-item { grid-template-columns: 1fr; }
+    }
+    .factor {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin: 0.6rem 0;
+    }
+    .factor span {
+      background: var(--primary-fixed);
+      padding: 0.35rem 0.55rem;
+      border-radius: 8px;
+    }
+    footer.note {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 0.5rem;
+    }
+    html.s3phy-embed body { min-height: 100%; }
+    html.s3phy-embed .app { max-width: none; padding: 0.75rem; }
+    html.s3phy-embed .lang-toggle { display: none; }
+  </style>
+</head>
+<body>
+  <div class="app lab-section" id="app">
+    <header class="app-head">
+      <div>
+        <p class="eyebrow" data-i18n="eyebrow">Ch.00 · Quantities and Units</p>
+        <h1 data-i18n="title">SI units, symbols, 10<sup>n</sup> and prefixes</h1>
+        <p class="subtitle" data-i18n="subtitle">A quantity is specified by (1) a number and (2) a unit. Tap through the notes in classroom order.</p>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" id="btn-en">EN</button>
+        <button type="button" id="btn-zh" class="active">繁</button>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+    <main id="panels"></main>
+    <footer class="note" data-i18n="footer">Content follows Ch.00 Quantities and Units (five base quantities; prefixes k, M, d, c, m, μ only).</footer>
+  </div>
+
+  <script>
+    const I18N = {
+      en: {
+        eyebrow: "Ch.00 · Quantities and Units",
+        title: "SI units, symbols, 10ⁿ and prefixes",
+        subtitle: "A quantity is specified by (1) a number and (2) a unit. Tap through the notes in classroom order.",
+        footer: "Content follows Ch.00 Quantities and Units (five base quantities; prefixes k, M, d, c, m, μ only).",
+        tabQ: "Quantities", tabD: "Derived", tabP: "10ⁿ", tabX: "Prefixes", tabR: "Practice",
+        defTitle: "Physical quantities",
+        defLead: "Specified by (1) a number and (2) a unit. Example 1 — suggest two different units for each quantity. Tap a card.",
+        tap: "Tap to reveal units",
+        length: "Length", volume: "Volume", time: "Time", speed: "Speed",
+        mass: "Mass", temp: "Temperature", current: "Electric current",
+        siTitle: "Base SI units and symbols",
+        siLead: "Five fundamental quantities from the notes.",
+        colQty: "Fundamental quantity", colUnit: "Base SI unit", colSym: "Symbol",
+        metre: "metre", kilogram: "kilogram", second: "second",
+        kelvin: "Kelvin / degree Celsius", ampere: "ampere",
+        derTitle: "Give the SI unit in terms of base units",
+        derLead: "Build or type the unit, then check. Energy may be written as J or as W s.",
+        check: "Check", show: "Show",
+        dens: "Density", densF: "mass / volume",
+        spd: "Speed", spdF: "distance / time",
+        dT: "Rate of temperature change", dTF: "temperature change / time",
+        acc: "Rate of change of speed", accF: "speed / time",
+        energy: "Energy", energyF: "power × time",
+        ok: "Correct", tryAgain: "Not yet — look at the formula again.",
+        potTitle: "Power of ten notation (scientific notation)",
+        potLead: "Very large or very small numbers can be written more neatly using powers of ten. The index on 10 is the power of 10. 1 = 10⁰; numbers less than 1 have negative indices.",
+        ordinary: "Ordinary number", sci: "Scientific form",
+        toSci: "→ scientific", toOrd: "→ ordinary",
+        moveL: "Decimal ←", moveR: "Decimal →", standard: "Standard form (1–10)",
+        seedsTo: "Notes → scientific", seedsFrom: "Notes → ordinary",
+        prefixTitle: "Prefixes 前標",
+        prefixLead: "When a unit is too large or too small, use multiples or sub-multiples. These usually go up or down by a factor of 1000 (sometimes 10 or 100).",
+        multiple: "Multiple", sub: "Sub-multiple", prefix: "Prefix", symbol: "Symbol",
+        convTitle: "Live converter (ENG style)",
+        convLead: "Enter a value. ENG shifts by ×10³ / ÷10³ (multiples of 1000). Tap a prefix row to rewrite with that prefix.",
+        value: "Value", unit: "Unit",
+        engUp: "ENG ↑ ×10³", engDown: "ENG ↓ ÷10³",
+        asSi: "In SI / base form", asSci: "Power of ten", asPref: "With prefix",
+        exTitle: "Notes examples",
+        q4Title: "4. Write using the most suitable prefixes",
+        q5Title: "5. Express using base units (no prefixes) in power-of-ten form",
+        q6Title: "6. Convert km/h to m s⁻¹",
+        q6Lead: "The speed of a car can be expressed as kilometres per hour (km/h).",
+        convert: "Convert",
+        shortcut: "Shortcut: divide km/h by 3.6 to get m s⁻¹.",
+        checkAll: "Check answers",
+        reset: "Reset"
+      },
+      zh: {
+        eyebrow: "Ch.00 · 物理量與單位",
+        title: "SI 單位、符號、十的次方與前標",
+        subtitle: "物理量由（1）數值 和（2）單位 指定。按課堂順序點選各部分。",
+        footer: "內容依 Ch.00 Quantities and Units（五個基本量；前標僅 k、M、d、c、m、μ）。",
+        tabQ: "物理量", tabD: "導出單位", tabP: "10ⁿ", tabX: "前標", tabR: "練習",
+        defTitle: "物理量",
+        defLead: "由（1）數值 和（2）單位 指定。例一：為下列各量建議兩個不同單位。點卡片揭示。",
+        tap: "點擊顯示單位",
+        length: "長度", volume: "體積", time: "時間", speed: "速率",
+        mass: "質量", temp: "溫度", current: "電流",
+        siTitle: "SI 基本單位與符號",
+        siLead: "筆記中的五個基本量。",
+        colQty: "基本量", colUnit: "SI 基本單位", colSym: "符號",
+        metre: "米", kilogram: "千克", second: "秒",
+        kelvin: "開爾文／攝氏度", ampere: "安培",
+        derTitle: "以基本單位寫出 SI 單位",
+        derLead: "組合或輸入單位後核對。能量可寫作 J 或 W s。",
+        check: "核對", show: "顯示",
+        dens: "密度", densF: "質量／體積",
+        spd: "速率", spdF: "距離／時間",
+        dT: "溫度變化率", dTF: "溫度變化／時間",
+        acc: "速率變化率", accF: "速率／時間",
+        energy: "能量", energyF: "功率 × 時間",
+        ok: "正確", tryAgain: "未正確 — 再看法式。",
+        potTitle: "十的次方記法（科學記數法）",
+        potLead: "很大或很小的數可用十的次方較整齊地表示。10 右上的指數就是「十的次方」。1 = 10⁰；小於 1 的數用負指數。",
+        ordinary: "普通寫法", sci: "科學記數法",
+        toSci: "→ 科學記數", toOrd: "→ 普通寫法",
+        moveL: "小數點 ←", moveR: "小數點 →", standard: "標準形式（1–10）",
+        seedsTo: "筆記 → 科學記數", seedsFrom: "筆記 → 普通寫法",
+        prefixTitle: "前標 Prefixes",
+        prefixLead: "當單位太大或太小時，用倍數或分數倍數。通常以 1000 倍增減（有時是 10 或 100）。",
+        multiple: "倍數", sub: "分數倍數", prefix: "前標", symbol: "符號",
+        convTitle: "即時換算（ENG 鍵）",
+        convLead: "輸入數值。ENG 以 ×10³／÷10³ 移動（1000 倍）。點前標列即可用該前標改寫。",
+        value: "數值", unit: "單位",
+        engUp: "ENG ↑ ×10³", engDown: "ENG ↓ ÷10³",
+        asSi: "SI／基本形式", asSci: "十的次方", asPref: "加前標",
+        exTitle: "筆記例子",
+        q4Title: "4. 用最合適的前標改寫",
+        q5Title: "5. 用基本單位（無前標）及十的次方表示",
+        q6Title: "6. 把 km/h 換成 m s⁻¹",
+        q6Lead: "汽車速率可用千米每小時（km/h）表示。",
+        convert: "換算",
+        shortcut: "捷徑：km/h 除以 3.6 即得 m s⁻¹。",
+        checkAll: "核對答案",
+        reset: "重設"
+      }
+    };
+
+    const PREFIXES = [
+      { id: "M", name: "mega", zh: "兆", symbol: "M", exp: 6, kind: "multi" },
+      { id: "k", name: "kilo", zh: "千", symbol: "k", exp: 3, kind: "multi" },
+      { id: "d", name: "deci", zh: "分", symbol: "d", exp: -1, kind: "sub" },
+      { id: "c", name: "centi", zh: "厘", symbol: "c", exp: -2, kind: "sub" },
+      { id: "m", name: "milli", zh: "毫", symbol: "m", exp: -3, kind: "sub" },
+      { id: "u", name: "micro", zh: "微", symbol: "μ", exp: -6, kind: "sub" }
+    ];
+
+    const UNITS = [
+      { id: "m", label: "m" },
+      { id: "s", label: "s" },
+      { id: "g", label: "g" },
+      { id: "V", label: "V" },
+      { id: "A", label: "A" },
+      { id: "W", label: "W" }
+    ];
+
+    const params = new URLSearchParams(location.search);
+    let lang = params.get("lang") === "en" ? "en" : "zh";
+    let tab = "q";
+    let sciCoef = 4.6;
+    let sciExp = 3;
+    let convValue = 0.007;
+    let convUnit = "s";
+    let convEngExp = -3;
+    let selectedPrefix = "m";
+
+    const t = (k) => I18N[lang][k] || I18N.en[k] || k;
+
+    function sup(n) {
+      const map = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+      return String(n).split("").map((c) => map[c] ?? c).join("");
+    }
+    function pow10(n) { return `10${sup(n)}`; }
+    function times(a, e) {
+      const c = formatCoef(a);
+      if (e === 0) return c;
+      return `${c} × ${pow10(e)}`;
+    }
+    function formatCoef(n) {
+      if (!Number.isFinite(n)) return "—";
+      const s = n.toPrecision(6);
+      return String(Number(s));
+    }
+    function formatPlain(n) {
+      if (!Number.isFinite(n)) return "—";
+      if (Object.is(n, -0) || n === 0) return "0";
+      const sign = n < 0 ? "-" : "";
+      const abs = Math.abs(n);
+      if (abs >= 1e12) return sign + abs.toExponential(4).replace("e+", " × 10^").replace("e-", " × 10^-");
+      if (abs >= 1) {
+        const s = abs.toFixed(8).replace(/\.?0+$/, "");
+        return sign + s;
+      }
+      return sign + abs.toFixed(12).replace(/0+$/, "").replace(/\.$/, "");
+    }
+    function toSciParts(n) {
+      if (!Number.isFinite(n) || n === 0) return { coef: 0, exp: 0 };
+      const sign = n < 0 ? -1 : 1;
+      const abs = Math.abs(n);
+      let exp = Math.floor(Math.log10(abs));
+      let coef = abs / Math.pow(10, exp);
+      coef = Number(coef.toPrecision(10));
+      if (coef >= 10) { coef /= 10; exp += 1; }
+      if (coef < 1) { coef *= 10; exp -= 1; }
+      return { coef: sign * coef, exp };
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+
+    function applyI18n() {
+      document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.innerHTML = t(el.getAttribute("data-i18n"));
+      });
+      document.getElementById("btn-en").classList.toggle("active", lang === "en");
+      document.getElementById("btn-zh").classList.toggle("active", lang === "zh");
+      document.title = lang === "zh" ? "SI 單位實驗 · 物理量與單位" : "SI Units Lab · Quantities and Units";
+    }
+
+    function renderTabs() {
+      const items = [
+        ["q", "tabQ"], ["d", "tabD"], ["p", "tabP"], ["x", "tabX"], ["r", "tabR"]
+      ];
+      document.getElementById("tabs").innerHTML = items.map(([id, key]) =>
+        `<button type="button" class="${tab === id ? "active" : ""}" data-tab="${id}">${t(key)}</button>`
+      ).join("");
+    }
+
+    function saveFields() {
+      const data = {};
+      document.querySelectorAll("input, select").forEach((el) => {
+        if (el.id) data[el.id] = el.value;
+      });
+      return data;
+    }
+    function restoreFields(data) {
+      Object.entries(data || {}).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+    }
+    function showTab() {
+      document.querySelectorAll("#tabs button").forEach((b) => {
+        b.classList.toggle("active", b.getAttribute("data-tab") === tab);
+      });
+      document.querySelectorAll(".panel").forEach((p) => {
+        p.classList.toggle("active", p.id === "panel-" + tab);
+      });
+    }
+    function render(keepFields) {
+      const kept = keepFields ? saveFields() : null;
+      applyI18n();
+      renderTabs();
+      const host = document.getElementById("panels");
+      host.innerHTML = [
+        panelQ(), panelD(), panelP(), panelX(), panelR()
+      ].join("");
+      showTab();
+      if (kept) restoreFields(kept);
+      const coefEl = document.getElementById("coef-in");
+      const expEl = document.getElementById("exp-in");
+      if (coefEl && expEl) {
+        const c = parseFloat(coefEl.value);
+        const e = parseInt(expEl.value, 10);
+        if (Number.isFinite(c) && Number.isFinite(e)) { sciCoef = c; sciExp = e; }
+      }
+      const cv = document.getElementById("conv-val");
+      if (cv) {
+        const n = parseFloat(String(cv.value).replace(/,/g, ""));
+        if (Number.isFinite(n)) convValue = n;
+      }
+      const cu = document.getElementById("conv-unit");
+      if (cu) convUnit = cu.value;
+      bind();
+    }
+
+    function panelQ() {
+      const cards = [
+        { key: "length", units: "m, cm, mm, km · inch, mile" },
+        { key: "volume", units: "cm³, m³, dm³" },
+        { key: "time", units: "s, min, hr, yr" },
+        { key: "speed", units: "m s⁻¹, km h⁻¹" }
+      ];
+      const si = [
+        { key: "length", unit: t("metre"), sym: "m" },
+        { key: "mass", unit: t("kilogram"), sym: "kg" },
+        { key: "time", unit: t("second"), sym: "s" },
+        { key: "temp", unit: t("kelvin"), sym: "K / °C" },
+        { key: "current", unit: t("ampere"), sym: "A" }
+      ];
+      return `<section class="panel" id="panel-q">
+        <div class="card">
+          <h2>${t("defTitle")}</h2>
+          <p class="lead">${t("defLead")}</p>
+          <div class="grid-4">
+            ${cards.map((c, i) => `<div class="flip" data-flip="${i}">
+              <div class="flip-inner">
+                <div class="flip-face">
+                  <div class="qty">${t(c.key)}</div>
+                  <div class="hint">${t("tap")}</div>
+                </div>
+                <div class="flip-face back">
+                  <div class="qty">${t(c.key)}</div>
+                  <div class="units">${c.units}</div>
+                </div>
+              </div>
+            </div>`).join("")}
+          </div>
+        </div>
+        <div class="card">
+          <h2>${t("siTitle")}</h2>
+          <p class="lead">${t("siLead")}</p>
+          <div class="grid-5">
+            ${si.map((s) => `<div class="si-tile">
+              <div class="sym">${s.sym}</div>
+              <div class="unit">${s.unit}</div>
+              <div class="name">${t(s.key)}</div>
+            </div>`).join("")}
+          </div>
+          <table class="ref" style="margin-top:0.85rem">
+            <thead><tr><th>${t("colQty")}</th><th>${t("colUnit")}</th><th>${t("colSym")}</th></tr></thead>
+            <tbody>
+              ${si.map((s) => `<tr><td>${t(s.key)}</td><td>${s.unit}</td><td class="mono">${s.sym}</td></tr>`).join("")}
+            </tbody>
+          </table>
+        </div>
+      </section>`;
+    }
+
+    const DERIVED = [
+      { id: "dens", key: "dens", f: "densF", accept: ["kgm-3", "kg/m3", "kgm^-3"] },
+      { id: "spd", key: "spd", f: "spdF", accept: ["ms-1", "m/s", "ms^-1"] },
+      { id: "dT", key: "dT", f: "dTF", accept: ["cs-1", "ks-1", "c/s", "k/s", "degcs-1"] },
+      { id: "acc", key: "acc", f: "accF", accept: ["ms-2", "m/s2", "ms^-2"] },
+      { id: "energy", key: "energy", f: "energyF", accept: ["j", "ws", "w.s", "w*s", "kgm2s-2", "kgm2/s2"] }
+    ];
+    const DERIVED_SHOW = {
+      dens: "kg m⁻³",
+      spd: "m s⁻¹",
+      dT: "°C s⁻¹  or  K s⁻¹",
+      acc: "m s⁻²",
+      energy: "J  or  W s"
+    };
+
+    function panelD() {
+      const chips = ["kg", "m", "s", "K", "°C", "J", "W", "·", "/", "⁻¹", "⁻²", "⁻³", "³"];
+      return `<section class="panel" id="panel-d">
+        <div class="card">
+          <h2>${t("derTitle")}</h2>
+          <p class="lead">${t("derLead")}</p>
+          ${DERIVED.map((d) => `<div class="derived-item" data-der="${d.id}">
+            <strong>${t(d.key)}</strong>
+            <div class="formula">${t(d.f)}</div>
+            <div class="unit-build">${chips.map((c) => `<button type="button" class="chip der-chip" data-insert="${escapeHtml(c)}">${c}</button>`).join("")}</div>
+            <div class="row">
+              <input type="text" id="der-${d.id}" placeholder="e.g. kg m⁻³" autocomplete="off">
+              <button type="button" class="btn" data-check="${d.id}">${t("check")}</button>
+              <button type="button" class="btn ghost" data-show="${d.id}">${t("show")}</button>
+            </div>
+            <div class="feedback" id="fb-${d.id}"></div>
+          </div>`).join("")}
+        </div>
+      </section>`;
+    }
+
+    function panelP() {
+      const table = [
+        [1000000, 6], [100000, 5], [10000, 4], [1000, 3],
+        [0.1, -1], [0.01, -2], [0.001, -3], [0.0001, -4]
+      ];
+      const seedsTo = [40000, 8540000, 0.0007, 0.00000035];
+      const seedsFrom = [
+        [4.6, 3], [2.22, 6], [3.18, 7], [8, -4], [4.15, -4], [6.06, -6]
+      ];
+      const examples = [
+        "400 = 4 × 100 = 4 × 10²",
+        "30 000 = 3 × 10⁴",
+        "7 200 000 = 7.2 × 10⁶",
+        "0.05 = 5 × 10⁻²",
+        "0.00002 = 2 × 10⁻⁵"
+      ];
+      return `<section class="panel" id="panel-p">
+        <div class="card">
+          <h2>${t("potTitle")}</h2>
+          <p class="lead">${t("potLead")}</p>
+          <table class="ref">
+            <tbody>
+              ${table.map(([n, e]) => `<tr><td class="mono">${formatPlain(n)}</td><td class="mono">${e < 0 ? `1/${pow10(-e)}` : ""}</td><td class="mono">${pow10(e)}</td></tr>`).join("")}
+              <tr><td class="mono">1</td><td></td><td class="mono">${pow10(0)}</td></tr>
+            </tbody>
+          </table>
+          <p class="lead" style="margin-top:0.7rem">${examples.map((e) => `<span class="chip" style="margin:0.15rem;display:inline-block;cursor:default">${e}</span>`).join(" ")}</p>
+        </div>
+        <div class="card">
+          <div class="big-eq" id="sci-display">${times(sciCoef, sciExp)}</div>
+          <div class="grid-2">
+            <label>${t("ordinary")}<br>
+              <input type="text" id="ord-in" value="${formatPlain(sciCoef * Math.pow(10, sciExp))}" style="width:100%">
+            </label>
+            <div>
+              <div class="row" style="margin-bottom:0.35rem">
+                <label>${t("sci")}</label>
+              </div>
+              <div class="row">
+                <input type="text" id="coef-in" value="${formatCoef(sciCoef)}" style="width:6rem">
+                <span>× 10</span>
+                <input type="number" id="exp-in" value="${sciExp}" style="width:4.5rem">
+              </div>
+            </div>
+          </div>
+          <div class="stepper" style="margin-top:0.75rem">
+            <button type="button" class="btn ghost" id="btn-to-sci">${t("toSci")}</button>
+            <button type="button" class="btn ghost" id="btn-to-ord">${t("toOrd")}</button>
+            <button type="button" class="btn" id="btn-dec-l">${t("moveL")}</button>
+            <button type="button" class="btn" id="btn-dec-r">${t("moveR")}</button>
+            <button type="button" class="btn ok" id="btn-std">${t("standard")}</button>
+          </div>
+          <p class="lead" style="margin-top:0.85rem">${t("seedsFrom")}</p>
+          <div class="row">${seedsFrom.map(([c, e]) => `<button type="button" class="chip seed-from" data-c="${c}" data-e="${e}">${times(c, e)}</button>`).join("")}</div>
+          <p class="lead" style="margin-top:0.65rem">${t("seedsTo")}</p>
+          <div class="row">${seedsTo.map((n) => `<button type="button" class="chip seed-to" data-n="${n}">${formatPlain(n)}</button>`).join("")}</div>
+        </div>
+      </section>`;
+    }
+
+    function siFromConv() {
+      return convValue;
+    }
+    function prefixForExp(exp) {
+      return PREFIXES.find((p) => p.exp === exp) || null;
+    }
+    function rewriteWithExp(si, exp, unit) {
+      const coef = si / Math.pow(10, exp);
+      const p = prefixForExp(exp);
+      const pref = p ? p.symbol : "";
+      return { coef, pref, unit, text: `${formatCoef(coef)} ${pref}${unit}` };
+    }
+    function bestNotesPrefix(si, unit) {
+      const cands = PREFIXES.map((p) => {
+        const coef = si / Math.pow(10, p.exp);
+        const abs = Math.abs(coef);
+        let score = 1e9;
+        if (abs >= 1 && abs < 1000) score = Math.abs(Math.log10(abs) - 1);
+        else if (abs >= 0.1 && abs < 1) score = 8 + (1 - abs);
+        else score = 20 + Math.abs(Math.log10(abs || 1e-30));
+        if (unit === "m" && p.symbol === "c" && abs >= 0.5 && abs < 200) score -= 2;
+        return { p, coef, score };
+      });
+      cands.sort((a, b) => a.score - b.score);
+      return cands[0];
+    }
+
+    function panelX() {
+      const si = siFromConv();
+      const sci = toSciParts(si);
+      const shown = rewriteWithExp(si, convEngExp, convUnit);
+      const best = bestNotesPrefix(si, convUnit);
+      const examples = [
+        ["1 000 m", "10³ m", "1 km"],
+        ["1 000 000 V", "10⁶ V", "1 MV"],
+        ["0.01 m", "10⁻² m", "1 cm"],
+        ["0.001 g", "10⁻³ g", "1 mg"],
+        ["0.000 001 s", "10⁻⁶ s", "1 μs"]
+      ];
+      return `<section class="panel" id="panel-x">
+        <div class="card">
+          <h2>${t("prefixTitle")}</h2>
+          <p class="lead">${t("prefixLead")}</p>
+          ${PREFIXES.map((p) => `<div class="prefix-row ${selectedPrefix === p.id ? "on" : ""}" data-prefix="${p.id}">
+            <span>${p.kind === "multi" ? t("multiple") : t("sub")}: ${p.exp >= 0 ? formatPlain(Math.pow(10, p.exp)) : formatPlain(Math.pow(10, p.exp))} (${pow10(p.exp)})</span>
+            <span>${p.name}</span>
+            <span class="mono">${p.symbol}</span>
+            <span>${p.zh}</span>
+          </div>`).join("")}
+        </div>
+        <div class="card">
+          <h2>${t("convTitle")}</h2>
+          <p class="lead">${t("convLead")}</p>
+          <div class="eng-panel">
+            <div class="lcd" id="eng-lcd">${escapeHtml(shown.text)} &nbsp;=&nbsp; ${times(sci.coef, sci.exp)} ${convUnit}</div>
+            <div class="row">
+              <label style="color:#a7f3d0">${t("value")}<br>
+                <input type="text" id="conv-val" value="${formatPlain(convValue)}" style="width:9rem">
+              </label>
+              <label style="color:#a7f3d0">${t("unit")}<br>
+                <select id="conv-unit">${UNITS.map((u) => `<option ${u.id === convUnit ? "selected" : ""}>${u.label}</option>`).join("")}</select>
+              </label>
+              <button type="button" class="btn" id="eng-up">${t("engUp")}</button>
+              <button type="button" class="btn" id="eng-down">${t("engDown")}</button>
+            </div>
+          </div>
+          <table class="ref" style="margin-top:0.75rem">
+            <tr><th>${t("asSi")}</th><td class="mono">${formatPlain(si)} ${convUnit}</td></tr>
+            <tr><th>${t("asSci")}</th><td class="mono">${times(sci.coef, sci.exp)} ${convUnit}</td></tr>
+            <tr><th>${t("asPref")}</th><td class="mono">${formatCoef(best.coef)} ${best.p.symbol}${convUnit}</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h2>${t("exTitle")}</h2>
+          <table class="ref">
+            ${examples.map((row) => `<tr>${row.map((c) => `<td class="mono">${c}</td>`).join("")}</tr>`).join("")}
+          </table>
+        </div>
+      </section>`;
+    }
+
+    const Q4 = [
+      { id: "a", prompt: "0.007 s", accept: ["7ms", "7 ms"] },
+      { id: "b", prompt: "3000 g", accept: ["3kg", "3 kg"] },
+      { id: "c", prompt: "4000000 W", accept: ["4mw"] },
+      { id: "d", prompt: "90000 m", accept: ["90km", "90 km"] },
+      { id: "e", prompt: "30000 V", accept: ["30kv"] },
+      { id: "f", prompt: "0.000085 m", accept: ["85μm", "85um", "85 µm"] },
+      { id: "g", prompt: "2.4 × 10³ A", accept: ["2.4ka"] },
+      { id: "h", prompt: "7 × 10⁴ g", accept: ["70kg"] },
+      { id: "i", prompt: "4.8 × 10⁻³ s", accept: ["4.8ms"] },
+      { id: "j", prompt: "0.4 × 10⁻⁶ W", accept: ["0.4μw", "0.4uw", "0.4 µw"] }
+    ];
+    const Q4_ANS = {
+      a: "7 ms", b: "3 kg", c: "4 MW", d: "90 km", e: "30 kV",
+      f: "85 μm", g: "2.4 kA", h: "70 kg", i: "4.8 ms", j: "0.4 μW"
+    };
+    const Q5 = [
+      { id: "a", prompt: "122 μm", accept: ["1.22e-4m", "1.22x10-4m", "0.000122m"] },
+      { id: "b", prompt: "65 kV", accept: ["6.5e4v", "6.5x104v", "65000v"] },
+      { id: "c", prompt: "0.03 mA", accept: ["3e-5a", "3x10-5a", "0.00003a"] },
+      { id: "d", prompt: "0.3 kg", accept: ["3e2g", "3x102g", "300g", "3e-1kg", "0.3kg"] },
+      { id: "e", prompt: "3000 MW", accept: ["3e9w", "3x109w", "3000000000w"] },
+      { id: "f", prompt: "0.000085 km", accept: ["8.5e-2m", "8.5x10-2m", "0.085m"] }
+    ];
+    const Q5_ANS = {
+      a: "1.22 × 10⁻⁴ m",
+      b: "6.5 × 10⁴ V",
+      c: "3 × 10⁻⁵ A",
+      d: "3 × 10² g  (300 g)",
+      e: "3 × 10⁹ W",
+      f: "8.5 × 10⁻² m"
+    };
+
+    function panelR() {
+      const q4html = Q4.map((q) => `<div class="q-item">
+        <span>(${q.id}) ${q.prompt}</span>
+        <input type="text" id="q4-${q.id}" autocomplete="off">
+        <span class="feedback" id="q4fb-${q.id}"></span>
+      </div>`).join("");
+      const q5html = Q5.map((q) => `<div class="q-item">
+        <span>(${q.id}) ${q.prompt}</span>
+        <input type="text" id="q5-${q.id}" placeholder="a × 10ⁿ unit" autocomplete="off">
+        <span class="feedback" id="q5fb-${q.id}"></span>
+      </div>`).join("");
+      return `<section class="panel" id="panel-r">
+        <div class="card">
+          <h2>${t("q4Title")}</h2>
+          ${q4html}
+          <div class="row" style="margin-top:0.5rem">
+            <button type="button" class="btn" id="check-q4">${t("checkAll")}</button>
+            <button type="button" class="btn ghost" id="show-q4">${t("show")}</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>${t("q5Title")}</h2>
+          ${q5html}
+          <div class="row" style="margin-top:0.5rem">
+            <button type="button" class="btn" id="check-q5">${t("checkAll")}</button>
+            <button type="button" class="btn ghost" id="show-q5">${t("show")}</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>${t("q6Title")}</h2>
+          <p class="lead">${t("q6Lead")}</p>
+          <div class="factor">
+            <span>km h⁻¹</span>
+            <span>× 1000 m / 1 km</span>
+            <span>× 1 h / 3600 s</span>
+            <span>→ m s⁻¹</span>
+          </div>
+          <p class="lead">${t("shortcut")}</p>
+          ${[36, 50, 100].map((v, i) => {
+            const letter = ["a", "b", "c"][i];
+            return `<div class="q-item">
+              <span>(${letter}) ${v} km/h → m s⁻¹</span>
+              <input type="text" id="q6-${letter}" autocomplete="off">
+              <span class="feedback" id="q6fb-${letter}"></span>
+            </div>`;
+          }).join("")}
+          <div class="row">
+            <button type="button" class="btn" id="check-q6">${t("convert")}</button>
+            <button type="button" class="btn ghost" id="show-q6">${t("show")}</button>
+          </div>
+          <div class="big-eq" id="q6-steps" style="font-size:1.05rem;font-weight:650"></div>
+        </div>
+      </section>`;
+    }
+
+    function normUnit(s) {
+      return s.toLowerCase()
+        .replace(/°\s*c/g, "c")
+        .replace(/deg(?:ree)?s?\s*c(?:elsius)?/g, "c")
+        .replace(/kelvin/g, "k")
+        .replace(/μ|µ/g, "u")
+        .replace(/×/g, "x")
+        .replace(/·|\*/g, "")
+        .replace(/\s+/g, "")
+        .replace(/\^/g, "")
+        .replace(/⁻/g, "-")
+        .replace(/¹/g, "1")
+        .replace(/²/g, "2")
+        .replace(/³/g, "3")
+        .replace(/⁴/g, "4")
+        .replace(/⁵/g, "5")
+        .replace(/⁶/g, "6")
+        .replace(/⁷/g, "7")
+        .replace(/⁸/g, "8")
+        .replace(/⁹/g, "9")
+        .replace(/⁰/g, "0");
+    }
+    function sciKey(s) {
+      return normUnit(s)
+        .replace(/[{}]/g, "")
+        .replace(/x10(-?\d+)/g, "e$1")
+        .replace(/10(-?\d+)/g, "e$1");
+    }
+    function looksLike(input, acceptList) {
+      const n = sciKey(input);
+      return acceptList.some((a) => n === sciKey(a));
+    }
+    function parseQty(s) {
+      const n = sciKey(s);
+      const m = n.match(/^([+-]?\d*\.?\d+)(?:e([+-]?\d+))?([a-z]+)$/i);
+      if (!m) return null;
+      const coef = parseFloat(m[1]);
+      const exp = m[2] != null ? parseInt(m[2], 10) : 0;
+      if (!Number.isFinite(coef)) return null;
+      return { value: coef * Math.pow(10, exp), unit: m[3] };
+    }
+    function q5Ok(input, item) {
+      if (looksLike(input, item.accept.concat([Q5_ANS[item.id]]))) return true;
+      const got = parseQty(input);
+      const want = parseQty(item.accept[0]);
+      if (!got || !want) return false;
+      const sameUnit = got.unit === want.unit || (item.id === "d" && ((got.unit === "g") || (got.unit === "kg")));
+      if (!sameUnit) return false;
+      if (item.id === "d" && got.unit === "kg") return Math.abs(got.value - 0.3) < 1e-9;
+      const rel = Math.abs(got.value - want.value) / Math.max(Math.abs(want.value), 1e-30);
+      return rel < 1e-6;
+    }
+    function almostNumber(input, expected, tol) {
+      const n = parseFloat(String(input).replace(/,/g, ""));
+      return Number.isFinite(n) && Math.abs(n - expected) <= tol;
+    }
+
+    function syncSciInputs() {
+      const disp = document.getElementById("sci-display");
+      const ord = document.getElementById("ord-in");
+      const coef = document.getElementById("coef-in");
+      const exp = document.getElementById("exp-in");
+      if (!disp) return;
+      disp.textContent = times(sciCoef, sciExp);
+      if (ord) ord.value = formatPlain(sciCoef * Math.pow(10, sciExp));
+      if (coef) coef.value = formatCoef(sciCoef);
+      if (exp) exp.value = String(sciExp);
+    }
+
+    function readSciFromInputs() {
+      const coefEl = document.getElementById("coef-in");
+      const expEl = document.getElementById("exp-in");
+      if (!coefEl || !expEl) return;
+      const c = parseFloat(coefEl.value);
+      const e = parseInt(expEl.value, 10);
+      if (Number.isFinite(c) && Number.isFinite(e)) {
+        sciCoef = c;
+        sciExp = e;
+      }
+    }
+
+    function bind() {
+      document.querySelectorAll(".flip").forEach((el) => {
+        el.addEventListener("click", () => el.classList.toggle("flipped"));
+      });
+
+      document.querySelectorAll(".der-chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const box = btn.closest(".derived-item");
+          const input = box.querySelector("input");
+          input.value = (input.value + btn.getAttribute("data-insert")).trim();
+          input.focus();
+        });
+      });
+      document.querySelectorAll("[data-check]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-check");
+          const item = DERIVED.find((d) => d.id === id);
+          const val = document.getElementById("der-" + id).value;
+          const fb = document.getElementById("fb-" + id);
+          const ok = looksLike(val, item.accept);
+          fb.textContent = ok ? t("ok") : t("tryAgain");
+          fb.className = "feedback " + (ok ? "good" : "bad");
+        });
+      });
+      document.querySelectorAll("[data-show]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-show");
+          document.getElementById("der-" + id).value = DERIVED_SHOW[id];
+          const fb = document.getElementById("fb-" + id);
+          fb.textContent = DERIVED_SHOW[id];
+          fb.className = "feedback good";
+        });
+      });
+
+      const ordIn = document.getElementById("ord-in");
+      if (ordIn) {
+        document.getElementById("btn-to-sci").onclick = () => {
+          const n = parseFloat(String(ordIn.value).replace(/,/g, "").replace(/ /g, ""));
+          if (!Number.isFinite(n)) return;
+          const p = toSciParts(n);
+          sciCoef = p.coef;
+          sciExp = p.exp;
+          syncSciInputs();
+        };
+        document.getElementById("btn-to-ord").onclick = () => {
+          readSciFromInputs();
+          syncSciInputs();
+        };
+        document.getElementById("btn-dec-l").onclick = () => {
+          readSciFromInputs();
+          sciCoef *= 10;
+          sciExp -= 1;
+          syncSciInputs();
+        };
+        document.getElementById("btn-dec-r").onclick = () => {
+          readSciFromInputs();
+          sciCoef /= 10;
+          sciExp += 1;
+          syncSciInputs();
+        };
+        document.getElementById("btn-std").onclick = () => {
+          readSciFromInputs();
+          const n = sciCoef * Math.pow(10, sciExp);
+          const p = toSciParts(n);
+          sciCoef = p.coef;
+          sciExp = p.exp;
+          syncSciInputs();
+        };
+        document.querySelectorAll(".seed-from").forEach((b) => {
+          b.onclick = () => {
+            sciCoef = parseFloat(b.dataset.c);
+            sciExp = parseInt(b.dataset.e, 10);
+            syncSciInputs();
+          };
+        });
+        document.querySelectorAll(".seed-to").forEach((b) => {
+          b.onclick = () => {
+            const n = parseFloat(b.dataset.n);
+            const p = toSciParts(n);
+            sciCoef = p.coef;
+            sciExp = p.exp;
+            syncSciInputs();
+          };
+        });
+      }
+
+      document.querySelectorAll(".prefix-row").forEach((row) => {
+        row.addEventListener("click", () => {
+          selectedPrefix = row.getAttribute("data-prefix");
+          const p = PREFIXES.find((x) => x.id === selectedPrefix);
+          convEngExp = p.exp;
+          const si = parseFloat(String(document.getElementById("conv-val")?.value || convValue).replace(/,/g, ""));
+          if (Number.isFinite(si)) convValue = si;
+          convUnit = document.getElementById("conv-unit")?.value || convUnit;
+          render(true);
+        });
+      });
+      const convVal = document.getElementById("conv-val");
+      if (convVal) {
+        const applyConv = () => {
+          const n = parseFloat(String(convVal.value).replace(/,/g, "").replace(/ /g, ""));
+          if (Number.isFinite(n)) convValue = n;
+          convUnit = document.getElementById("conv-unit").value;
+          const p = toSciParts(convValue);
+          convEngExp = Math.round(p.exp / 3) * 3;
+          if (![6, 3, 0, -3, -6].includes(convEngExp)) convEngExp = 0;
+          const match = PREFIXES.find((x) => x.exp === convEngExp);
+          if (match) selectedPrefix = match.id;
+          render(true);
+        };
+        document.getElementById("conv-unit").onchange = applyConv;
+        convVal.addEventListener("change", applyConv);
+        document.getElementById("eng-up").onclick = () => {
+          const n = parseFloat(String(convVal.value).replace(/,/g, ""));
+          if (Number.isFinite(n)) convValue = n;
+          convUnit = document.getElementById("conv-unit").value;
+          convEngExp = Math.min(6, convEngExp + 3);
+          const match = PREFIXES.find((x) => x.exp === convEngExp);
+          selectedPrefix = match ? match.id : selectedPrefix;
+          render(true);
+        };
+        document.getElementById("eng-down").onclick = () => {
+          const n = parseFloat(String(convVal.value).replace(/,/g, ""));
+          if (Number.isFinite(n)) convValue = n;
+          convUnit = document.getElementById("conv-unit").value;
+          convEngExp = Math.max(-6, convEngExp - 3);
+          const match = PREFIXES.find((x) => x.exp === convEngExp);
+          selectedPrefix = match ? match.id : selectedPrefix;
+          render(true);
+        };
+      }
+
+      const mark = (el, ok, msg) => {
+        if (!el) return;
+        el.textContent = msg;
+        el.className = "feedback " + (ok ? "good" : "bad");
+      };
+      document.getElementById("check-q4")?.addEventListener("click", () => {
+        Q4.forEach((q) => {
+          const val = document.getElementById("q4-" + q.id).value;
+          const ok = looksLike(val, q.accept.concat([Q4_ANS[q.id]]));
+          mark(document.getElementById("q4fb-" + q.id), ok, ok ? t("ok") : t("tryAgain"));
+        });
+      });
+      document.getElementById("show-q4")?.addEventListener("click", () => {
+        Q4.forEach((q) => {
+          document.getElementById("q4-" + q.id).value = Q4_ANS[q.id];
+          mark(document.getElementById("q4fb-" + q.id), true, Q4_ANS[q.id]);
+        });
+      });
+      document.getElementById("check-q5")?.addEventListener("click", () => {
+        Q5.forEach((q) => {
+          const val = document.getElementById("q5-" + q.id).value;
+          const ok = q5Ok(val, q);
+          mark(document.getElementById("q5fb-" + q.id), ok, ok ? t("ok") : t("tryAgain"));
+        });
+      });
+      document.getElementById("show-q5")?.addEventListener("click", () => {
+        Q5.forEach((q) => {
+          document.getElementById("q5-" + q.id).value = Q5_ANS[q.id];
+          mark(document.getElementById("q5fb-" + q.id), true, Q5_ANS[q.id]);
+        });
+      });
+      document.getElementById("check-q6")?.addEventListener("click", () => {
+        const expected = { a: 10, b: 13.9, c: 27.8 };
+        const tol = { a: 0.05, b: 0.15, c: 0.15 };
+        ["a", "b", "c"].forEach((k) => {
+          const val = document.getElementById("q6-" + k).value;
+          const ok = almostNumber(val, expected[k], tol[k]);
+          mark(document.getElementById("q6fb-" + k), ok, ok ? t("ok") : t("tryAgain"));
+        });
+        const v = parseFloat(document.getElementById("q6-a").value);
+        const n = Number.isFinite(v) ? v : 36;
+        const src = Number.isFinite(v) && Math.abs(v - 10) > 2 ? v : 36;
+        document.getElementById("q6-steps").innerHTML =
+          `${src} km/h × (1000 m / 1 km) × (1 h / 3600 s) = ${formatCoef(src * 1000 / 3600)} m s⁻¹`;
+      });
+      document.getElementById("show-q6")?.addEventListener("click", () => {
+        document.getElementById("q6-a").value = "10";
+        document.getElementById("q6-b").value = "13.9";
+        document.getElementById("q6-c").value = "27.8";
+        mark(document.getElementById("q6fb-a"), true, "10 m s⁻¹");
+        mark(document.getElementById("q6fb-b"), true, "13.9 m s⁻¹");
+        mark(document.getElementById("q6fb-c"), true, "27.8 m s⁻¹");
+        document.getElementById("q6-steps").innerHTML =
+          "36 × 1000 / 3600 = 10 m s⁻¹ &nbsp;·&nbsp; 50 → 13.9 &nbsp;·&nbsp; 100 → 27.8 &nbsp;·&nbsp; ÷ 3.6";
+      });
+    }
+
+    document.getElementById("tabs").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-tab]");
+      if (!btn) return;
+      tab = btn.getAttribute("data-tab");
+      showTab();
+    });
+    document.getElementById("btn-en").onclick = () => { lang = "en"; render(true); };
+    document.getElementById("btn-zh").onclick = () => { lang = "zh"; render(true); };
+    window.addEventListener("message", (ev) => {
+      if (ev.data?.type !== "s3phy:lang") return;
+      lang = ev.data.lang === "en" ? "en" : "zh";
+      render(true);
+    });
+
+    render();
+  </script>
+</body>
+</html>
