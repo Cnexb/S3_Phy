@@ -1,0 +1,13 @@
+---
+description: Freeze Phy quiz runners and generated public/dist quiz copies — edit quizzes/ instead
+globs: quizzes/**/js/quizApp.js,quizzes/**/js/quizUtils.js,quizzes/**/js/quizExport.js,quizzes/**/js/quizEffects.js,quizzes/**/js/quizSummary.js,public/**/js/quizApp.js,public/**/js/quizData.js,dist/**/js/quizApp.js,dist/**/js/quizData.js,.github/workflows/**
+alwaysApply: false
+---
+
+# Frozen Phy wiring
+
+Quiz runners own tracking. `public/` and `dist/` quiz folders are copies.
+
+Change `quizzes/<slug>/js/quizData.js`, then run `npm run build:content`. Leave this file unchanged.
+
+Do not edit `postMessage`, `uniplus:quizAnswer`, `QUIZ_META`, `quizId`, or network calls. If the teacher needs that, stop and name the technical owner.
