@@ -1,0 +1,33 @@
+---
+description: Phy UniPlus seam — quiz, flashcard, note, UI, and content edits must not touch tracking or generated copies
+alwaysApply: true
+---
+
+# Phy content seam
+
+This repo is the S3 Physics site inside a UniPlus iframe. Teachers may add and rewrite teaching content freely. Source packages are editable. Copied output and platform wiring stay frozen.
+
+## Do this
+
+| Kind | Edit here |
+| --- | --- |
+| Live quiz | `quizzes/<slug>/js/quizData.js` (and `quizExercises.js` / `quizLqItems.js` if present) |
+| Worksheet quiz | `worksheets/<slug>/js/quizData.js` |
+| Flashcard wording | `content/flashcards/data/*.json` (keep existing card ids) |
+| Lab interaction | `labs/<slug>/` |
+
+After quiz or worksheet data changes run `npm run build:content` so `public/` is rebuilt from the source package.
+
+New quiz items get new `id` values. Old `id` values stay. Match `section` to an id in `QUIZ_SECTIONS`.
+
+Do not put live quiz items in `scripts/data/questions.json` (worksheet import dump, different schema).
+
+## Stop and ask the technical owner if the task needs
+
+`quizzes/**/js/quizApp.js`, `quizUtils.js`, `quizExport.js`, `quizEffects.js`, `quizSummary.js`, `public/<quiz-slug>/`, `dist/`, `uni-tracker.js`, `postMessage`, `uniplus:*` payloads, `functions/`, `.github/`, Supabase, `fetch` / XHR, `uniplus_session`, or a new quiz data format.
+
+Heat-transfer desktop copies follow `lab-desktop-sync-approval.mdc`. That exception does not apply to quizzes.
+
+## Before finishing
+
+`npm run build:content` succeeds. `node --check` every edited `quizData.js`. If `public/` or `dist/` quiz files were hand-edited, revert them and rebuild from `quizzes/`. Do not push.
