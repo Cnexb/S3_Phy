@@ -1,0 +1,51 @@
+---
+description: How to add or edit S3 Phy quiz sections and questions in quizzes/
+globs: quizzes/**/js/quizData.js,quizzes/**/js/quizExercises.js,quizzes/**/js/quizLqItems.js,worksheets/**/js/quizData.js
+alwaysApply: false
+---
+
+# Phy quiz content
+
+Edit `quizzes/<slug>/js/quizData.js`. `npm run build:content` copies it to `public/`. Do not hand-edit `public/` or `dist/`.
+
+Heat Ch.1, foundations: edit `quizData.js` directly. Optics chapters also use `quizData.js` for one-off questions. Do not re-run the Word extractors unless the teacher explicitly asks to re-import a docx.
+
+## New topic
+
+Append to `QUIZ_SECTIONS`:
+
+```js
+{ id: "latent-heat", label: "Latent heat", labelZh: "潛熱" }
+```
+
+Then add items whose `section` equals that `id`.
+
+## New MCQ
+
+Push onto `QUIZ_ITEMS`:
+
+```js
+{
+  id: "lh-1",
+  section: "latent-heat",
+  difficulty: "Foundation", // Foundation | Standard | Applied
+  stem: "English stem",
+  stemZh: "繁體中文題目",
+  options: [
+    { key: "A", text: "Option A" },
+    { key: "B", text: "Option B" },
+    { key: "C", text: "Option C" },
+    { key: "D", text: "Option D" },
+  ],
+  answer: "B",
+  hint: "Brief explanation",
+}
+```
+
+`id` must be unique in that quiz. Optional `image: { src, alt, caption }` with a file under that quiz's `assets/` folder.
+
+Do not copy Chem `questions.json` (`ch` / `n` / string `options`) and do not copy `scripts/data/questions.json` (`en.q` / `a: 1`).
+
+## Remove a topic
+
+Delete those items from `QUIZ_ITEMS`, remove the `QUIZ_SECTIONS` row, then `npm run build:content`.
