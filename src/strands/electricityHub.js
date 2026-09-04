@@ -4,16 +4,31 @@ import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 
 const TOOL_STORAGE_KEY = 's3phy.electricity.tool';
-const TOOL_ORDER = ['flemingHandRules'];
+const TOOL_ORDER = [
+  'electrostatics',
+  'domesticCircuit',
+  'magneticEffect',
+  'flemingHandRules',
+  'movingChargeForce',
+];
 
 const TOOL_LOADERS = {
+  electrostatics: () => import('../tools/electrostaticsLab.js').then((m) => m.createElectrostaticsLab),
+  domesticCircuit: () => import('../tools/domesticCircuitLab.js').then((m) => m.createDomesticCircuitLab),
+  magneticEffect: () => import('../tools/magneticEffectLab.js').then((m) => m.createMagneticEffectLab),
   flemingHandRules: () =>
     import('../tools/flemingHandRulesLab.js').then((m) => m.createFlemingHandRulesLab),
+  movingChargeForce: () =>
+    import('../tools/movingChargeForceLab.js').then((m) => m.createMovingChargeForceLab),
 };
 
 function toolLabel(id) {
   const map = {
+    electrostatics: 'tools.electrostatics.title',
+    domesticCircuit: 'tools.domesticCircuit.title',
+    magneticEffect: 'tools.magneticEffect.title',
     flemingHandRules: 'tools.flemingHandRules.title',
+    movingChargeForce: 'tools.movingChargeForce.title',
   };
   return t(map[id] || id);
 }
@@ -53,7 +68,7 @@ const ELECTRICITY_TOPICS = [
 
 export function mountElectricityHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.electricity.section'));
-  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'flemingHandRules');
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'electrostatics');
   let shell = null;
   let el = { main: null };
   let activeLabInstance = null;

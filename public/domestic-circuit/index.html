@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Domestic Circuit Lab | Power & Home Electricity</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f4f0e8;
+      --bg2: #ebe4d6;
+      --surface: #fffdf8;
+      --ink: #1c1914;
+      --muted: #6b6358;
+      --line: #d9d0c0;
+      --live: #c45c26;
+      --neutral: #2f6fed;
+      --earth: #1a9a5c;
+      --accent: #e8a317;
+      --accent-deep: #b87a00;
+      --ok: #1a9a5c;
+      --warn: #c45c26;
+      --danger: #c62828;
+      --glow: rgba(232, 163, 23, 0.45);
+      --radius: 18px;
+      --shadow: 0 12px 40px rgba(28, 25, 20, 0.08);
+      --font: "DM Sans", system-ui, sans-serif;
+      --display: "Outfit", "DM Sans", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html.s3phy-embed, html.s3phy-embed body {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    html.s3phy-embed .wrap {
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(232, 163, 23, 0.18), transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, rgba(47, 111, 237, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .mono { font-family: var(--mono); }
+
+    .wrap {
+      width: min(1680px, calc(100% - 1.25rem));
+      margin: 0 auto;
+      padding: 0.75rem 0 1.25rem;
+    }
+
+    /* Header */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffd56a, #e8a317 55%, #c45c26);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 24px var(--glow);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.45), transparent 70%);
+      animation: shine 3.2s ease-in-out infinite;
+    }
+    @keyframes shine {
+      0%, 100% { transform: translateX(-120%); }
+      50% { transform: translateX(120%); }
+    }
+    .bolt {
+      width: 22px;
+      height: 28px;
+      clip-path: polygon(35% 0%, 100% 0%, 55% 42%, 90% 42%, 0% 100%, 40% 55%, 10% 55%);
+      background: #1c1914;
+      position: relative;
+      z-index: 1;
+    }
+    .brand h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .brand p {
+      margin: 0.15rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+      box-shadow: var(--shadow);
+    }
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .lang-toggle button.active {
+      background: var(--ink);
+      color: #fffdf8;
+    }
+
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+
+    /* Nav tabs */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+      margin-bottom: 0.75rem;
+      scrollbar-width: thin;
+    }
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.7);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 0.55rem 1rem;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: 0.2s ease;
+      white-space: nowrap;
+    }
+    .tab:hover { border-color: #c9b896; color: var(--ink); }
+    .tab.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fffdf8;
+      box-shadow: 0 8px 20px rgba(28, 25, 20, 0.18);
+    }
+
+    /* Panels */
+    .panel { display: none; animation: rise 0.35s ease; }
+    .panel.active { display: block; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .hero-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 4px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-visual {
+      min-height: 220px;
+      background:
+        linear-gradient(135deg, rgba(28,25,20,0.92), rgba(28,25,20,0.78)),
+        repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(232,163,23,0.08) 28px, rgba(232,163,23,0.08) 29px),
+        radial-gradient(circle at 70% 40%, rgba(232,163,23,0.35), transparent 40%);
+      color: #fffdf8;
+      padding: 1.6rem 1.5rem 1.4rem;
+      display: grid;
+      align-content: end;
+      gap: 0.55rem;
+    }
+    .hero-visual h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3.5vw, 2.35rem);
+      letter-spacing: -0.03em;
+      max-width: 16ch;
+      line-height: 1.1;
+    }
+    .hero-visual p {
+      margin: 0;
+      max-width: 42ch;
+      color: rgba(255,253,248,0.82);
+      font-size: 0.98rem;
+    }
+    .hero-body { padding: 1.25rem 1.35rem 1.45rem; }
+    .obj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+    .obj {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(180deg, #fff, #faf6ee);
+    }
+    .obj strong {
+      display: block;
+      font-family: var(--display);
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+    .obj span { color: var(--muted); font-size: 0.88rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1rem;
+    }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.15rem 1.2rem;
+    }
+    .card h3 {
+      margin: 0 0 0.35rem;
+      font-family: var(--display);
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+    .card .hint {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .controls { display: grid; gap: 0.85rem; }
+    .ctrl label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.35rem;
+    }
+    .ctrl label span { font-family: var(--mono); color: var(--accent-deep); }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-deep);
+    }
+
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      margin-top: 1rem;
+    }
+    .metric {
+      background: #1c1914;
+      color: #fffdf8;
+      border-radius: 14px;
+      padding: 0.75rem 0.7rem;
+      text-align: center;
+    }
+    .metric small {
+      display: block;
+      color: rgba(255,253,248,0.65);
+      font-size: 0.72rem;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .metric strong {
+      font-family: var(--mono);
+      font-size: 1.05rem;
+    }
+    .metric strong.state-on {
+      color: #3dd68c;
+    }
+    .metric strong.state-blown {
+      color: #ff6b6b;
+    }
+    .metric strong.state-short {
+      color: #ff9f43;
+    }
+
+    .wire-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin: 0.8rem 0 0;
+    }
+    .wire-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .dot.live { background: var(--live); }
+    .dot.neutral { background: var(--neutral); }
+    .dot.earth { background: var(--earth); }
+
+    /* Wiring lab */
+    .combined-safety {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+      align-items: start;
+    }
+    .combined-safety .socket-svg {
+      max-width: 280px;
+    }
+    .plug-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .combined-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+    .link-wire {
+      fill: none;
+      stroke-width: 4;
+      stroke-linecap: round;
+      transition: stroke 0.2s ease, opacity 0.2s ease;
+    }
+    .socket-svg {
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      display: block;
+    }
+    .pin-hot {
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .pin-hot:hover { filter: brightness(1.08); }
+    .pin-hot.selected {
+      filter: drop-shadow(0 0 6px rgba(232,163,23,0.9));
+    }
+    .plug-stage {
+      position: relative;
+    }
+    .wire-toolbox {
+      position: absolute;
+      z-index: 40;
+      min-width: 200px;
+      background: #fffdf8;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(28, 25, 20, 0.18);
+      padding: 0.65rem;
+      display: none;
+      animation: rise 0.18s ease;
+    }
+    .wire-toolbox.open { display: block; }
+    .wire-toolbox .tb-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin: 0 0 0.45rem 0.2rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .wire-toolbox .tb-opts {
+      display: grid;
+      gap: 0.4rem;
+    }
+    .tb-opt {
+      border: 0;
+      border-radius: 10px;
+      padding: 0.65rem 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+    .tb-opt.live { background: var(--live); }
+    .tb-opt.neutral { background: var(--neutral); }
+    .tb-opt.earth { background: var(--earth); }
+    .tb-opt.clear {
+      background: #f3eee3;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .tb-opt.used { opacity: 0.55; }
+    .tb-opt .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.35);
+      flex: 0 0 auto;
+    }
+    .tb-opt.clear .swatch { background: #c9b896; }
+    .status-box {
+      margin-top: 0;
+      border-radius: 12px;
+      padding: 0.8rem 0.95rem;
+      font-weight: 600;
+      background: #f3eee3;
+      border: 1px solid var(--line);
+    }
+    .status-box.ok { background: #e8f7ee; border-color: #9ed7b4; color: #0f6b3c; }
+    .status-box.bad { background: #fdeceb; border-color: #f0b4b0; color: #9b1c1c; }
+    .status-box.warn { background: #fff4e0; border-color: #f0d29a; color: #8a5a00; }
+
+    /* Fault animation diagram */
+    .fault-lab {
+      margin-top: 1.1rem;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fffdf8, #f7f1e6);
+      padding: 1rem 1rem 1.1rem;
+    }
+    .fault-lab h4 {
+      margin: 0 0 0.35rem;
+      font-family: var(--display);
+      font-size: 1.05rem;
+      letter-spacing: -0.02em;
+    }
+    .fault-svg-wrap {
+      position: relative;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+    .fault-svg.schematic-clean {
+      background: #fff;
+    }
+    .fault-svg.schematic-clean text {
+      font-family: "DM Sans", sans-serif;
+    }
+    .fault-svg {
+      width: 100%;
+      display: block;
+      height: auto;
+      max-height: min(58vh, 560px);
+    }
+    .flow-line {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+    }
+    .flow-line.active {
+      opacity: 1;
+      stroke-dasharray: 10 12;
+      animation: flowDash 0.55s linear infinite;
+    }
+    .flow-line.surge.active {
+      stroke-width: 5;
+      animation: flowDash 0.28s linear infinite, surgePulse 0.45s ease-in-out infinite;
+    }
+    @keyframes flowDash {
+      to { stroke-dashoffset: -44; }
+    }
+    @keyframes surgePulse {
+      0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+      50% { filter: drop-shadow(0 0 6px rgba(196, 40, 40, 0.85)); }
+    }
+    .shock-hand {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .shock-hand.shocking {
+      opacity: 1;
+      animation: shockShake 0.12s linear infinite;
+      filter: drop-shadow(0 0 8px rgba(198, 40, 40, 0.9));
+    }
+    .shock-hand-burn {
+      opacity: 0;
+    }
+    .shock-hand.shocking .shock-hand-burn {
+      animation: handBurnIn 2.6s ease-in forwards;
+    }
+    @keyframes handBurnIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes shockShake {
+      0%, 100% { transform: translate(0, 0); }
+      25% { transform: translate(1.5px, -1px); }
+      50% { transform: translate(-1.5px, 1px); }
+      75% { transform: translate(1px, 1px); }
+    }
+    .spark {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .spark.on {
+      opacity: 1;
+      animation: sparkFlash 0.35s ease-in-out infinite alternate;
+    }
+    @keyframes sparkFlash {
+      from { opacity: 0.35; }
+      to { opacity: 1; }
+    }
+    .fuse-body.blown {
+      animation: fuseBlow 0.5s ease forwards;
+    }
+    @keyframes fuseBlow {
+      0% { fill: #f5e6c8; }
+      40% { fill: #ff6b3d; }
+      100% { fill: #4a4035; }
+    }
+    .fuse-wire.blown {
+      stroke: transparent;
+    }
+    .fuse-flash {
+      opacity: 0;
+    }
+    .fuse-flash.on {
+      animation: flashOnce 0.7s ease forwards;
+    }
+    @keyframes flashOnce {
+      0% { opacity: 0; }
+      20% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    .case-live {
+      animation: caseDanger 0.6s ease-in-out infinite alternate;
+    }
+    @keyframes caseDanger {
+      from { stroke: #8a7a60; fill: #e8e0d2; }
+      to { stroke: #c62828; fill: #f8c4c0; }
+    }
+    .fault-caption {
+      margin-top: 0.75rem;
+      border-radius: 12px;
+      padding: 0.85rem 0.95rem;
+      font-weight: 600;
+      font-size: 0.92rem;
+      background: #f3eee3;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      min-height: 3.2rem;
+    }
+    .fault-caption.danger {
+      background: #fdeceb;
+      border-color: #f0b4b0;
+      color: #9b1c1c;
+    }
+    .fault-caption.safe {
+      background: #e8f7ee;
+      border-color: #9ed7b4;
+      color: #0f6b3c;
+    }
+    .fault-caption.warn {
+      background: #fff4e0;
+      border-color: #f0d29a;
+      color: #8a5a00;
+    }
+    .fault-badge {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-family: var(--display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(28,25,20,0.88);
+      color: #fffdf8;
+      z-index: 2;
+    }
+    .fault-badge.danger { background: #c62828; }
+    .fault-badge.safe { background: #1a9a5c; }
+
+    .fuse-sim {
+      position: relative;
+      margin-top: 0.75rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: linear-gradient(165deg, #faf6ee, #f0e8d8);
+      overflow: hidden;
+    }
+    .fuse-sim svg {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      max-height: min(48vh, 420px);
+      height: auto;
+      margin: 0 auto;
+    }
+    .sim-bulb {
+      fill: #d8d0c0;
+      transition: fill 0.25s ease, filter 0.25s ease;
+    }
+    .sim-bulb.on {
+      fill: #ffd56a;
+      filter: drop-shadow(0 0 6px rgba(232, 163, 23, 0.85));
+    }
+    .sim-bulb.dim {
+      fill: #e8d9a8;
+      filter: drop-shadow(0 0 3px rgba(232, 163, 23, 0.35));
+    }
+    .sim-cable {
+      stroke: #c45c26;
+      stroke-width: 4;
+      fill: none;
+      stroke-linecap: round;
+      transition: stroke 0.3s ease, stroke-width 0.3s ease;
+    }
+    .sim-cable.hot {
+      stroke: #c62828;
+      stroke-width: 6;
+      animation: cableHeat 0.45s ease-in-out infinite alternate;
+    }
+    @keyframes cableHeat {
+      from { stroke: #e07040; }
+      to { stroke: #9b1c1c; }
+    }
+    .sim-cable-neutral {
+      fill: none;
+      stroke: #2563eb;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+    .sim-wire-label {
+      font-family: DM Sans, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .fuse-sim.exploding {
+      animation: plateShake 0.55s ease-in-out;
+    }
+    @keyframes plateShake {
+      0%, 100% { transform: translate(0, 0); }
+      15% { transform: translate(-3px, 2px); }
+      30% { transform: translate(4px, -2px); }
+      45% { transform: translate(-3px, -1px); }
+      60% { transform: translate(3px, 2px); }
+      75% { transform: translate(-2px, 1px); }
+    }
+    .cable-boom {
+      pointer-events: none;
+      opacity: 0;
+    }
+    .cable-boom.on {
+      opacity: 1;
+    }
+    .cable-boom.on .boom-core {
+      animation: boomCore 0.7s ease-out forwards;
+    }
+    .cable-boom.on .boom-ring {
+      animation: boomRing 0.75s ease-out forwards;
+    }
+    .cable-boom.on .boom-spark {
+      animation: boomSpark 0.65s ease-out forwards;
+    }
+    .cable-boom.on .boom-ember {
+      animation: boomEmber 0.9s ease-out forwards;
+    }
+    .cable-boom.on .boom-flash {
+      animation: boomFlash 0.45s ease-out forwards;
+    }
+    @keyframes boomCore {
+      0% { opacity: 1; transform: scale(0.3); }
+      35% { opacity: 1; transform: scale(1.4); }
+      100% { opacity: 0; transform: scale(0.2); }
+    }
+    @keyframes boomRing {
+      0% { opacity: 0.95; transform: scale(0.2); stroke-width: 6; }
+      100% { opacity: 0; transform: scale(2.6); stroke-width: 1; }
+    }
+    @keyframes boomSpark {
+      0% { opacity: 1; stroke-dashoffset: 0; }
+      100% { opacity: 0; stroke-dashoffset: -18; }
+    }
+    @keyframes boomEmber {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx, 12px), var(--dy, -18px)) scale(0.2); }
+    }
+    @keyframes boomFlash {
+      0% { opacity: 0.85; }
+      40% { opacity: 0.55; }
+      100% { opacity: 0; }
+    }
+    .boom-core, .boom-ring, .boom-ember, .boom-flash {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .sim-electrons {
+      pointer-events: none;
+    }
+    .sim-electrons .sim-e {
+      offset-rotate: 0deg;
+      offset-distance: 0%;
+      opacity: 0;
+    }
+    .sim-electrons .e-body {
+      fill: #8ec8f0;
+      stroke: #1c1914;
+      stroke-width: 1.35;
+    }
+    .sim-electrons .e-shade {
+      fill: #5fa6d8;
+      opacity: 0.35;
+      pointer-events: none;
+    }
+    .sim-electrons .e-minus {
+      fill: #1c1914;
+      stroke: none;
+    }
+    /* To fuse only (overload / protective blow) */
+    .sim-electrons.to-fuse .sim-e,
+    .sim-electrons.surge-to-fuse .sim-e {
+      offset-path: path('M70 120 H216');
+      opacity: 0;
+      animation: eEmitTravel var(--e-dur, 2.4s) linear infinite;
+      animation-delay: var(--e-delay, 0s);
+      animation-fill-mode: backwards;
+    }
+    .sim-electrons.surge-to-fuse .sim-e {
+      --e-dur: 0.9s;
+    }
+    /* Original pace: 220V → fuse → load → neutral → back */
+    .sim-electrons.full-loop .sim-e {
+      offset-path: path('M70 120 H420 V178 H70 V120');
+      opacity: 0;
+      animation: eEmitTravel var(--e-dur, 4.8s) linear infinite;
+      animation-delay: var(--e-delay, 0s);
+      animation-fill-mode: backwards;
+    }
+    .sim-electrons.surge-loop .sim-e {
+      offset-path: path('M70 120 H420 V178 H70 V120');
+      opacity: 0;
+      animation: eEmitTravel var(--e-dur, 1.6s) linear infinite;
+      animation-delay: var(--e-delay, 0s);
+      animation-fill-mode: backwards;
+    }
+    /* After first electron clears the fuse (no blow): speed up everyone */
+    .sim-electrons.full-loop-fast .sim-e {
+      offset-path: path('M70 120 H420 V178 H70 V120');
+      opacity: 0;
+      animation: eEmitTravel var(--e-dur, 1.5s) linear infinite;
+      animation-delay: var(--e-delay, 0s);
+      animation-fill-mode: backwards;
+    }
+    .sim-electrons.surge-loop-fast .sim-e {
+      offset-path: path('M70 120 H420 V178 H70 V120');
+      opacity: 0;
+      animation: eEmitTravel var(--e-dur, 0.7s) linear infinite;
+      animation-delay: var(--e-delay, 0s);
+      animation-fill-mode: backwards;
+    }
+    /* Appear at 220V, then travel the path */
+    @keyframes eEmitTravel {
+      0% { offset-distance: 0%; opacity: 0; }
+      1.5% { opacity: 1; }
+      100% { offset-distance: 100%; opacity: 1; }
+    }
+    .sim-ammeter-needle {
+      transform-origin: 60px 48px;
+      transition: transform 0.35s ease;
+    }
+    .sim-actions {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      justify-content: flex-end;
+      max-width: calc(100% - 5.5rem);
+    }
+    .sim-actions .btn {
+      flex: 0 1 auto;
+      min-width: 0;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.88rem;
+    }
+    .sim-actions .btn.ghost {
+      background: #fffdf8;
+    }
+    .sim-actions .btn[hidden] {
+      display: none !important;
+    }
+    .metric.metric-fuse {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+      padding: 0.55rem 0.45rem;
+    }
+    .fuse-step {
+      width: 2.55rem;
+      height: 2.55rem;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
+      font-size: 1.55rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .fuse-step:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+    .fuse-step-value {
+      text-align: center;
+      flex: 1;
+      min-width: 0;
+    }
+    .fuse-step-value small {
+      display: block;
+      color: rgba(255,253,248,0.65);
+      font-size: 0.72rem;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .fuse-step-value strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.65rem 1.15rem;
+      font-weight: 700;
+      background: var(--ink);
+      color: #fffdf8;
+    }
+    .btn.ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .btn.danger {
+      background: var(--danger);
+      color: #fffdf8;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .footer-note {
+      margin-top: 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* Ring main */
+    .ring-svg { width: 100%; max-width: 520px; margin: 0 auto; display: block; }
+    .adv-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.8rem 0 0;
+      display: grid;
+      gap: 0.55rem;
+    }
+    .adv-list li {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      background: #fff;
+      font-size: 0.92rem;
+    }
+    .adv-list li b {
+      display: block;
+      font-family: var(--display);
+      margin-bottom: 0.15rem;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><div class="bolt"></div></div>
+        <div>
+          <h1 class="en">Domestic Circuit Lab</h1>
+          <h1 class="zh">家居電路實驗室</h1>
+          <p class="en">Safety of fuse and circuit</p>
+          <p class="zh">保險絲與電路安全</p>
+        </div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs" aria-label="Lab sections">
+      <button class="tab active" data-tab="wiring"><span class="en">Main Circuit Safety</span><span class="zh">主電路安全</span></button>
+      <button class="tab" data-tab="fuse"><span class="en">Fuse Picker</span><span class="zh">保險絲</span></button>
+    </nav>
+
+    <!-- WIRING / MAIN CIRCUIT SAFETY -->
+    <section class="panel active" id="panel-wiring">
+      <div class="card">
+        <h3 class="en">Main Circuit Safety</h3>
+        <h3 class="zh">主電路安全</h3>
+        <p class="hint en">Tap a socket terminal to choose a wire, then press Start.</p>
+        <p class="hint zh">點按插座端子選擇電線，再按「開始」。</p>
+
+        <div class="combined-safety">
+          <div class="plug-stage" id="plugStage">
+            <div class="fault-svg-wrap">
+              <div class="fault-badge" id="faultBadge"><span class="en">Wire the socket</span><span class="zh">先接插座</span></div>
+              <svg class="fault-svg" id="faultSvg" viewBox="0 0 860 340" role="img" aria-label="Socket wiring and appliance fault">
+                <defs>
+                  <filter id="handCharFilter" color-interpolation-filters="sRGB">
+                    <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/>
+                  </filter>
+                </defs>
+                <text x="95" y="36" text-anchor="middle" font-family="Outfit, sans-serif" font-size="14" font-weight="700" fill="#1c1914" class="en">Socket</text>
+                <text x="95" y="36" text-anchor="middle" font-family="Outfit, sans-serif" font-size="14" font-weight="700" fill="#1c1914" class="zh">插座</text>
+                <rect x="30" y="60" width="130" height="180" rx="12" fill="#faf6ee" stroke="#1c1914" stroke-width="2.5"/>
+
+                <g class="pin-hot" id="sockE" data-pin="E">
+                  <rect x="87" y="85" width="16" height="34" rx="3" fill="#fff" stroke="#c9b896" stroke-width="2"/>
+                </g>
+                <g class="pin-hot" id="sockN" data-pin="N">
+                  <rect x="58" y="158" width="16" height="40" rx="3" fill="#fff" stroke="#c9b896" stroke-width="2"/>
+                </g>
+                <g class="pin-hot" id="sockL" data-pin="L">
+                  <rect x="116" y="158" width="16" height="40" rx="3" fill="#fff" stroke="#c9b896" stroke-width="2"/>
+                </g>
+
+                <path id="wireFromL1" d="M132 178 H200" stroke="#c9b896" stroke-width="3.5" fill="none"/>
+                <circle cx="208" cy="178" r="6" fill="#fff" stroke="#1c1914" stroke-width="2"/>
+                <circle cx="238" cy="178" r="6" fill="#fff" stroke="#1c1914" stroke-width="2"/>
+                <line id="switchArm" x1="208" y1="178" x2="235" y2="165" stroke="#1c1914" stroke-width="2.5"/>
+                <text x="223" y="158" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="en">switch</text>
+                <text x="223" y="158" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="zh">開關</text>
+                <path id="wireFromL2" d="M244 178 H280" stroke="#c9b896" stroke-width="3.5" fill="none"/>
+                <rect id="fuseBody" class="fuse-body" x="280" y="165" width="46" height="26" rx="4" fill="#f5e6c8" stroke="#1c1914" stroke-width="2"/>
+                <line id="fuseWire" class="fuse-wire" x1="285" y1="178" x2="321" y2="178" stroke="#1c1914" stroke-width="2"/>
+                <text x="303" y="158" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="en">fuse</text>
+                <text x="303" y="158" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="zh">保險絲</text>
+                <circle id="fuseFlash" class="fuse-flash" cx="303" cy="178" r="18" fill="#ffcf40"/>
+
+                <g id="earthWireGroup">
+                  <path id="wireFromE" d="M103 102 H130 V48 H590 V140" stroke="#c9b896" stroke-width="3.5" stroke-dasharray="8 5" fill="none"/>
+                </g>
+
+                <g id="ironGroup">
+                  <path id="metalCase" d="M460 105 H650 Q680 105 680 135 V225 Q680 255 650 255 H500 Q460 255 460 225 Z" fill="#e8e0d2" stroke="#8a7a60" stroke-width="3"/>
+                  <text x="570" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#5c5346" font-family="DM Sans, sans-serif" class="en">metal case</text>
+                  <text x="570" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#5c5346" font-family="DM Sans, sans-serif" class="zh">金屬外殼</text>
+                  <!-- Live into LEFT of heater; Neutral up into BOTTOM centre (drawn above case fill) -->
+                  <path id="wireFromL3" d="M326 178 H510" stroke="#c9b896" stroke-width="3.5" fill="none"/>
+                  <path id="wireFromN" d="M66 198 V250 H555 V184" stroke="#c9b896" stroke-width="3.5" fill="none"/>
+                  <rect id="heaterWire" x="510" y="172" width="90" height="12" rx="2" fill="#fff" stroke="#1c1914" stroke-width="2"/>
+                  <text x="555" y="166" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="en">heating element</text>
+                  <text x="555" y="166" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="zh">發熱元件</text>
+                  <circle id="earthBond" cx="590" cy="140" r="5" fill="#c9b896" stroke="#8a7a60" stroke-width="1.5"/>
+                </g>
+
+                <!-- Hand shown on shock: case-touch (no earth) or left live-wire (LN swapped) -->
+                <g id="shockHand" class="shock-hand">
+                  <g id="shockHandPos" transform="translate(648,165)">
+                    <image
+                      id="shockHandImg"
+                      href="assets/pointing-hand-clear.png"
+                      xlink:href="assets/pointing-hand-clear.png"
+                      x="0"
+                      y="0"
+                      width="110"
+                      height="70"
+                      preserveAspectRatio="xMidYMid meet"
+                      transform="scale(-1,1) translate(-110,0)"
+                    />
+                    <image
+                      id="shockHandBurn"
+                      class="shock-hand-burn"
+                      href="assets/pointing-hand-clear.png"
+                      xlink:href="assets/pointing-hand-clear.png"
+                      x="0"
+                      y="0"
+                      width="110"
+                      height="70"
+                      preserveAspectRatio="xMidYMid meet"
+                      transform="scale(-1,1) translate(-110,0)"
+                      filter="url(#handCharFilter)"
+                    />
+                    <text x="55" y="92" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="en">hand</text>
+                    <text x="55" y="92" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="zh">手</text>
+                  </g>
+                </g>
+
+                <g id="shockSparks" class="spark" transform="translate(648,165)">
+                  <path id="shockSparkA" d="M4 28 l-10 -12 M8 36 l-14 -2 M2 44 l-10 8" stroke="#ffeb3b" stroke-width="2.5" stroke-linecap="round"/>
+                  <path id="shockSparkB" d="M0 22 l-8 -10 M10 30 l-12 4" stroke="#c62828" stroke-width="2" stroke-linecap="round"/>
+                </g>
+
+                <path id="flowLive" class="flow-line" d="M132 178 H200 H244 H280 H326 H510" stroke="#c62828" stroke-width="3.5"/>
+                <path id="flowNeutral" class="flow-line" d="M66 198 V250 H555 V184" stroke="#c62828" stroke-width="3.5"/>
+                <path id="flowEarth" class="flow-line" d="M555 178 L590 140 V48 H130 V102 H103" stroke="#c62828" stroke-width="3.5"/>
+                <path id="flowShock" class="flow-line" d="M555 178 L650 220 L700 280" stroke="#c62828" stroke-width="3.5"/>
+                <text id="shockLabel" x="700" y="318" text-anchor="middle" font-size="13" font-weight="800" fill="#c62828" font-family="Outfit, sans-serif" opacity="0">ELECTRIC SHOCK!</text>
+                <text id="fuseLabel" x="303" y="213" text-anchor="middle" font-size="12" font-weight="800" fill="#c62828" font-family="Outfit, sans-serif" opacity="0">FUSE BLOWS</text>
+              </svg>
+
+              <div class="wire-toolbox" id="wireToolbox" role="dialog" aria-label="Wire selection">
+                <p class="tb-title"><span class="en">Choose wire</span><span class="zh">選擇電線</span></p>
+                <div class="tb-opts">
+                  <button type="button" class="tb-opt live" data-wire="L" data-for="LN"><span class="swatch"></span><span class="en">Live (brown)</span><span class="zh">火線（棕色）</span></button>
+                  <button type="button" class="tb-opt neutral" data-wire="N" data-for="LN"><span class="swatch"></span><span class="en">Neutral (blue)</span><span class="zh">中性線（藍色）</span></button>
+                  <button type="button" class="tb-opt earth" data-wire="E" data-for="E"><span class="swatch"></span><span class="en">Earth (yellow/green)</span><span class="zh">地線（黃綠色）</span></button>
+                  <button type="button" class="tb-opt clear" data-wire="" data-for="E"><span class="swatch"></span><span class="en">None</span><span class="zh">不接</span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="plug-controls" style="margin-top:0.85rem;">
+              <div class="combined-actions">
+                <button type="button" class="btn" id="startWire">
+                  <span class="en">Start</span><span class="zh">開始</span>
+                </button>
+                <button type="button" class="btn ghost" id="showWireAnswer">
+                  <span class="en">Show answer</span><span class="zh">顯示答案</span>
+                </button>
+                <button type="button" class="btn ghost" id="resetWire">
+                  <span class="en">Reset</span><span class="zh">重設</span>
+                </button>
+              </div>
+              <div class="status-box" id="wireStatus" style="flex:1;min-width:220px;margin:0;">
+                <span class="en">Tap socket terminals to choose wires, then press Start.</span>
+                <span class="zh">點按插座端子選擇電線，再按「開始」。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="adv-list" style="margin-top:1rem;">
+          <li>
+            <b class="en">Why earth pin is longer</b><b class="zh">地線為何較長</b>
+            <span class="en">Opens shutters first, and earths the metal case before live connects.</span>
+            <span class="zh">先打開保護閘門，並在火線接通前先把金屬外殼接地。</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- FUSE -->
+    <section class="panel" id="panel-fuse">
+      <div class="card">
+        <h3 class="en">Live fuse bench</h3>
+        <h3 class="zh">即時保險絲實驗台</h3>
+        <p class="hint en">Choose a fuse, press Power ON, then try a short. Watch it hold, trip too easily, or leave cables unprotected. (5 × 100 W lamps @ 220 V → rated I ≈ 2.27 A; best fuse ≈ 3 A.)</p>
+        <p class="hint zh">選擇保險絲後按「接通電源」，再試短路。觀察它能否維持、是否誤熔，或保護不足。（5 × 100 W @ 220 V → 約 2.27 A；合適保險絲約 3 A。）</p>
+
+        <div class="readout" style="margin-top:0.75rem;">
+          <div class="metric"><small>Load I</small><strong id="simLoadI">2.27 A</strong></div>
+          <div class="metric metric-fuse" id="simFuseChoices" role="group" aria-label="Fuse rating">
+            <button type="button" class="fuse-step" id="simFuseMinus" aria-label="Lower fuse rating">−</button>
+            <div class="fuse-step-value">
+              <small class="en">Fuse</small>
+              <small class="zh">保險絲</small>
+              <strong id="simFuseRating">3 A</strong>
+            </div>
+            <button type="button" class="fuse-step" id="simFusePlus" aria-label="Raise fuse rating">+</button>
+          </div>
+          <div class="metric"><small>State</small><strong id="simState">OFF</strong></div>
+        </div>
+
+        <div class="fuse-sim" id="fuseSimStage">
+          <div class="fault-badge" id="simBadge">OFF</div>
+          <div class="sim-actions">
+            <button type="button" class="btn" id="simPower">
+              <span class="en">Power ON</span><span class="zh">接通電源</span>
+            </button>
+            <button type="button" class="btn danger" id="simShort" hidden>
+              <span class="en">Simulate short circuit</span><span class="zh">模擬短路</span>
+            </button>
+            <button type="button" class="btn ghost" id="simReset">
+              <span class="en">Reset</span><span class="zh">重設</span>
+            </button>
+          </div>
+          <svg viewBox="0 0 480 215" aria-hidden="true">
+            <defs>
+              <path id="simPath" d="M70 120 H150 H210 H300 H380 H420"/>
+            </defs>
+            <!-- supply -->
+            <rect x="18" y="95" width="52" height="50" rx="8" fill="#1c1914"/>
+            <text x="44" y="125" text-anchor="middle" fill="#fffdf8" font-size="11" font-family="Outfit, sans-serif" font-weight="700">220 V</text>
+
+            <!-- live (brown) + neutral (blue) conductors -->
+            <path id="simCable" class="sim-cable" d="M70 120 H420"/>
+            <path id="simNeutral" class="sim-cable-neutral" d="M420 178 H70"/>
+            <text class="sim-wire-label" x="130" y="108" fill="#c45c26">L</text>
+            <text class="sim-wire-label" x="100" y="172" fill="#2563eb">N</text>
+            <!-- stubs into supply / load -->
+            <path d="M70 120 V105 M70 178 V145" stroke="#1c1914" stroke-width="2" stroke-linecap="round"/>
+            <path d="M420 120 V105 M420 178 V145" stroke="#1c1914" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- electrons: emit from 220V, travel fuse → load → neutral -->
+            <g id="simElectrons" class="sim-electrons" aria-hidden="true"></g>
+
+            <!-- cable overheat explosion -->
+            <g id="simCableBoom" class="cable-boom" aria-hidden="true">
+              <ellipse class="boom-flash" cx="340" cy="120" rx="70" ry="36" fill="rgba(255,120,40,0.45)"/>
+              <circle class="boom-core" cx="300" cy="120" r="14" fill="#ffcf40"/>
+              <circle class="boom-core" cx="380" cy="120" r="12" fill="#ff8a3d"/>
+              <circle class="boom-ring" cx="300" cy="120" r="16" fill="none" stroke="#ff6b3d" stroke-width="5"/>
+              <circle class="boom-ring" cx="380" cy="120" r="14" fill="none" stroke="#ffcf40" stroke-width="4"/>
+              <line class="boom-spark" x1="300" y1="120" x2="268" y2="88" stroke="#ffcf40" stroke-width="3" stroke-linecap="round"/>
+              <line class="boom-spark" x1="300" y1="120" x2="332" y2="86" stroke="#ff8a3d" stroke-width="3" stroke-linecap="round"/>
+              <line class="boom-spark" x1="300" y1="120" x2="270" y2="148" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+              <line class="boom-spark" x1="300" y1="120" x2="336" y2="150" stroke="#ffcf40" stroke-width="2.5" stroke-linecap="round"/>
+              <line class="boom-spark" x1="380" y1="120" x2="410" y2="90" stroke="#ffcf40" stroke-width="3" stroke-linecap="round"/>
+              <line class="boom-spark" x1="380" y1="120" x2="412" y2="146" stroke="#ff8a3d" stroke-width="2.5" stroke-linecap="round"/>
+              <line class="boom-spark" x1="380" y1="120" x2="348" y2="92" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+              <circle class="boom-ember" cx="290" cy="112" r="4" fill="#ff6b3d" style="--dx:-22px; --dy:-20px;"/>
+              <circle class="boom-ember" cx="312" cy="128" r="3.5" fill="#ffcf40" style="--dx:18px; --dy:16px;"/>
+              <circle class="boom-ember" cx="370" cy="110" r="4" fill="#ff8a3d" style="--dx:-14px; --dy:-24px;"/>
+              <circle class="boom-ember" cx="392" cy="130" r="3" fill="#fff" style="--dx:20px; --dy:14px;"/>
+              <circle class="boom-ember" cx="340" cy="118" r="3.5" fill="#ffcf40" style="--dx:8px; --dy:-28px;"/>
+              <text x="340" y="42" text-anchor="middle" font-size="13" font-weight="800" fill="#c62828" font-family="Outfit, sans-serif" class="en">CABLE OVERHEAT!</text>
+              <text x="340" y="42" text-anchor="middle" font-size="13" font-weight="800" fill="#c62828" font-family="Outfit, sans-serif" class="zh">電線過熱！</text>
+            </g>
+
+            <!-- ammeter -->
+            <circle cx="60" cy="48" r="28" fill="#fffdf8" stroke="#d9d0c0" stroke-width="2"/>
+            <text x="60" y="78" text-anchor="middle" font-size="10" fill="#6b6358" font-family="DM Sans, sans-serif">A</text>
+            <line id="simNeedle" class="sim-ammeter-needle" x1="60" y1="48" x2="60" y2="28" stroke="#c45c26" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="60" cy="48" r="3" fill="#1c1914"/>
+            <text id="simAmmeterText" x="100" y="52" font-size="13" font-weight="700" fill="#1c1914" font-family="JetBrains Mono, monospace">0.00 A</text>
+
+            <!-- fuse cartridge -->
+            <rect id="simFuseBody" class="fuse-body" x="188" y="100" width="56" height="40" rx="6" fill="#f5e6c8" stroke="#1c1914" stroke-width="2"/>
+            <line id="simFuseWire" class="fuse-wire" x1="196" y1="120" x2="236" y2="120" stroke="#1c1914" stroke-width="2.5"/>
+            <circle id="simFuseFlash" class="fuse-flash" cx="216" cy="120" r="20" fill="#ffcf40"/>
+            <text x="216" y="92" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="en">fuse</text>
+            <text x="216" y="92" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="zh">保險絲</text>
+            <text id="simFuseTag" x="216" y="155" text-anchor="middle" font-size="12" font-weight="800" fill="#c45c26" font-family="Outfit, sans-serif">3 A</text>
+
+            <!-- lamps -->
+            <g id="simBulbGroup">
+              <circle class="sim-bulb" data-i="0" cx="300" cy="78" r="14"/>
+              <circle class="sim-bulb" data-i="1" cx="340" cy="78" r="14"/>
+              <circle class="sim-bulb" data-i="2" cx="380" cy="78" r="14"/>
+              <circle class="sim-bulb" data-i="3" cx="320" cy="158" r="14"/>
+              <circle class="sim-bulb" data-i="4" cx="360" cy="158" r="14"/>
+            </g>
+            <text x="340" y="200" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="en">parallel lamps</text>
+            <text x="340" y="200" text-anchor="middle" font-size="11" fill="#6b6358" font-family="DM Sans, sans-serif" class="zh">並聯燈泡</text>
+
+            <!-- load box -->
+            <rect x="408" y="100" width="54" height="40" rx="8" fill="#fffdf8" stroke="#d9d0c0" stroke-width="2"/>
+            <text x="435" y="124" text-anchor="middle" font-size="11" font-weight="700" fill="#1c1914" font-family="Outfit, sans-serif" class="en">LOAD</text>
+            <text x="435" y="124" text-anchor="middle" font-size="11" font-weight="700" fill="#1c1914" font-family="Outfit, sans-serif" class="zh">負載</text>
+
+            <text id="simBlowLabel" x="240" y="198" text-anchor="middle" font-size="14" font-weight="800" fill="#c62828" font-family="Outfit, sans-serif" opacity="0">FUSE BLOWS</text>
+          </svg>
+        </div>
+
+        <div class="status-box" id="simStatus" style="margin-top:0.85rem;">
+          <span class="en">Choose a fuse rating and press Power ON.</span>
+          <span class="zh">選擇保險絲額定值，再按「接通電源」。</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note en">Domestic Circuit Lab · Chrome-ready · Open index.html locally</p>
+    <p class="footer-note zh">家居電路實驗室 · 適用於 Chrome · 直接開啟 index.html</p>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* Language */
+      var html = document.documentElement;
+      function setLang(lang) {
+        html.lang = lang;
+        document.getElementById('langEn').classList.toggle('active', lang === 'en');
+        document.getElementById('langZh').classList.toggle('active', lang === 'zh-HK');
+        if (typeof wireChecked !== 'undefined' && wireChecked) checkWiring();
+        else if (typeof idleWireStatus === 'function') idleWireStatus();
+        if (typeof refreshSimLang === 'function') refreshSimLang();
+      }
+      document.getElementById('langEn').addEventListener('click', function () { setLang('en'); });
+      document.getElementById('langZh').addEventListener('click', function () { setLang('zh-HK'); });
+      function hubLangToLocal(lang) {
+        var s = String(lang || '').toLowerCase();
+        return s.indexOf('zh') === 0 ? 'zh-HK' : 'en';
+      }
+      var params = new URLSearchParams(location.search);
+      var urlLang = params.get('lang');
+      if (urlLang) setLang(hubLangToLocal(urlLang));
+      window.addEventListener('message', function (ev) {
+        if (!ev.data || ev.data.type !== 's3phy:lang') return;
+        setLang(hubLangToLocal(ev.data.lang));
+      });
+
+      /* Tabs */
+      var tabs = document.querySelectorAll('.tab');
+      var panels = document.querySelectorAll('.panel');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var id = tab.getAttribute('data-tab');
+          tabs.forEach(function (t) { t.classList.toggle('active', t === tab); });
+          panels.forEach(function (p) { p.classList.toggle('active', p.id === 'panel-' + id); });
+        });
+      });
+
+      /* Wiring / Main Circuit Safety (combined) */
+      var selectedPin = null;
+      var mapping = { E: null, L: null, N: null };
+      var wireChecked = false;
+      var faultHasEarth = false;
+      var faultTimer = null;
+      var pinEls = {
+        E: document.getElementById('sockE'),
+        L: document.getElementById('sockL'),
+        N: document.getElementById('sockN')
+      };
+      var colors = { L: '#c45c26', N: '#2f6fed', E: '#1a9a5c' };
+      var toolbox = document.getElementById('wireToolbox');
+      var plugStage = document.getElementById('plugStage');
+
+      function idleWireStatus() {
+        var box = document.getElementById('wireStatus');
+        var zh = html.lang === 'zh-HK';
+        box.className = 'status-box';
+        box.innerHTML = zh
+          ? '點按插座端子選擇電線，再按「開始」。'
+          : 'Tap socket terminals to choose wires, then press Start.';
+        var badge = document.getElementById('faultBadge');
+        badge.className = 'fault-badge';
+        badge.innerHTML = zh ? '先接插座' : 'Wire the socket';
+      }
+
+      function syncSocketFromPlug() {
+        var idle = '#c9b896';
+        var idleFill = '#fff';
+        var wireStroke = { L: '#8B4513', N: '#5B9BD5', E: '#7CB342' };
+
+        function paintSock(pinKey) {
+          var w = mapping[pinKey];
+          var g = document.getElementById('sock' + pinKey);
+          var rect = g.querySelector('rect');
+          if (w) {
+            rect.setAttribute('fill', colors[w]);
+            rect.setAttribute('stroke', colors[w]);
+          } else {
+            rect.setAttribute('fill', idleFill);
+            rect.setAttribute('stroke', idle);
+          }
+          return w;
+        }
+
+        var wE = paintSock('E');
+        var wN = paintSock('N');
+        var wL = paintSock('L');
+
+        var liveCol = wL ? wireStroke[wL] : idle;
+        var neutCol = wN ? wireStroke[wN] : idle;
+        var earthCol = wE ? wireStroke[wE] : idle;
+        ['wireFromL1', 'wireFromL2', 'wireFromL3'].forEach(function (id) {
+          document.getElementById(id).setAttribute('stroke', liveCol);
+        });
+        var heater = document.getElementById('heaterWire');
+        heater.setAttribute('stroke', liveCol === '#c9b896' ? '#c9b896' : liveCol);
+        // keep heater border readable; fill stays white unless live is connected
+        heater.setAttribute('fill', wL ? '#fff8f0' : '#fff');
+        document.getElementById('wireFromN').setAttribute('stroke', neutCol);
+        document.getElementById('wireFromE').setAttribute('stroke', earthCol);
+
+        faultHasEarth = wE === 'E';
+        var earthGroup = document.getElementById('earthWireGroup');
+        var earthBond = document.getElementById('earthBond');
+        earthGroup.style.opacity = wE ? '1' : '0.35';
+        earthBond.setAttribute('fill', wE ? (faultHasEarth ? '#7CB342' : colors[wE]) : idle);
+        earthBond.setAttribute('stroke', faultHasEarth ? '#33691E' : '#8a7a60');
+
+        if (!wireChecked) {
+          var zh = html.lang === 'zh-HK';
+          var badge = document.getElementById('faultBadge');
+          badge.className = 'fault-badge';
+          if (wE === 'E' && wL === 'L' && wN === 'N') {
+            badge.innerHTML = zh ? '接線齊全' : 'Fully wired';
+          } else if (wE || wL || wN) {
+            badge.innerHTML = zh ? '插座已接線' : 'Socket wired';
+          } else {
+            badge.innerHTML = zh ? '先接插座' : 'Wire the socket';
+          }
+        }
+      }
+
+      function placeShockHand(x, y, pointLeft) {
+        document.getElementById('shockHandPos').setAttribute('transform', 'translate(' + x + ',' + y + ')');
+        document.getElementById('shockSparks').setAttribute('transform', 'translate(' + x + ',' + y + ')');
+        var flip = pointLeft ? 'scale(-1,1) translate(-110,0)' : '';
+        document.getElementById('shockHandImg').setAttribute('transform', flip);
+        document.getElementById('shockHandBurn').setAttribute('transform', flip);
+        if (pointLeft) {
+          document.getElementById('shockSparkA').setAttribute('d', 'M4 28 l-10 -12 M8 36 l-14 -2 M2 44 l-10 8');
+          document.getElementById('shockSparkB').setAttribute('d', 'M0 22 l-8 -10 M10 30 l-12 4');
+        } else {
+          document.getElementById('shockSparkA').setAttribute('d', 'M106 28 l10 -12 M102 36 l14 -2 M108 44 l10 8');
+          document.getElementById('shockSparkB').setAttribute('d', 'M110 22 l8 -10 M100 30 l12 4');
+        }
+      }
+
+      function triggerShockHand() {
+        var hand = document.getElementById('shockHand');
+        var burn = document.getElementById('shockHandBurn');
+        hand.classList.remove('shocking');
+        burn.style.animation = 'none';
+        void burn.getBoundingClientRect();
+        burn.style.animation = '';
+        hand.classList.add('shocking');
+        document.getElementById('shockSparks').classList.add('on');
+      }
+
+      function resetFaultAnim() {
+        if (faultTimer) {
+          clearTimeout(faultTimer);
+          faultTimer = null;
+        }
+        ['flowLive', 'flowNeutral', 'flowEarth', 'flowShock'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.remove('active', 'surge');
+        });
+        document.getElementById('shockHand').classList.remove('shocking');
+        document.getElementById('shockSparks').classList.remove('on');
+        document.getElementById('shockHandBurn').style.animation = '';
+        placeShockHand(648, 165, true);
+        document.getElementById('flowShock').setAttribute('d', 'M555 178 L650 220 L700 280');
+        document.getElementById('shockLabel').setAttribute('x', '700');
+        document.getElementById('shockLabel').setAttribute('opacity', '0');
+        document.getElementById('fuseLabel').setAttribute('opacity', '0');
+        document.getElementById('fuseLabel').textContent = 'FUSE BLOWS';
+        document.getElementById('fuseBody').classList.remove('blown');
+        document.getElementById('fuseWire').classList.remove('blown');
+        document.getElementById('fuseFlash').classList.remove('on');
+        document.getElementById('metalCase').classList.remove('case-live');
+        document.getElementById('switchArm').setAttribute('y2', '165');
+      }
+
+      function playFaultAnim() {
+        resetFaultAnim();
+        syncSocketFromPlug();
+        var zh = html.lang === 'zh-HK';
+        var badge = document.getElementById('faultBadge');
+        var box = document.getElementById('wireStatus');
+        var fuseLabel = document.getElementById('fuseLabel');
+
+        // Right pin feeds the switch+fuse path; left pin feeds the other heater lead
+        var fuseOnLive = mapping.L === 'L';
+        var earthOk = mapping.E === 'E';
+        var liveOnFusedPath = mapping.L === 'L';
+        var liveOnOtherPath = mapping.N === 'L';
+        var liveFlowId = liveOnFusedPath ? 'flowLive' : (liveOnOtherPath ? 'flowNeutral' : 'flowLive');
+
+        document.getElementById('switchArm').setAttribute('y2', '178');
+        document.getElementById(liveFlowId).classList.add('active');
+        document.getElementById('metalCase').classList.add('case-live');
+        badge.className = 'fault-badge danger';
+        badge.innerHTML = zh ? '故障發生…' : 'Fault occurring…';
+        box.className = 'status-box warn';
+        box.innerHTML = zh
+          ? '火線意外接觸金屬外殼 — 外殼變成帶電！'
+          : 'Live wire accidentally touches the metal case — the case becomes live!';
+
+        faultTimer = setTimeout(function () {
+          // No earth → shock (hand touches live metal case)
+          if (!earthOk) {
+            document.getElementById(liveFlowId).classList.add('surge');
+            placeShockHand(648, 165, true);
+            var flowShock = document.getElementById('flowShock');
+            flowShock.setAttribute('d', 'M555 178 L650 220 L700 280');
+            flowShock.classList.add('active', 'surge');
+            triggerShockHand();
+            document.getElementById('shockLabel').textContent = zh ? '觸電！' : 'ELECTRIC SHOCK!';
+            document.getElementById('shockLabel').setAttribute('x', '700');
+            document.getElementById('shockLabel').setAttribute('opacity', '1');
+            badge.className = 'fault-badge danger';
+            badge.innerHTML = zh ? '觸電！' : 'Electric shock!';
+            box.className = 'status-box bad';
+            box.innerHTML = zh
+              ? '地線未接對：人一碰金屬外殼，電流經人體到地 → <b>觸電</b>。'
+              : 'Earth not wired correctly: touching the metal case lets current flow through the body → <b>electric shock</b>.';
+            return;
+          }
+
+          // Earth OK + fuse on Live (right pin = Live, left = Neutral) → fuse blows, safe
+          if (fuseOnLive && mapping.N === 'N') {
+            document.getElementById('flowLive').classList.add('surge');
+            document.getElementById('flowEarth').classList.add('active', 'surge');
+            badge.className = 'fault-badge safe';
+            badge.innerHTML = zh ? '大電流入地…' : 'Large current to earth…';
+            box.className = 'status-box';
+            box.innerHTML = zh
+              ? '地線已接：大電流經地線流入大地（電阻很低）。'
+              : 'Earth connected: large current flows through the low-resistance earth wire.';
+
+            faultTimer = setTimeout(function () {
+              document.getElementById('fuseFlash').classList.add('on');
+              document.getElementById('fuseBody').classList.add('blown');
+              document.getElementById('fuseWire').classList.add('blown');
+              fuseLabel.textContent = zh ? '保險絲熔斷' : 'FUSE BLOWS';
+              fuseLabel.setAttribute('opacity', '1');
+              document.getElementById('flowLive').classList.remove('active', 'surge');
+              document.getElementById('flowEarth').classList.remove('active', 'surge');
+              document.getElementById('metalCase').classList.remove('case-live');
+              document.getElementById('switchArm').setAttribute('y2', '165');
+              badge.className = 'fault-badge safe';
+              badge.innerHTML = zh ? '保險絲熔斷' : 'Fuse blows';
+              box.className = 'status-box ok';
+              box.innerHTML = zh
+                ? '保險絲接在<b>火線</b>（右端子）上，大電流把它熔斷 → 外殼不再帶電，<b>防止觸電</b>。'
+                : 'Fuse is on the <b>Live</b> wire (right pin), so large current blows it → case is no longer live, <b>preventing shock</b>.';
+            }, 3000);
+            return;
+          }
+
+          // Earth OK but Live/Neutral swapped: fuse sits on Neutral → does NOT cut Live fault
+          document.getElementById(liveFlowId).classList.add('surge');
+          document.getElementById('flowEarth').classList.add('active', 'surge');
+          badge.className = 'fault-badge danger';
+          badge.innerHTML = zh ? '保險絲在中性線…' : 'Fuse on Neutral…';
+          box.className = 'status-box warn';
+          box.innerHTML = zh
+            ? '右端子接了<b>中性線</b>：開關與保險絲都在中性線上，熔斷也切不斷火線故障電流！'
+            : 'Right pin is <b>Neutral</b>: switch & fuse are on Neutral, so blowing the fuse cannot cut the Live fault current!';
+
+          faultTimer = setTimeout(function () {
+            // Fuse does NOT blow — hand touches the left-pin Live wire path
+            fuseLabel.textContent = zh ? '保險絲無效' : 'FUSE USELESS HERE';
+            fuseLabel.setAttribute('opacity', '1');
+            document.getElementById('flowEarth').classList.remove('active', 'surge');
+            placeShockHand(420, 212, false);
+            var flowShock = document.getElementById('flowShock');
+            flowShock.setAttribute('d', 'M555 184 V250 H530');
+            flowShock.classList.add('active', 'surge');
+            triggerShockHand();
+            document.getElementById('shockLabel').textContent = zh ? '觸電！' : 'ELECTRIC SHOCK!';
+            document.getElementById('shockLabel').setAttribute('x', '560');
+            document.getElementById('shockLabel').setAttribute('opacity', '1');
+            badge.className = 'fault-badge danger';
+            badge.innerHTML = zh ? '觸電！' : 'Electric shock!';
+            box.className = 'status-box bad';
+            box.innerHTML = zh
+              ? '火線在左端子（無保險絲）。手碰火線路徑 → <b>觸電</b>。保險絲必須接在火線上！'
+              : 'Live is on the left pin (no fuse). Touching that live wire → <b>electric shock</b>. The fuse must be on the Live wire!';
+          }, 3000);
+        }, 2000);
+      }
+
+      function paintPins() {
+        Object.keys(pinEls).forEach(function (k) {
+          var rect = pinEls[k].querySelector('rect');
+          var w = mapping[k];
+          rect.setAttribute('fill', w ? colors[w] : '#d9d0c0');
+          pinEls[k].classList.toggle('selected', selectedPin === k);
+        });
+        document.querySelectorAll('#wireToolbox .tb-opt[data-wire]').forEach(function (btn) {
+          var w = btn.getAttribute('data-wire');
+          if (!w) {
+            btn.classList.remove('used');
+            return;
+          }
+          var usedElsewhere = Object.keys(mapping).some(function (p) {
+            return p !== selectedPin && mapping[p] === w;
+          });
+          btn.classList.toggle('used', usedElsewhere);
+        });
+        syncSocketFromPlug();
+      }
+
+      function closeToolbox() {
+        selectedPin = null;
+        toolbox.classList.remove('open');
+        paintPins();
+      }
+
+      function openToolbox(pinKey, clientX, clientY) {
+        selectedPin = pinKey;
+        var isEarthPin = pinKey === 'E';
+        document.querySelectorAll('#wireToolbox .tb-opt').forEach(function (btn) {
+          var group = btn.getAttribute('data-for');
+          var show = isEarthPin ? group === 'E' : group === 'LN';
+          btn.style.display = show ? '' : 'none';
+        });
+        var stageRect = plugStage.getBoundingClientRect();
+        var left = clientX - stageRect.left + 12;
+        var top = clientY - stageRect.top + 12;
+        toolbox.classList.add('open');
+        var tbW = toolbox.offsetWidth || 200;
+        var tbH = toolbox.offsetHeight || 120;
+        var maxL = Math.max(8, stageRect.width - tbW - 8);
+        var maxT = Math.max(8, stageRect.height - tbH - 8);
+        toolbox.style.left = Math.min(Math.max(8, left), maxL) + 'px';
+        toolbox.style.top = Math.min(Math.max(8, top), maxT) + 'px';
+        paintPins();
+      }
+
+      function checkWiring() {
+        var box = document.getElementById('wireStatus');
+        var done = mapping.L && mapping.N;
+        var zh = html.lang === 'zh-HK';
+        if (!done) {
+          wireChecked = false;
+          resetFaultAnim();
+          box.className = 'status-box warn';
+          box.innerHTML = zh
+            ? '請先為左、右端子接上火線／中性線，再按「開始」。'
+            : 'Wire Live/Neutral on the left and right terminals first, then press Start.';
+          return;
+        }
+        wireChecked = true;
+        var ok = mapping.E === 'E' && mapping.L === 'L' && mapping.N === 'N';
+        var earthOk = mapping.E === 'E';
+        var fuseOnLive = mapping.L === 'L';
+        if (ok) {
+          box.className = 'status-box ok';
+          box.innerHTML = zh
+            ? '接線正確！保險絲在火線（右）上 — 示範熔斷保護。'
+            : 'Correct wiring! Fuse is on Live (right) — showing fuse protection.';
+        } else if (!earthOk) {
+          box.className = 'status-box bad';
+          box.innerHTML = zh
+            ? '地線接錯／未接！正在示範觸電危險…'
+            : 'Earth missing or wrong! Showing the shock hazard…';
+        } else if (!fuseOnLive) {
+          box.className = 'status-box bad';
+          box.innerHTML = zh
+            ? '右端子是中性線：保險絲不在火線上！正在示範仍會觸電…'
+            : 'Right pin is Neutral: fuse is NOT on Live! Showing that shock can still occur…';
+        } else {
+          box.className = 'status-box bad';
+          box.innerHTML = zh
+            ? '接線未完全正確。正在示範結果…'
+            : 'Wiring not fully correct. Showing the result…';
+        }
+        playFaultAnim();
+      }
+
+      Object.keys(pinEls).forEach(function (k) {
+        pinEls[k].addEventListener('click', function (e) {
+          e.stopPropagation();
+          openToolbox(k, e.clientX, e.clientY);
+        });
+      });
+
+      toolbox.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+
+      document.querySelectorAll('#wireToolbox .tb-opt').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (!selectedPin) return;
+          var w = btn.getAttribute('data-wire');
+          if (!w) {
+            mapping[selectedPin] = null;
+          } else {
+            Object.keys(mapping).forEach(function (p) {
+              if (mapping[p] === w) mapping[p] = null;
+            });
+            mapping[selectedPin] = w;
+          }
+          if (wireChecked) {
+            wireChecked = false;
+            resetFaultAnim();
+            idleWireStatus();
+          }
+          closeToolbox();
+        });
+      });
+
+      document.addEventListener('click', function () {
+        if (toolbox.classList.contains('open')) closeToolbox();
+      });
+
+      document.getElementById('startWire').addEventListener('click', function (e) {
+        e.stopPropagation();
+        checkWiring();
+      });
+
+      document.getElementById('showWireAnswer').addEventListener('click', function (e) {
+        e.stopPropagation();
+        mapping = { E: 'E', L: 'L', N: 'N' };
+        wireChecked = false;
+        resetFaultAnim();
+        closeToolbox();
+        paintPins();
+        var zh = html.lang === 'zh-HK';
+        var box = document.getElementById('wireStatus');
+        box.className = 'status-box ok';
+        box.innerHTML = zh
+          ? '正確接法：<b>地線</b>（上）→ 地；<b>火線</b>（右）→ 火；<b>中性線</b>（左）→ 中。可按「開始」看保險絲保護。'
+          : 'Correct wiring: <b>Earth</b> (top) → Earth; <b>Live</b> (right) → Live; <b>Neutral</b> (left) → Neutral. Press Start to see fuse protection.';
+        var badge = document.getElementById('faultBadge');
+        badge.className = 'fault-badge safe';
+        badge.innerHTML = zh ? '標準答案' : 'Model answer';
+      });
+
+      document.getElementById('resetWire').addEventListener('click', function () {
+        mapping = { E: null, L: null, N: null };
+        wireChecked = false;
+        resetFaultAnim();
+        closeToolbox();
+        idleWireStatus();
+        syncSocketFromPlug();
+      });
+
+      paintPins();
+      idleWireStatus();
+      syncSocketFromPlug();
+
+      /* Live fuse bench */
+      var ratedI = 500 / 220; // 5 × 100 W @ 220 V
+
+      var FUSE_RATINGS = [1, 3, 10];
+      var simFuseIdx = 1;
+      var simFuseA = FUSE_RATINGS[simFuseIdx];
+      var simLampN = 5;
+      var simPowered = false;
+      var simShorted = false;
+      var simBlown = false;
+      var simTimer = null;
+      var simLampsLit = false;
+      var simCableFailed = false;
+      var simFlowMode = 'off'; // off | to-fuse | surge-to-fuse | full-loop | full-loop-fast | surge-loop | surge-loop-fast
+      var SHORT_I = 12; // A — blows ≤5 A, leaves 10 A unprotected
+      var FUSE_FRACTION = 0.18; // fuse position along full-loop path
+      var LOOP_MS = 4800; // original full-lap pace (before any electron clears the fuse)
+      var TO_FUSE_MS = Math.round(LOOP_MS * FUSE_FRACTION); // first electron reaches fuse
+      var FAST_LOOP_MS = 1500; // sped-up lap after fuse holds
+      var SURGE_LOOP_MS = 1600;
+      var SURGE_TO_FUSE_MS = Math.round(SURGE_LOOP_MS * FUSE_FRACTION);
+      var SURGE_FAST_MS = 700;
+      var APPROACH_MS = TO_FUSE_MS;
+      var SURGE_APPROACH_MS = SURGE_TO_FUSE_MS;
+      var ELECTRON_COUNT = 20;
+      var SPAWN_GAP = 0.2; // seconds between electrons leaving 220 V
+
+      function buildElectronStream() {
+        var NS = 'http://www.w3.org/2000/svg';
+        var group = document.getElementById('simElectrons');
+        group.innerHTML = '';
+        for (var i = 0; i < ELECTRON_COUNT; i++) {
+          var g = document.createElementNS(NS, 'g');
+          g.setAttribute('class', 'sim-e');
+
+          var body = document.createElementNS(NS, 'circle');
+          body.setAttribute('class', 'e-body');
+          body.setAttribute('cx', '0');
+          body.setAttribute('cy', '0');
+          body.setAttribute('r', '5.5');
+
+          var shade = document.createElementNS(NS, 'circle');
+          shade.setAttribute('class', 'e-shade');
+          shade.setAttribute('cx', '-1.4');
+          shade.setAttribute('cy', '0.6');
+          shade.setAttribute('r', '3.6');
+
+          var minus = document.createElementNS(NS, 'rect');
+          minus.setAttribute('class', 'e-minus');
+          minus.setAttribute('x', '-2.8');
+          minus.setAttribute('y', '-0.85');
+          minus.setAttribute('width', '5.6');
+          minus.setAttribute('height', '1.7');
+          minus.setAttribute('rx', '0.85');
+
+          g.appendChild(body);
+          g.appendChild(shade);
+          g.appendChild(minus);
+          // Positive delay = gradually appear from the 220 V supply
+          g.style.setProperty('--e-delay', (i * SPAWN_GAP).toFixed(3) + 's');
+          group.appendChild(g);
+        }
+      }
+
+      function restartElectronEmit() {
+        var group = document.getElementById('simElectrons');
+        var dots = group.querySelectorAll('.sim-e');
+        dots.forEach(function (c, i) {
+          c.style.animation = 'none';
+          c.style.setProperty('--e-delay', (i * SPAWN_GAP).toFixed(3) + 's');
+        });
+        void group.offsetWidth;
+        dots.forEach(function (c) {
+          c.style.animation = '';
+        });
+      }
+
+      function lampCurrent() {
+        return simLampN * (100 / 220);
+      }
+
+      function circuitCurrent() {
+        if (!simPowered || simBlown) return 0;
+        if (simShorted) return SHORT_I;
+        return lampCurrent();
+      }
+
+      function clearSimTimer() {
+        if (simTimer) {
+          clearTimeout(simTimer);
+          simTimer = null;
+        }
+      }
+
+      function setSimBadge(text, kind) {
+        var badge = document.getElementById('simBadge');
+        badge.textContent = text;
+        badge.className = 'fault-badge' + (kind ? ' ' + kind : '');
+      }
+
+      function setElectronFlow(mode) {
+        simFlowMode = mode || 'off';
+        var el = document.getElementById('simElectrons');
+        // SVG <g> cannot use el.className = '...'; must setAttribute
+        el.setAttribute(
+          'class',
+          'sim-electrons' + (mode && mode !== 'off' ? ' ' + mode : '')
+        );
+        if (mode && mode !== 'off') {
+          restartElectronEmit();
+        }
+      }
+
+      function paintSimVisual(I, opts) {
+        opts = opts || {};
+        var zh = html.lang === 'zh-HK';
+        var lampsLit = !!opts.lampsLit;
+        simLampsLit = lampsLit;
+        document.getElementById('simLoadI').textContent = lampCurrent().toFixed(2) + ' A';
+        document.getElementById('simFuseRating').textContent = simFuseA + ' A';
+        document.getElementById('simFuseTag').textContent = simFuseA + ' A';
+        document.getElementById('simAmmeterText').textContent = I.toFixed(2) + ' A';
+
+        // Needle: 0 A → -70°, 12 A → +70°
+        var angle = Math.max(-70, Math.min(70, (I / 12) * 140 - 70));
+        document.getElementById('simNeedle').setAttribute('transform', 'rotate(' + angle + ' 60 48)');
+
+        var bulbs = document.querySelectorAll('#simBulbGroup .sim-bulb');
+        bulbs.forEach(function (b, idx) {
+          b.classList.remove('on', 'dim');
+          if (!lampsLit || simBlown) return;
+          if (simShorted) {
+            b.classList.add('dim');
+            return;
+          }
+          if (idx < simLampN) b.classList.add('on');
+        });
+
+        var cable = document.getElementById('simCable');
+        cable.classList.toggle('hot', !!opts.cableHot);
+
+        var stateEl = document.getElementById('simState');
+        if (simBlown) {
+          stateEl.textContent = zh ? '熔斷' : 'BLOWN';
+          stateEl.className = 'state-blown';
+        } else if (!simPowered) {
+          stateEl.textContent = 'OFF';
+          stateEl.className = '';
+        } else if (simShorted) {
+          stateEl.textContent = zh ? '短路' : 'SHORT';
+          stateEl.className = 'state-short';
+        } else if (!simLampsLit) {
+          stateEl.textContent = zh ? '電流中…' : 'FLOWING…';
+          stateEl.className = '';
+        } else {
+          stateEl.textContent = zh ? '接通' : 'ON';
+          stateEl.className = 'state-on';
+        }
+      }
+
+      function setSimStatus(htmlText, kind) {
+        var box = document.getElementById('simStatus');
+        box.className = 'status-box' + (kind ? ' ' + kind : '');
+        box.innerHTML = htmlText;
+      }
+
+      function clearCableExplode() {
+        var stage = document.getElementById('fuseSimStage');
+        var boom = document.getElementById('simCableBoom');
+        stage.classList.remove('exploding');
+        boom.classList.remove('on');
+      }
+
+      function triggerCableExplode() {
+        var stage = document.getElementById('fuseSimStage');
+        var boom = document.getElementById('simCableBoom');
+        clearCableExplode();
+        void stage.offsetWidth;
+        stage.classList.add('exploding');
+        boom.classList.add('on');
+        simCableFailed = true;
+        setElectronFlow('off');
+      }
+
+      function blowFuse(reason) {
+        simBlown = true;
+        clearSimTimer();
+        setElectronFlow('off');
+        showSimAction('none');
+        var zh = html.lang === 'zh-HK';
+        document.getElementById('simFuseFlash').classList.add('on');
+        document.getElementById('simFuseBody').classList.add('blown');
+        document.getElementById('simFuseWire').classList.add('blown');
+        document.getElementById('simBlowLabel').setAttribute('opacity', '1');
+        document.getElementById('simBlowLabel').textContent = zh ? '保險絲熔斷' : 'FUSE BLOWS';
+        setSimBadge(zh ? '熔斷' : 'BLOWN', 'danger');
+        paintSimVisual(0, { lampsLit: false, cableHot: false });
+
+        if (reason === 'nuisance') {
+          setSimStatus(
+            zh
+              ? '誤熔！電子從電源到達保險絲時電流約 <b>' + lampCurrent().toFixed(2) + ' A</b>，但保險絲只有 <b>' + simFuseA + ' A</b> — 正常使用也被切斷。'
+              : 'Nuisance trip! Electrons leave the supply and reach the fuse at ≈ <b>' + lampCurrent().toFixed(2) + ' A</b>, but the fuse is only <b>' + simFuseA + ' A</b> — normal use blows it.',
+            'warn'
+          );
+        } else if (reason === 'protect') {
+          setSimStatus(
+            zh
+              ? '保護成功：短路電流 <b>' + SHORT_I + ' A</b> 到達 <b>' + simFuseA + ' A</b> 保險絲後熔斷，切斷危險電流。'
+              : 'Protected: short ≈ <b>' + SHORT_I + ' A</b> reaches the <b>' + simFuseA + ' A</b> fuse → blows and cuts the fault current.',
+            'ok'
+          );
+        } else {
+          setSimStatus(
+            zh
+              ? '過載電流使 <b>' + simFuseA + ' A</b> 保險絲熔斷。'
+              : 'Overload current blew the <b>' + simFuseA + ' A</b> fuse.',
+            'ok'
+          );
+        }
+      }
+
+      function evaluateCircuit() {
+        var zh = html.lang === 'zh-HK';
+        clearSimTimer();
+        if (!simPowered || simBlown) {
+          setElectronFlow('off');
+          paintSimVisual(0, { lampsLit: false, cableHot: false });
+          return;
+        }
+
+        var I = circuitCurrent();
+
+        // Oversized fuse on short: original pace to fuse, then speed up; overheat when back at 220 V
+        if (simShorted && simFuseA >= 10) {
+          setElectronFlow('surge-loop');
+          setSimBadge(zh ? '保護不足' : 'UNSAFE', 'danger');
+          paintSimVisual(SHORT_I, { lampsLit: false, cableHot: false });
+          setSimStatus(
+            zh
+              ? '危險：電子正前往保險絲，但 <b>10 A</b> 額定值太大，可能不會熔斷…'
+              : 'Danger: electrons head for the fuse, but a <b>10 A</b> rating may not blow…',
+            'bad'
+          );
+          simTimer = setTimeout(function () {
+            if (!simPowered || simBlown) return;
+            // First electron entered fuse — it held — speed everyone up
+            setElectronFlow('surge-loop-fast');
+            setSimStatus(
+              zh
+                ? '危險：電子已通過保險絲並加速回流 — <b>10 A</b> 未熔斷！'
+                : 'Danger: electrons cleared the fuse and sped up — <b>10 A</b> did not blow!',
+              'bad'
+            );
+            simTimer = setTimeout(function () {
+              if (!simPowered || simBlown) return;
+              triggerCableExplode();
+              showSimAction('none');
+              paintSimVisual(0, { lampsLit: false, cableHot: true });
+              setSimBadge(zh ? '電線過熱' : 'OVERHEAT', 'danger');
+              setSimStatus(
+                zh
+                  ? '危險：電子已回流至電源，但 <b>10 A</b> 保險絲未熔斷 — 電線過熱！電流已中斷。'
+                  : 'Danger: electrons returned to the supply, but the <b>10 A</b> fuse did not blow — cables overheat! Current has stopped.',
+                'bad'
+              );
+            }, SURGE_FAST_MS);
+          }, SURGE_TO_FUSE_MS);
+          return;
+        }
+
+        // Current exceeds fuse: original pace until first electron reaches fuse, then blow
+        if (I > simFuseA) {
+          var surge = simShorted || I >= SHORT_I * 0.8;
+          var travelMs = surge ? SURGE_TO_FUSE_MS : TO_FUSE_MS;
+          setElectronFlow(surge ? 'surge-loop' : 'full-loop');
+          setSimBadge(zh ? '電流流向保險絲…' : 'TO FUSE…', 'danger');
+          paintSimVisual(I, { lampsLit: false, cableHot: false });
+          setSimStatus(
+            zh
+              ? (surge
+                  ? '短路電流從電源沿火線流向保險絲…'
+                  : '電子從 <b>220 V</b> 出發，沿火線經保險絲路徑流動（負載約 <b>' + I.toFixed(2) + ' A</b>，保險絲 <b>' + simFuseA + ' A</b>）…')
+              : (surge
+                  ? 'Fault current leaves the supply along live toward the fuse…'
+                  : 'Electrons leave <b>220 V</b> along the same live path (load ≈ <b>' + I.toFixed(2) + ' A</b>, fuse <b>' + simFuseA + ' A</b>)…'),
+            'warn'
+          );
+          simTimer = setTimeout(function () {
+            if (!simPowered || simBlown) return;
+            var loadNow = lampCurrent();
+            var reason = simShorted ? 'protect' : (loadNow <= ratedI + 0.05 ? 'nuisance' : 'overload');
+            blowFuse(reason);
+          }, travelMs);
+          return;
+        }
+
+        // Fuse holds: original pace until first electron enters fuse, then speed all up; lamps at 220 V
+        setElectronFlow('full-loop');
+        setSimBadge(zh ? '電流中…' : 'FLOWING…', 'safe');
+        paintSimVisual(I, { lampsLit: false, cableHot: false });
+        setSimStatus(
+          zh
+            ? '電子從 <b>220 V</b> 出發，前往保險絲…'
+            : 'Electrons leave <b>220 V</b> toward the fuse…',
+          ''
+        );
+        simTimer = setTimeout(function () {
+          if (!simPowered || simBlown || simShorted) return;
+          // First electron entered the fuse and it held — speed up all electrons
+          showSimAction('short');
+          setElectronFlow('full-loop-fast');
+          setSimStatus(
+            zh
+              ? '保險絲維持！電子加速流經負載並沿中性線返回…'
+              : 'Fuse holds! Electrons speed up through the load and return on neutral…',
+            ''
+          );
+          simTimer = setTimeout(function () {
+            if (!simPowered || simBlown || simShorted) return;
+            setSimBadge(zh ? '接通' : 'ON', 'safe');
+            paintSimVisual(I, { lampsLit: true, cableHot: false });
+            setSimStatus(
+              zh
+                ? '保險絲維持：負載 <b>' + I.toFixed(2) + ' A</b> ≤ <b>' + simFuseA + ' A</b>。電子已回流至 <b>220 V</b>，燈泡亮起。可試「模擬短路」。'
+                : 'Fuse holds: load <b>' + I.toFixed(2) + ' A</b> ≤ <b>' + simFuseA + ' A</b>. Electrons returned to <b>220 V</b> — lamps on. Try <b>Simulate short circuit</b>.',
+              'ok'
+            );
+          }, FAST_LOOP_MS);
+        }, TO_FUSE_MS);
+      }
+
+      function updateFuseStepperButtons() {
+        document.getElementById('simFuseMinus').disabled = simFuseIdx <= 0;
+        document.getElementById('simFusePlus').disabled = simFuseIdx >= FUSE_RATINGS.length - 1;
+        document.getElementById('simFuseRating').textContent = simFuseA + ' A';
+      }
+
+      function showSimAction(mode) {
+        // mode: 'power' | 'short' | 'none'
+        document.getElementById('simPower').hidden = mode !== 'power';
+        document.getElementById('simShort').hidden = mode !== 'short';
+      }
+
+      function selectSimFuse(a) {
+        var idx = FUSE_RATINGS.indexOf(a);
+        if (idx < 0) return;
+        simFuseIdx = idx;
+        simFuseA = a;
+        updateFuseStepperButtons();
+        // Changing fuse resets blown state for a fresh try
+        resetSimCircuit(false);
+        document.getElementById('simFuseTag').textContent = a + ' A';
+      }
+
+      function stepSimFuse(delta) {
+        var next = simFuseIdx + delta;
+        if (next < 0 || next >= FUSE_RATINGS.length) return;
+        selectSimFuse(FUSE_RATINGS[next]);
+      }
+
+      function resetSimCircuit(fullMsg) {
+        clearSimTimer();
+        simPowered = false;
+        simShorted = false;
+        simBlown = false;
+        simLampsLit = false;
+        simCableFailed = false;
+        document.getElementById('simFuseFlash').classList.remove('on');
+        document.getElementById('simFuseBody').classList.remove('blown');
+        document.getElementById('simFuseWire').classList.remove('blown');
+        document.getElementById('simBlowLabel').setAttribute('opacity', '0');
+        document.getElementById('simCable').classList.remove('hot');
+        clearCableExplode();
+        setElectronFlow('off');
+        showSimAction('power');
+        setSimBadge('OFF');
+        paintSimVisual(0, { lampsLit: false, cableHot: false });
+        if (fullMsg !== false) {
+          var zh = html.lang === 'zh-HK';
+          setSimStatus(
+            zh ? '選擇保險絲額定值，再按「接通電源」。' : 'Choose a fuse rating and press Power ON.',
+            ''
+          );
+        }
+      }
+
+      document.getElementById('simFuseMinus').addEventListener('click', function () {
+        stepSimFuse(-1);
+      });
+      document.getElementById('simFusePlus').addEventListener('click', function () {
+        stepSimFuse(1);
+      });
+      updateFuseStepperButtons();
+
+      document.getElementById('simPower').addEventListener('click', function () {
+        if (simPowered) return;
+        simPowered = true;
+        showSimAction('none');
+        evaluateCircuit();
+      });
+
+      document.getElementById('simShort').addEventListener('click', function () {
+        var zh = html.lang === 'zh-HK';
+        if (!simPowered) {
+          setSimStatus(
+            zh ? '請先接通電源，再模擬短路。' : 'Power ON first, then simulate a short circuit.',
+            'warn'
+          );
+          return;
+        }
+        if (simBlown) {
+          setSimStatus(
+            zh ? '保險絲已熔斷 — 請先重設或更換額定值。' : 'Fuse already blown — reset or change the rating first.',
+            'warn'
+          );
+          return;
+        }
+        // Interrupt any in-progress approach and start the short sequence
+        simShorted = true;
+        evaluateCircuit();
+      });
+
+      document.getElementById('simReset').addEventListener('click', function () {
+        resetSimCircuit(true);
+      });
+
+      function refreshSimLang() {
+        var zh = html.lang === 'zh-HK';
+        if (!simPowered && !simBlown) {
+          setSimBadge('OFF');
+          paintSimVisual(0, { lampsLit: false, cableHot: false });
+          return;
+        }
+        if (simBlown) {
+          document.getElementById('simBlowLabel').textContent = zh ? '保險絲熔斷' : 'FUSE BLOWS';
+          setSimBadge(zh ? '熔斷' : 'BLOWN', 'danger');
+          paintSimVisual(0, { lampsLit: false, cableHot: false });
+          return;
+        }
+        if (simCableFailed || (simShorted && simFuseA >= 10 && simFlowMode === 'off')) {
+          setSimBadge(zh ? '電線過熱' : 'OVERHEAT', 'danger');
+          paintSimVisual(0, { lampsLit: false, cableHot: true });
+          return;
+        }
+        if (simShorted && simFuseA >= 10) {
+          setSimBadge(zh ? '保護不足' : 'UNSAFE', 'danger');
+          paintSimVisual(SHORT_I, { lampsLit: false, cableHot: false });
+          return;
+        }
+        if (
+          simFlowMode === 'full-loop' ||
+          simFlowMode === 'full-loop-fast' ||
+          simFlowMode === 'surge-loop' ||
+          simFlowMode === 'surge-loop-fast'
+        ) {
+          setSimBadge(
+            simLampsLit ? (zh ? '接通' : 'ON') : (zh ? '電流中…' : 'FLOWING…'),
+            simShorted ? 'danger' : 'safe'
+          );
+          paintSimVisual(circuitCurrent(), {
+            lampsLit: simLampsLit,
+            cableHot: simLampsLit && simShorted && simFuseA >= 10
+          });
+          return;
+        }
+        if (simFlowMode === 'to-fuse' || simFlowMode === 'surge-to-fuse') {
+          setSimBadge(zh ? '電流流向保險絲…' : 'TO FUSE…', 'danger');
+          paintSimVisual(circuitCurrent(), { lampsLit: false, cableHot: false });
+          return;
+        }
+        paintSimVisual(circuitCurrent(), { lampsLit: false, cableHot: false });
+      }
+
+      showSimAction('power');
+      buildElectronStream();
+      setElectronFlow('off');
+      paintSimVisual(0, { lampsLit: false, cableHot: false });
+    })();
+  </script>
+</body>
+</html>

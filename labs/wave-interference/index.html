@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" translate="no">
 <head>
-  <meta name="google" content="notranslate">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Wave Interference Explorer</title>
@@ -193,7 +192,7 @@
             <h2 id="page-title">Spatial Wave Interference</h2>
             <p id="page-desc">Visualize how path difference and propagation affect superposition.</p>
         </div>
-        <button class="lang-btn" id="lang-toggle">🌐 English</button>
+        <button class="lang-btn" id="lang-toggle">🌐 中文</button>
     </div>
 
     <div class="container">
@@ -207,6 +206,16 @@
                         <div class="toggle-container">
                             <button id="mode-steady" class="toggle-btn active" onclick="setMode('steady')">Steady State</button>
                             <button id="mode-pulse" class="toggle-btn" onclick="setMode('pulse')">Transient</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-container">
+                        <span class="slider-label" id="label-layout">Layout</span>
+                        <div class="toggle-container">
+                            <button id="layout-vertical" class="toggle-btn active" onclick="setLayout('vertical')">Vertical</button>
+                            <button id="layout-horizontal" class="toggle-btn" onclick="setLayout('horizontal')">Horizontal Sources</button>
                         </div>
                     </div>
                 </div>
@@ -225,6 +234,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="control-group">
+                    <div class="slider-container">
+                        <span class="slider-label" id="label-sources">Sources</span>
+                        <div class="toggle-container">
+                            <button id="btn-src-both" class="toggle-btn active" onclick="setSources('both')">Both</button>
+                            <button id="btn-src-s1" class="toggle-btn" onclick="setSources('s1')">S1 only</button>
+                            <button id="btn-src-s2" class="toggle-btn" onclick="setSources('s2')">S2 only</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <hr style="width:100%; border:0; border-top:1px solid #e9ecef;">
@@ -233,7 +253,7 @@
             <div class="row">
                 <div class="control-group">
                     <div class="btn-group">
-                        <button class="preset-btn" onclick="snapTo(0, this)">0 λ</button>
+                        <button class="preset-btn active" onclick="snapTo(0, this)">0 λ</button>
                         <button class="preset-btn" onclick="snapTo(0.5, this)">0.5 λ</button>
                         <button class="preset-btn" onclick="snapTo(1, this)">1.0 λ</button>
                         <button class="preset-btn" onclick="snapTo(1.5, this)">1.5 λ</button>
@@ -282,9 +302,16 @@
                 mode: '模式',
                 steady: '穩態',
                 transient: '瞬態',
+                layout: '佈局',
+                verticalLayout: '垂直',
+                horizontalLayout: '水平波源',
                 sourcePhase: '波源相位',
                 inPhase: '同相',
                 antiPhase: '反相',
+                sources: '波源',
+                bothSources: '兩者',
+                s1Only: '僅 S1',
+                s2Only: '僅 S2',
                 reset: '⏮ 重設',
                 play: '▶ 播放',
                 pause: '⏸ 暫停',
@@ -304,9 +331,16 @@
                 mode: 'Mode',
                 steady: 'Steady State',
                 transient: 'Transient',
+                layout: 'Layout',
+                verticalLayout: 'Vertical',
+                horizontalLayout: 'Horizontal Sources',
                 sourcePhase: 'Source Phase',
                 inPhase: 'In-Phase',
                 antiPhase: 'Anti-Phase',
+                sources: 'Sources',
+                bothSources: 'Both',
+                s1Only: 'S1 only',
+                s2Only: 'S2 only',
                 reset: '⏮ Reset',
                 play: '▶ Play',
                 pause: '⏸ Pause',
@@ -328,7 +362,7 @@
         }
 
         const params = new URLSearchParams(location.search);
-        let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+        let currentLang = hubLangToLocal(params.get('lang') || 'en');
         const btnLang = document.getElementById('lang-toggle');
 
         function updateLanguageUI() {
@@ -341,9 +375,16 @@
             document.getElementById('label-mode').innerText = t.mode;
             document.getElementById('mode-steady').innerText = t.steady;
             document.getElementById('mode-pulse').innerText = t.transient;
+            document.getElementById('label-layout').innerText = t.layout;
+            document.getElementById('layout-vertical').innerText = t.verticalLayout;
+            document.getElementById('layout-horizontal').innerText = t.horizontalLayout;
             document.getElementById('label-phase').innerText = t.sourcePhase;
             document.getElementById('btn-in').innerText = t.inPhase;
             document.getElementById('btn-anti').innerText = t.antiPhase;
+            document.getElementById('label-sources').innerText = t.sources;
+            document.getElementById('btn-src-both').innerText = t.bothSources;
+            document.getElementById('btn-src-s1').innerText = t.s1Only;
+            document.getElementById('btn-src-s2').innerText = t.s2Only;
             document.getElementById('resetBtn').innerText = t.reset;
             document.getElementById('label-speed').innerText = t.animSpeed;
             document.getElementById('label-spatial').innerText = t.spatialView;
@@ -388,9 +429,9 @@
             graphCanvas.height = 160;
             bounceCanvas.width = bounceCanvas.parentElement.clientWidth - 32;
             bounceCanvas.height = 200;
+            applySourceLayout(false);
         }
         window.addEventListener('resize', resize);
-        resize();
 
         // --- Physics Constants ---
         const wavelength = 50; 
@@ -408,17 +449,45 @@
         
         let phaseOffset = 0; 
         let mode = 'steady'; 
+        let layout = 'vertical'; // 'vertical' | 'horizontal'
+        let activeSources = 'both'; // 'both' | 's1' | 's2' 
         
-        // Sources: S1 (Top), S2 (Bottom)
-        // Center of sources is (100, 200)
+        // Sources mutate with layout; defaults are vertical (S1 top, S2 bottom).
         const s1 = { x: 100, y: 80 };
         const s2 = { x: 100, y: 320 };
-        const target = { x: 600, y: 120 };
+        const target = { x: 500, y: 200 };
 
         const historyMax = 300;
-        let history = new Array(historyMax).fill(0);
+        let history = [];
         let currentDisp = 0;
         let isDragging = false;
+
+        function applySourceLayout(resetTarget) {
+            const w = mainCanvas.width;
+            const h = mainCanvas.height || 400;
+            if (layout === 'horizontal') {
+                s1.x = 80;
+                s1.y = h / 2;
+                s2.x = w - 80;
+                s2.y = h / 2;
+                if (resetTarget) {
+                    target.x = w / 2;
+                    target.y = h / 2;
+                }
+            } else {
+                s1.x = 100;
+                s1.y = 80;
+                s2.x = 100;
+                s2.y = 320;
+                if (resetTarget) {
+                    target.x = Math.min(500, w - 40);
+                    target.y = 200;
+                }
+            }
+        }
+
+        resize();
+        applySourceLayout(true);
 
         // --- Event Listeners ---
         speedSlider.addEventListener('input', (e) => {
@@ -427,8 +496,11 @@
         
         mainCanvas.addEventListener('mousedown', (e) => {
             const rect = mainCanvas.getBoundingClientRect();
-            const dist = Math.hypot((e.clientX - rect.left) - target.x, (e.clientY - rect.top) - target.y);
-            if(dist < 30) {
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+            const distEq = Math.hypot(mx - target.x, my - target.y);
+            const distBall = Math.hypot(mx - target.x, my - (target.y - currentDisp));
+            if (distEq < 30 || distBall < 22) {
                 isDragging = true;
                 // Clear preset active states on manual drag
                 presetBtns.forEach(b => b.classList.remove('active'));
@@ -438,8 +510,17 @@
         window.addEventListener('mousemove', (e) => {
             if(isDragging) {
                 const rect = mainCanvas.getBoundingClientRect();
-                target.x = Math.max(150, Math.min(rect.width - 20, e.clientX - rect.left));
-                target.y = Math.max(20, Math.min(rect.height - 20, e.clientY - rect.top));
+                const mx = e.clientX - rect.left;
+                const my = e.clientY - rect.top;
+                if (layout === 'horizontal') {
+                    const margin = 40;
+                    target.x = Math.max(s1.x + margin, Math.min(s2.x - margin, mx));
+                    // Keep target on the horizontal line between sources
+                    target.y = s1.y;
+                } else {
+                    target.x = Math.max(150, Math.min(rect.width - 20, mx));
+                    target.y = Math.max(20, Math.min(rect.height - 20, my));
+                }
             }
         });
 
@@ -450,6 +531,17 @@
             phaseOffset = p;
             btnIn.classList.toggle('active', p === 0);
             btnAnti.classList.toggle('active', p !== 0);
+        }
+
+        function sourceEnabled(id) {
+            return activeSources === 'both' || activeSources === id;
+        }
+
+        function setSources(which) {
+            activeSources = which;
+            document.getElementById('btn-src-both').classList.toggle('active', which === 'both');
+            document.getElementById('btn-src-s1').classList.toggle('active', which === 's1');
+            document.getElementById('btn-src-s2').classList.toggle('active', which === 's2');
         }
 
         function setMode(m) {
@@ -466,9 +558,26 @@
             }
         }
 
+        function setLayout(l) {
+            layout = l;
+            document.getElementById('layout-vertical').classList.toggle('active', l === 'vertical');
+            document.getElementById('layout-horizontal').classList.toggle('active', l === 'horizontal');
+            applySourceLayout(true);
+            history.length = 0;
+            presetBtns.forEach(b => b.classList.remove('active'));
+            const zeroBtn = document.querySelector('.preset-btn');
+            if (zeroBtn) zeroBtn.classList.add('active');
+            update(true);
+            drawMain();
+            drawGraph();
+            drawBounce();
+        }
+
         // Expose functions to window so inline onclick handlers work
         window.setPhase = setPhase;
+        window.setSources = setSources;
         window.setMode = setMode;
+        window.setLayout = setLayout;
         window.togglePlay = togglePlay;
         window.resetPulse = resetPulse;
         window.snapTo = snapTo;
@@ -482,7 +591,7 @@
             simTime = 0;
             isPlaying = true;
             playBtn.innerText = dict[currentLang].pause;
-            history.fill(0);
+            history.length = 0;
         }
 
         // --- Precise Snap To Logic ---
@@ -492,42 +601,33 @@
             if(btnElement) btnElement.classList.add('active');
 
             const pathDiff = n * wavelength;
-            
-            // We want to find a point (x, y) where |d2 - d1| = pathDiff.
-            // This is a hyperbola with foci S1, S2.
-            // S1=(100, 80), S2=(100, 320). Center=(100, 200).
-            // Vertical distance between foci = 240. c = 120.
-            
-            // Equation relative to center (0,0): y^2/a^2 - x^2/b^2 = 1
-            // 2a = pathDiff => a = pathDiff / 2
-            // b^2 = c^2 - a^2
-            
-            // We fix X to a nice visible position, say x=500 (relative x = 400).
-            const xTarget = 500;
-            const dx = xTarget - 100; // Relative X from center
+            const cx = (s1.x + s2.x) / 2;
+            const cy = (s1.y + s2.y) / 2;
+            const c = Math.hypot(s2.x - s1.x, s2.y - s1.y) / 2;
 
-            if (n === 0) {
-                // Perpendicular bisector
-                target.x = xTarget;
-                target.y = 200;
+            if (layout === 'horizontal') {
+                // Keep S1, target, S2 collinear; set Δx by shifting the target along the line.
+                // With target between sources: d1 + d2 = L and |d2 - d1| = pathDiff
+                // => d1 = (L - pathDiff) / 2, d2 = (L + pathDiff) / 2 (target closer to S1).
+                const L = s2.x - s1.x;
+                if (pathDiff >= L) { console.error("Impossible path difference"); return; }
+                const d1 = (L - pathDiff) / 2;
+                target.x = s1.x + d1;
+                target.y = cy;
+            } else if (n === 0) {
+                target.x = Math.min(500, mainCanvas.width - 40);
+                target.y = cy;
             } else {
                 const a = pathDiff / 2;
-                const c = 120; // (320 - 80) / 2
-                
-                // Safety check
                 if (a >= c) { console.error("Impossible path difference"); return; }
-                
-                const b2 = c*c - a*a;
-                
-                // Solve for y (relative): y = a * Math.sqrt(1 + (dx*dx)/b2)
-                const dy = a * Math.sqrt(1 + (dx*dx)/b2);
-                
-                // We want d2 > d1 (bottom source further than top source)
-                // So target should be closer to top source (S1, y=80).
-                // In canvas coords, top is smaller Y.
-                // Center is 200. We subtract dy.
+                const b2 = c * c - a * a;
+                // Foci top/bottom: hyperbola opens vertically.
+                const xTarget = Math.min(500, mainCanvas.width - 40);
+                const dx = xTarget - cx;
+                const dy = a * Math.sqrt(1 + (dx * dx) / b2);
+                // Closer to S1 (top)
                 target.x = xTarget;
-                target.y = 200 - dy;
+                target.y = cy - dy;
             }
             
             // Force immediate update to reflect exact value
@@ -569,19 +669,23 @@
                         timeAccumulator -= 1.0;
                     }
 
-                    const y1 = getWaveAt(d1, simTime, 0);
-                    const y2 = getWaveAt(d2, simTime, phaseOffset);
+                    const y1 = sourceEnabled('s1') ? getWaveAt(d1, simTime, 0) : 0;
+                    const y2 = sourceEnabled('s2') ? getWaveAt(d2, simTime, phaseOffset) : 0;
                     let superPos = y1 + y2;
 
                     if (mode === 'pulse') {
                         const frontDist = wavePhysicsSpeed * simTime;
-                        if (d1 > frontDist && d2 > frontDist) superPos = 0;
+                        const s1Reached = sourceEnabled('s1') && d1 <= frontDist;
+                        const s2Reached = sourceEnabled('s2') && d2 <= frontDist;
+                        if (!s1Reached && !s2Reached) superPos = 0;
                     }
 
                     currentDisp = superPos;
                     if(!force) {
+                        // Grow from the left; earlier samples stay fixed (no scroll).
+                        // When full, clear and draw again from the left.
+                        if (history.length >= historyMax) history.length = 0;
                         history.push(superPos);
-                        history.shift();
                     }
                 }
             }
@@ -627,18 +731,67 @@
             const w = mainCanvas.width; const h = mainCanvas.height;
             mainCtx.clearRect(0, 0, w, h); drawGrid(mainCtx, w, h);
 
+            const s1On = sourceEnabled('s1');
+            const s2On = sourceEnabled('s2');
+
+            mainCtx.globalAlpha = s1On ? 1 : 0.25;
             mainCtx.fillStyle = '#e03131'; mainCtx.beginPath(); mainCtx.arc(s1.x, s1.y, 6, 0, Math.PI*2); mainCtx.fill();
-            mainCtx.font = "bold 12px Arial"; mainCtx.fillText("S1", s1.x - 20, s1.y - 5);
+            mainCtx.font = "bold 12px Arial";
+            mainCtx.fillText("S1", layout === 'horizontal' ? s1.x - 10 : s1.x - 20, s1.y - 12);
 
+            mainCtx.globalAlpha = s2On ? 1 : 0.25;
             mainCtx.fillStyle = '#1971c2'; mainCtx.beginPath(); mainCtx.arc(s2.x, s2.y, 6, 0, Math.PI*2); mainCtx.fill();
-            mainCtx.fillText("S2", s2.x - 20, s2.y - 5);
+            mainCtx.fillText("S2", layout === 'horizontal' ? s2.x - 10 : s2.x - 20, s2.y - 12);
+            mainCtx.globalAlpha = 1;
 
-            drawSineLine(mainCtx, s1.x, s1.y, target.x, target.y, '#e03131', 0);
-            drawSineLine(mainCtx, s2.x, s2.y, target.x, target.y, '#1971c2', phaseOffset);
+            if (s1On) drawSineLine(mainCtx, s1.x, s1.y, target.x, target.y, '#e03131', 0);
+            if (s2On) drawSineLine(mainCtx, s2.x, s2.y, target.x, target.y, '#1971c2', phaseOffset);
 
-            mainCtx.shadowBlur = 10; mainCtx.shadowColor = "rgba(0,0,0,0.2)";
-            mainCtx.fillStyle = '#fcc419'; mainCtx.beginPath(); mainCtx.arc(target.x, target.y, 12, 0, Math.PI*2); mainCtx.fill();
-            mainCtx.shadowBlur = 0; mainCtx.fillStyle = '#495057'; mainCtx.fillText(dict[currentLang].target, target.x + 15, target.y + 5);
+            const eqX = target.x;
+            const eqY = target.y;
+            const ballY = eqY - currentDisp;
+
+            // Rest position (path-difference point stays fixed while the particle bounces)
+            mainCtx.strokeStyle = 'rgba(73, 80, 87, 0.4)';
+            mainCtx.setLineDash([4, 4]);
+            mainCtx.lineWidth = 1.5;
+            mainCtx.beginPath();
+            mainCtx.arc(eqX, eqY, 12, 0, Math.PI * 2);
+            mainCtx.stroke();
+            mainCtx.setLineDash([]);
+
+            mainCtx.strokeStyle = 'rgba(134, 46, 156, 0.5)';
+            mainCtx.lineWidth = 2;
+            mainCtx.beginPath();
+            mainCtx.moveTo(eqX, eqY);
+            mainCtx.lineTo(eqX, ballY);
+            mainCtx.stroke();
+
+            const trailN = 24;
+            for (let i = 0; i < trailN; i++) {
+                const idx = history.length - trailN + i;
+                if (idx < 0) continue;
+                const alpha = (i + 1) / trailN * 0.28;
+                mainCtx.fillStyle = `rgba(252, 196, 25, ${alpha})`;
+                mainCtx.beginPath();
+                mainCtx.arc(eqX, eqY - history[idx], 5 + i * 0.08, 0, Math.PI * 2);
+                mainCtx.fill();
+            }
+
+            mainCtx.shadowBlur = 10;
+            mainCtx.shadowColor = 'rgba(252, 196, 25, 0.45)';
+            mainCtx.fillStyle = '#fcc419';
+            mainCtx.beginPath();
+            mainCtx.arc(eqX, ballY, 12, 0, Math.PI * 2);
+            mainCtx.fill();
+            mainCtx.shadowBlur = 0;
+            mainCtx.strokeStyle = '#e67700';
+            mainCtx.lineWidth = 2;
+            mainCtx.stroke();
+
+            mainCtx.fillStyle = '#495057';
+            mainCtx.font = 'bold 12px Arial';
+            mainCtx.fillText(dict[currentLang].target, eqX + 16, ballY + 5);
         }
 
         function drawGraph() {
@@ -648,17 +801,22 @@
             graphCtx.strokeStyle = '#dee2e6'; graphCtx.setLineDash([5, 5]);
             graphCtx.beginPath(); graphCtx.moveTo(0, cy); graphCtx.lineTo(w, cy); graphCtx.stroke(); graphCtx.setLineDash([]);
 
-            const nowX = w - 50;
+            // Fixed x spacing so already-drawn points stay still; wave grows rightward.
+            const plotRight = w - 50;
+            const step = plotRight / historyMax;
+            const nowX = history.length > 0 ? (history.length - 1) * step : 0;
+
             graphCtx.strokeStyle = '#868e96'; graphCtx.lineWidth = 2; graphCtx.setLineDash([2, 2]);
             graphCtx.beginPath(); graphCtx.moveTo(nowX, 0); graphCtx.lineTo(nowX, h); graphCtx.stroke(); graphCtx.setLineDash([]);
             
             graphCtx.fillStyle = '#868e96'; graphCtx.font = "bold 10px Arial"; graphCtx.fillText(dict[currentLang].now, nowX + 5, 20);
 
+            if (history.length === 0) return;
+
             graphCtx.beginPath(); graphCtx.strokeStyle = '#862e9c'; graphCtx.lineWidth = 3;
-            const step = nowX / historyMax;
             for (let i = 0; i < history.length; i++) {
-                const val = history[i]; const x = i * step; const y = cy - val; 
-                if (i===0) graphCtx.moveTo(x, y); else graphCtx.lineTo(x, y);
+                const val = history[i]; const x = i * step; const y = cy - val;
+                if (i === 0) graphCtx.moveTo(x, y); else graphCtx.lineTo(x, y);
             }
             graphCtx.stroke();
         }

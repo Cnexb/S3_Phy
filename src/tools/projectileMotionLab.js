@@ -6,6 +6,6 @@ export function createProjectileMotionLab(t) {
     slug: 'projectile-motion',
     titleKey: 'tools.projectileMotion.title',
     className: 'tool-projectile-motion-lab',
-    extraParams: () => '&v=20260722_projectile_v2',
+    extraParams: () => '&v=20260904b',
   });
 }

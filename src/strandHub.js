@@ -8,7 +8,7 @@ const STRANDS = [
   { id: 'mechanics', titleKey: 'strand.mechanics.title', descKey: 'strand.mechanics.desc', ready: false },
   { id: 'gas', titleKey: 'strand.gas.title', descKey: 'strand.gas.desc', ready: false },
   { id: 'waves', titleKey: 'strand.waves.title', descKey: 'strand.waves.desc', ready: false },
-  { id: 'electricity', titleKey: 'strand.electricity.title', descKey: 'strand.electricity.desc', ready: false },
+  { id: 'electricity', titleKey: 'strand.electricity.title', descKey: 'strand.electricity.desc', ready: true },
   { id: 'radioactivity', titleKey: 'strand.radioactivity.title', descKey: 'strand.radioactivity.desc', ready: false },
 ];
 

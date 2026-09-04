@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-HK" translate="no">
+<html lang="en" translate="no">
 <head>
-  <meta name="google" content="notranslate">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>拋體運動</title>
+    <title>Projectile Motion</title>
     <link rel="stylesheet" href="../shared/s3phy-embed.css">
     <script src="../shared/s3phy-embed-init.js"></script>
     <style>
@@ -70,6 +69,50 @@
             width: 100%;
             height: 100%;
             background: var(--bg);
+        }
+        .lab-section:fullscreen,
+        .lab-section:-webkit-full-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+        }
+        .lab-section:fullscreen .page-header,
+        .lab-section:-webkit-full-screen .page-header,
+        .lab-section:fullscreen #controls,
+        .lab-section:-webkit-full-screen #controls,
+        .lab-section:fullscreen .left-sidebar,
+        .lab-section:-webkit-full-screen .left-sidebar {
+            display: none !important;
+        }
+        .lab-section:fullscreen #canvas-container,
+        .lab-section:-webkit-full-screen #canvas-container {
+            flex: 1 1 auto;
+            min-height: 0;
+            height: 100%;
+            border: none;
+        }
+        .fs-exit-btn {
+            display: none;
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(26, 28, 44, 0.08);
+        }
+        .fs-exit-btn:hover {
+            background: #ffffff;
+        }
+        .lab-section:fullscreen .fs-exit-btn,
+        .lab-section:-webkit-full-screen .fs-exit-btn {
+            display: block;
         }
 
         .page-header {
@@ -164,51 +207,6 @@
             padding: 8px 10px;
         }
 
-        .legend {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-size: 0.82rem;
-            color: var(--muted);
-        }
-        .legend-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 2px;
-        }
-        .legend-group {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .dot-hollow {
-            width: 10px;
-            height: 10px;
-            border: 2px solid;
-            border-radius: 50%;
-            background: transparent;
-        }
-        .legend-label {
-            color: var(--text);
-            font-weight: 700;
-            width: 52px;
-        }
-        .legend-time {
-            margin-top: 4px;
-            border-top: 1px solid var(--border);
-            padding-top: 6px;
-            text-align: center;
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-weight: 700;
-            color: var(--text);
-        }
-
         .stats {
             font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
             font-size: 0.82rem;
@@ -229,10 +227,6 @@
             justify-content: space-between;
             gap: 10px;
             color: var(--muted);
-        }
-        .stat-divider {
-            margin: 5px 0;
-            border-top: 1px dashed var(--border);
         }
         .stat-highlight {
             color: var(--text);
@@ -264,6 +258,27 @@
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
         }
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-width: 200px;
+        }
+        .speed-control span {
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .speed-control input[type="range"] {
+            flex: 1;
+            min-width: 100px;
+            accent-color: #2563eb;
+        }
 
         .params-container {
             display: flex;
@@ -289,7 +304,28 @@
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            gap: 8px;
             font-size: 0.9rem;
+        }
+        .param-reset-btn {
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--muted);
+            border-radius: 6px;
+            padding: 3px 8px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .param-reset-btn:hover:not(:disabled) {
+            background: var(--btn-hover);
+            color: var(--text);
+        }
+        .param-reset-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .control-group {
@@ -318,6 +354,13 @@
             font-weight: 700;
             font-size: 0.85rem;
             text-align: right;
+            appearance: textfield;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         .col-a input[type="number"] { color: var(--color-a); }
         .col-b input[type="number"] { color: var(--color-b); }
@@ -378,28 +421,42 @@
             background: var(--btn-hover);
             color: var(--text);
         }
+        .btn-fullscreen {
+            background: var(--btn-bg);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-fullscreen:hover {
+            background: var(--btn-hover);
+            color: var(--text);
+        }
 
         .checkbox-wrapper {
             display: flex;
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            background: #f8f9fa;
-            padding: 6px 12px;
+            background: #ffffff;
+            padding: 6px 10px;
             border-radius: 8px;
             border: 1px solid var(--border);
         }
-        .checkbox-wrapper input { width: 15px; height: 15px; cursor: pointer; accent-color: #2563eb; }
-        .checkbox-wrapper span { font-size: 0.82rem; color: var(--text); font-weight: 600; }
+        .checkbox-wrapper input { width: 15px; height: 15px; cursor: pointer; flex-shrink: 0; accent-color: #2563eb; }
+        .checkbox-wrapper span { font-size: 0.78rem; color: var(--text); font-weight: 600; line-height: 1.25; }
 
         .extra-params {
-            min-width: 180px;
-            max-width: 220px;
-            justify-content: center;
+            min-width: 200px;
+            max-width: 240px;
+            justify-content: flex-start;
             background: #f8f9fa;
             padding: 12px 14px;
             border-radius: 12px;
             border: 1px solid var(--border);
+        }
+        .display-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         @media (max-width: 720px) {
@@ -416,74 +473,33 @@
 <div class="lab-section">
     <div class="page-header">
         <div class="page-header-text">
-            <h1 id="page-title">拋體運動</h1>
-            <div class="subtitle" id="page-subtitle">雙球比較 · 頻閃與速度分量</div>
+            <h1 id="page-title">Projectile Motion</h1>
+            <div class="subtitle" id="page-subtitle">Dual-ball comparison · Strobes & velocity components</div>
         </div>
-        <button type="button" class="lang-btn" id="lang-toggle">🌐 English</button>
+        <button type="button" class="lang-btn" id="lang-toggle">🌐 中文</button>
     </div>
 
     <div id="canvas-container">
         <canvas id="simCanvas"></canvas>
+        <button type="button" class="fs-exit-btn" id="btn-fs-exit">Exit full screen</button>
 
         <div class="left-sidebar">
             <div class="panel-box logo">Unit Education</div>
 
-            <div class="panel-box legend">
-                <div class="legend-row">
-                    <div class="legend-label text-a" id="legend-a">球 A</div>
-                    <div class="legend-group" title="Ball">
-                        <div class="dot" style="background:var(--color-a)"></div>
-                    </div>
-                    <div class="legend-group" title="X">
-                        <div class="dot-hollow" style="border-color:var(--color-a-x)"></div>
-                        <span style="font-size:0.72rem; color:var(--color-a-x)">X</span>
-                    </div>
-                    <div class="legend-group" title="Y">
-                        <div class="dot-hollow" style="border-color:var(--color-a-y)"></div>
-                        <span style="font-size:0.72rem; color:var(--color-a-y)">Y</span>
-                    </div>
-                </div>
-
-                <div class="legend-row">
-                    <div class="legend-label text-b" id="legend-b">球 B</div>
-                    <div class="legend-group" title="Ball">
-                        <div class="dot" style="background:var(--color-b)"></div>
-                    </div>
-                    <div class="legend-group" title="X">
-                        <div class="dot-hollow" style="border-color:var(--color-b-x)"></div>
-                        <span style="font-size:0.72rem; color:var(--color-b-x)">X</span>
-                    </div>
-                    <div class="legend-group" title="Y">
-                        <div class="dot-hollow" style="border-color:var(--color-b-y)"></div>
-                        <span style="font-size:0.72rem; color:var(--color-b-y)">Y</span>
-                    </div>
-                </div>
-
-                <div class="legend-time">
-                    <span id="time-display">T = 0.00 s</span>
-                </div>
-            </div>
-
             <div class="panel-box stats">
                 <div class="stat-group text-a">
-                    <h4 id="stats-title-a">球 A</h4>
-                    <div class="stat-row"><span>X:</span> <span id="val-xa">0.0</span></div>
-                    <div class="stat-row"><span>Y:</span> <span id="val-ya">0.0</span></div>
-                    <div class="stat-row"><span id="label-max-h-a">最大高度 H:</span> <span id="val-ha" class="stat-highlight">0.0</span></div>
-                    <div class="stat-row"><span id="label-range-a">射程 R:</span> <span id="val-ra" class="stat-highlight">0.0</span></div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-row" style="color:var(--color-a-x)"><span>Vx:</span> <span id="val-vxa">0.0</span></div>
-                    <div class="stat-row" style="color:var(--color-a-y)"><span>Vy:</span> <span id="val-vya">0.0</span></div>
+                    <h4 id="stats-title-a">Ball A</h4>
+                    <div class="stat-row">
+                        <span id="label-t-ground-a">Time to ground:</span>
+                        <span id="val-t-a" class="stat-highlight">0.00 s</span>
+                    </div>
                 </div>
                 <div class="stat-group text-b">
-                    <h4 id="stats-title-b">球 B</h4>
-                    <div class="stat-row"><span>X:</span> <span id="val-xb">0.0</span></div>
-                    <div class="stat-row"><span>Y:</span> <span id="val-yb">0.0</span></div>
-                    <div class="stat-row"><span id="label-max-h-b">最大高度 H:</span> <span id="val-hb" class="stat-highlight">0.0</span></div>
-                    <div class="stat-row"><span id="label-range-b">射程 R:</span> <span id="val-rb" class="stat-highlight">0.0</span></div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-row" style="color:var(--color-b-x)"><span>Vx:</span> <span id="val-vxb">0.0</span></div>
-                    <div class="stat-row" style="color:var(--color-b-y)"><span>Vy:</span> <span id="val-vyb">0.0</span></div>
+                    <h4 id="stats-title-b">Ball B</h4>
+                    <div class="stat-row">
+                        <span id="label-t-ground-b">Time to ground:</span>
+                        <span id="val-t-b" class="stat-highlight">0.00 s</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -491,69 +507,72 @@
 
     <div id="controls">
         <div class="global-controls">
-            <button type="button" class="sim-btn btn-a" id="btn-play-a" onclick="startSim('A')">僅播放 A</button>
-            <button type="button" class="sim-btn btn-b" id="btn-play-b" onclick="startSim('B')">僅播放 B</button>
-            <button type="button" class="sim-btn btn-both" id="btn-play-both" onclick="startSim('BOTH')">同時播放</button>
-            <button type="button" class="sim-btn btn-reset" id="btn-reset" onclick="resetSim()">重置</button>
+            <button type="button" class="sim-btn btn-a" id="btn-play-a" onclick="startSim('A')">Play A only</button>
+            <button type="button" class="sim-btn btn-b" id="btn-play-b" onclick="startSim('B')">Play B only</button>
+            <button type="button" class="sim-btn btn-both" id="btn-play-both" onclick="startSim('BOTH')">Play both</button>
+            <button type="button" class="sim-btn btn-reset" id="btn-reset" onclick="resetSim()">Reset</button>
 
-            <label class="checkbox-wrapper">
-                <input type="checkbox" id="check-strobe" checked>
-                <span id="label-strobe">顯示頻閃照片</span>
-            </label>
-            <label class="checkbox-wrapper">
-                <input type="checkbox" id="check-velocity">
-                <span id="label-velocity">顯示速度分量</span>
-            </label>
-            <label class="checkbox-wrapper">
-                <input type="checkbox" id="check-half">
-                <span id="label-half">僅顯示至最高點</span>
-            </label>
+            <div class="speed-control">
+                <span id="label-speed">Simulation speed</span>
+                <input type="range" id="input-speed" min="0.1" max="2.0" step="0.1" value="1.0">
+            </div>
+            <button type="button" class="sim-btn btn-fullscreen" id="btn-fullscreen">Full screen</button>
         </div>
 
         <div class="params-container">
             <div class="param-column col-a">
-                <div class="col-header text-a" id="col-title-a">球 A 參數</div>
+                <div class="col-header text-a">
+                    <span id="col-title-a">Ball A parameters</span>
+                    <button type="button" class="param-reset-btn" id="btn-reset-a">Reset</button>
+                </div>
                 <div class="control-group">
-                    <div class="label-row"><span id="label-h0-a">高度 H₀ (m)</span><input type="number" id="num-h0-a" value="0"></div>
+                    <div class="label-row"><span id="label-h0-a">Height H₀ (m)</span><input type="number" id="num-h0-a" min="0" max="300" value="0"></div>
                     <input type="range" id="range-h0-a" min="0" max="300" value="0">
                 </div>
                 <div class="control-group">
-                    <div class="label-row"><span id="label-v0-a">初速 v₀ (m/s)</span><input type="number" id="num-v0-a" value="40"></div>
+                    <div class="label-row"><span id="label-v0-a">Speed v₀ (m/s)</span><input type="number" id="num-v0-a" value="40"></div>
                     <input type="range" id="range-v0-a" min="10" max="100" value="40">
                 </div>
                 <div class="control-group">
-                    <div class="label-row"><span id="label-angle-a">角度 θ (°)</span><input type="number" id="num-angle-a" value="45"></div>
-                    <input type="range" id="range-angle-a" min="-90" max="90" value="45">
+                    <div class="label-row"><span id="label-angle-a">Angle θ (°)</span><input type="number" id="num-angle-a" min="0" max="90" value="45"></div>
+                    <input type="range" id="range-angle-a" min="0" max="90" value="45">
                 </div>
             </div>
 
             <div class="param-column col-b">
-                <div class="col-header text-b" id="col-title-b">球 B 參數</div>
+                <div class="col-header text-b">
+                    <span id="col-title-b">Ball B parameters</span>
+                    <button type="button" class="param-reset-btn" id="btn-reset-b">Reset</button>
+                </div>
                 <div class="control-group">
-                    <div class="label-row"><span id="label-h0-b">高度 H₀ (m)</span><input type="number" id="num-h0-b" value="0"></div>
+                    <div class="label-row"><span id="label-h0-b">Height H₀ (m)</span><input type="number" id="num-h0-b" min="0" max="300" value="0"></div>
                     <input type="range" id="range-h0-b" min="0" max="300" value="0">
                 </div>
                 <div class="control-group">
-                    <div class="label-row"><span id="label-v0-b">初速 v₀ (m/s)</span><input type="number" id="num-v0-b" value="60"></div>
-                    <input type="range" id="range-v0-b" min="10" max="100" value="60">
+                    <div class="label-row"><span id="label-v0-b">Speed v₀ (m/s)</span><input type="number" id="num-v0-b" value="40"></div>
+                    <input type="range" id="range-v0-b" min="10" max="100" value="40">
                 </div>
                 <div class="control-group">
-                    <div class="label-row"><span id="label-angle-b">角度 θ (°)</span><input type="number" id="num-angle-b" value="60"></div>
-                    <input type="range" id="range-angle-b" min="-90" max="90" value="60">
+                    <div class="label-row"><span id="label-angle-b">Angle θ (°)</span><input type="number" id="num-angle-b" min="0" max="90" value="45"></div>
+                    <input type="range" id="range-angle-b" min="0" max="90" value="45">
                 </div>
             </div>
 
             <div class="control-group extra-params">
-                <div class="label-row"><span id="label-segments">頻閃分割數 (N)</span></div>
-                <select id="select-interval">
-                    <option value="5" id="opt-seg-5">5 段</option>
-                    <option value="10" id="opt-seg-10" selected>10 段</option>
-                    <option value="15" id="opt-seg-15">15 段</option>
-                    <option value="20" id="opt-seg-20">20 段</option>
-                </select>
-
-                <div class="label-row" style="margin-top:10px;"><span id="label-speed">模擬速度</span></div>
-                <input type="range" id="input-speed" min="0.1" max="2.0" step="0.1" value="1.0">
+                <div class="display-options">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="check-strobe" checked>
+                        <span id="label-strobe">Show strobe frames</span>
+                    </label>
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="check-velocity">
+                        <span id="label-velocity">Show velocity components</span>
+                    </label>
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="check-half">
+                        <span id="label-half">Show motion to apex only</span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -566,16 +585,15 @@
             docTitle: '拋體運動',
             pageTitle: '拋體運動',
             pageSubtitle: '雙球比較 · 頻閃與速度分量',
-            legendA: '球 A',
-            legendB: '球 B',
             statsA: '球 A',
             statsB: '球 B',
-            maxH: '最大高度 H:',
-            range: '射程 R:',
+            timeToGround: '落地時間:',
             playA: '僅播放 A',
             playB: '僅播放 B',
             playBoth: '同時播放',
             reset: '重置',
+            fullscreen: '全螢幕',
+            exitFullscreen: '退出全螢幕',
             strobe: '顯示頻閃照片',
             velocity: '顯示速度分量',
             half: '僅顯示至最高點',
@@ -584,28 +602,22 @@
             h0: '高度 H₀ (m)',
             v0: '初速 v₀ (m/s)',
             angle: '角度 θ (°)',
-            segments: '頻閃分割數 (N)',
-            speed: '模擬速度',
-            seg5: '5 段',
-            seg10: '10 段',
-            seg15: '15 段',
-            seg20: '20 段'
+            speed: '模擬速度'
         },
         en: {
             langBtn: '🌐 中文',
             docTitle: 'Projectile Motion',
             pageTitle: 'Projectile Motion',
             pageSubtitle: 'Dual-ball comparison · Strobes & velocity components',
-            legendA: 'Ball A',
-            legendB: 'Ball B',
             statsA: 'Ball A',
             statsB: 'Ball B',
-            maxH: 'Max H:',
-            range: 'Range R:',
+            timeToGround: 'Time to ground:',
             playA: 'Play A only',
             playB: 'Play B only',
             playBoth: 'Play both',
             reset: 'Reset',
+            fullscreen: 'Full screen',
+            exitFullscreen: 'Exit full screen',
             strobe: 'Show strobe frames',
             velocity: 'Show velocity components',
             half: 'Show motion to apex only',
@@ -614,12 +626,7 @@
             h0: 'Height H₀ (m)',
             v0: 'Speed v₀ (m/s)',
             angle: 'Angle θ (°)',
-            segments: 'Strobe segments (N)',
-            speed: 'Simulation speed',
-            seg5: '5 frames',
-            seg10: '10 frames',
-            seg15: '15 frames',
-            seg20: '20 frames'
+            speed: 'Simulation speed'
         }
     };
 
@@ -629,9 +636,39 @@
     }
 
     const params = new URLSearchParams(location.search);
-    let currentLang = hubLangToLocal(params.get('lang') || 'zh');
+    let currentLang = hubLangToLocal(params.get('lang') || 'en');
 
     function t() { return dict[currentLang]; }
+
+    function isFullscreen() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+
+    function updateFullscreenButton() {
+        const d = t();
+        const label = isFullscreen() ? d.exitFullscreen : d.fullscreen;
+        const btn = document.getElementById('btn-fullscreen');
+        const exitBtn = document.getElementById('btn-fs-exit');
+        if (btn) btn.textContent = label;
+        if (exitBtn) exitBtn.textContent = d.exitFullscreen;
+    }
+
+    async function toggleFullscreen() {
+        const target = document.querySelector('.lab-section') || document.documentElement;
+        try {
+            if (isFullscreen()) {
+                if (document.exitFullscreen) await document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            } else if (target.requestFullscreen) {
+                await target.requestFullscreen();
+            } else if (target.webkitRequestFullscreen) {
+                target.webkitRequestFullscreen();
+            }
+        } catch (_) {
+            /* ignore user/browser rejection */
+        }
+        updateFullscreenButton();
+    }
 
     function updateLanguageUI() {
         const d = t();
@@ -640,18 +677,17 @@
         document.getElementById('page-title').textContent = d.pageTitle;
         document.getElementById('page-subtitle').textContent = d.pageSubtitle;
         document.getElementById('lang-toggle').textContent = d.langBtn;
-        document.getElementById('legend-a').textContent = d.legendA;
-        document.getElementById('legend-b').textContent = d.legendB;
         document.getElementById('stats-title-a').textContent = d.statsA;
         document.getElementById('stats-title-b').textContent = d.statsB;
-        document.getElementById('label-max-h-a').textContent = d.maxH;
-        document.getElementById('label-max-h-b').textContent = d.maxH;
-        document.getElementById('label-range-a').textContent = d.range;
-        document.getElementById('label-range-b').textContent = d.range;
+        document.getElementById('label-t-ground-a').textContent = d.timeToGround;
+        document.getElementById('label-t-ground-b').textContent = d.timeToGround;
         document.getElementById('btn-play-a').textContent = d.playA;
         document.getElementById('btn-play-b').textContent = d.playB;
         document.getElementById('btn-play-both').textContent = d.playBoth;
         document.getElementById('btn-reset').textContent = d.reset;
+        document.getElementById('btn-reset-a').textContent = d.reset;
+        document.getElementById('btn-reset-b').textContent = d.reset;
+        updateFullscreenButton();
         document.getElementById('label-strobe').textContent = d.strobe;
         document.getElementById('label-velocity').textContent = d.velocity;
         document.getElementById('label-half').textContent = d.half;
@@ -663,12 +699,7 @@
         document.getElementById('label-v0-b').textContent = d.v0;
         document.getElementById('label-angle-a').textContent = d.angle;
         document.getElementById('label-angle-b').textContent = d.angle;
-        document.getElementById('label-segments').textContent = d.segments;
         document.getElementById('label-speed').textContent = d.speed;
-        document.getElementById('opt-seg-5').textContent = d.seg5;
-        document.getElementById('opt-seg-10').textContent = d.seg10;
-        document.getElementById('opt-seg-15').textContent = d.seg15;
-        document.getElementById('opt-seg-20').textContent = d.seg20;
     }
 
     document.getElementById('lang-toggle').addEventListener('click', () => {
@@ -694,7 +725,7 @@
     let isHalfMotion = false;
     let showStrobe = true;
     let showVelocity = false;
-    let numSegments = 10;
+    let numSegments = 5;
 
     const ballA = {
         h0: 0, v0: 40, angle: 45,
@@ -704,7 +735,7 @@
     };
 
     const ballB = {
-        h0: 0, v0: 60, angle: 60,
+        h0: 0, v0: 40, angle: 45,
         color: '#d97706', colorGhost: 'rgba(217, 119, 6, 0.35)',
         colorX: '#ca8a04', colorY: '#dc2626',
         path: [], snapshots: [], totalTime: 0
@@ -715,13 +746,54 @@
     const startX = 280;
     const velocityScale = 1.5;
 
+    const paramControlIds = [
+        'range-h0-a', 'num-h0-a', 'range-v0-a', 'num-v0-a', 'range-angle-a', 'num-angle-a',
+        'range-h0-b', 'num-h0-b', 'range-v0-b', 'num-v0-b', 'range-angle-b', 'num-angle-b',
+        'check-half', 'btn-reset-a', 'btn-reset-b'
+    ];
+
+    function setParamsLocked(locked) {
+        paramControlIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.disabled = locked;
+        });
+    }
+
+    const defaultBallParams = { h0: 0, v0: 40, angle: 45 };
+
+    function setBallInputs(suffix, params) {
+        ['h0', 'v0', 'angle'].forEach(prop => {
+            const val = params[prop];
+            document.getElementById(`range-${prop}-${suffix}`).value = val;
+            document.getElementById(`num-${prop}-${suffix}`).value = val;
+        });
+    }
+
+    function resetBallParams(ball, suffix) {
+        if (isRunning) return;
+        ball.h0 = defaultBallParams.h0;
+        ball.v0 = defaultBallParams.v0;
+        ball.angle = defaultBallParams.angle;
+        setBallInputs(suffix, defaultBallParams);
+        recalcPhysics();
+        draw();
+    }
+
     function bindInput(idRange, idNum, obj, prop) {
         const range = document.getElementById(idRange);
         const num = document.getElementById(idNum);
+        const min = parseFloat(range.min);
+        const max = parseFloat(range.max);
+
+        if (!Number.isNaN(min)) num.min = min;
+        if (!Number.isNaN(max)) num.max = max;
 
         const update = (val) => {
+            if (isRunning) return;
             val = parseFloat(val);
             if (Number.isNaN(val)) return;
+            if (!Number.isNaN(min)) val = Math.max(min, val);
+            if (!Number.isNaN(max)) val = Math.min(max, val);
             obj[prop] = val;
             range.value = val;
             num.value = val;
@@ -743,11 +815,8 @@
     bindInput('range-v0-b', 'num-v0-b', ballB, 'v0');
     bindInput('range-angle-b', 'num-angle-b', ballB, 'angle');
 
-    document.getElementById('select-interval').addEventListener('change', (e) => {
-        numSegments = parseInt(e.target.value, 10);
-        recalcPhysics();
-        draw();
-    });
+    document.getElementById('btn-reset-a').addEventListener('click', () => resetBallParams(ballA, 'a'));
+    document.getElementById('btn-reset-b').addEventListener('click', () => resetBallParams(ballB, 'b'));
 
     document.getElementById('input-speed').addEventListener('input', (e) => {
         simSpeed = parseFloat(e.target.value);
@@ -764,6 +833,7 @@
     });
 
     document.getElementById('check-half').addEventListener('change', (e) => {
+        if (isRunning) return;
         isHalfMotion = e.target.checked;
         recalcPhysics();
         draw();
@@ -823,12 +893,14 @@
         activeMode = mode;
         resetSim(false);
         isRunning = true;
+        setParamsLocked(true);
         lastFrameTime = performance.now();
         animate();
     }
 
     function resetSim(fullReset = true) {
         isRunning = false;
+        setParamsLocked(false);
         cancelAnimationFrame(animationId);
         simTime = 0;
         ballA.path = [];
@@ -855,6 +927,7 @@
         if (simTime >= maxTime) {
             simTime = maxTime;
             isRunning = false;
+            setParamsLocked(false);
         }
 
         if (activeMode === 'A' || activeMode === 'BOTH') {
@@ -875,34 +948,10 @@
     }
 
     function updateStats() {
-        document.getElementById('time-display').textContent = `T = ${simTime.toFixed(2)} s`;
-
-        const updateBallStats = (ball, suffix) => {
-            const pos = getPos(ball, simTime);
-            document.getElementById(`val-x${suffix}`).textContent = pos.x.toFixed(1);
-            document.getElementById(`val-y${suffix}`).textContent = pos.y.toFixed(1);
-
-            const rad = ball.angle * Math.PI / 180;
-            let hMax = ball.h0;
-            if (ball.angle > 0) {
-                hMax += Math.pow(ball.v0 * Math.sin(rad), 2) / (2 * g);
-            }
-            document.getElementById(`val-h${suffix}`).textContent = hMax.toFixed(1);
-
-            const vx = ball.v0 * Math.cos(rad);
-            const fullTime = getProjectedFullTime(ball);
-            const range = vx * fullTime;
-            document.getElementById(`val-r${suffix}`).textContent = range.toFixed(1);
-
-            const effectiveT = Math.min(simTime, ball.totalTime);
-            const vy = ball.v0 * Math.sin(rad) - g * effectiveT;
-
-            document.getElementById(`val-vx${suffix}`).textContent = vx.toFixed(1);
-            document.getElementById(`val-vy${suffix}`).textContent = vy.toFixed(1);
-        };
-
-        updateBallStats(ballA, 'a');
-        updateBallStats(ballB, 'b');
+        const tA = getProjectedFullTime(ballA);
+        const tB = getProjectedFullTime(ballB);
+        document.getElementById('val-t-a').textContent = `${Math.max(0, tA).toFixed(2)} s`;
+        document.getElementById('val-t-b').textContent = `${Math.max(0, tB).toFixed(2)} s`;
     }
 
     function resize() {
@@ -914,6 +963,16 @@
         draw();
     }
     window.addEventListener('resize', resize);
+    document.addEventListener('fullscreenchange', () => {
+        updateFullscreenButton();
+        resize();
+    });
+    document.addEventListener('webkitfullscreenchange', () => {
+        updateFullscreenButton();
+        resize();
+    });
+    document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+    document.getElementById('btn-fs-exit').addEventListener('click', toggleFullscreen);
 
     function drawArrow(ctx, fromX, fromY, toX, toY, color) {
         const headlen = 10;

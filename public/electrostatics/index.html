@@ -1,0 +1,3214 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electrostatics Lab | E &amp; M Interactive</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg2: #f7f9fc;
+      --surface: #ffffff;
+      --surface2: #f3f6fb;
+      --ink: #1a2333;
+      --muted: #5c6b82;
+      --line: #d8e0ec;
+      --plus: #e24535;
+      --minus: #3b82f6;
+      --accent: #c99212;
+      --ok: #1a9a5c;
+      --warn: #d97706;
+      --danger: #e24535;
+      --radius: 16px;
+      --shadow: 0 10px 32px rgba(26, 35, 51, 0.08);
+      --font: "IBM Plex Sans", system-ui, sans-serif;
+      --display: "Fraunces", Georgia, serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html.s3phy-embed, html.s3phy-embed body {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    html.s3phy-embed body { min-height: 0; }
+    html.s3phy-embed .wrap {
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 500px at 0% 0%, rgba(59, 130, 246, 0.10), transparent 55%),
+        radial-gradient(800px 480px at 100% 10%, rgba(226, 69, 53, 0.08), transparent 50%),
+        radial-gradient(700px 400px at 50% 100%, rgba(201, 146, 18, 0.07), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .mono { font-family: var(--mono); }
+
+    .wrap {
+      width: min(1280px, calc(100% - 1.5rem));
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+    }
+
+    /* Header */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: 0.95rem; }
+    .brand-mark {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, #eef3fa);
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .brand-mark::before {
+      background: var(--plus);
+      top: 12px; left: 14px;
+      box-shadow: 0 0 12px rgba(255, 107, 90, 0.7);
+      animation: floatCharge 2.4s ease-in-out infinite;
+    }
+    .brand-mark::after {
+      background: var(--minus);
+      bottom: 12px; right: 14px;
+      box-shadow: 0 0 12px rgba(61, 214, 198, 0.7);
+      animation: floatCharge 2.4s ease-in-out infinite reverse;
+    }
+    @keyframes floatCharge {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(4px, -3px); }
+    }
+    .brand h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(1.4rem, 2.8vw, 1.95rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.92rem; }
+
+    .lang-toggle {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .lang-toggle button.active {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1rem;
+      scrollbar-width: thin;
+    }
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 0.55rem 0.95rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: 0.2s ease;
+    }
+    .tab:hover { color: var(--ink); border-color: #b8c5d8; }
+    .tab.active {
+      background: linear-gradient(135deg, #fff8e8, #fff3d1);
+      color: var(--ink);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(201, 146, 18, 0.2);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    #panel-charging > .card {
+      position: relative;
+    }
+    #chargeConfetti {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .card-hd {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .card-hd h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 1.35rem;
+    }
+    .card-hd .hint { color: var(--muted); font-size: 0.9rem; }
+    .card-bd { padding: 1.15rem 1.25rem 1.35rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 1rem;
+    }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .stage {
+      position: relative;
+      background:
+        linear-gradient(180deg, #ffffff, #f5f8fc);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      min-height: 340px;
+      overflow: hidden;
+    }
+    .stage canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 340px;
+      touch-action: none;
+    }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .info-box {
+      background: var(--surface2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+    .info-box h3 {
+      margin: 0 0 0.4rem;
+      font-size: 0.95rem;
+      color: #8a6808;
+      font-weight: 700;
+    }
+    .info-box p, .info-box li {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .info-box ul { margin: 0.35rem 0 0; padding-left: 1.1rem; }
+    .info-box li { margin-bottom: 0.25rem; }
+
+    .readout {
+      font-family: var(--mono);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .readout .val { color: #8a6808; }
+    .readout .plus-c { color: var(--plus); }
+    .readout .minus-c { color: var(--minus); }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .ctrl-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .ctrl-row label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .ctrl-row label span.mono { color: var(--ink); }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      height: 6px;
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--surface2);
+      color: var(--ink);
+      padding: 0.55rem 0.9rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: 0.15s ease;
+    }
+    .btn:hover { border-color: #b8c5d8; background: #e9eef6; }
+    .btn.primary {
+      background: linear-gradient(135deg, #f0c14b, #d4a52e);
+      color: #1a1408;
+      border-color: transparent;
+    }
+    .btn.primary:hover { filter: brightness(1.05); }
+    .btn.blue {
+      background: #faf0d2;
+      color: #8a6808;
+      border-color: #e0c06a;
+    }
+    .btn.blue:hover { background: #f5e4b0; border-color: #d4a52e; }
+    .btn.blue.active-mode {
+      background: linear-gradient(135deg, #f0c14b, #d4a52e);
+      color: #1a1408;
+      border-color: #c99212;
+    }
+    .btn.ghost-plus { border-color: rgba(226,69,53,0.4); color: var(--plus); background: rgba(226,69,53,0.06); }
+    .btn.ghost-minus { border-color: rgba(59,130,246,0.4); color: var(--minus); background: rgba(59,130,246,0.06); }
+    .btn.active-mode {
+      background: rgba(201, 146, 18, 0.12);
+      border-color: var(--accent);
+      color: #8a6808;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .charge-reset {
+      padding: 0.85rem 1.75rem;
+      font-size: 1.15rem;
+      min-width: 9rem;
+      font-weight: 700;
+    }
+
+    .efield-hd {
+      align-items: center;
+    }
+    .efield-title-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.65rem 0.75rem;
+      min-width: 0;
+    }
+    .efield-title-row h2 { margin: 0; }
+    .efield-title-row .btn-row { margin: 0; }
+    .efield-title-row .btn {
+      padding: 0.7rem 1.15rem;
+      font-size: 1.05rem;
+      border-radius: 12px;
+    }
+    .probe-sign-toggle {
+      display: inline-flex;
+      gap: 0.35rem;
+      padding-left: 0.55rem;
+      margin-left: 0.15rem;
+      border-left: 1px solid var(--line);
+    }
+    .probe-sign-toggle .btn.active-mode.ghost-plus {
+      background: rgba(226, 69, 53, 0.16);
+      border-color: var(--plus);
+      color: var(--plus);
+    }
+    .probe-sign-toggle .btn.active-mode.ghost-minus {
+      background: rgba(59, 130, 246, 0.18);
+      border-color: var(--minus);
+      color: var(--minus);
+    }
+    .field-stage {
+      min-height: 0;
+      /* Fit page without scroll; keep a balanced landscape ratio */
+      width: min(100%, 720px, calc((100vh - 230px) * 1.7));
+      margin: 0 auto;
+      background: #f8fafc;
+    }
+    .field-stage canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 0;
+      aspect-ratio: 680 / 400;
+    }
+    .field-readout-bar {
+      margin-top: 0.65rem;
+      width: min(100%, 720px, calc((100vh - 230px) * 1.7));
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      padding: 0.55rem 0.85rem;
+      background: var(--surface2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .pill {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.28rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(240, 193, 75, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(240, 193, 75, 0.3);
+    }
+    .pill.ok { background: rgba(62, 207, 142, 0.12); color: var(--ok); border-color: rgba(62, 207, 142, 0.3); }
+    .pill.bad { background: rgba(255, 107, 90, 0.12); color: var(--danger); border-color: rgba(255, 107, 90, 0.3); }
+
+    .formula {
+      font-family: var(--mono);
+      background: #f0f6ff;
+      border: 1px solid #bfd3f7;
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      font-size: 0.9rem;
+      color: var(--minus);
+      text-align: center;
+    }
+
+    /* Charge ID station */
+    #idStage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      padding: 1.25rem 1rem;
+    }
+    .charge-objects {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 3.25rem;
+      width: 100%;
+      position: relative;
+      flex: 1;
+      min-height: 260px;
+    }
+    .obj-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      z-index: 2;
+      transition: transform 1.35s cubic-bezier(0.34, 1.05, 0.45, 1);
+    }
+    .obj-tag {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+    .obj {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      border: 3px solid;
+      transition: transform 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.3s;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+    }
+    .obj .particles {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+    }
+    .particle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      margin-top: -10px;
+      display: grid;
+      place-items: center;
+      font-size: 0.82rem;
+      font-weight: 900;
+      line-height: 1;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      transition: opacity 0.35s ease;
+      will-change: left, top;
+      border-radius: 50%;
+      border: 2px solid #111;
+      color: #111;
+      box-shadow: none;
+      pointer-events: none;
+    }
+    .particle.proton {
+      background: #ff9a9a;
+    }
+    .particle.electron {
+      background: #90caf9;
+    }
+    .obj.pos {
+      background: #fff;
+      border-color: var(--plus);
+      box-shadow: 0 0 0 6px rgba(226, 69, 53, 0.08), 0 10px 28px rgba(226, 69, 53, 0.12);
+    }
+    .obj.neg {
+      background: #fff;
+      border-color: var(--minus);
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.08), 0 10px 28px rgba(59, 130, 246, 0.12);
+    }
+    .obj.neu {
+      background: #fff;
+      border-color: #8a97ab;
+      box-shadow: 0 0 0 6px rgba(92, 107, 130, 0.05), 0 8px 20px rgba(26, 35, 51, 0.06);
+    }
+    .obj.blank {
+      background: #fff;
+      border-color: #c5cedc;
+      box-shadow: 0 0 0 6px rgba(92, 107, 130, 0.03), 0 6px 16px rgba(26, 35, 51, 0.04);
+    }
+    /* Attraction: close the 3.25rem gap so the circles touch and stay stuck */
+    .obj-wrap.attract-l { transform: translateX(calc(1.625rem + 2px)); }
+    .obj-wrap.attract-r { transform: translateX(calc(-1.625rem - 2px)); }
+    .obj-wrap.attract-l .obj,
+    .obj-wrap.attract-r .obj {
+      box-shadow: 0 0 0 6px rgba(26, 154, 92, 0.1), 0 10px 28px rgba(26, 154, 92, 0.14);
+    }
+    .obj-wrap.repel-l .obj { animation: repelL 1.25s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate; }
+    .obj-wrap.repel-r .obj { animation: repelR 1.25s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate; }
+
+    @keyframes repelL { to { transform: translateX(-22px); } }
+    @keyframes repelR { to { transform: translateX(22px); } }
+
+    .force-label {
+      display: none;
+      margin-bottom: 0.75rem;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: var(--surface2);
+      border: 1px solid var(--line);
+    }
+    .force-label.show { display: inline-flex; }
+    .force-label.attract {
+      color: var(--ok);
+      background: rgba(26, 154, 92, 0.1);
+      border-color: rgba(26, 154, 92, 0.3);
+    }
+    .force-label.repel {
+      color: var(--warn);
+      background: rgba(217, 119, 6, 0.1);
+      border-color: rgba(217, 119, 6, 0.3);
+    }
+    .force-label.none {
+      color: var(--muted);
+      background: var(--surface2);
+    }
+    .force-arrows {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 72px;
+      height: 24px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 1;
+    }
+    .force-arrows.show { opacity: 1; }
+    .force-arrows svg { width: 100%; height: 100%; }
+
+    /* Charging methods */
+    .method-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.85rem;
+    }
+    .charging-hd {
+      align-items: center;
+    }
+    .charging-hd-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .charge-below {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-top: 1rem;
+      width: 100%;
+    }
+
+    .charge-step-guide {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 700px;
+      margin: 0 auto 0.75rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: 12px;
+      background: #fff4d6;
+      border: 2px solid rgba(201, 146, 18, 0.55);
+      box-shadow: 0 4px 14px rgba(201, 146, 18, 0.12);
+    }
+    .charge-step-guide.done {
+      background: rgba(26, 154, 92, 0.12);
+      border-color: rgba(26, 154, 92, 0.45);
+    }
+    .charge-step-guide.warn {
+      background: rgba(226, 69, 53, 0.1);
+      border-color: rgba(226, 69, 53, 0.4);
+    }
+    .charge-step-num {
+      flex: 0 0 auto;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1rem;
+      background: #c99212;
+      color: #1a1408;
+    }
+    .charge-step-guide.done .charge-step-num {
+      background: var(--ok);
+      color: #fff;
+    }
+    .charge-step-guide.warn .charge-step-num {
+      background: var(--danger);
+      color: #fff;
+    }
+    .charge-step-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #5a4508;
+      line-height: 1.35;
+    }
+    .charge-step-guide.done .charge-step-text { color: #146b3a; }
+    .charge-step-guide.warn .charge-step-text { color: #9e2f24; }
+    .action-prompt {
+      background: #fff8e8;
+      border: 1px solid rgba(201, 146, 18, 0.35);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #6b5208;
+      line-height: 1.4;
+    }
+    .action-prompt:empty { display: none; }
+    .action-prompt.warn {
+      background: rgba(226, 69, 53, 0.08);
+      border-color: rgba(226, 69, 53, 0.3);
+      color: #b83228;
+    }
+    .action-prompt.ok {
+      background: rgba(26, 154, 92, 0.1);
+      border-color: rgba(26, 154, 92, 0.35);
+      color: var(--ok);
+    }
+    #chargeCanvas { cursor: grab; }
+    #chargeCanvas.dragging { cursor: grabbing; }
+    #panel-charging .stage {
+      max-width: 700px;
+      margin-inline: auto;
+      min-height: 0;
+    }
+    #panel-charging .stage canvas {
+      min-height: 0;
+      height: auto;
+      max-height: 400px;
+    }
+
+    /* Quiz */
+    .quiz-q {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      line-height: 1.45;
+    }
+    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .opt {
+      text-align: left;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface2);
+      transition: 0.15s ease;
+    }
+    .opt:hover:not(:disabled) { border-color: #b8c5d8; }
+    .opt.selected { border-color: var(--accent); background: rgba(201, 146, 18, 0.1); }
+    .opt.correct { border-color: var(--ok); background: rgba(26, 154, 92, 0.1); }
+    .opt.wrong { border-color: var(--danger); background: rgba(226, 69, 53, 0.08); }
+    .quiz-feedback {
+      margin-top: 0.85rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.ok {
+      background: rgba(62, 207, 142, 0.1);
+      border: 1px solid rgba(62, 207, 142, 0.35);
+      color: var(--ok);
+    }
+    .quiz-feedback.bad {
+      background: rgba(226, 69, 53, 0.08);
+      border: 1px solid rgba(226, 69, 53, 0.3);
+      color: #b83228;
+    }
+    .quiz-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .score-badge {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .legend i {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 0.35rem;
+      vertical-align: middle;
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+    }
+    .welcome h2 {
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      margin: 0 0 0.6rem;
+    }
+    .welcome p {
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 1.5rem;
+    }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .module-card {
+      background: var(--surface2);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.1rem;
+      text-align: left;
+      transition: 0.2s ease;
+    }
+    .module-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .module-card .num {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .module-card h3 {
+      margin: 0.35rem 0 0.25rem;
+      font-size: 1rem;
+      font-family: var(--display);
+    }
+    .module-card p {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    footer {
+      margin-top: 1.75rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          <h1>
+            <span class="en">Electrostatics Lab</span>
+            <span class="zh">靜電學實驗室</span>
+          </h1>
+          <p>
+            <span class="en">Interactive E &amp; M · Chapter 1 concepts</span>
+            <span class="zh">互動電磁學 · 第一章概念</span>
+          </p>
+        </div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" id="langEn" class="active">EN</button>
+        <button type="button" id="langZh">中文</button>
+      </div>
+    </header>
+
+    <nav class="tabs" id="tabs" aria-label="Lab modules">
+      <button class="tab active" data-panel="identify">
+        <span class="en">1 · Charge ID</span><span class="zh">1 · 電荷辨識</span>
+      </button>
+      <button class="tab" data-panel="charging">
+        <span class="en">2 · Charging</span><span class="zh">2 · 充電方法</span>
+      </button>
+      <button class="tab" data-panel="efield">
+        <span class="en">3 · E-Field</span><span class="zh">3 · 電場</span>
+      </button>
+    </nav>
+
+    <!-- IDENTIFY -->
+    <section class="panel active" id="panel-identify">
+      <div class="card">
+        <div class="card-hd">
+          <h2><span class="en">Charge Detective</span><span class="zh">電荷偵探</span></h2>
+          <span class="hint"><span class="en">Identify like, unlike &amp; neutral</span><span class="zh">辨識同號、異號與中性</span></span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2">
+            <div class="stage" id="idStage">
+              <div class="force-label" id="forceLabel" aria-live="polite"></div>
+              <div class="charge-objects">
+                <div class="force-arrows" id="forceArrows" aria-hidden="true">
+                  <svg viewBox="0 0 72 24" fill="none">
+                    <path id="arrowPath" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M8 12h56"/>
+                    <path id="arrowHeadL" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M14 6L8 12l6 6"/>
+                    <path id="arrowHeadR" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M58 6l6 6-6 6"/>
+                  </svg>
+                </div>
+                <div class="obj-wrap" id="wrapA">
+                  <div class="obj" id="objA"><div class="particles" id="partsA"></div></div>
+                  <div class="obj-tag">A</div>
+                </div>
+                <div class="obj-wrap" id="wrapB">
+                  <div class="obj" id="objB"><div class="particles" id="partsB"></div></div>
+                  <div class="obj-tag">B</div>
+                </div>
+              </div>
+            </div>
+            <div class="side">
+              <div class="info-box">
+                <h3><span class="en">Key rules</span><span class="zh">關鍵規則</span></h3>
+                <ul>
+                  <li><span class="en">Like charges <strong>repel</strong></span><span class="zh">同號電荷<strong>排斥</strong></span></li>
+                  <li><span class="en">Unlike charges <strong>attract</strong></span><span class="zh">異號電荷<strong>吸引</strong></span></li>
+                  <li><span class="en">Charged + neutral → <strong>attract</strong> (induction)</span><span class="zh">帶電 + 中性 → <strong>吸引</strong>（感應）</span></li>
+                  <li><span class="en">Two neutrals → <strong>no force</strong></span><span class="zh">兩個中性 → <strong>無力</strong></span></li>
+                  <li><span class="en">Charging = movement of electrons (−)</span><span class="zh">充電 = 電子（負電荷）移動</span></li>
+                </ul>
+              </div>
+              <div class="controls">
+                <div class="ctrl-row">
+                  <label><span class="en">Object A</span><span class="zh">物體 A</span></label>
+                  <div class="btn-row" id="chargeA">
+                    <button class="btn ghost-plus" data-ch="pos">+</button>
+                    <button class="btn ghost-minus" data-ch="neg">−</button>
+                    <button class="btn" data-ch="neu"><span class="en">Neutral</span><span class="zh">中性</span></button>
+                  </div>
+                </div>
+                <div class="ctrl-row">
+                  <label><span class="en">Object B</span><span class="zh">物體 B</span></label>
+                  <div class="btn-row" id="chargeB">
+                    <button class="btn ghost-plus" data-ch="pos">+</button>
+                    <button class="btn ghost-minus" data-ch="neg">−</button>
+                    <button class="btn" data-ch="neu"><span class="en">Neutral</span><span class="zh">中性</span></button>
+                  </div>
+                </div>
+                <button class="btn primary" id="testForce">
+                  <span class="en">Test interaction</span><span class="zh">測試相互作用</span>
+                </button>
+                <div class="readout" id="idReadout"></div>
+                <div class="pill-row" id="idGuessRow" style="display:none">
+                  <span class="pill" id="idResultPill"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHARGING -->
+    <section class="panel" id="panel-charging">
+      <div class="card">
+        <canvas id="chargeConfetti" aria-hidden="true"></canvas>
+        <div class="card-hd charging-hd">
+          <div class="charging-hd-main">
+            <h2><span class="en">Charging Methods Lab</span><span class="zh">充電方法實驗室</span></h2>
+            <span class="hint"><span class="en">Drag on the canvas to charge</span><span class="zh">在畫布上拖動來起電</span></span>
+          </div>
+          <button class="btn charge-reset" id="chargeReset"><span class="en">Reset</span><span class="zh">重置</span></button>
+        </div>
+        <div class="card-bd">
+          <div class="method-tabs" id="methodTabs">
+            <button class="btn active-mode" data-method="friction"><span class="en">1 Friction</span><span class="zh">1 摩擦</span></button>
+            <button class="btn" data-method="sharing"><span class="en">2 Sharing</span><span class="zh">2 分享</span></button>
+            <button class="btn" data-method="earthing"><span class="en">3 Earthing</span><span class="zh">3 接地</span></button>
+            <button class="btn" data-method="induction"><span class="en">4 Induction</span><span class="zh">4 感應</span></button>
+          </div>
+          <div class="charge-step-guide" id="chargeStepGuide" aria-live="polite">
+            <span class="charge-step-num" id="chargeStepNum">1</span>
+            <span class="charge-step-text" id="chargeStepText"></span>
+          </div>
+          <div class="stage">
+            <canvas id="chargeCanvas" width="640" height="400"></canvas>
+          </div>
+          <div class="charge-below">
+            <div class="info-box">
+              <h3 id="methodTitle"></h3>
+              <p id="methodDesc"></p>
+            </div>
+            <div class="action-prompt" id="actionPrompt"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- E-FIELD -->
+    <section class="panel" id="panel-efield">
+      <div class="card">
+        <div class="card-hd efield-hd">
+          <div class="efield-title-row">
+            <h2><span class="en">Electric Field Explorer</span><span class="zh">電場探索器</span></h2>
+            <div class="btn-row" id="fieldPresets">
+              <button class="btn blue active-mode" data-preset="dipole"><span class="en">Dipole +/−</span><span class="zh">偶極 +/−</span></button>
+              <button class="btn blue" data-preset="like"><span class="en">Like +/+</span><span class="zh">同號 +/+</span></button>
+              <button class="btn blue" data-preset="single"><span class="en">Single +</span><span class="zh">單電荷 +</span></button>
+              <button class="btn blue" data-preset="triple"><span class="en">3 charges</span><span class="zh">三電荷</span></button>
+            </div>
+            <div class="btn-row probe-sign-toggle" id="probeSignToggle">
+              <button type="button" class="btn ghost-plus active-mode" data-probe="+1"><span class="en">+q</span><span class="zh">+q</span></button>
+              <button type="button" class="btn ghost-minus" data-probe="-1"><span class="en">−q</span><span class="zh">−q</span></button>
+            </div>
+          </div>
+          <span class="hint"><span class="en">Field lines &amp; E = Q / (4π ε₀ r²)</span><span class="zh">電場線與 E = Q / (4π ε₀ r²)</span></span>
+        </div>
+        <div class="card-bd">
+          <div class="stage field-stage">
+            <canvas id="fieldCanvas" width="680" height="400"></canvas>
+          </div>
+          <div class="field-readout-bar readout" id="fieldReadout"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span class="en">Electrostatics Lab · for learning from Chapter 1 notes · works best in Google Chrome</span>
+      <span class="zh">靜電學實驗室 · 配合第一章筆記學習 · 建議使用 Google Chrome</span>
+    </footer>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  const EPS0 = 8.85e-12;
+  const K = 1 / (4 * Math.PI * EPS0); // ≈ 9e9
+
+  function roundRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+
+  /* —— Language —— */
+  const html = document.documentElement;
+  function setLang(lang) {
+    html.lang = lang;
+    document.getElementById("langEn").classList.toggle("active", lang === "en");
+    document.getElementById("langZh").classList.toggle("active", lang === "zh-HK");
+    localStorage.setItem("eslab-lang", lang);
+    // refresh dynamic text that depends on lang
+    if (window._refreshLang) window._refreshLang();
+  }
+  document.getElementById("langEn").onclick = () => setLang("en");
+  document.getElementById("langZh").onclick = () => setLang("zh-HK");
+  function hubLangToLocal(lang) {
+    const s = String(lang || "").toLowerCase();
+    return s.startsWith("zh") ? "zh-HK" : "en";
+  }
+  const params = new URLSearchParams(location.search);
+  const urlLang = params.get("lang");
+  setLang(urlLang ? hubLangToLocal(urlLang) : (localStorage.getItem("eslab-lang") || "en"));
+  window.addEventListener("message", (ev) => {
+    if (ev.data?.type !== "s3phy:lang") return;
+    setLang(hubLangToLocal(ev.data.lang));
+  });
+
+  function isZh() { return html.lang === "zh-HK"; }
+  function t(en, zh) { return isZh() ? zh : en; }
+
+  /* —— Tabs —— */
+  function showPanel(id) {
+    document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(tab => {
+      tab.classList.toggle("active", tab.dataset.panel === id);
+    });
+    const panel = document.getElementById("panel-" + id);
+    if (panel) panel.classList.add("active");
+    // kick redraws
+    if (id === "efield") drawField();
+    if (id === "charging") drawCharging();
+  }
+  document.getElementById("tabs").addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab");
+    if (tab) showPanel(tab.dataset.panel);
+  });
+
+  /* ========== 1. CHARGE DETECTIVE ========== */
+  let chA = null, chB = null;
+
+  // 0° = right, 90° = down — charges sit on the INNER RIM (center stays empty)
+  function rimXY(angleDeg, radiusPct) {
+    const rad = (angleDeg * Math.PI) / 180;
+    const r = radiusPct == null ? 38 : radiusPct;
+    return {
+      x: 50 + r * Math.cos(rad),
+      y: 50 + r * Math.sin(rad)
+    };
+  }
+
+  function anglesAlongArc(centerDeg, count, spreadDeg) {
+    if (count <= 1) return [centerDeg];
+    const start = centerDeg - spreadDeg / 2;
+    const step = spreadDeg / (count - 1);
+    return Array.from({ length: count }, (_, i) => start + i * step);
+  }
+
+  function anglesAround(count) {
+    return Array.from({ length: count }, (_, i) => -90 + (360 * i) / count);
+  }
+
+  const RIM_R = 38;
+  const particleAnimIds = new WeakMap();
+
+  function ensureParticles(container, kind) {
+    if (!kind || kind === "blank") {
+      [...container.querySelectorAll(".particle")].forEach(cancelParticleAnim);
+      container.innerHTML = "";
+      return [];
+    }
+
+    const want = kind === "neu"
+      ? ["proton", "proton", "proton", "proton", "electron", "electron", "electron", "electron"]
+      : kind === "pos"
+        ? Array(8).fill("proton")
+        : Array(8).fill("electron");
+
+    const existing = [...container.querySelectorAll(".particle")].map(p =>
+      p.classList.contains("proton") ? "proton" : "electron"
+    );
+    const same = existing.length === want.length && existing.every((t, i) => t === want[i]);
+    if (same) return [...container.querySelectorAll(".particle")];
+
+    [...container.querySelectorAll(".particle")].forEach(cancelParticleAnim);
+    container.innerHTML = "";
+    return want.map(type => {
+      const p = document.createElement("span");
+      p.className = "particle " + type;
+      p.textContent = type === "proton" ? "+" : "−";
+      container.appendChild(p);
+      return p;
+    });
+  }
+
+  function getParticleAngle(p) {
+    if (p.dataset.angle != null && p.dataset.angle !== "") {
+      return parseFloat(p.dataset.angle);
+    }
+    const x = parseFloat(p.style.left);
+    const y = parseFloat(p.style.top);
+    if (Number.isFinite(x) && Number.isFinite(y)) {
+      return (Math.atan2(y - 50, x - 50) * 180) / Math.PI;
+    }
+    return -90;
+  }
+
+  function angleDelta(from, to) {
+    return ((to - from + 540) % 360) - 180;
+  }
+
+  function setParticlePose(p, angleDeg, radiusPct) {
+    const r = radiusPct == null ? RIM_R : radiusPct;
+    const { x, y } = rimXY(angleDeg, r);
+    p.style.left = x + "%";
+    p.style.top = y + "%";
+    p.dataset.angle = String(angleDeg);
+  }
+
+  function easeSoftSettle(t) {
+    // Ease in gently, settle smoothly (feels less mechanical than linear ease)
+    return t < 0.5
+      ? 2 * t * t
+      : 1 - Math.pow(-2 * t + 2, 2.4) / 2;
+  }
+
+  /** Pair each particle with the nearest unused target angle (same charge type only). */
+  function matchAnglesAlongRim(nodes, targetAngles) {
+    const result = new Array(nodes.length);
+    const groups = { proton: [], electron: [] };
+    nodes.forEach((p, i) => {
+      groups[p.classList.contains("proton") ? "proton" : "electron"].push(i);
+    });
+    Object.keys(groups).forEach(type => {
+      const indices = groups[type];
+      if (!indices.length) return;
+      const targets = indices.map(i =>
+        targetAngles[i] != null ? targetAngles[i] : targetAngles[targetAngles.length - 1]
+      );
+      const used = new Array(targets.length).fill(false);
+      indices.forEach(nodeIdx => {
+        const from = getParticleAngle(nodes[nodeIdx]);
+        let best = 0, bestDist = Infinity;
+        for (let j = 0; j < targets.length; j++) {
+          if (used[j]) continue;
+          const d = Math.abs(angleDelta(from, targets[j]));
+          if (d < bestDist) {
+            bestDist = d;
+            best = j;
+          }
+        }
+        used[best] = true;
+        result[nodeIdx] = targets[best];
+      });
+    });
+    return result;
+  }
+
+  function cancelParticleAnim(p) {
+    const id = particleAnimIds.get(p);
+    if (id) cancelAnimationFrame(id);
+    particleAnimIds.delete(p);
+  }
+
+  function placeOnAngles(nodes, angles) {
+    nodes.forEach((p, i) => {
+      cancelParticleAnim(p);
+      const a = angles[i] != null ? angles[i] : angles[angles.length - 1];
+      setParticlePose(p, a, RIM_R);
+    });
+  }
+
+  function animateParticlesAlongRim(nodes, targetAngles) {
+    const matched = matchAnglesAlongRim(nodes, targetAngles);
+    nodes.forEach((p, i) => {
+      cancelParticleAnim(p);
+      const from = getParticleAngle(p);
+      const to = matched[i];
+      const delta = angleDelta(from, to);
+      const isElectron = p.classList.contains("electron");
+      // Electrons drift a bit sooner/faster; protons lag slightly (more inertial)
+      const delay = i * 70 + (isElectron ? 0 : 100) + Math.random() * 80;
+      const duration = (isElectron ? 1400 : 1750) + Math.abs(delta) * 3.2;
+      const t0 = performance.now() + delay;
+
+      function frame(now) {
+        if (now < t0) {
+          particleAnimIds.set(p, requestAnimationFrame(frame));
+          return;
+        }
+        const t = Math.min(1, (now - t0) / duration);
+        const e = easeSoftSettle(t);
+        // Soft radial bob so motion feels less rigid on the circle
+        const r = RIM_R + Math.sin(t * Math.PI) * (isElectron ? 2.2 : 1.2);
+        setParticlePose(p, from + delta * e, r);
+        if (t < 1) {
+          particleAnimIds.set(p, requestAnimationFrame(frame));
+        } else {
+          setParticlePose(p, to, RIM_R);
+          particleAnimIds.delete(p);
+        }
+      }
+      particleAnimIds.set(p, requestAnimationFrame(frame));
+    });
+  }
+
+  /** Build rim angles for a given charge kind + layout (matches textbook polarization) */
+  function anglesFor(kind, layout) {
+    if (kind === "neu") {
+      if (layout === "split-lr") {
+        // Reference: − on left arc, + on right arc (nodes = 4p then 4e)
+        return [
+          ...anglesAlongArc(0, 4, 70),
+          ...anglesAlongArc(180, 4, 70)
+        ];
+      }
+      if (layout === "split-rl") {
+        // + left, − right
+        return [
+          ...anglesAlongArc(180, 4, 70), // protons left
+          ...anglesAlongArc(0, 4, 70)    // electrons right
+        ];
+      }
+      // mixed at rest: alternate around rim — but nodes are 4p+4e, so assign interleaved angles
+      const ring = anglesAround(8);
+      // protons take even indices, electrons odd — remap:
+      const pAng = [ring[0], ring[2], ring[4], ring[6]];
+      const eAng = [ring[1], ring[3], ring[5], ring[7]];
+      return [...pAng, ...eAng];
+    }
+    // charged: 8 of one type
+    if (layout === "crowd-left") return anglesAlongArc(180, 8, 110);
+    if (layout === "crowd-right") return anglesAlongArc(0, 8, 110);
+    return anglesAround(8);
+  }
+
+  function pickLayout(side, kind, mode, otherKind) {
+    if (mode === "rest" || mode === "none") {
+      return kind === "neu" ? "mixed" : "uniform";
+    }
+    if (kind === "neu") {
+      // Electrons → toward +, protons → toward −
+      if (otherKind === "pos") return side === "A" ? "split-rl" : "split-lr";
+      if (otherKind === "neg") return side === "A" ? "split-lr" : "split-rl";
+      return "mixed";
+    }
+    if (mode === "attract") return side === "A" ? "crowd-right" : "crowd-left";
+    if (mode === "repel") return side === "A" ? "crowd-left" : "crowd-right";
+    return "uniform";
+  }
+
+  function renderCharges(mode) {
+    const m = mode || "rest";
+    const elA = document.getElementById("objA");
+    const elB = document.getElementById("objB");
+    elA.className = "obj " + objClassFor(chA);
+    elB.className = "obj " + objClassFor(chB);
+
+    if (!chA || !chB) {
+      ensureParticles(document.getElementById("partsA"), chA);
+      ensureParticles(document.getElementById("partsB"), chB);
+      return;
+    }
+
+    const layoutA = pickLayout("A", chA, m, chB);
+    const layoutB = pickLayout("B", chB, m, chA);
+
+    const nodesA = ensureParticles(document.getElementById("partsA"), chA);
+    const nodesB = ensureParticles(document.getElementById("partsB"), chB);
+
+    placeOnAngles(nodesA, anglesFor(chA, layoutA === "uniform" ? "uniform" : layoutA));
+    placeOnAngles(nodesB, anglesFor(chB, layoutB === "uniform" ? "uniform" : layoutB));
+  }
+
+  function animateToInteraction(mode) {
+    // Start from rest layout, then slide along the rim to polarized/crowded layout
+    const layoutRestA = pickLayout("A", chA, "rest", chB);
+    const layoutRestB = pickLayout("B", chB, "rest", chA);
+    const nodesA = ensureParticles(document.getElementById("partsA"), chA);
+    const nodesB = ensureParticles(document.getElementById("partsB"), chB);
+    placeOnAngles(nodesA, anglesFor(chA, layoutRestA));
+    placeOnAngles(nodesB, anglesFor(chB, layoutRestB));
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        animateParticlesAlongRim(nodesA, anglesFor(chA, pickLayout("A", chA, mode, chB)));
+        animateParticlesAlongRim(nodesB, anglesFor(chB, pickLayout("B", chB, mode, chA)));
+      });
+    });
+  }
+
+  function clearMotion() {
+    document.getElementById("wrapA").classList.remove("attract-l", "repel-l");
+    document.getElementById("wrapB").classList.remove("attract-r", "repel-r");
+    const fl = document.getElementById("forceLabel");
+    fl.textContent = "";
+    fl.className = "force-label";
+    const arrows = document.getElementById("forceArrows");
+    arrows.className = "force-arrows";
+    arrows.style.color = "";
+  }
+
+  let forceTested = false;
+  const testForceBtn = document.getElementById("testForce");
+
+  function setTestForceBtnMode(tested) {
+    forceTested = tested;
+    testForceBtn.classList.remove("primary", "blue");
+    if (tested) {
+      testForceBtn.classList.add("blue");
+      testForceBtn.innerHTML = '<span class="en">Reset</span><span class="zh">重置</span>';
+      testForceBtn.disabled = false;
+    } else {
+      testForceBtn.classList.add("primary");
+      testForceBtn.innerHTML = '<span class="en">Test interaction</span><span class="zh">測試相互作用</span>';
+      testForceBtn.disabled = !chA || !chB;
+    }
+  }
+
+  function objClassFor(ch) {
+    if (!ch) return "blank";
+    return ch === "pos" ? "pos" : ch === "neg" ? "neg" : "neu";
+  }
+
+  function syncChargeSelection() {
+    [["chargeA", chA], ["chargeB", chB]].forEach(([id, ch]) => {
+      document.querySelectorAll("#" + id + " .btn").forEach(b => {
+        b.classList.toggle("active-mode", !!ch && b.dataset.ch === ch);
+      });
+    });
+  }
+
+  function paintObject(side, ch, animate) {
+    const el = document.getElementById(side === "A" ? "objA" : "objB");
+    const parts = document.getElementById(side === "A" ? "partsA" : "partsB");
+    el.className = "obj " + objClassFor(ch);
+    const nodes = ensureParticles(parts, ch);
+    if (!ch) return;
+    const rest = anglesFor(ch, pickLayout(side, ch, "rest", side === "A" ? chB : chA));
+    if (animate && nodes.some(p => p.dataset.angle != null)) {
+      animateParticlesAlongRim(nodes, rest);
+    } else {
+      placeOnAngles(nodes, rest);
+    }
+  }
+
+  function updateIdUI() {
+    clearMotion();
+    paintObject("A", chA, false);
+    paintObject("B", chB, false);
+    document.getElementById("idGuessRow").style.display = "none";
+    document.getElementById("idReadout").innerHTML = "";
+    syncChargeSelection();
+    setTestForceBtnMode(false);
+  }
+
+  function resetChargeDetective() {
+    chA = null;
+    chB = null;
+    updateIdUI();
+  }
+
+  document.getElementById("chargeA").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ch]");
+    if (!b) return;
+    chA = b.dataset.ch;
+    updateIdUI();
+  });
+  document.getElementById("chargeB").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ch]");
+    if (!b) return;
+    chB = b.dataset.ch;
+    updateIdUI();
+  });
+
+  testForceBtn.onclick = () => {
+    if (forceTested) {
+      resetChargeDetective();
+      return;
+    }
+    if (!chA || !chB) return;
+
+    const wrapA = document.getElementById("wrapA");
+    const wrapB = document.getElementById("wrapB");
+    clearMotion();
+    void wrapA.offsetWidth;
+
+    let type, label, explain;
+    if (chA === "neu" && chB === "neu") {
+      type = "none";
+      label = t("NO FORCE", "無力");
+      explain = t(
+        "Both objects are uncharged — equal + and − on the rim, so no net electrostatic force.",
+        "兩個物體皆不帶電 — 邊緣上 + 與 − 數量相等，所以沒有淨靜電力。"
+      );
+      renderCharges("rest");
+    } else if (chA === chB && chA !== "neu") {
+      type = "repel";
+      label = t("REPEL", "排斥");
+      explain = t(
+        "Like charges repel. Charges slide along the rim to the far sides as the objects push apart.",
+        "同號電荷互相排斥。電荷沿邊緣滑到外側，兩物體彼此推開。"
+      );
+      wrapA.classList.add("repel-l");
+      wrapB.classList.add("repel-r");
+      animateToInteraction("repel");
+    } else {
+      type = "attract";
+      label = t("ATTRACT", "吸引");
+      if (chA === "neu" || chB === "neu") {
+        explain = t(
+          "Induction: electrons (−) gather on one side of the rim and protons (+) on the opposite side — center stays empty.",
+          "感應：電子(−)聚集在邊緣一側，質子(+)在另一側 — 中間保持空白。"
+        );
+      } else {
+        explain = t(
+          "Unlike charges attract. Charges crowd along the facing rim of each object.",
+          "異號電荷互相吸引。電荷聚集在兩物體互相靠近的邊緣。"
+        );
+      }
+      wrapA.classList.add("attract-l");
+      wrapB.classList.add("attract-r");
+      animateToInteraction("attract");
+    }
+
+    const fl = document.getElementById("forceLabel");
+    fl.textContent = label;
+    fl.className = "force-label show " + type;
+
+    const arrows = document.getElementById("forceArrows");
+    if (type === "repel") {
+      arrows.className = "force-arrows show";
+      arrows.style.color = "#d97706";
+      document.getElementById("arrowHeadL").setAttribute("d", "M14 6L8 12l6 6");
+      document.getElementById("arrowHeadR").setAttribute("d", "M58 6l6 6-6 6");
+    }
+
+    document.getElementById("idReadout").innerHTML = explain;
+    const pill = document.getElementById("idResultPill");
+    pill.textContent = label;
+    pill.className = "pill " + (type === "repel" ? "bad" : type === "attract" ? "ok" : "");
+    document.getElementById("idGuessRow").style.display = "flex";
+    setTestForceBtnMode(true);
+  };
+  updateIdUI();
+
+  /* ========== 2. CHARGING METHODS ========== */
+  const methods = {
+    friction: {
+      titleEn: "Charging by friction (rubbing)",
+      titleZh: "摩擦起電",
+      descEn: "Most effective for insulators. Electrons transfer from one object to the other. Final charges are equal and opposite.",
+      descZh: "對絕緣體最有效。電子由一物體轉移到另一物體。最終兩物體電荷等量異號。"
+    },
+    sharing: {
+      titleEn: "Charging by sharing",
+      titleZh: "接觸分享電荷",
+      descEn: "Only for conductors. When a charged conductor touches an uncharged one, net charge is shared and evenly distributed.",
+      descZh: "只適用於導體。帶電導體接觸不帶電導體時，淨電荷會分享並均勻分佈。"
+    },
+    earthing: {
+      titleEn: "Charging by earthing (discharge)",
+      titleZh: "接地放電",
+      descEn: "Earthing shares charge with Earth. An isolated charged object that is earthed loses all net charge and becomes neutral.",
+      descZh: "接地是與地球分享電荷。孤立帶電物體接地後，全部淨電荷流入地球，變成中性。"
+    },
+    induction: {
+      titleEn: "Charging by induction",
+      titleZh: "感應起電",
+      descEn: "Bring a charged rod near (no touch). Separate two contacting conductors before removing the rod — they get opposite charges.",
+      descZh: "將帶電棒靠近（不接觸）。在移走棒前分開兩接觸導體 — 它們帶相反電荷。"
+    }
+  };
+
+  let currentMethod = "friction";
+  let chargePhase = "action"; // action | done
+  let chargeHint = "";
+  let chargeHintWarn = false;
+  let dragTarget = null;
+  let lastPtr = null;
+  let transferAnim = null; // { start, duration, particles, msgEn, msgZh }
+  let frictionSepAnim = null; // cloth slide-away after charging
+
+  const lab = {
+    friction: {
+      clothX: 170, clothY: 200, rub: 0, charged: false,
+      transferred: 0, jumping: -1, jumpT0: 0, nextJumpAt: 0, contactArmed: false
+    },
+    sharing: { aX: 220, aY: 200, contacted: false, shared: false },
+    earthing: { tipX: 280, tipY: 250, connected: false, discharged: false },
+    induction: {
+      rodX: 55, rodY: 200,
+      xX: 270, yX: 366,
+      separated: false,
+      polarized: false,
+      polarDone: false,
+      complete: false,
+      tipMsg: ""
+    }
+  };
+
+  const chargeCv = document.getElementById("chargeCanvas");
+  const chargeCtx = chargeCv.getContext("2d");
+  const ROD_FIXED = { x: 470, y: 200, r: 70 };
+  const ROD_TILT = 0.12;
+  const FRICTION_E_INTERVAL = 300; // one electron every 0.3 s while touching
+  const FRICTION_JUMP_MS = 260; // flight time for each −
+  const SHARE_B = { x: 420, y: 200, r: 55 };
+  const EARTH_OBJ = { x: 280, y: 160, r: 55 };
+  const IND_R = 48;
+  let frictionContactRaf = null;
+  let inductionAnim = null; // { kind, start, duration, particles }
+  let inductionAnimRaf = null;
+
+  function freshFrictionState() {
+    return {
+      clothX: 170, clothY: 200, rub: 0, charged: false,
+      transferred: 0, jumping: -1, jumpT0: 0, nextJumpAt: 0, contactArmed: false
+    };
+  }
+
+  let confettiRaf = null;
+  let confettiPieces = null;
+
+  function clearChargeConfetti() {
+    if (confettiRaf) {
+      cancelAnimationFrame(confettiRaf);
+      confettiRaf = null;
+    }
+    confettiPieces = null;
+    const canvas = document.getElementById("chargeConfetti");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function burstChargeConfetti() {
+    clearChargeConfetti();
+    const canvas = document.getElementById("chargeConfetti");
+    if (!canvas) return;
+    const card = canvas.parentElement;
+    const rect = card.getBoundingClientRect();
+    if (rect.width < 8 || rect.height < 8) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = rect.width;
+    const h = rect.height;
+    canvas.width = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const colors = ["#f59e0b", "#ef4444", "#3b82f6", "#22c55e", "#a855f7", "#ec4899", "#06b6d4", "#c99212"];
+    const pieces = [];
+    for (let i = 0; i < 100; i++) {
+      pieces.push({
+        x: w * 0.5 + (Math.random() - 0.5) * w * 0.4,
+        y: h * 0.28 + Math.random() * 50,
+        vx: (Math.random() - 0.5) * 11,
+        vy: -5 - Math.random() * 9,
+        g: 0.16 + Math.random() * 0.14,
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 0.28,
+        pw: 5 + Math.random() * 7,
+        ph: 3 + Math.random() * 5,
+        color: colors[i % colors.length]
+      });
+    }
+    confettiPieces = pieces;
+    const start = performance.now();
+    const duration = 2600;
+
+    function tick(now) {
+      confettiRaf = null;
+      if (!confettiPieces) return;
+      const t = (now - start) / duration;
+      ctx.clearRect(0, 0, w, h);
+      if (t >= 1) {
+        confettiPieces = null;
+        return;
+      }
+      const fade = t > 0.65 ? 1 - (t - 0.65) / 0.35 : 1;
+      for (const p of confettiPieces) {
+        p.vy += p.g;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.993;
+        p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = fade;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.pw / 2, -p.ph / 2, p.pw, p.ph);
+        ctx.restore();
+      }
+      confettiRaf = requestAnimationFrame(tick);
+    }
+    confettiRaf = requestAnimationFrame(tick);
+  }
+
+  function resetLabState(method) {
+    clearChargeConfetti();
+    chargePhase = "action";
+    chargeHint = "";
+    chargeHintWarn = false;
+    dragTarget = null;
+    transferAnim = null;
+    frictionSepAnim = null;
+    inductionAnim = null;
+    if (inductionAnimRaf) {
+      cancelAnimationFrame(inductionAnimRaf);
+      inductionAnimRaf = null;
+    }
+    if (frictionContactRaf) {
+      cancelAnimationFrame(frictionContactRaf);
+      frictionContactRaf = null;
+    }
+    if (method === "friction" || !method) {
+      lab.friction = freshFrictionState();
+    }
+    if (method === "sharing" || !method) {
+      lab.sharing = { aX: 220, aY: 200, contacted: false, shared: false };
+    }
+    if (method === "earthing" || !method) {
+      lab.earthing = { tipX: 280, tipY: 250, connected: false, discharged: false };
+    }
+    if (method === "induction" || !method) {
+      lab.induction = {
+        rodX: 55, rodY: 200,
+        xX: 270, yX: 366,
+        separated: false,
+        polarized: false,
+        polarDone: false,
+        complete: false,
+        tipMsg: ""
+      };
+    }
+  }
+
+  function canvasXY(e) {
+    const rect = chargeCv.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) * (chargeCv.width / rect.width),
+      y: (e.clientY - rect.top) * (chargeCv.height / rect.height)
+    };
+  }
+
+  function hitCircle(px, py, cx, cy, r) {
+    return Math.hypot(px - cx, py - cy) <= r + 8;
+  }
+
+  function hitRod(px, py, rx, ry) {
+    return px >= rx - 10 && px <= rx + 38 && py >= ry - 70 && py <= ry + 70;
+  }
+
+  function clothRodLocal(cx, cy) {
+    const dx = cx - ROD_FIXED.x;
+    const dy = cy - ROD_FIXED.y;
+    const cos = Math.cos(ROD_TILT);
+    const sin = Math.sin(ROD_TILT);
+    return {
+      lx: dx * cos + dy * sin,
+      ly: -dx * sin + dy * cos
+    };
+  }
+
+  /** Cloth body must overlap the rod shaft */
+  function isClothTouchingRod(cx, cy) {
+    const { lx, ly } = clothRodLocal(cx, cy);
+    return lx >= -50 && lx <= -24 && Math.abs(ly) <= 68;
+  }
+
+  function frictionElectronCount() {
+    return ROD_NEG_SLOTS.length;
+  }
+
+  function frictionProgress(f, now) {
+    if (f.charged || chargePhase === "done") return 1;
+    const n = frictionElectronCount();
+    let p = f.transferred;
+    if (f.jumping >= 0) {
+      p += Math.min(1, (now - f.jumpT0) / FRICTION_JUMP_MS);
+    }
+    return Math.min(1, p / n);
+  }
+
+  function electronJumpU(f, moverIdx, now) {
+    if (f.charged || chargePhase === "done") return 1;
+    if (moverIdx < f.transferred) return 1;
+    if (f.jumping === moverIdx) {
+      return Math.min(1, Math.max(0, (now - f.jumpT0) / FRICTION_JUMP_MS));
+    }
+    return 0;
+  }
+
+  function finishFrictionCharging() {
+    const f = lab.friction;
+    if (f.charged) return;
+    f.charged = true;
+    f.rub = 1;
+    f.jumping = -1;
+    f.transferred = frictionElectronCount();
+    dragTarget = null;
+    if (frictionContactRaf) {
+      cancelAnimationFrame(frictionContactRaf);
+      frictionContactRaf = null;
+    }
+    syncChargeUI();
+    enterDone(
+      "Electrons transferred — cloth − , rod + (equal & opposite).",
+      "電子已轉移 — 布負、棒正（等量異號）。"
+    );
+    startFrictionSeparate();
+  }
+
+  /** While cloth touches rod: transfer one − every 0.6 s (speed of rubbing ignored). */
+  function ensureFrictionContactLoop() {
+    if (frictionContactRaf) return;
+    function tick(now) {
+      frictionContactRaf = null;
+      if (currentMethod !== "friction" || chargePhase !== "action" || lab.friction.charged) {
+        return;
+      }
+      const f = lab.friction;
+      const touching = isClothTouchingRod(f.clothX, f.clothY);
+      const n = frictionElectronCount();
+      let dirty = false;
+
+      if (f.jumping >= 0 && now - f.jumpT0 >= FRICTION_JUMP_MS) {
+        f.transferred = Math.min(n, Math.max(f.transferred, f.jumping + 1));
+        f.jumping = -1;
+        dirty = true;
+      }
+
+      if (touching) {
+        if (!f.contactArmed) {
+          f.contactArmed = true;
+          f.nextJumpAt = now; // first electron jumps immediately on contact
+        }
+        if (f.jumping < 0 && f.transferred < n && now >= f.nextJumpAt) {
+          f.jumping = f.transferred;
+          f.jumpT0 = now;
+          f.nextJumpAt = now + FRICTION_E_INTERVAL; // next one 0.3 s later
+          dirty = true;
+        }
+      } else {
+        f.contactArmed = false;
+      }
+
+      const prevRub = f.rub;
+      f.rub = frictionProgress(f, now);
+      if (Math.abs(f.rub - prevRub) > 0.001) dirty = true;
+
+      if (f.transferred >= n && f.jumping < 0) {
+        finishFrictionCharging();
+        return;
+      }
+
+      if (dirty) {
+        syncChargeUI();
+        drawCharging();
+      } else if (f.jumping >= 0 || touching) {
+        drawCharging();
+      }
+
+      frictionContactRaf = requestAnimationFrame(tick);
+    }
+    frictionContactRaf = requestAnimationFrame(tick);
+  }
+
+  function enterDone(msgEn, msgZh) {
+    chargePhase = "done";
+    chargeHint = t(msgEn, msgZh);
+    chargeHintWarn = false;
+    syncChargeUI();
+    drawCharging();
+    burstChargeConfetti();
+  }
+
+  /** Slide cloth away from the rod once friction charging is finished */
+  function startFrictionSeparate() {
+    const f = lab.friction;
+    frictionSepAnim = {
+      start: performance.now(),
+      fromX: f.clothX,
+      fromY: f.clothY,
+      toX: 175,
+      toY: 200,
+      duration: 1400
+    };
+    function tick(now) {
+      if (!frictionSepAnim || currentMethod !== "friction") {
+        frictionSepAnim = null;
+        return;
+      }
+      const u = Math.min(1, (now - frictionSepAnim.start) / frictionSepAnim.duration);
+      const e = 1 - Math.pow(1 - u, 3);
+      f.clothX = frictionSepAnim.fromX + (frictionSepAnim.toX - frictionSepAnim.fromX) * e;
+      f.clothY = frictionSepAnim.fromY + (frictionSepAnim.toY - frictionSepAnim.fromY) * e;
+      drawCharging();
+      if (u < 1) requestAnimationFrame(tick);
+      else frictionSepAnim = null;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function syncChargeUI() {
+    const m = methods[currentMethod];
+    document.getElementById("methodTitle").textContent = t(m.titleEn, m.titleZh);
+    document.getElementById("methodDesc").textContent = t(m.descEn, m.descZh);
+
+    const guide = document.getElementById("chargeStepGuide");
+    const stepNum = document.getElementById("chargeStepNum");
+    const stepText = document.getElementById("chargeStepText");
+    const prompt = document.getElementById("actionPrompt");
+
+    let num = "1";
+    let text = "";
+    let guideClass = "charge-step-guide";
+    let promptText = "";
+    let promptClass = "action-prompt";
+
+    if (chargeHintWarn && chargeHint) {
+      guideClass += " warn";
+      num = "!";
+      text = chargeHint;
+    } else if (currentMethod === "induction") {
+      const ind = lab.induction;
+      if (chargePhase === "done" || ind.complete) {
+        guideClass += " done";
+        num = "✓";
+        text = t("Done — X is negative, Y is positive.", "完成 — X 帶負電，Y 帶正電。");
+      } else if (!ind.polarDone) {
+        num = "1";
+        text = t("Move the rod close to X.", "把棒移近 X。");
+      } else if (!ind.separated) {
+        num = "2";
+        text = t("Move Y away from X.", "把 Y 移離 X。");
+      } else {
+        num = "3";
+        text = t("Move the rod away from X.", "把棒移離 X。");
+      }
+    } else if (currentMethod === "friction") {
+      const f = lab.friction;
+      if (chargePhase === "done" || f.charged) {
+        guideClass += " done";
+        num = "✓";
+        text = t("Done — cloth − , rod + (equal & opposite).", "完成 — 布負、棒正（等量異號）。");
+      } else if (f.transferred > 0 || f.jumping >= 0 || isClothTouchingRod(f.clothX, f.clothY)) {
+        num = "2";
+        text = t("Keep the cloth touching the rod.", "保持布與棒接觸。");
+      } else {
+        num = "1";
+        text = t("Drag the cloth onto the rod.", "把布拖到棒上。");
+      }
+    } else if (currentMethod === "sharing") {
+      const s = lab.sharing;
+      if (chargePhase === "done" || s.shared) {
+        guideClass += " done";
+        num = "✓";
+        text = t("Done — both share positive charge.", "完成 — 兩者均勻分享正電荷。");
+      } else {
+        num = "1";
+        text = t("Drag sphere A until it touches sphere B.", "拖動球 A 直至接觸球 B。");
+      }
+    } else if (currentMethod === "earthing") {
+      const e = lab.earthing;
+      if (chargePhase === "done" || e.discharged) {
+        guideClass += " done";
+        num = "✓";
+        text = t("Done — object is fully discharged (neutral).", "完成 — 物體已完全放電（中性）。");
+      } else {
+        num = "1";
+        text = t("Drag the wire tip down to the Earth symbol.", "把導線末端拖到地球符號。");
+      }
+    }
+
+    // Secondary note only for non-warning hints during animations / tips
+    if (!chargeHintWarn && chargeHint && chargePhase !== "done") {
+      promptText = chargeHint;
+    } else if (chargePhase === "done" && !guideClass.includes("done")) {
+      promptText = t("Nice work — try another method above.", "做得好 — 可試上方另一種方法。");
+      promptClass += " ok";
+    }
+
+    guide.className = guideClass;
+    stepNum.textContent = num;
+    stepText.textContent = text;
+    prompt.className = promptClass;
+    prompt.textContent = promptText;
+  }
+
+  function drawSphere(ctx, x, y, r, charge, label, omitSigns) {
+    const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
+    if (charge === "pos") {
+      g.addColorStop(0, "#ff8a7a"); g.addColorStop(1, "#c44536");
+    } else if (charge === "neg") {
+      g.addColorStop(0, "#90caf9"); g.addColorStop(1, "#3b82f6");
+    } else {
+      // neu / polarized — overall neutral body color
+      g.addColorStop(0, "#dfe6f0"); g.addColorStop(1, "#8a9bb5");
+    }
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.45)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    if (!omitSigns) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, Math.max(1, r - 2), 0, Math.PI * 2);
+      ctx.clip();
+      drawChargeSigns(ctx, x, y, r, charge);
+      ctx.restore();
+    }
+    if (label) {
+      ctx.font = "600 13px IBM Plex Sans, sans-serif";
+      ctx.fillStyle = "#5c6b82";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, x, y + r + 18);
+    }
+  }
+
+  /** Yellow + / green − badge circles (no image background) */
+  function drawChargeBadge(ctx, x, y, kind, r) {
+    const radius = r == null ? 8 : r;
+    const isPlus = kind === "pos" || kind === "proton" || kind === "+";
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = isPlus ? "#ff9a9a" : "#90caf9";
+    ctx.fill();
+    ctx.lineWidth = Math.max(1.5, radius * 0.22);
+    ctx.strokeStyle = "#111";
+    ctx.stroke();
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = Math.max(1.6, radius * 0.28);
+    ctx.lineCap = "round";
+    const arm = radius * 0.42;
+    ctx.beginPath();
+    ctx.moveTo(x - arm, y);
+    ctx.lineTo(x + arm, y);
+    if (isPlus) {
+      ctx.moveTo(x, y - arm);
+      ctx.lineTo(x, y + arm);
+    }
+    ctx.stroke();
+  }
+
+  /** Spread + / − evenly around the sphere face — kept fully inside the circle */
+  function drawChargeSigns(ctx, x, y, sphereR, charge) {
+    const badgeR = Math.max(4, Math.min(5.5, sphereR * 0.095));
+    // Entire badge must sit inside: center + badgeR + stroke ≤ sphereR
+    const rim = sphereR * 0.58;
+    if (charge === "polarL") {
+      // Connected conductor near + rod: electrons only on the left (near) end
+      const n = 4;
+      for (let i = 0; i < n; i++) {
+        const t = (i + 0.5) / n;
+        const ang = Math.PI / 2 + t * Math.PI;
+        drawChargeBadge(ctx, x + Math.cos(ang) * rim, y + Math.sin(ang) * rim, "neg", badgeR);
+      }
+      return;
+    }
+    if (charge === "negL") {
+      // Isolated negative sphere still attracted by nearby + rod
+      const n = 8;
+      for (let i = 0; i < n; i++) {
+        const t = (i + 0.5) / n;
+        const ang = Math.PI / 2 + t * Math.PI;
+        drawChargeBadge(ctx, x + Math.cos(ang) * rim, y + Math.sin(ang) * rim, "neg", badgeR);
+      }
+      return;
+    }
+    if (charge === "polarR") {
+      // Far end of the same conductor: positives only on the right
+      const n = 4;
+      for (let i = 0; i < n; i++) {
+        const t = (i + 0.5) / n;
+        const ang = -Math.PI / 2 + t * Math.PI;
+        drawChargeBadge(ctx, x + Math.cos(ang) * rim, y + Math.sin(ang) * rim, "pos", badgeR);
+      }
+      return;
+    }
+    if (charge === "polarized") {
+      // legacy single-sphere split (unused for XY contact)
+      const nEach = 4;
+      for (let i = 0; i < nEach; i++) {
+        const t = (i + 0.5) / nEach;
+        const angL = Math.PI / 2 + t * Math.PI;
+        const angR = -Math.PI / 2 + t * Math.PI;
+        drawChargeBadge(ctx, x + Math.cos(angL) * rim, y + Math.sin(angL) * rim, "neg", badgeR);
+        drawChargeBadge(ctx, x + Math.cos(angR) * rim, y + Math.sin(angR) * rim, "pos", badgeR);
+      }
+      return;
+    }
+    if (charge === "neu") {
+      const n = 8;
+      for (let i = 0; i < n; i++) {
+        const ang = -Math.PI / 2 + (i / n) * Math.PI * 2;
+        drawChargeBadge(
+          ctx,
+          x + Math.cos(ang) * rim,
+          y + Math.sin(ang) * rim,
+          i % 2 === 0 ? "pos" : "neg",
+          badgeR
+        );
+      }
+      return;
+    }
+    const kind = charge === "pos" ? "pos" : "neg";
+    const n = 8;
+    for (let i = 0; i < n; i++) {
+      const ang = -Math.PI / 2 + (i / n) * Math.PI * 2;
+      drawChargeBadge(
+        ctx,
+        x + Math.cos(ang) * rim,
+        y + Math.sin(ang) * rim,
+        kind,
+        badgeR
+      );
+    }
+  }
+
+  /** Draw + / − badges at local points */
+  function drawScatteredSigns(ctx, pts, charge) {
+    pts.forEach(([px, py], i) => {
+      let kind;
+      if (charge === "pos") kind = "pos";
+      else if (charge === "neg") kind = "neg";
+      else kind = i % 2 === 0 ? "pos" : "neg";
+      drawChargeBadge(ctx, px, py, kind, 7);
+    });
+  }
+
+  function drawSignList(ctx, items) {
+    items.forEach(({ x, y, sym, alpha }) => {
+      ctx.globalAlpha = alpha == null ? 1 : alpha;
+      const kind = (sym === "+" || sym === "＋") ? "pos" : "neg";
+      drawChargeBadge(ctx, x, y, kind, 7);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  const CLOTH_SIGN_LOCAL = [
+    [-30, -20], [-8, -24], [16, -18], [34, -22],
+    [-34, -2], [-12, 4], [10, -2], [32, 6],
+    [-26, 20], [-2, 16], [20, 22], [36, 14]
+  ];
+  const ROD_SIGN_LOCAL = [
+    [-2, -62], [3, -48], [-3, -34], [2, -20],
+    [-2, -6], [3, 8], [-3, 22], [2, 36],
+    [-2, 50], [3, 64]
+  ];
+  // Rod − slots migrate to cloth + slots while rubbing
+  const ROD_NEG_SLOTS = [1, 3, 5, 7, 9];
+  const CLOTH_PLUS_SLOTS = [0, 2, 4, 6, 8];
+
+  function chargePalette(charge) {
+    if (charge === "pos") return { a: "#ff9a8c", b: "#c44536", stroke: "#9e2f24", kind: "pos" };
+    if (charge === "neg") return { a: "#90caf9", b: "#3b82f6", stroke: "#1d4ed8", kind: "neg" };
+    return { a: "#e8e2da", b: "#a89a8a", stroke: "#6a5c4e", kind: "neu" };
+  }
+
+  /** Soft folded cloth / rag for friction lab */
+  function drawCloth(ctx, x, y, charge, label, omitSigns) {
+    const pal = chargePalette(charge);
+    const w = 100, h = 78;
+    ctx.save();
+    ctx.translate(x, y);
+
+    // soft drop shadow
+    ctx.beginPath();
+    ctx.ellipse(4, h * 0.42, w * 0.42, 10, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(26,35,51,0.12)";
+    ctx.fill();
+
+    // cloth body with wavy hem
+    const g = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
+    g.addColorStop(0, pal.a);
+    g.addColorStop(0.45, "#f3ebe3");
+    g.addColorStop(1, pal.b);
+    ctx.beginPath();
+    ctx.moveTo(-w / 2 + 6, -h / 2 + 8);
+    ctx.quadraticCurveTo(-w / 2 - 4, -10, -w / 2 + 4, h / 2 - 6);
+    ctx.quadraticCurveTo(-w / 4, h / 2 + 10, 0, h / 2 - 2);
+    ctx.quadraticCurveTo(w / 4, h / 2 + 12, w / 2 - 4, h / 2 - 8);
+    ctx.quadraticCurveTo(w / 2 + 6, -8, w / 2 - 8, -h / 2 + 10);
+    ctx.quadraticCurveTo(0, -h / 2 - 6, -w / 2 + 6, -h / 2 + 8);
+    ctx.closePath();
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = pal.stroke;
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    // fold crease
+    ctx.beginPath();
+    ctx.moveTo(-18, -h / 2 + 14);
+    ctx.quadraticCurveTo(-6, 8, -22, h / 2 - 10);
+    ctx.strokeStyle = "rgba(255,255,255,0.55)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(12, -h / 2 + 18);
+    ctx.quadraticCurveTo(22, 4, 10, h / 2 - 14);
+    ctx.strokeStyle = "rgba(26,35,51,0.12)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // weave / thread hints
+    ctx.strokeStyle = "rgba(255,255,255,0.28)";
+    ctx.lineWidth = 1;
+    for (let i = -2; i <= 2; i++) {
+      ctx.beginPath();
+      ctx.moveTo(-30, -20 + i * 12);
+      ctx.lineTo(32, -28 + i * 12);
+      ctx.stroke();
+    }
+
+    // fringe at bottom
+    ctx.strokeStyle = pal.stroke;
+    ctx.lineWidth = 1.4;
+    for (let i = -4; i <= 4; i++) {
+      const fx = i * 9;
+      ctx.beginPath();
+      ctx.moveTo(fx, h / 2 - 4);
+      ctx.lineTo(fx + (i % 2 ? 2 : -2), h / 2 + 10);
+      ctx.stroke();
+    }
+
+    if (!omitSigns) {
+      drawScatteredSigns(ctx, CLOTH_SIGN_LOCAL, pal.kind);
+    }
+
+    ctx.restore();
+
+    if (label) {
+      ctx.font = "600 13px IBM Plex Sans, sans-serif";
+      ctx.fillStyle = "#5c6b82";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, x, y + h / 2 + 22);
+    }
+  }
+
+  /** Glass / plastic insulating rod for friction lab */
+  function drawFrictionRod(ctx, x, y, charge, label, omitSigns) {
+    const pal = chargePalette(charge);
+    const rw = 26, rh = 168;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(-0.12);
+
+    // shadow
+    ctx.beginPath();
+    ctx.ellipse(6, rh / 2 - 4, 18, 8, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(26,35,51,0.12)";
+    ctx.fill();
+
+    // rod shaft — glass look
+    const g = ctx.createLinearGradient(-rw / 2, 0, rw / 2, 0);
+    g.addColorStop(0, pal.b);
+    g.addColorStop(0.25, pal.a);
+    g.addColorStop(0.5, "#ffffff");
+    g.addColorStop(0.75, pal.a);
+    g.addColorStop(1, pal.b);
+    roundRect(ctx, -rw / 2, -rh / 2, rw, rh, rw / 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = pal.stroke;
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    // specular highlight strip
+    ctx.beginPath();
+    ctx.moveTo(-6, -rh / 2 + 18);
+    ctx.lineTo(-6, rh / 2 - 18);
+    ctx.strokeStyle = "rgba(255,255,255,0.65)";
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    // tip rings (lab glass vibe)
+    ctx.strokeStyle = "rgba(26,35,51,0.15)";
+    ctx.lineWidth = 1;
+    [-rh / 2 + 22, rh / 2 - 22].forEach((ty) => {
+      ctx.beginPath();
+      ctx.ellipse(0, ty, rw / 2 - 2, 4, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    if (!omitSigns) {
+      drawScatteredSigns(ctx, ROD_SIGN_LOCAL, pal.kind);
+    }
+
+    ctx.restore();
+
+    if (label) {
+      ctx.font = "600 13px IBM Plex Sans, sans-serif";
+      ctx.fillStyle = "#5c6b82";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, x, y + rh / 2 + 18);
+    }
+  }
+
+  /** Live − transfer: discrete jumps rod → cloth (one every 0.6 s while touching) */
+  function rodLocalToWorld(lx, ly) {
+    const rot = -ROD_TILT;
+    const c = Math.cos(rot), s = Math.sin(rot);
+    return {
+      x: ROD_FIXED.x + lx * c - ly * s,
+      y: ROD_FIXED.y + lx * s + ly * c
+    };
+  }
+
+  function drawFrictionRubCharges(ctx, f) {
+    const now = performance.now();
+    const n = ROD_NEG_SLOTS.length;
+    const rodSigns = [];
+    const clothSigns = [];
+    const flying = [];
+
+    CLOTH_SIGN_LOCAL.forEach(([lx, ly], i) => {
+      const destIdx = CLOTH_PLUS_SLOTS.indexOf(i);
+      let sym = i % 2 === 0 ? "+" : "−";
+      if (chargePhase === "done" || f.charged || f.rub >= 1) {
+        sym = "−";
+      } else if (destIdx >= 0) {
+        const u = electronJumpU(f, destIdx, now);
+        if (u >= 1) sym = "−";
+      }
+      clothSigns.push({ x: f.clothX + lx, y: f.clothY + ly, sym });
+    });
+
+    ROD_SIGN_LOCAL.forEach(([lx, ly], i) => {
+      const moverIdx = ROD_NEG_SLOTS.indexOf(i);
+      const world = rodLocalToWorld(lx, ly);
+      if (chargePhase === "done" || f.charged || f.rub >= 1) {
+        rodSigns.push({ x: world.x, y: world.y, sym: "+" });
+        return;
+      }
+      if (moverIdx < 0) {
+        rodSigns.push({ x: world.x, y: world.y, sym: "+" });
+        return;
+      }
+      const u = electronJumpU(f, moverIdx, now);
+      const destSlot = CLOTH_PLUS_SLOTS[moverIdx];
+      const [clx, cly] = CLOTH_SIGN_LOCAL[destSlot];
+      const ex = f.clothX + clx;
+      const ey = f.clothY + cly;
+      if (u <= 0) {
+        rodSigns.push({ x: world.x, y: world.y, sym: "−" });
+      } else if (u >= 1) {
+        rodSigns.push({ x: world.x, y: world.y, sym: "+" });
+      } else {
+        rodSigns.push({ x: world.x, y: world.y, sym: "+", alpha: 0.3 + u * 0.5 });
+        const eu = easeOutCubic(u);
+        const arc = Math.sin(eu * Math.PI) * 30;
+        flying.push({
+          x: world.x + (ex - world.x) * eu,
+          y: world.y + (ey - world.y) * eu - arc,
+          sym: "−",
+          alpha: 1
+        });
+      }
+    });
+
+    drawSignList(ctx, rodSigns);
+    drawSignList(ctx, clothSigns);
+    drawSignList(ctx, flying);
+  }
+
+  function drawElectrons(ctx, points, alpha) {
+    ctx.globalAlpha = alpha == null ? 1 : alpha;
+    points.forEach(([x, y]) => {
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "#3b82f6";
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  function drawPlusRod(ctx, x, y) {
+    ctx.fillStyle = "#e24535";
+    roundRect(ctx, x, y - 60, 28, 120, 8);
+    ctx.fill();
+    drawChargeBadge(ctx, x + 14, y, "pos", 9);
+  }
+
+  function drawEarthSymbol(ctx, x, y) {
+    ctx.strokeStyle = "#3b82f6";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - 40, y); ctx.lineTo(x + 40, y);
+    ctx.moveTo(x - 28, y + 12); ctx.lineTo(x + 28, y + 12);
+    ctx.moveTo(x - 16, y + 24); ctx.lineTo(x + 16, y + 24);
+    ctx.stroke();
+    ctx.fillStyle = "#5c6b82";
+    ctx.font = "600 12px IBM Plex Sans";
+    ctx.textAlign = "center";
+    ctx.fillText(t("Earth", "地球"), x, y + 42);
+  }
+
+  function inductionRodNear() {
+    const ind = lab.induction;
+    const rodCenterX = ind.rodX + 14;
+    return Math.hypot(rodCenterX - ind.xX, ind.rodY - 200) < 130;
+  }
+
+  /** Keep a visible air gap — rod must never touch sphere X */
+  const IND_ROD_W = 28;
+  const IND_ROD_GAP = 14;
+
+  function maxRodXBesideX(xX) {
+    return xX - IND_R - IND_ROD_GAP - IND_ROD_W;
+  }
+
+  function minXXBesideRod(rodX) {
+    return rodX + IND_ROD_W + IND_ROD_GAP + IND_R;
+  }
+
+  function clampInductionRodPos(rodX, rodY, xX) {
+    return {
+      rodX: Math.max(20, Math.min(maxRodXBesideX(xX), rodX)),
+      rodY: Math.max(80, Math.min(300, rodY))
+    };
+  }
+
+  function inductionSpread() {
+    return IND_R * 0.58;
+  }
+
+  function inductionNeuPts(cx, cy) {
+    const s = inductionSpread();
+    const pts = [];
+    for (let i = 0; i < 8; i++) {
+      const ang = -Math.PI / 2 + (i / 8) * Math.PI * 2;
+      pts.push({
+        x: cx + Math.cos(ang) * s,
+        y: cy + Math.sin(ang) * s,
+        kind: i % 2 === 0 ? "pos" : "neg"
+      });
+    }
+    return pts;
+  }
+
+  function inductionArcPts(cx, cy, kind, side, count) {
+    const s = inductionSpread();
+    const n = count == null ? 4 : count;
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const t = (i + 0.5) / n;
+      const ang = side === "left"
+        ? Math.PI / 2 + t * Math.PI
+        : -Math.PI / 2 + t * Math.PI;
+      pts.push({
+        x: cx + Math.cos(ang) * s,
+        y: cy + Math.sin(ang) * s,
+        kind
+      });
+    }
+    return pts;
+  }
+
+  /** Contacting X+Y act as one conductor: − on X (near rod), + on Y (far end). */
+  function inductionConnectedPolarPts(ind) {
+    return {
+      neg: inductionArcPts(ind.xX, 200, "neg", "left", 8),
+      pos: inductionArcPts(ind.yX, 200, "pos", "right", 8)
+    };
+  }
+
+  function inductionAllPts(cx, cy, kind) {
+    const s = inductionSpread();
+    const pts = [];
+    for (let i = 0; i < 8; i++) {
+      const ang = -Math.PI / 2 + (i / 8) * Math.PI * 2;
+      pts.push({ x: cx + Math.cos(ang) * s, y: cy + Math.sin(ang) * s, kind });
+    }
+    return pts;
+  }
+
+  function pairSameKindMoves(fromPts, toPts, kind) {
+    const moves = [];
+    const n = Math.min(fromPts.length, toPts.length);
+    for (let i = 0; i < n; i++) {
+      moves.push({
+        sx: fromPts[i].x, sy: fromPts[i].y,
+        ex: toPts[i].x, ey: toPts[i].y,
+        kind,
+        delay: i * 0.04,
+        arc: kind === "neg" ? 22 : 18
+      });
+    }
+    return moves;
+  }
+
+  function ensureInductionAnimLoop() {
+    if (inductionAnimRaf) return;
+    function tick() {
+      inductionAnimRaf = null;
+      if (!inductionAnim) return;
+      drawCharging();
+      const u = (performance.now() - inductionAnim.start) / inductionAnim.duration;
+      if (u < 1) {
+        inductionAnimRaf = requestAnimationFrame(tick);
+      } else {
+        const kind = inductionAnim.kind;
+        inductionAnim = null;
+        if (kind === "polarize") {
+          lab.induction.polarDone = true;
+          lab.induction.polarized = true;
+        } else if (kind === "separate") {
+          lab.induction.separated = true;
+          chargeHint = t("Good — separated while rod is near. Now remove the rod.", "好 — 棒靠近時已分開。現在移走棒。");
+          chargeHintWarn = false;
+        } else if (kind === "redistribute") {
+          lab.induction.complete = true;
+          enterDone(
+            "Rod removed — X is negative, Y is positive (permanent).",
+            "棒已移走 — X 負、Y 正（永久帶電）。"
+          );
+          return;
+        }
+        syncChargeUI();
+        drawCharging();
+      }
+    }
+    inductionAnimRaf = requestAnimationFrame(tick);
+  }
+
+  function startInductionPolarize() {
+    const ind = lab.induction;
+    if (ind.polarDone || (inductionAnim && inductionAnim.kind === "polarize")) return;
+    ind.polarized = true;
+    const xNeu = inductionNeuPts(ind.xX, 200);
+    const yNeu = inductionNeuPts(ind.yX, 200);
+    const polar = inductionConnectedPolarPts(ind);
+    const negFrom = xNeu.filter((p) => p.kind === "neg").concat(yNeu.filter((p) => p.kind === "neg"));
+    const posFrom = xNeu.filter((p) => p.kind === "pos").concat(yNeu.filter((p) => p.kind === "pos"));
+    const particles = pairSameKindMoves(negFrom, polar.neg, "neg")
+      .concat(pairSameKindMoves(posFrom, polar.pos, "pos"));
+    particles.forEach((p, i) => {
+      p.delay = (i % 8) * 0.04 + (p.kind === "pos" ? 0.08 : 0);
+    });
+    inductionAnim = {
+      kind: "polarize",
+      start: performance.now(),
+      duration: 1200,
+      particles
+    };
+    chargeHint = t("X and Y act as one conductor — electrons shift left toward the + rod…", "X 與 Y 如同一導體 — 電子向左移近正棒…");
+    chargeHintWarn = false;
+    syncChargeUI();
+    ensureInductionAnimLoop();
+  }
+
+  function startInductionSeparateAnim() {
+    const ind = lab.induction;
+    if (inductionAnim && inductionAnim.kind === "separate") return;
+    const polar = inductionConnectedPolarPts(ind);
+    // X keeps − on the left (rod still near); Y's + spread evenly around Y
+    const xStay = inductionArcPts(ind.xX, 200, "neg", "left", 8);
+    const yFinal = inductionAllPts(ind.yX, 200, "pos");
+    const particles = pairSameKindMoves(polar.neg, xStay, "neg")
+      .concat(pairSameKindMoves(polar.pos, yFinal, "pos"));
+    particles.forEach((p, i) => {
+      p.delay = (i % 8) * 0.035;
+      p.arc = p.kind === "pos" ? 14 : 6;
+    });
+    inductionAnim = {
+      kind: "separate",
+      start: performance.now(),
+      duration: 1200,
+      particles
+    };
+    chargeHint = t("Separated — Y is + ; X stays − on the left while the rod is near.", "已分開 — Y 帶正電；棒仍靠近時 X 的 − 留在左側。");
+    chargeHintWarn = false;
+    syncChargeUI();
+    ensureInductionAnimLoop();
+  }
+
+  function startInductionRedistribute() {
+    const ind = lab.induction;
+    if (inductionAnim && inductionAnim.kind === "redistribute") return;
+    const from = inductionArcPts(ind.xX, 200, "neg", "left", 8);
+    const to = inductionAllPts(ind.xX, 200, "neg");
+    const particles = pairSameKindMoves(from, to, "neg");
+    particles.forEach((p, i) => {
+      p.delay = i * 0.04;
+      p.arc = 12;
+    });
+    inductionAnim = {
+      kind: "redistribute",
+      start: performance.now(),
+      duration: 1100,
+      particles
+    };
+    chargeHint = t("Rod removed — electrons spread evenly on X…", "棒已移走 — 電子在 X 上均勻分佈…");
+    chargeHintWarn = false;
+    syncChargeUI();
+    ensureInductionAnimLoop();
+  }
+
+  function drawInductionAnimCharges(ctx) {
+    if (!inductionAnim) return;
+    const elapsed = performance.now() - inductionAnim.start;
+    const dur = inductionAnim.duration;
+    inductionAnim.particles.forEach((p) => {
+      const delay = (p.delay || 0) * dur;
+      const span = Math.max(280, dur - delay - 60);
+      const local = Math.min(1, Math.max(0, (elapsed - delay) / span));
+      const u = easeOutCubic(local);
+      const arc = Math.sin(u * Math.PI) * (p.arc == null ? 18 : p.arc);
+      const x = p.sx + (p.ex - p.sx) * u;
+      const y = p.sy + (p.ey - p.sy) * u - arc;
+      drawChargeBadge(ctx, x, y, p.kind, 7);
+    });
+  }
+
+  function drawCharging() {
+    const ctx = chargeCtx;
+    const W = chargeCv.width, H = chargeCv.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = "rgba(216,224,236,0.9)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    if (currentMethod === "friction") {
+      const f = lab.friction;
+      const rub = chargePhase === "done" ? 1 : f.rub;
+      let clothCh = "neu", rodCh = "neu";
+      if (chargePhase === "done" || rub >= 1) {
+        clothCh = "neg"; rodCh = "pos";
+      }
+      // Rod first, cloth on top (never drawn behind the rod)
+      drawFrictionRod(ctx, ROD_FIXED.x, ROD_FIXED.y, rodCh, t("Rod", "棒"), true);
+      drawCloth(ctx, f.clothX, f.clothY, clothCh, t("Cloth", "布"), true);
+      drawFrictionRubCharges(ctx, f);
+      if ((f.jumping >= 0 || (f.transferred > 0 && f.transferred < frictionElectronCount())) &&
+          chargePhase !== "done" && isClothTouchingRod(f.clothX, f.clothY)) {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 14px IBM Plex Sans";
+        ctx.textAlign = "center";
+        const midX = (f.clothX + ROD_FIXED.x) / 2;
+        ctx.fillText(t("e⁻ jumping: rod → cloth", "e⁻ 跳躍：棒 → 布"), midX, 100);
+      }
+      if (chargePhase === "done") {
+        ctx.fillStyle = "#1a9a5c";
+        ctx.font = "600 14px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("|Q| equal & opposite", "|Q| 等量異號"), 320, 330);
+      }
+    } else if (currentMethod === "sharing") {
+      const s = lab.sharing;
+      let aCh = "pos", bCh = "neu";
+      if (chargePhase === "done") { aCh = "pos"; bCh = "pos"; }
+      drawSphere(ctx, s.aX, s.aY, 55, aCh, "A");
+      drawSphere(ctx, SHARE_B.x, SHARE_B.y, SHARE_B.r, bCh, "B");
+      if (transferAnim) {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 13px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("electrons share / redistribute", "電子重新分配"), 320, 110);
+      }
+      if (chargePhase === "done") {
+        ctx.fillStyle = "#1a9a5c";
+        ctx.font = "600 13px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("Both positively charged, evenly", "兩者均勻帶正電"), 320, 330);
+      }
+    } else if (currentMethod === "earthing") {
+      const e = lab.earthing;
+      let ch = "pos";
+      if (chargePhase === "done") ch = "neu";
+      drawSphere(ctx, EARTH_OBJ.x, EARTH_OBJ.y, EARTH_OBJ.r, ch, t("Object", "物體"));
+      drawEarthSymbol(ctx, 280, 330);
+      ctx.strokeStyle = "#3b82f6";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(EARTH_OBJ.x, EARTH_OBJ.y + EARTH_OBJ.r);
+      ctx.lineTo(e.tipX, e.tipY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(e.tipX, e.tipY, 8, 0, Math.PI * 2);
+      ctx.fillStyle = e.connected ? "#1a9a5c" : "#c99212";
+      ctx.fill();
+      if (transferAnim) {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 13px IBM Plex Sans";
+        ctx.textAlign = "left";
+        ctx.fillText(t("e⁻ flow UP from Earth", "電子由地球向上流入"), 340, 270);
+      }
+      if (chargePhase === "done") {
+        ctx.fillStyle = "#1a9a5c";
+        ctx.font = "600 14px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("Fully discharged → neutral", "完全放電 → 中性"), 280, 90);
+      }
+    } else if (currentMethod === "induction") {
+      const ind = lab.induction;
+      drawPlusRod(ctx, ind.rodX, ind.rodY);
+      const near = inductionRodNear();
+      const animating = !!inductionAnim;
+      const omit = animating;
+      let chL = "neu", chR = "neu";
+      if (animating && inductionAnim.kind === "polarize") {
+        chL = "neu"; chR = "neu";
+      } else if (animating && inductionAnim.kind === "separate") {
+        chL = "neu"; chR = "neu";
+      } else if (animating && inductionAnim.kind === "redistribute") {
+        // Y already even +; X charges are mid-flight from left → ring
+        chL = "neu"; chR = "pos";
+      } else if (chargePhase === "done" || ind.complete) {
+        chL = "neg"; chR = "pos";
+      } else if (ind.separated) {
+        // Until the rod is removed, − stay on the left of X; Y is evenly +
+        chL = "negL";
+        chR = "pos";
+      } else if (ind.polarDone || near) {
+        chL = "polarL"; chR = "polarR";
+      }
+      drawSphere(ctx, ind.xX, 200, IND_R, chL, "X", omit);
+      drawSphere(ctx, ind.yX, 200, IND_R, chR, "Y", omit);
+      drawInductionAnimCharges(ctx);
+      if (animating && inductionAnim.kind === "polarize") {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 12px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("X and Y as one conductor — charges shifting…", "X、Y 如同一導體 — 電荷正在移動…"), 340, 90);
+      } else if (animating && inductionAnim.kind === "separate") {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 12px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("+ spread on Y · − stay on left of X", "+ 在 Y 均勻分佈 · − 留在 X 左側"), 340, 90);
+      } else if (animating && inductionAnim.kind === "redistribute") {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 12px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("Rod gone — electrons spreading evenly on X", "棒已離開 — 電子在 X 上均勻散開"), 340, 90);
+      } else if ((ind.polarDone || near) && !ind.separated && chargePhase === "action" && !transferAnim) {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 12px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("One conductor: − on X (near rod), + on Y (far end)", "同一導體：− 在 X（近棒），+ 在 Y（遠端）"), 340, 90);
+      }
+      if (ind.separated && !ind.complete && chargePhase === "action" && !transferAnim && !animating) {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 13px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("Separated — − still on left of X (rod near). Now remove the rod.", "已分開 — 棒仍近，− 仍在 X 左側。現在移走棒。"), 340, 90);
+      }
+      if (transferAnim) {
+        ctx.fillStyle = "#c99212";
+        ctx.font = "600 13px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("Charges locked in on X and Y", "電荷已固定在 X 與 Y"), 340, 90);
+      }
+      if (chargePhase === "done") {
+        ctx.fillStyle = "#1a9a5c";
+        ctx.font = "600 14px IBM Plex Sans";
+        ctx.textAlign = "center";
+        ctx.fillText(t("X negative · Y positive — permanently", "X 負 · Y 正 — 永久帶電"), 340, 330);
+      }
+    }
+
+    drawTransferParticles(ctx);
+  }
+
+  function easeOutCubic(u) {
+    return 1 - Math.pow(1 - u, 3);
+  }
+
+  function drawTransferParticles(ctx) {
+    if (!transferAnim) return;
+    const elapsed = performance.now() - transferAnim.start;
+    const dur = transferAnim.duration;
+    transferAnim.particles.forEach((p) => {
+      const delay = (p.delay || 0) * dur;
+      const span = Math.max(500, dur - delay - 120);
+      const local = Math.min(1, Math.max(0, (elapsed - delay) / span));
+      const kind = (p.sym === "+" || p.sym === "＋") ? "pos" : "neg";
+      if (local <= 0) {
+        // still at start — show briefly on source
+        if (elapsed >= delay - 40) {
+          ctx.globalAlpha = 0.85;
+          drawChargeBadge(ctx, p.sx, p.sy, kind, 8);
+          ctx.globalAlpha = 1;
+        }
+        return;
+      }
+      const u = easeOutCubic(local);
+      const arc = Math.sin(u * Math.PI) * (p.arc == null ? 28 : p.arc);
+      const x = p.sx + (p.ex - p.sx) * u;
+      const y = p.sy + (p.ey - p.sy) * u - arc;
+      let alpha = 1;
+      if (local < 0.08) alpha = local / 0.08;
+      else if (local > 0.88) alpha = (1 - local) / 0.12;
+      ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+      drawChargeBadge(ctx, x, y, kind, 8);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function startChargeTransfer(particles, msgEn, msgZh, duration) {
+    chargePhase = "action";
+    chargeHint = t("Watch the charges move…", "觀察電荷移動…");
+    chargeHintWarn = false;
+    syncChargeUI();
+    transferAnim = {
+      start: performance.now(),
+      duration: duration || 3200,
+      particles,
+      msgEn,
+      msgZh
+    };
+    function tick(now) {
+      if (!transferAnim) return;
+      drawCharging();
+      if (now - transferAnim.start < transferAnim.duration) {
+        requestAnimationFrame(tick);
+      } else {
+        const doneEn = transferAnim.msgEn;
+        const doneZh = transferAnim.msgZh;
+        transferAnim = null;
+        enterDone(doneEn, doneZh);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function playSharingTransfer() {
+    const s = lab.sharing;
+    const particles = [];
+    for (let i = 0; i < 6; i++) {
+      particles.push({
+        sx: SHARE_B.x - 10 + (i % 3) * 8,
+        sy: SHARE_B.y - 20 + Math.floor(i / 3) * 24,
+        ex: s.aX + 10 + (i % 3) * 8,
+        ey: s.aY - 20 + Math.floor(i / 3) * 24,
+        sym: "−",
+        color: "#3b82f6",
+        delay: i * 0.12,
+        arc: 22
+      });
+    }
+    startChargeTransfer(
+      particles,
+      "Contact made — both share positive charge evenly.",
+      "已接觸 — 兩者均勻分享正電荷。",
+      3000
+    );
+  }
+
+  function playEarthingTransfer() {
+    const particles = [];
+    for (let i = 0; i < 7; i++) {
+      particles.push({
+        sx: 280 + ((i % 3) - 1) * 10,
+        sy: 325 - i * 2,
+        ex: EARTH_OBJ.x + ((i % 3) - 1) * 14,
+        ey: EARTH_OBJ.y + 10 + (i % 4) * 8,
+        sym: "−",
+        color: "#3b82f6",
+        delay: i * 0.11,
+        arc: 8
+      });
+    }
+    startChargeTransfer(
+      particles,
+      "Earthed — object fully discharged (neutral).",
+      "已接地 — 物體完全放電（中性）。",
+      3000
+    );
+  }
+
+  chargeCv.addEventListener("pointerdown", (e) => {
+    if (chargePhase !== "action" || transferAnim || inductionAnim) return;
+    const p = canvasXY(e);
+    lastPtr = p;
+    chargeCv.setPointerCapture(e.pointerId);
+    chargeCv.classList.add("dragging");
+
+    if (currentMethod === "friction" && !lab.friction.charged) {
+      if (hitCircle(p.x, p.y, lab.friction.clothX, lab.friction.clothY, 58)) {
+        dragTarget = "cloth";
+        ensureFrictionContactLoop();
+      }
+    } else if (currentMethod === "sharing" && !lab.sharing.contacted) {
+      if (hitCircle(p.x, p.y, lab.sharing.aX, lab.sharing.aY, 55)) dragTarget = "sphereA";
+    } else if (currentMethod === "earthing" && !lab.earthing.connected) {
+      if (hitCircle(p.x, p.y, lab.earthing.tipX, lab.earthing.tipY, 18)) dragTarget = "wireTip";
+    } else if (currentMethod === "induction" && !lab.induction.complete) {
+      if (hitRod(p.x, p.y, lab.induction.rodX, lab.induction.rodY)) dragTarget = "indRod";
+      else if (hitCircle(p.x, p.y, lab.induction.yX, 200, IND_R)) dragTarget = "indY";
+      else if (hitCircle(p.x, p.y, lab.induction.xX, 200, IND_R) && !lab.induction.separated) dragTarget = "indPair";
+    }
+  });
+
+  chargeCv.addEventListener("pointermove", (e) => {
+    if (!dragTarget || chargePhase !== "action" || transferAnim) return;
+    const p = canvasXY(e);
+    const dx = p.x - (lastPtr ? lastPtr.x : p.x);
+    const dy = p.y - (lastPtr ? lastPtr.y : p.y);
+    lastPtr = p;
+
+    if (dragTarget === "cloth") {
+      let cx = Math.max(60, Math.min(580, p.x));
+      let cy = Math.max(70, Math.min(330, p.y));
+      const touchingNow = isClothTouchingRod(cx, cy) || isClothTouchingRod(lab.friction.clothX, lab.friction.clothY);
+      // Keep cloth on the front face while in contact
+      if (touchingNow || lab.friction.transferred > 0 || lab.friction.jumping >= 0) {
+        const { ly } = clothRodLocal(cx, cy);
+        const clampedLy = Math.max(-68, Math.min(68, ly));
+        const cos = Math.cos(ROD_TILT);
+        const sin = Math.sin(ROD_TILT);
+        const targetLx = -36;
+        cx = ROD_FIXED.x + targetLx * cos - clampedLy * sin;
+        cy = ROD_FIXED.y + targetLx * sin + clampedLy * cos;
+      }
+      lab.friction.clothX = cx;
+      lab.friction.clothY = cy;
+      ensureFrictionContactLoop();
+      syncChargeUI();
+      drawCharging();
+    } else if (dragTarget === "sphereA") {
+      lab.sharing.aX = Math.max(70, Math.min(SHARE_B.x - 20, p.x));
+      lab.sharing.aY = Math.max(70, Math.min(330, p.y));
+      const dist = Math.hypot(lab.sharing.aX - SHARE_B.x, lab.sharing.aY - SHARE_B.y);
+      if (dist < 110) {
+        lab.sharing.aX = SHARE_B.x - 110;
+        lab.sharing.aY = SHARE_B.y;
+        lab.sharing.contacted = true;
+        lab.sharing.shared = true;
+        dragTarget = null;
+        syncChargeUI();
+        playSharingTransfer();
+        return;
+      }
+      syncChargeUI();
+      drawCharging();
+    } else if (dragTarget === "wireTip") {
+      lab.earthing.tipX = Math.max(40, Math.min(600, p.x));
+      lab.earthing.tipY = Math.max(EARTH_OBJ.y + EARTH_OBJ.r + 10, Math.min(360, p.y));
+      // Earth hit zone
+      if (lab.earthing.tipY > 300 && Math.abs(lab.earthing.tipX - 280) < 55) {
+        lab.earthing.tipX = 280;
+        lab.earthing.tipY = 330;
+        lab.earthing.connected = true;
+        lab.earthing.discharged = true;
+        dragTarget = null;
+        syncChargeUI();
+        playEarthingTransfer();
+        return;
+      }
+      syncChargeUI();
+      drawCharging();
+    } else if (dragTarget === "indRod") {
+      if (inductionAnim) return;
+      const clamped = clampInductionRodPos(p.x - 14, p.y, lab.induction.xX);
+      lab.induction.rodX = clamped.rodX;
+      lab.induction.rodY = clamped.rodY;
+      const near = inductionRodNear();
+      if (near && !lab.induction.polarDone) {
+        startInductionPolarize();
+        return;
+      }
+      // If separated and rod moved far → complete
+      if (lab.induction.separated) {
+        const rodDist = Math.hypot(lab.induction.rodX + 14 - lab.induction.xX, lab.induction.rodY - 200);
+        if (lab.induction.rodX < 50 || rodDist > 155) {
+          dragTarget = null;
+          startInductionRedistribute();
+          return;
+        }
+      }
+      if (!lab.induction.separated && !near && lab.induction.polarized && !lab.induction.polarDone) {
+        chargeHint = t("Rod moved away too early — bring it near again before separating.", "棒過早移開 — 分開前請再靠近。");
+        chargeHintWarn = true;
+      } else if (near && !lab.induction.separated) {
+        chargeHint = "";
+        chargeHintWarn = false;
+      }
+      if (!lab.induction.separated && !near && lab.induction.polarDone) {
+        // allow undo polarization if rod pulled away before separating
+        lab.induction.polarDone = false;
+        lab.induction.polarized = false;
+        chargeHint = t("Rod moved away — spheres return to mixed neutral. Bring rod near again.", "棒移開 — 兩球回到混合中性。請再靠近。");
+        chargeHintWarn = true;
+      }
+      syncChargeUI();
+      drawCharging();
+    } else if (dragTarget === "indY") {
+      if (inductionAnim) return;
+      const near = inductionRodNear();
+      if (!lab.induction.separated) {
+        if (!lab.induction.polarDone && !near) {
+          chargeHint = t("Bring the + rod near X first, then separate.", "先把正棒靠近 X，再分開。");
+          chargeHintWarn = true;
+          syncChargeUI();
+          return;
+        }
+        if (!lab.induction.polarDone) {
+          chargeHint = t("Wait for charges to finish rearranging, then separate.", "等電荷排列完成後再分開。");
+          chargeHintWarn = true;
+          syncChargeUI();
+          return;
+        }
+        lab.induction.yX = Math.max(lab.induction.xX + 2 * IND_R, Math.min(560, p.x));
+        if (lab.induction.yX - lab.induction.xX >= 2 * IND_R + 35) {
+          lab.induction.yX = lab.induction.xX + 2 * IND_R + 42;
+          dragTarget = null;
+          startInductionSeparateAnim();
+          return;
+        }
+      } else {
+        lab.induction.yX = Math.max(lab.induction.xX + 2 * IND_R + 20, Math.min(560, p.x));
+      }
+      syncChargeUI();
+      drawCharging();
+    } else if (dragTarget === "indPair") {
+      if (inductionAnim) return;
+      const gap = lab.induction.yX - lab.induction.xX;
+      const minX = Math.max(200, minXXBesideRod(lab.induction.rodX));
+      lab.induction.xX = Math.max(minX, Math.min(340, p.x));
+      lab.induction.yX = lab.induction.xX + gap;
+      syncChargeUI();
+      drawCharging();
+    }
+  });
+
+  function endDrag() {
+    dragTarget = null;
+    lastPtr = null;
+    chargeCv.classList.remove("dragging");
+  }
+  chargeCv.addEventListener("pointerup", endDrag);
+  chargeCv.addEventListener("pointercancel", endDrag);
+
+  document.getElementById("methodTabs").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-method]");
+    if (!b) return;
+    currentMethod = b.dataset.method;
+    document.querySelectorAll("#methodTabs .btn").forEach(x => x.classList.remove("active-mode"));
+    b.classList.add("active-mode");
+    resetLabState(currentMethod);
+    syncChargeUI();
+    drawCharging();
+  });
+  document.getElementById("chargeReset").onclick = () => {
+    resetLabState(currentMethod);
+    syncChargeUI();
+    drawCharging();
+  };
+  resetLabState();
+  syncChargeUI();
+
+  /* ========== Shared format helpers ========== */
+  function fmtSci(n) {
+    if (!isFinite(n) || n === 0) return "0";
+    const exp = Math.floor(Math.log10(Math.abs(n)));
+    const mant = n / Math.pow(10, exp);
+    return `${mant.toFixed(2)} × 10${toSup(exp)}`;
+  }
+  function toSup(n) {
+    const map = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    return String(n).split("").map(c => map[c] || c).join("");
+  }
+  function arrow(ctx, x1, y1, x2, y2, head) {
+    const h = head == null ? 10 : head;
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - h * Math.cos(ang - 0.4), y2 - h * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - h * Math.cos(ang + 0.4), y2 - h * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  /* ========== 3. ELECTRIC FIELD ========== */
+  const fieldCv = document.getElementById("fieldCanvas");
+  const fieldCtx = fieldCv.getContext("2d");
+  let fieldCharges = [];
+  let probe = { x: 320, y: 210 };
+  let dragProbe = false;
+  let fieldPreset = "dipole";
+  let probeSign = 1; // +1 = +q, −1 = −q
+
+  function setFieldPreset(name) {
+    fieldPreset = name;
+    document.querySelectorAll("#fieldPresets .btn").forEach(b => {
+      b.classList.toggle("active-mode", b.dataset.preset === name);
+    });
+    const W = fieldCv.width, H = fieldCv.height;
+    if (name === "dipole") {
+      fieldCharges = [
+        { x: W * 0.30, y: H * 0.50, q: 2 },
+        { x: W * 0.70, y: H * 0.50, q: -2 }
+      ];
+      probe = { x: W * 0.50, y: H * 0.32 };
+    } else if (name === "like") {
+      fieldCharges = [
+        { x: W * 0.32, y: H * 0.50, q: 2 },
+        { x: W * 0.68, y: H * 0.50, q: 2 }
+      ];
+      probe = { x: W * 0.50, y: H * 0.28 };
+    } else if (name === "single") {
+      fieldCharges = [{ x: W * 0.50, y: H * 0.50, q: 3 }];
+      probe = { x: W * 0.72, y: H * 0.42 };
+    } else {
+      fieldCharges = [
+        { x: W * 0.28, y: H * 0.42, q: 2 },
+        { x: W * 0.50, y: H * 0.68, q: -2 },
+        { x: W * 0.72, y: H * 0.42, q: 2 }
+      ];
+      probe = { x: W * 0.50, y: H * 0.30 };
+    }
+    drawField();
+  }
+
+  function fieldAt(x, y) {
+    let Ex = 0, Ey = 0;
+    const scale = 1e-2; // treat canvas px ~ cm-ish for relative viz
+    fieldCharges.forEach(c => {
+      const dx = (x - c.x) * scale;
+      const dy = (y - c.y) * scale;
+      const r2 = dx * dx + dy * dy;
+      const r = Math.sqrt(r2);
+      if (r < 0.15) return;
+      const E = (c.q) / (r2); // relative units
+      Ex += E * dx / r;
+      Ey += E * dy / r;
+    });
+    return { Ex, Ey, mag: Math.sqrt(Ex * Ex + Ey * Ey) };
+  }
+
+  function drawFieldLines(ctx) {
+    const seeds = [];
+    fieldCharges.forEach(c => {
+      if (c.q <= 0) return;
+      const n = 12;
+      for (let i = 0; i < n; i++) {
+        const ang = (i / n) * Math.PI * 2;
+        seeds.push({ x: c.x + Math.cos(ang) * 28, y: c.y + Math.sin(ang) * 28, dir: 1 });
+      }
+    });
+    // also from negatives backward if no positives
+    if (seeds.length === 0) {
+      fieldCharges.forEach(c => {
+        const n = 12;
+        for (let i = 0; i < n; i++) {
+          const ang = (i / n) * Math.PI * 2;
+          seeds.push({ x: c.x + Math.cos(ang) * 28, y: c.y + Math.sin(ang) * 28, dir: -1 });
+        }
+      });
+    }
+
+    ctx.lineWidth = 1.2;
+    seeds.forEach((seed, si) => {
+      ctx.beginPath();
+      let x = seed.x, y = seed.y;
+      ctx.moveTo(x, y);
+      for (let step = 0; step < 180; step++) {
+        const f = fieldAt(x, y);
+        if (f.mag < 1e-6) break;
+        const ds = 4 * seed.dir;
+        const nx = x + (f.Ex / f.mag) * ds;
+        const ny = y + (f.Ey / f.mag) * ds;
+        // stop near opposite charge
+        let nearOpp = false;
+        for (const c of fieldCharges) {
+          if (c.q * seed.dir < 0 && Math.hypot(nx - c.x, ny - c.y) < 22) nearOpp = true;
+          if (Math.hypot(nx - c.x, ny - c.y) < 18) nearOpp = true;
+        }
+        if (nearOpp || nx < 0 || ny < 0 || nx > fieldCv.width || ny > fieldCv.height) {
+          ctx.lineTo(nx, ny);
+          break;
+        }
+        x = nx; y = ny;
+        ctx.lineTo(x, y);
+        if (step % 25 === 24) {
+          // tiny arrow head
+        }
+      }
+      const hue = 195 + (si % 5) * 6;
+      ctx.strokeStyle = `hsla(${hue}, 55%, 42%, 0.5)`;
+      ctx.stroke();
+    });
+  }
+
+  function drawField() {
+    const ctx = fieldCtx;
+    const W = fieldCv.width, H = fieldCv.height;
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#f7fafc";
+    ctx.fillRect(0, 0, W, H);
+
+    drawFieldLines(ctx);
+
+    fieldCharges.forEach((c, i) => {
+      drawSphere(ctx, c.x, c.y, 26, c.q > 0 ? "pos" : "neg", String.fromCharCode(88 + i)); // X,Y,Z
+    });
+
+    // test charge probe — yellow +q / blue −q
+    const isPlusProbe = probeSign > 0;
+    ctx.beginPath();
+    ctx.arc(probe.x, probe.y, 14, 0, Math.PI * 2);
+    ctx.fillStyle = isPlusProbe ? "#f0c14b" : "#7dd3fc";
+    ctx.fill();
+    ctx.strokeStyle = "#1a2333";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.fillStyle = "#1a2333";
+    ctx.font = "bold 18px Fraunces, serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(isPlusProbe ? "+" : "−", probe.x, probe.y + 1);
+
+    const f = fieldAt(probe.x, probe.y);
+    if (f.mag > 0.01) {
+      const probeR = 16;
+      const tMag = Math.min(1, f.mag / 8);
+      const len = 28 + tMag * tMag * 140;
+      const thick = 2.5 + tMag * 3.5;
+      const head = 10 + tMag * 14;
+      // Arrow = force on test charge: F = qE (opposite for −q)
+      const ux = probeSign * (f.Ex / f.mag);
+      const uy = probeSign * (f.Ey / f.mag);
+      const x1 = probe.x + ux * probeR;
+      const y1 = probe.y + uy * probeR;
+      const x2 = probe.x + ux * (probeR + len);
+      const y2 = probe.y + uy * (probeR + len);
+      ctx.strokeStyle = isPlusProbe ? "#c99212" : "#0284c7";
+      ctx.fillStyle = isPlusProbe ? "#c99212" : "#0284c7";
+      ctx.lineWidth = thick;
+      arrow(ctx, x1, y1, x2, y2, head);
+    }
+
+    const qLabel = isPlusProbe ? "+q" : "−q";
+    document.getElementById("fieldReadout").innerHTML =
+      `${t("Relative |E|", "相對 |E|")} (${qLabel}): <span class="val">${f.mag.toFixed(2)}</span>` +
+      ` <span style="color:#5c6b82;font-size:0.85em">· ${t("arrow = force on test charge", "箭咀 = 試探電荷受力")}</span>`;
+  }
+
+  document.getElementById("fieldPresets").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-preset]");
+    if (b) setFieldPreset(b.dataset.preset);
+  });
+
+  document.getElementById("probeSignToggle").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-probe]");
+    if (!b) return;
+    probeSign = +b.dataset.probe;
+    document.querySelectorAll("#probeSignToggle .btn").forEach((btn) => {
+      btn.classList.toggle("active-mode", btn === b);
+    });
+    drawField();
+  });
+
+  fieldCv.addEventListener("pointerdown", (e) => {
+    const rect = fieldCv.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (fieldCv.width / rect.width);
+    const y = (e.clientY - rect.top) * (fieldCv.height / rect.height);
+    if (Math.hypot(x - probe.x, y - probe.y) < 18) dragProbe = true;
+    else { probe.x = x; probe.y = y; drawField(); }
+  });
+  fieldCv.addEventListener("pointermove", (e) => {
+    if (!dragProbe) return;
+    const rect = fieldCv.getBoundingClientRect();
+    probe.x = (e.clientX - rect.left) * (fieldCv.width / rect.width);
+    probe.y = (e.clientY - rect.top) * (fieldCv.height / rect.height);
+    drawField();
+  });
+  fieldCv.addEventListener("pointerup", () => { dragProbe = false; });
+  fieldCv.addEventListener("pointerleave", () => { dragProbe = false; });
+
+  /* —— Lang refresh —— */
+  window._refreshLang = function () {
+    syncChargeUI();
+    drawCharging();
+    drawField();
+  };
+
+  // Init
+  setFieldPreset("dipole");
+  drawCharging();
+})();
+  </script>
+</body>
+</html>

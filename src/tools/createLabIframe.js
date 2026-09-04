@@ -16,7 +16,6 @@ export function createLabIframe(t, opts) {
   }
   iframe.src = iframeSrc();
   iframe.title = t(titleKey);
-  iframe.setAttribute('loading', 'lazy');
   iframe.allowFullscreen = true;
   iframe.setAttribute('allow', 'fullscreen');
   iframe.referrerPolicy = 'strict-origin-when-cross-origin';

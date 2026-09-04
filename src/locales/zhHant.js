@@ -1,9 +1,9 @@
 /** @type {Record<string, string>} */
 export const zhHant = {
   'app.title': 'Uni+ HKDSE \u7269\u7406\u5b78\u7fd2\u4e2d\u5fc3',
-  'app.subtitle': '\u4e2d\u4e09\u7269\u7406 \u2014 \u57fa\u790e\u3001\u5149\u8207\u71b1',
+  'app.subtitle': '\u4e2d\u4e09\u7269\u7406 \u2014 \u57fa\u790e\u3001\u5149\u3001\u71b1\u8207\u96fb',
   'strands.title': '\u9078\u64c7\u55ae\u5143',
-  'strands.intro': '\u7269\u7406\u57fa\u790e\u3001\u5149\u5b78\uff08\u5149\uff09\u8207\u71b1\u5b78\u5df2\u53ef\u4f7f\u7528\u3002\u5176\u4ed6\u55ae\u5143\u5373\u5c07\u63a8\u51fa\uff0c\u4ecd\u53ef\u9032\u5165\u9810\u89bd\u3002',
+  'strands.intro': '\u7269\u7406\u57fa\u790e\u3001\u5149\u5b78\uff08\u5149\uff09\u3001\u71b1\u5b78\u8207\u96fb\u548c\u78c1\u5df2\u53ef\u4f7f\u7528\u3002\u5176\u4ed6\u55ae\u5143\u5373\u5c07\u63a8\u51fa\uff0c\u4ecd\u53ef\u9032\u5165\u9810\u89bd\u3002',
   'strand.optics.title': '\u5149\u5b78',
   'strand.optics.desc': '\u53cd\u5c04\u3001\u6298\u5c04\u3001\u5168\u5167\u53cd\u5c04\u3001\u51f8\u900f\u93e1\u3001\u51f9\u900f\u93e1\u3001\u96fb\u78c1\u6ce2',
   'strand.optics.subtitle': '\u5149\u5b78 \u2014 \u5149\u8207\u6ce2\u52d5',
@@ -76,6 +76,10 @@ export const zhHant = {
     '\u50cf\u7684\u5f62\u6210\u3001\u6700\u5c0f\u93e1\u9577\uff0f\u93e1\u9ad8\u3001\u770b\u5f8c\u65b9\u7269\u4ef6\u3001\u593e\u89d2\u93e1\u8207\u7df4\u7fd2\u4f5c\u5716\uff0c\u914d\u5408\u5373\u6642\u516c\u5f0f\u3002',
   'tools.reflection3d.title': '3D \u53cd\u5c04\u5be6\u9a57\u5ba4',
   'tools.reflection3d.subtitle': '3D \u6a21\u64ec\u6f2b\u53cd\u5c04\u8207\u93e1\u9762\u53cd\u5c04\uff0c\u4ee5\u53ca\u586b\u5145\u4ecb\u8cea\u7684\u5e73\u6ed1\u5316\u904e\u7a0b\u3002',
+  'tools.electrostatics.title': '靜電',
+  'tools.domesticCircuit.title': '家居電路',
+  'tools.magneticEffect.title': '電流的磁效應',
+  'tools.movingChargeForce.title': '磁場對運動電荷的作用力',
   'tools.flemingHandRules.title': '\u5f17\u6797\u660e\u5de6\u53f3\u624b\u6cd5\u5247',
   'tools.flemingHandRules.subtitle':
     '3D \u5de6\u624b\u5b9a\u5247\uff08\u96fb\u52d5\u6a5f\uff09\u3001\u53f3\u624b\u5b9a\u5247\uff08\u767c\u96fb\u6a5f\uff09\u53ca\u53f3\u624b\u63e1\u62f3\u5b9a\u5247\uff08HKDSE\uff09\u3002',
@@ -396,10 +400,10 @@ export const zhHant = {
   'waves.comingSoon': '此單元的互動實驗室、工作紙、測驗及閃卡將於日後推出。',
   // Electricity and magnetism
   'strand.electricity.title': '電和磁',
-  'strand.electricity.desc': '即將推出',
+  'strand.electricity.desc': '靜電、家居電路、電流的磁效應、夫林明手定則、磁場對運動電荷的作用力',
   'strand.electricity.subtitle': '電和磁 — 電荷、電路與磁場',
   'electricity.section.empty': '電和磁單元內容即將推出。',
-  'electricity.comingSoon': '此單元的互動實驗室、工作紙、測驗及閃卡將於日後推出。',
+  'electricity.comingSoon': '此單元的工作紙、測驗及閃卡將於日後推出。',
   'topic.electrostatics': '靜電',
   'topic.electricCircuits': '電路',
   'topic.domesticElectricity': '家居用電',

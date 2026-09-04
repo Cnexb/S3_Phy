@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moving Charge Force Lab | Magnetic Force on Moving Charge</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3f7fb;
+      --bg2: #e8eef6;
+      --surface: #ffffff;
+      --surface2: #f5f8fc;
+      --ink: #152033;
+      --muted: #5b6b82;
+      --line: #c9d5e6;
+      --teal: #0d7c74;
+      --teal-bright: #12a396;
+      --force: #e05a2b;
+      --field: #2b6be4;
+      --vel: #168a56;
+      --ok: #168a56;
+      --warn: #c36b2e;
+      --danger: #d14343;
+      --plus: #e24535;
+      --minus: #3b82f6;
+      --radius: 16px;
+      --shadow: 0 12px 36px rgba(21, 32, 51, 0.08);
+      --font: "Nunito Sans", system-ui, sans-serif;
+      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html.s3phy-embed, html.s3phy-embed body {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    html.s3phy-embed .wrap {
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 520px at 0% -5%, rgba(18, 163, 150, 0.14), transparent 55%),
+        radial-gradient(900px 480px at 100% 0%, rgba(224, 90, 43, 0.10), transparent 50%),
+        radial-gradient(700px 400px at 50% 100%, rgba(43, 107, 228, 0.08), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .mono { font-family: var(--mono); }
+
+    .wrap {
+      width: min(1480px, calc(100% - 1.5rem));
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: 0.95rem; }
+    .brand-mark {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, #eef4fb);
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .brand-mark svg { width: 34px; height: 34px; }
+    .brand h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(1.3rem, 2.8vw, 1.85rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.92rem; }
+
+    .lang-toggle {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .lang-toggle button.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+
+    .tabs {
+      display: flex;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1rem;
+      scrollbar-width: thin;
+    }
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 0.55rem 0.95rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: 0.2s ease;
+    }
+    .tab:hover { color: var(--ink); border-color: #a8bdd6; }
+    .tab.active {
+      background: linear-gradient(135deg, #e8f8f4, #dff0fb);
+      color: var(--ink);
+      border-color: var(--teal-bright);
+      box-shadow: 0 0 0 1px rgba(18, 163, 150, 0.22);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-hd {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .card-hd h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 1.35rem;
+    }
+    .card-hd .hint { color: var(--muted); font-size: 0.9rem; }
+    .card-bd { padding: 1.1rem 1.25rem 1.35rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 0.95fr;
+      gap: 1.1rem;
+    }
+    @media (max-width: 920px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .stage {
+      position: relative;
+      background:
+        radial-gradient(circle at 28% 18%, rgba(18, 163, 150, 0.06), transparent 42%),
+        linear-gradient(180deg, #f8fbfd, #eef3f9);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      min-height: 520px;
+    }
+    .stage canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      touch-action: none;
+    }
+    .fs-btn {
+      position: absolute;
+      top: 0.55rem;
+      right: 0.55rem;
+      z-index: 5;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 10px;
+      padding: 0.4rem 0.7rem;
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: var(--ink);
+      box-shadow: 0 4px 14px rgba(21, 32, 51, 0.1);
+    }
+    .fs-btn:hover {
+      border-color: var(--teal-bright);
+      color: var(--teal);
+    }
+    .fs-btn .fs-exit { display: none !important; }
+    .lab-view:fullscreen .fs-btn .fs-enter,
+    .lab-view:-webkit-full-screen .fs-btn .fs-enter { display: none !important; }
+    .lab-view:fullscreen .fs-btn .fs-exit,
+    .lab-view:-webkit-full-screen .fs-btn .fs-exit { display: inline !important; }
+    .lab-view:fullscreen .fs-btn,
+    .lab-view:-webkit-full-screen .fs-btn {
+      top: 1rem;
+      right: 1rem;
+    }
+    .lab-view:fullscreen,
+    .lab-view:-webkit-full-screen {
+      width: 100vw;
+      height: 100vh;
+      box-sizing: border-box;
+      padding: 1rem 1.25rem;
+      background: linear-gradient(180deg, #f4f7fb, #e8eef6);
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) min(380px, 34vw);
+      gap: 1.1rem;
+      align-items: stretch;
+      overflow: hidden;
+    }
+    .lab-view:fullscreen > div:first-child,
+    .lab-view:-webkit-full-screen > div:first-child {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+    }
+    .lab-view:fullscreen .stage,
+    .lab-view:-webkit-full-screen .stage {
+      flex: 1;
+      min-height: 0;
+      height: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lab-view:fullscreen .stage canvas,
+    .lab-view:-webkit-full-screen .stage canvas {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .lab-view:fullscreen .controls,
+    .lab-view:-webkit-full-screen .controls {
+      overflow-y: auto;
+      max-height: calc(100vh - 2rem);
+      padding-right: 0.35rem;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 0.85rem;
+    }
+    @media (max-width: 800px) {
+      .lab-view:fullscreen,
+      .lab-view:-webkit-full-screen {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto;
+        overflow: auto;
+      }
+      .lab-view:fullscreen .controls,
+      .lab-view:-webkit-full-screen .controls {
+        max-height: none;
+      }
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .ctrl {
+      background: var(--surface2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+    }
+    .ctrl label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 0.4rem;
+    }
+    .ctrl label span.val {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--teal);
+      font-weight: 600;
+    }
+    .ctrl input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+    }
+    .row-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      font-weight: 700;
+      font-size: 0.86rem;
+      transition: 0.15s ease;
+    }
+    .btn:hover { border-color: var(--teal-bright); color: var(--teal); }
+    .btn.primary {
+      background: linear-gradient(135deg, #0d7c74, #12a396);
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn.primary:hover { filter: brightness(1.05); color: #fff; }
+    .btn.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+    .btn.ghost { background: transparent; }
+
+    .readout {
+      background: linear-gradient(135deg, #152033, #1e334f);
+      color: #e8f0fa;
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.84rem;
+      line-height: 1.65;
+    }
+    .readout .big {
+      font-family: var(--display);
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      margin: 0.15rem 0 0.35rem;
+    }
+    .readout .big.r { color: #ff6b6b; }
+    .readout .big.t { color: #f5c542; }
+    .readout .big.w { color: #7dffd4; }
+    .readout .dim { color: #9bb0c8; }
+    .formula {
+      background: #eef8f5;
+      border: 1px dashed #9fd0c4;
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      text-align: center;
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .legend i {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      margin-right: 0.35rem;
+      vertical-align: -1px;
+    }
+
+    .tips {
+      margin-top: 0.9rem;
+      padding: 0.85rem 1rem;
+      background: #fff8ef;
+      border: 1px solid #f0d8b4;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      color: #6b4e28;
+    }
+    .tips strong { color: var(--ink); }
+
+
+    footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none">
+            <circle cx="12" cy="12" r="2.2" fill="#2b6be4"/>
+            <circle cx="20" cy="12" r="2.2" fill="#2b6be4"/>
+            <circle cx="28" cy="12" r="2.2" fill="#2b6be4"/>
+            <circle cx="12" cy="20" r="2.2" fill="#2b6be4"/>
+            <circle cx="20" cy="20" r="2.2" fill="#2b6be4"/>
+            <circle cx="28" cy="20" r="2.2" fill="#2b6be4"/>
+            <circle cx="12" cy="28" r="2.2" fill="#2b6be4"/>
+            <circle cx="20" cy="28" r="2.2" fill="#2b6be4"/>
+            <circle cx="28" cy="28" r="2.2" fill="#2b6be4"/>
+            <path d="M8 32 L32 8" stroke="#e05a2b" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M28 8 L32 8 L32 12" stroke="#e05a2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="10" cy="34" r="3.2" fill="#168a56"/>
+          </svg>
+        </div>
+        <div>
+          <h1>
+            <span class="en">Moving Charge Force Lab</span>
+            <span class="zh">運動電荷受力實驗</span>
+          </h1>
+          <p>
+            <span class="en">Chapter 6 · Magnetic force on a moving charge</span>
+            <span class="zh">第 6 章 · 磁場對運動電荷的作用力</span>
+          </p>
+        </div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="zh-HK">中文</button>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="circle" type="button">
+        <span class="en">1 · Circular path</span>
+        <span class="zh">1 · 圓周運動</span>
+      </button>
+      <button class="tab" data-tab="selector" type="button">
+        <span class="en">2 · Velocity selector</span>
+        <span class="zh">2 · 速度選擇器</span>
+      </button>
+      <button class="tab" data-tab="mass" type="button">
+        <span class="en">3 · Mass spectrometer</span>
+        <span class="zh">3 · 質譜儀</span>
+      </button>
+    </nav>
+
+    <!-- ========== STATION 1: CIRCLE ========== -->
+    <section class="panel active" id="panel-circle">
+      <div class="card">
+        <div class="card-hd">
+          <h2>
+            <span class="en">Circular motion in a B-field</span>
+            <span class="zh">磁場中的圓周運動</span>
+          </h2>
+          <span class="hint">
+            <span class="en">F provides centripetal force · speed stays constant</span>
+            <span class="zh">磁力提供向心力 · 速率保持不變</span>
+          </span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2 lab-view">
+            <div>
+              <div class="stage" data-stage="circle">
+                <button type="button" class="fs-btn" aria-label="Full screen">
+                  <span class="fs-enter"><span class="en">Full screen</span><span class="zh">全螢幕</span></span>
+                  <span class="fs-exit"><span class="en">Exit</span><span class="zh">退出</span></span>
+                </button>
+                <canvas id="circleCanvas" width="1000" height="600"></canvas>
+              </div>
+              <div class="legend">
+                <span><i style="background:#2b6be4"></i><span class="en">B into paper · F<sub>B</sub> to centre</span><span class="zh">B 入紙 · F<sub>B</sub> 指向中心</span></span>
+                <span><i style="background:#e05a2b"></i><span class="en">path / radius r</span><span class="zh">軌跡 / 半徑 r</span></span>
+                <span><i style="background:#168a56"></i><span class="en">v velocity</span><span class="zh">v 速度</span></span>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="formula">r = mv / (QB) &nbsp;·&nbsp; T = 2πm / (QB) &nbsp;·&nbsp; ω = QB / m</div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Particle</span><span class="zh">粒子</span>
+                </label>
+                <div class="row-btns">
+                  <button type="button" class="btn active" data-cpart="proton" id="cProton">
+                    <span class="en">Proton</span><span class="zh">質子</span>
+                  </button>
+                  <button type="button" class="btn" data-cpart="electron" id="cElectron">
+                    <span class="en">Electron</span><span class="zh">電子</span>
+                  </button>
+                </div>
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">B (mT)</span>
+                  <span class="zh">B（mT）</span>
+                  <span class="val" id="cBVal">2.0 mT</span>
+                </label>
+                <input type="range" id="cB" min="0.5" max="8" value="2" step="0.1" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Speed (×10⁶ m/s)</span>
+                  <span class="zh">速率（×10⁶ m/s）</span>
+                  <span class="val" id="cVVal">1.5</span>
+                </label>
+                <input type="range" id="cV" min="0.3" max="4" value="1.5" step="0.1" />
+              </div>
+              <div class="row-btns">
+                <button type="button" class="btn primary" id="cPlay">
+                  <span class="en">Play / Pause</span><span class="zh">播放 / 暫停</span>
+                </button>
+                <button type="button" class="btn" id="cReset">
+                  <span class="en">Reset</span><span class="zh">重設</span>
+                </button>
+              </div>
+              <div class="readout" id="circleReadout"></div>
+              <div class="tips">
+                <strong class="en">Remember:</strong>
+                <strong class="zh">記住：</strong>
+                <span class="en"> Magnetic force is always ⊥ to v, so no work is done — speed and K.E. stay constant. Period T does not depend on speed!</span>
+                <span class="zh"> 磁力永遠垂直於 v，不做功 —— 速率與動能不變。週期 T 與速率無關！</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STATION 2: SELECTOR ========== -->
+    <section class="panel" id="panel-selector">
+      <div class="card">
+        <div class="card-hd">
+          <h2>
+            <span class="en">Velocity selector (E × B)</span>
+            <span class="zh">速度選擇器（電場 × 磁場）</span>
+          </h2>
+          <span class="hint">
+            <span class="en">Straight path when Fe = Fb → v = E/B</span>
+            <span class="zh">直線通過條件：Fe = Fb → v = E/B</span>
+          </span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2 lab-view">
+            <div>
+              <div class="stage" data-stage="selector">
+                <button type="button" class="fs-btn" aria-label="Full screen">
+                  <span class="fs-enter"><span class="en">Full screen</span><span class="zh">全螢幕</span></span>
+                  <span class="fs-exit"><span class="en">Exit</span><span class="zh">退出</span></span>
+                </button>
+                <canvas id="selectorCanvas" width="1000" height="580"></canvas>
+              </div>
+              <div class="legend">
+                <span><i style="background:#c99212"></i><span class="en">E (plates)</span><span class="zh">E（平行板）</span></span>
+                <span><i style="background:#2b6be4"></i><span class="en">B into paper</span><span class="zh">B 入紙</span></span>
+                <span><i style="background:#168a56"></i><span class="en">beam</span><span class="zh">粒子束</span></span>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="formula">Undeflected when v = E / B</div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Plate voltage V</span>
+                  <span class="zh">極板電壓 V</span>
+                  <span class="val" id="selVVal">200 V</span>
+                </label>
+                <input type="range" id="selV" min="50" max="400" value="200" step="10" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Plate gap d</span>
+                  <span class="zh">極板間距 d</span>
+                  <span class="val" id="selDVal">5.0 cm</span>
+                </label>
+                <input type="range" id="selD" min="2" max="10" value="5" step="0.5" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">B-field</span>
+                  <span class="zh">磁場 B</span>
+                  <span class="val" id="selBVal">5.71 mT</span>
+                </label>
+                <input type="range" id="selB" min="1" max="12" value="5.71" step="0.01" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Electron speed</span>
+                  <span class="zh">電子速率</span>
+                  <span class="val" id="selSpeedVal">7.0×10⁵ m/s</span>
+                </label>
+                <input type="range" id="selSpeed" min="2" max="15" value="7" step="0.01" />
+              </div>
+              <div class="row-btns">
+                <button type="button" class="btn primary" id="selFire">
+                  <span class="en">Fire electron</span><span class="zh">發射電子</span>
+                </button>
+              </div>
+              <div class="readout" id="selectorReadout"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== STATION 3: MASS SPEC ========== -->
+    <section class="panel" id="panel-mass">
+      <div class="card">
+        <div class="card-hd">
+          <h2>
+            <span class="en">Mass spectrometer</span>
+            <span class="zh">質譜儀</span>
+          </h2>
+          <span class="hint">
+            <span class="en">Selected speed · mass → deflection radius</span>
+            <span class="zh">選定速率 · 質量 → 偏轉半徑</span>
+          </span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2 lab-view">
+            <div>
+              <div class="stage" data-stage="mass">
+                <button type="button" class="fs-btn" aria-label="Full screen">
+                  <span class="fs-enter"><span class="en">Full screen</span><span class="zh">全螢幕</span></span>
+                  <span class="fs-exit"><span class="en">Exit</span><span class="zh">退出</span></span>
+                </button>
+                <canvas id="massCanvas" width="1000" height="600"></canvas>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="formula">r = mv / (QB) &nbsp;⇒&nbsp; m = rQB / v</div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Molecule mass (m)</span>
+                  <span class="zh">分子質量（m）</span>
+                  <span class="val" id="mAVal">28 m</span>
+                </label>
+                <input type="range" id="mA" min="10" max="80" value="28" step="1" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Deflecting B</span>
+                  <span class="zh">偏轉磁場 B</span>
+                  <span class="val" id="mBFieldVal">25 mT</span>
+                </label>
+                <input type="range" id="mBField" min="10" max="50" value="25" step="1" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Selected speed</span>
+                  <span class="zh">選定速率</span>
+                  <span class="val" id="mVVal">4.80×10⁴ m/s</span>
+                </label>
+                <input type="range" id="mV" min="2" max="8" value="4.8" step="0.1" />
+              </div>
+              <div class="row-btns">
+                <button type="button" class="btn primary" id="mFire">
+                  <span class="en">Inject</span><span class="zh">注入</span>
+                </button>
+                <button type="button" class="btn" id="mReset">
+                  <span class="en">Clear</span><span class="zh">清除</span>
+                </button>
+              </div>
+              <div class="readout" id="massReadout"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span class="en">Works offline in Google Chrome · open index.html · Chapter 6 Magnetic force on moving charge</span>
+      <span class="zh">可離線於 Google Chrome 開啟 index.html · 第 6 章 運動電荷磁力</span>
+    </footer>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  const Q_P = 1.6e-19;
+  const M_P = 1.67e-27;
+  const M_E = 9.1e-31;
+  const U = 1.6605e-27;
+
+  /* ---------- i18n ---------- */
+  const langBtns = document.querySelectorAll(".lang-toggle button");
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    langBtns.forEach((b) => b.classList.toggle("active", b.dataset.lang === lang));
+    updateCircleUI();
+    updateSelectorUI();
+    updateMassUI();
+  }
+  langBtns.forEach((btn) => {
+    btn.addEventListener("click", () => setLang(btn.dataset.lang));
+  });
+  function hubLangToLocal(lang) {
+    const s = String(lang || "").toLowerCase();
+    return s.startsWith("zh") ? "zh-HK" : "en";
+  }
+  {
+    const params = new URLSearchParams(location.search);
+    const urlLang = params.get("lang");
+    if (urlLang) setLang(hubLangToLocal(urlLang));
+  }
+  window.addEventListener("message", (ev) => {
+    if (ev.data?.type !== "s3phy:lang") return;
+    setLang(hubLangToLocal(ev.data.lang));
+  });
+  function isZh() {
+    return document.documentElement.lang === "zh-HK";
+  }
+
+  /* ---------- tabs ---------- */
+  const tabs = document.querySelectorAll(".tab");
+  const panels = document.querySelectorAll(".panel");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.classList.remove("active"));
+      panels.forEach((p) => p.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("panel-" + tab.dataset.tab).classList.add("active");
+      if (tab.dataset.tab === "circle") startCircleLoop();
+      if (tab.dataset.tab === "selector") drawSelector();
+      if (tab.dataset.tab === "mass") drawMass();
+    });
+  });
+
+  function fmtSci(x, dig) {
+    if (!isFinite(x) || x === 0) return "0";
+    const exp = Math.floor(Math.log10(Math.abs(x)));
+    const mant = x / Math.pow(10, exp);
+    return mant.toFixed(dig) + "×10" + toSup(exp);
+  }
+  function toSup(n) {
+    const map = { "-": "⁻", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+    return String(n).split("").map((c) => map[c] || c).join("");
+  }
+
+  function drawArrow(ctx, x1, y1, x2, y2, color, lw) {
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = lw;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    const ah = 12;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ah * Math.cos(ang - 0.4), y2 - ah * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - ah * Math.cos(ang + 0.4), y2 - ah * Math.sin(ang + 0.4));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  /* ============================================================
+     STATION 1 — CIRCULAR
+     ============================================================ */
+  const cCanvas = document.getElementById("circleCanvas");
+  const cctx = cCanvas.getContext("2d");
+  const cState = {
+    part: "proton",
+    playing: true,
+    angle: 0,
+    last: 0,
+    raf: 0
+  };
+
+  document.getElementById("cProton").addEventListener("click", () => {
+    cState.part = "proton";
+    document.getElementById("cProton").classList.add("active");
+    document.getElementById("cElectron").classList.remove("active");
+    cState.angle = 0;
+    updateCircleUI();
+  });
+  document.getElementById("cElectron").addEventListener("click", () => {
+    cState.part = "electron";
+    document.getElementById("cElectron").classList.add("active");
+    document.getElementById("cProton").classList.remove("active");
+    cState.angle = 0;
+    updateCircleUI();
+  });
+  document.getElementById("cB").addEventListener("input", updateCircleUI);
+  document.getElementById("cV").addEventListener("input", updateCircleUI);
+  document.getElementById("cPlay").addEventListener("click", () => {
+    cState.playing = !cState.playing;
+    if (cState.playing) startCircleLoop();
+  });
+  document.getElementById("cReset").addEventListener("click", () => {
+    cState.angle = 0;
+    drawCircle();
+  });
+
+  function circleParams() {
+    const B = +document.getElementById("cB").value * 1e-3;
+    const v = +document.getElementById("cV").value * 1e6;
+    const m = cState.part === "proton" ? M_P : M_E;
+    const q = Q_P;
+    const r = (m * v) / (q * B);
+    const T = (2 * Math.PI * m) / (q * B);
+    const omega = (q * B) / m;
+    return { B, v, m, q, r, T, omega };
+  }
+
+  function circleVisualR(p) {
+    const w = cCanvas.width, h = cCanvas.height;
+    const maxRpx = Math.min(w, h) * 0.38;
+    const rAtExtreme = (p.m * 4e6) / (p.q * 0.5e-3);
+    const rRef = rAtExtreme * 0.4;
+    const scale = maxRpx / rRef;
+    return Math.max(16, Math.min(p.r * scale, maxRpx));
+  }
+
+  function updateCircleUI() {
+    const Bmt = +document.getElementById("cB").value;
+    const vv = +document.getElementById("cV").value;
+    document.getElementById("cBVal").textContent = Bmt.toFixed(1) + " mT";
+    document.getElementById("cVVal").textContent = vv.toFixed(1);
+    const p = circleParams();
+    document.getElementById("circleReadout").innerHTML =
+      '<span class="dim">r = mv/(QB)</span><div class="big r">r = ' + fmtSci(p.r, 2) + " m</div>" +
+      '<div class="big t">T = ' + fmtSci(p.T, 2) + " s</div>" +
+      '<div class="big w">ω = ' + fmtSci(p.omega, 2) + " rad/s</div>" +
+      '<span class="dim">' + (isZh()
+        ? "電子質量小得多 → 半徑遠小於質子"
+        : "Electron mass ≪ proton → much smaller r") + "</span>";
+    drawCircle();
+  }
+
+  function drawCircle() {
+    const w = cCanvas.width, h = cCanvas.height;
+    const ctx = cctx;
+    ctx.clearRect(0, 0, w, h);
+
+    ctx.strokeStyle = "rgba(43,107,228,0.28)";
+    ctx.lineWidth = 1.2;
+    for (let x = 30; x < w; x += 32) {
+      for (let y = 40; y < h; y += 32) {
+        ctx.beginPath();
+        ctx.moveTo(x - 4, y - 4); ctx.lineTo(x + 4, y + 4);
+        ctx.moveTo(x + 4, y - 4); ctx.lineTo(x - 4, y + 4);
+        ctx.stroke();
+      }
+    }
+
+    const p = circleParams();
+    const rpx = circleVisualR(p);
+
+    const cx = w / 2, cy = h / 2 + 8;
+
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = "#e05a2b";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rpx, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // radius line
+    const ang = cState.angle;
+    // Proton + with B into: circulates clockwise? F = q(v×B): at top moving right, F down... 
+    // Actually for B into (−z with out=+z): F∝q(vy,-vx) for s=+1 into from earlier.
+    // Positive charge: cyclotron rotation — commonly drawn clockwise for B into in many textbooks (Fleming).
+    // Direction: ω = −(q/m)B for B out... We'll animate clockwise for + with B into (common DSE figure).
+    const sense = cState.part === "proton" ? 1 : -1; // electron opposite
+    const px = cx + Math.cos(sense * ang) * rpx;
+    const py = cy + Math.sin(sense * ang) * rpx;
+
+    ctx.strokeStyle = "rgba(224,90,43,0.5)";
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(px, py);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(px, py, 10, 0, Math.PI * 2);
+    ctx.fillStyle = cState.part === "proton" ? "#e24535" : "#3b82f6";
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    ctx.font = "700 13px Bricolage Grotesque";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(cState.part === "proton" ? "+" : "−", px, py + 1);
+
+    // Magnetic force F_B — always toward centre (centripetal)
+    const fLen = Math.min(58, Math.max(28, rpx * 0.5));
+    const fEndX = px + ((cx - px) / rpx) * fLen;
+    const fEndY = py + ((cy - py) / rpx) * fLen;
+    drawArrow(ctx, px, py, fEndX, fEndY, "#2b6be4", 2.8);
+    {
+      const mx = (px + fEndX) / 2;
+      const my = (py + fEndY) / 2;
+      // offset label slightly off the arrow
+      const ox = -((cy - py) / rpx) * 14;
+      const oy = ((cx - px) / rpx) * 14;
+      ctx.fillStyle = "#2b6be4";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      ctx.font = "700 15px Nunito Sans";
+      ctx.fillText("F", mx + ox - 2, my + oy + 4);
+      ctx.font = "700 10px Nunito Sans";
+      ctx.fillText("B", mx + ox + 9, my + oy + 7);
+    }
+
+    // velocity tangent + green v label
+    const tx = -Math.sin(sense * ang) * sense;
+    const ty = Math.cos(sense * ang) * sense;
+    const vEndX = px + tx * 50;
+    const vEndY = py + ty * 50;
+    drawArrow(ctx, px, py, vEndX, vEndY, "#168a56", 2.5);
+    ctx.fillStyle = "#168a56";
+    ctx.font = "700 15px Nunito Sans";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.fillText("v", vEndX + tx * 10, vEndY + ty * 10 - 2);
+
+    ctx.fillStyle = "rgba(21,32,51,0.75)";
+    ctx.fillRect(0, 0, w, 34);
+    ctx.fillStyle = "#fff";
+    ctx.font = "600 13px Nunito Sans";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(
+      isZh()
+        ? "磁力 ⊥ 速度 → 圓周運動 · 速率不變"
+        : "Magnetic force ⊥ velocity → circular path · constant speed",
+      14, 22
+    );
+  }
+
+  function startCircleLoop() {
+    cancelAnimationFrame(cState.raf);
+    cState.last = performance.now();
+    function loop(t) {
+      const panel = document.getElementById("panel-circle");
+      if (!panel.classList.contains("active")) return;
+      const dt = Math.min(0.05, (t - cState.last) / 1000);
+      cState.last = t;
+      if (cState.playing) {
+        const p = circleParams();
+        // Screen tip speed scales with the speed slider so motion clearly
+        // speeds up when v increases (r ∝ v would cancel a pure tip/r scheme).
+        const tipPxPerSec = 55 * (p.v / 1.5e6);
+        const rpx = circleVisualR(p);
+        const visOmega = Math.min(Math.max(tipPxPerSec / (0.5 * rpx + 35), 0.4), 8);
+        cState.angle += visOmega * dt;
+        drawCircle();
+      }
+      cState.raf = requestAnimationFrame(loop);
+    }
+    cState.raf = requestAnimationFrame(loop);
+  }
+
+  /* ============================================================
+     STATION 2 — VELOCITY SELECTOR
+     ============================================================ */
+  const sCanvas = document.getElementById("selectorCanvas");
+  const sctx = sCanvas.getContext("2d");
+  const sAnim = { particles: [], raf: 0, running: false };
+
+  function matchSelectorSpeed() {
+    const p = selectorParams();
+    const target = p.vSel / 1e5;
+    document.getElementById("selSpeed").value = Math.min(15, Math.max(2, target)).toFixed(2);
+  }
+
+  // Keep v = E/B whenever field controls change (same as Auto-match button).
+  ["selV", "selD", "selB"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", () => {
+      matchSelectorSpeed();
+      updateSelectorUI();
+    });
+  });
+  document.getElementById("selSpeed").addEventListener("input", () => {
+    // Changing beam speed adjusts B so the selector stays matched.
+    const V = +document.getElementById("selV").value;
+    const d = +document.getElementById("selD").value / 100;
+    const v = +document.getElementById("selSpeed").value * 1e5;
+    const E = V / d;
+    const B_mT = (E / v) * 1e3;
+    document.getElementById("selB").value = Math.min(12, Math.max(1, B_mT)).toFixed(2);
+    updateSelectorUI();
+  });
+
+  function selectorParams() {
+    const V = +document.getElementById("selV").value;
+    const d = +document.getElementById("selD").value / 100;
+    const B = +document.getElementById("selB").value * 1e-3;
+    const v = +document.getElementById("selSpeed").value * 1e5;
+    const E = V / d;
+    const vSel = E / B;
+    const ratio = v / vSel;
+    return { V, d, B, v, E, vSel, ratio };
+  }
+
+  function updateSelectorUI() {
+    const p = selectorParams();
+    document.getElementById("selVVal").textContent = p.V + " V";
+    document.getElementById("selDVal").textContent = (p.d * 100).toFixed(1) + " cm";
+    document.getElementById("selBVal").textContent = (p.B * 1e3).toFixed(2) + " mT";
+    document.getElementById("selSpeedVal").textContent = (+document.getElementById("selSpeed").value).toFixed(2) + "×10⁵ m/s";
+
+    document.getElementById("selectorReadout").innerHTML =
+      '<div class="big">E = ' + fmtSci(p.E, 2) + " N/C</div>" +
+      '<div class="big">v = ' + fmtSci(p.vSel, 2) + " m/s</div>";
+    drawSelector();
+  }
+
+  document.getElementById("selFire").addEventListener("click", () => {
+    const layout = selectorPlateLayout();
+    // Electron: Fe opposite E. Assume top plate +, bottom − so E downward.
+    // Electron Fe upward. For undeflected, Fb downward → B into for v to the right.
+    // Net force: Fe up, Fb down. If v > E/B, |Fb| > |Fe| → net down.
+    sAnim.particles.push({
+      x: 40,
+      y: layout.mid,
+      vx: 220,
+      vy: 0,
+      life: 0
+    });
+    if (!sAnim.running) {
+      sAnim.running = true;
+      sAnim.last = performance.now();
+      requestAnimationFrame(selLoop);
+    }
+  });
+
+  function selectorPlateLayout() {
+    const h = sCanvas.height;
+    const p = selectorParams();
+    const dCm = p.d * 100; // slider 2–10 cm
+    const gapMin = 100;
+    const gapMax = h - 150;
+    const gapPx = gapMin + (gapMax - gapMin) * ((dCm - 2) / (10 - 2));
+    const mid = h / 2 + 6;
+    const top = mid - gapPx / 2;
+    const bot = mid + gapPx / 2;
+    return { top, bot, mid, gapPx, dCm };
+  }
+
+  function selLoop(t) {
+    const dt = Math.min(0.04, (t - sAnim.last) / 1000);
+    sAnim.last = t;
+    const p = selectorParams();
+    const layout = selectorPlateLayout();
+    // canvas y down: a_y = (e/m)(vB - E)
+    const em = 1.76e11;
+    const ay = em * (p.v * p.B - p.E) * 2e-12; // scaled for display
+
+    sAnim.particles = sAnim.particles.filter((pt) => {
+      pt.vy += ay * dt * 60;
+      pt.x += pt.vx * dt;
+      pt.y += pt.vy * dt;
+      pt.life += dt;
+      return pt.x < sCanvas.width - 30 && pt.y > layout.top + 8 && pt.y < layout.bot - 8 && pt.life < 4;
+    });
+    drawSelector();
+    if (sAnim.particles.length) requestAnimationFrame(selLoop);
+    else sAnim.running = false;
+  }
+
+  function drawSelector() {
+    const w = sCanvas.width, h = sCanvas.height;
+    const ctx = sctx;
+    ctx.clearRect(0, 0, w, h);
+
+    const { top, bot, mid, gapPx, dCm } = selectorPlateLayout();
+    const plateH = 14;
+    const plateL = 100;
+    const plateW = w - 200;
+
+    // plates — gap tracks slider d
+    ctx.fillStyle = "#c99212";
+    ctx.fillRect(plateL, top - plateH, plateW, plateH);
+    ctx.fillRect(plateL, bot, plateW, plateH);
+    ctx.fillStyle = "#6b4e28";
+    ctx.font = "700 13px Nunito Sans";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("+", plateL + 8, top - plateH - 6);
+    ctx.fillText("−", plateL + 8, bot + plateH + 14);
+
+    // gap dimension bracket on the right
+    const bx = w - 78;
+    ctx.strokeStyle = "#5b6b82";
+    ctx.fillStyle = "#5b6b82";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(bx - 8, top);
+    ctx.lineTo(bx, top);
+    ctx.lineTo(bx, bot);
+    ctx.lineTo(bx - 8, bot);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(bx - 10, top);
+    ctx.lineTo(bx + 2, top);
+    ctx.moveTo(bx - 10, bot);
+    ctx.lineTo(bx + 2, bot);
+    ctx.stroke();
+    ctx.font = "700 13px JetBrains Mono";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText("d", bx + 8, mid - 8);
+    ctx.font = "600 11px Nunito Sans";
+    ctx.fillText(dCm.toFixed(1) + " cm", bx + 8, mid + 10);
+
+    // E arrows down between plates
+    const ePad = Math.min(24, gapPx * 0.12);
+    for (let x = 140; x < w - 130; x += 50) {
+      drawArrow(ctx, x, top + ePad, x, bot - ePad, "rgba(201,146,18,0.55)", 1.5);
+    }
+
+    // B crosses between plates
+    ctx.strokeStyle = "rgba(43,107,228,0.3)";
+    for (let x = 130; x < w - 120; x += 36) {
+      for (let y = top + 28; y < bot - 20; y += 36) {
+        ctx.beginPath();
+        ctx.moveTo(x - 4, y - 4); ctx.lineTo(x + 4, y + 4);
+        ctx.moveTo(x + 4, y - 4); ctx.lineTo(x - 4, y + 4);
+        ctx.stroke();
+      }
+    }
+
+    // entry / exit ports aligned with beam mid-line
+    ctx.fillStyle = "#152033";
+    ctx.fillRect(0, mid - 18, 100, 36);
+    ctx.fillRect(w - 100, mid - 18, 100, 36);
+    ctx.fillStyle = "#7dffd4";
+    ctx.font = "600 11px Nunito Sans";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(isZh() ? "入口" : "in", 50, mid + 4);
+    ctx.fillText(isZh() ? "出口" : "out", w - 50, mid + 4);
+
+    // ideal path
+    ctx.setLineDash([6, 6]);
+    ctx.strokeStyle = "rgba(22,138,86,0.35)";
+    ctx.beginPath();
+    ctx.moveTo(40, mid);
+    ctx.lineTo(w - 40, mid);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    sAnim.particles.forEach((pt) => {
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, 7, 0, Math.PI * 2);
+      ctx.fillStyle = "#3b82f6";
+      ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.font = "700 11px Bricolage Grotesque";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("−", pt.x, pt.y + 1);
+    });
+
+    ctx.fillStyle = "rgba(21,32,51,0.75)";
+    ctx.fillRect(0, 0, w, 34);
+    ctx.fillStyle = "#fff";
+    ctx.font = "600 13px Nunito Sans";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(isZh() ? "平行板間 E 向下 · B 入紙 · 電子向右" : "E downward between plates · B into · electron →", 14, 22);
+  }
+
+  /* ============================================================
+     STATION 3 — MASS SPEC
+     ============================================================ */
+  const mCanvas = document.getElementById("massCanvas");
+  const mctx = mCanvas.getContext("2d");
+  const mAnim = { ion: null, raf: 0, running: false };
+
+  ["mA", "mBField", "mV"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", updateMassUI);
+  });
+
+  function massParams() {
+    const m = +document.getElementById("mA").value * U;
+    const B = +document.getElementById("mBField").value * 1e-3;
+    const v = +document.getElementById("mV").value * 1e4;
+    const q = Q_P;
+    return {
+      mu: +document.getElementById("mA").value,
+      B, v, q,
+      r: (m * v) / (q * B)
+    };
+  }
+
+  // Layout matches textbook figure: red box, B× into page,
+  // + ion enters left going right, semicircle bulges right, exits up-left.
+  // Fixed scale so ↑m or ↑v clearly grows the semicircle (r = mv/QB).
+  function massLayout(p) {
+    const w = mCanvas.width, h = mCanvas.height;
+    const box = { x: 56, y: 52, w: w - 112, h: h - 78 };
+    const maxRpx = Math.min(box.w * 0.78, box.h * 0.44);
+    // Default ≈ 35% of max so raising m or v has lots of room to grow
+    const rDefault = (28 * U * 4.8e4) / (Q_P * 0.025);
+    const scale = (maxRpx * 0.35) / rDefault;
+    const rpx = Math.max(22, Math.min(p.r * scale, maxRpx));
+    const cx = box.x + 18;
+    const cy = box.y + box.h / 2;
+    return {
+      box, cx, cy, rpx, maxRpx,
+      entryX: cx,
+      entryY: cy + rpx,
+      exitX: cx,
+      exitY: cy - rpx
+    };
+  }
+
+  function updateMassUI() {
+    const p = massParams();
+    document.getElementById("mAVal").textContent = p.mu + " m";
+    document.getElementById("mBFieldVal").textContent = (p.B * 1e3) + " mT";
+    document.getElementById("mVVal").textContent = (+document.getElementById("mV").value).toFixed(2) + "×10⁴ m/s";
+    document.getElementById("massReadout").innerHTML =
+      '<div class="big">r = ' + (p.r * 100).toFixed(1) + " cm</div>";
+    if (mAnim.ion) mAnim.ion.r = massLayout(p).rpx;
+    drawMass();
+  }
+
+  document.getElementById("mFire").addEventListener("click", () => {
+    const layout = massLayout(massParams());
+    mAnim.ion = { r: layout.rpx, ang: Math.PI / 2, done: false };
+    if (!mAnim.running) {
+      mAnim.running = true;
+      mAnim.last = performance.now();
+      requestAnimationFrame(massLoop);
+    }
+    drawMass();
+  });
+  document.getElementById("mReset").addEventListener("click", () => {
+    mAnim.ion = null;
+    mAnim.running = false;
+    drawMass();
+  });
+
+  function massLoop(t) {
+    const dt = Math.min(0.05, (t - mAnim.last) / 1000);
+    mAnim.last = t;
+    if (mAnim.ion && !mAnim.ion.done) {
+      // Faster beam speed → faster sweep along the arc
+      const vNorm = (+document.getElementById("mV").value - 2) / 6; // 0–1
+      const angSpeed = 0.7 + 2.4 * vNorm;
+      mAnim.ion.ang -= angSpeed * dt; // π/2 → −π/2
+      if (mAnim.ion.ang <= -Math.PI / 2) {
+        mAnim.ion.ang = -Math.PI / 2;
+        mAnim.ion.done = true;
+      }
+      drawMass();
+      requestAnimationFrame(massLoop);
+    } else {
+      mAnim.running = false;
+      drawMass();
+    }
+  }
+
+  function drawMass() {
+    const w = mCanvas.width, h = mCanvas.height;
+    const ctx = mctx;
+    ctx.clearRect(0, 0, w, h);
+    const p = massParams();
+    const L = massLayout(p);
+    const { box, cx, cy, rpx, entryX, entryY, exitX, exitY } = L;
+
+    ctx.fillStyle = "#f7f9fc";
+    ctx.fillRect(0, 0, w, h);
+
+    // Magnetic field chamber (red border, × = B into paper)
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(box.x, box.y, box.w, box.h);
+    ctx.strokeStyle = "#d64545";
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(box.x, box.y, box.w, box.h);
+
+    ctx.strokeStyle = "rgba(120,130,145,0.55)";
+    ctx.lineWidth = 1.4;
+    for (let x = box.x + 28; x < box.x + box.w - 16; x += 34) {
+      for (let y = box.y + 28; y < box.y + box.h - 16; y += 34) {
+        ctx.beginPath();
+        ctx.moveTo(x - 5, y - 5); ctx.lineTo(x + 5, y + 5);
+        ctx.moveTo(x + 5, y - 5); ctx.lineTo(x - 5, y + 5);
+        ctx.stroke();
+      }
+    }
+    ctx.fillStyle = "#2b6be4";
+    ctx.font = "700 12px Nunito Sans";
+    ctx.textAlign = "right";
+    ctx.fillText("B ×", box.x + box.w - 12, box.y + 22);
+
+    // Semicircular path guide (right half: entry bottom → exit top)
+    ctx.strokeStyle = "#8a93a3";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rpx, Math.PI / 2, -Math.PI / 2, true);
+    ctx.stroke();
+
+    // Exit arrow (leftward at top)
+    drawArrow(ctx, exitX + 4, exitY, exitX - 36, exitY, "#5b6575", 2.2);
+
+    // Detector marks on left wall (entry & hit)
+    ctx.fillStyle = "#152033";
+    ctx.fillRect(box.x - 10, entryY - 6, 10, 12);
+    ctx.fillRect(box.x - 10, exitY - 6, 10, 12);
+    ctx.fillStyle = "#5b6575";
+    ctx.font = "600 11px Nunito Sans";
+    ctx.textAlign = "right";
+    ctx.fillText(isZh() ? "入口" : "in", box.x - 14, entryY + 4);
+    ctx.fillText(isZh() ? "探測" : "det", box.x - 14, exitY + 4);
+
+    // Radius guide (horizontal to rightmost point)
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = "rgba(224,90,43,0.55)";
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + rpx, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#e05a2b";
+    ctx.font = "700 13px JetBrains Mono";
+    ctx.textAlign = "center";
+    ctx.fillText("r", cx + rpx / 2, cy - 8);
+
+    // Entry velocity arrow — length & thickness scale with speed
+    const vSlider = +document.getElementById("mV").value; // 2–8
+    const vNorm = (vSlider - 2) / 6;
+    const vLen = 28 + vNorm * 90; // 28 → 118 px
+    const vThick = 2 + vNorm * 2.5;
+    drawArrow(ctx, entryX + 14, entryY, entryX + 14 + vLen, entryY, "#168a56", vThick);
+    ctx.fillStyle = "#168a56";
+    ctx.font = "700 " + Math.round(13 + vNorm * 6) + "px Nunito Sans";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "bottom";
+    ctx.fillText("v", entryX + 18 + vLen, entryY - 4);
+
+    // Ion size scales strongly with molecule mass (10 → 80)
+    let px = entryX, py = entryY;
+    if (mAnim.ion) {
+      px = cx + Math.cos(mAnim.ion.ang) * mAnim.ion.r;
+      py = cy + Math.sin(mAnim.ion.ang) * mAnim.ion.r;
+    }
+    const mNorm = (p.mu - 10) / 70;
+    const ionR = 5 + mNorm * 24; // 5 → 29 px
+    const plusSize = Math.round(9 + mNorm * 14);
+    ctx.beginPath();
+    ctx.arc(px, py, ionR, 0, Math.PI * 2);
+    ctx.fillStyle = "#9aa3b2";
+    ctx.fill();
+    ctx.strokeStyle = "#5b6575";
+    ctx.lineWidth = 1.5 + mNorm;
+    ctx.stroke();
+    ctx.fillStyle = "#fff";
+    ctx.font = "700 " + plusSize + "px Bricolage Grotesque";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("+", px, py + 1);
+
+    ctx.fillStyle = "rgba(21,32,51,0.75)";
+    ctx.fillRect(0, 0, w, 34);
+    ctx.fillStyle = "#fff";
+    ctx.font = "600 13px Nunito Sans";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText(
+      isZh()
+        ? "B 入紙（×）· 正離子半圓偏轉 · r = mv/(QB)"
+        : "B into paper (×) · + ion semicircle · r = mv/(QB)",
+      14, 22
+    );
+  }
+
+  /* ---------- fullscreen diagrams ---------- */
+  const CANVAS_BASE = {
+    circleCanvas: [1000, 600],
+    selectorCanvas: [1000, 580],
+    massCanvas: [1000, 600]
+  };
+
+  function isFsRoot(el) {
+    const cur = document.fullscreenElement || document.webkitFullscreenElement;
+    return cur === el;
+  }
+
+  function fitStageCanvas(stage) {
+    const canvas = stage.querySelector("canvas");
+    if (!canvas) return;
+    const base = CANVAS_BASE[canvas.id] || [1000, 600];
+    const root = stage.closest(".lab-view");
+    const fs = root && isFsRoot(root);
+    let w, h;
+    if (fs) {
+      w = Math.max(640, Math.floor(stage.clientWidth));
+      h = Math.max(360, Math.floor(stage.clientHeight));
+    } else {
+      w = base[0];
+      h = base[1];
+    }
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
+
+  function redrawAfterResize() {
+    document.querySelectorAll(".stage").forEach(fitStageCanvas);
+    if (typeof drawCircle === "function") drawCircle();
+    if (typeof drawSelector === "function") drawSelector();
+    if (typeof drawMass === "function") drawMass();
+  }
+
+  document.querySelectorAll(".stage .fs-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const root = btn.closest(".lab-view");
+      if (!root) return;
+      const active = document.fullscreenElement || document.webkitFullscreenElement;
+      if (active === root) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      } else if (root.requestFullscreen) {
+        root.requestFullscreen();
+      } else if (root.webkitRequestFullscreen) {
+        root.webkitRequestFullscreen();
+      }
+    });
+  });
+
+  ["fullscreenchange", "webkitfullscreenchange"].forEach((ev) => {
+    document.addEventListener(ev, () => {
+      // slight delay so layout settles
+      requestAnimationFrame(redrawAfterResize);
+    });
+  });
+  window.addEventListener("resize", () => {
+    if (document.fullscreenElement || document.webkitFullscreenElement) redrawAfterResize();
+  });
+
+  /* ---------- init ---------- */
+  updateCircleUI();
+  matchSelectorSpeed();
+  updateSelectorUI();
+  updateMassUI();
+  startCircleLoop();
+})();
+  </script>
+</body>
+</html>

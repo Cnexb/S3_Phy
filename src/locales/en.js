@@ -1,9 +1,9 @@
 /** @type {Record<string, string>} */
 export const en = {
   'app.title': 'Uni+ HKDSE Physics Hub',
-  'app.subtitle': 'S3 Physics — Foundations, Optics & Heat',
+  'app.subtitle': 'S3 Physics — Foundations, Optics, Heat & Electricity',
   'strands.title': 'Choose a strand',
-  'strands.intro': 'Foundations, Optics (light), and Heat are ready. Other strands are coming soon, but you can still open them.',
+  'strands.intro': 'Foundations, Optics (light), Heat, and Electricity are ready. Other strands are coming soon, but you can still open them.',
   'strand.optics.title': 'Optics',
   'strand.optics.desc': 'Reflection, refraction, total internal reflection, convex lens, concave lens, electromagnetic waves',
   'strand.optics.subtitle': 'Optics — light and waves',
@@ -76,6 +76,10 @@ export const en = {
     'Image formation, minimum mirror size, seeing behind objects, wedge mirrors, and ray sketching with live formulas.',
   'tools.reflection3d.title': '3D Reflection Lab',
   'tools.reflection3d.subtitle': '3D simulation of regular and diffuse reflection with filling medium.',
+  'tools.electrostatics.title': 'Electrostatics',
+  'tools.domesticCircuit.title': 'Domestic circuit',
+  'tools.magneticEffect.title': 'Magnetic effect of current',
+  'tools.movingChargeForce.title': 'Force on a moving charge',
   'tools.flemingHandRules.title': 'Fleming hand rules',
   'tools.flemingHandRules.subtitle':
     '3D left-hand motor rule, right-hand generator rule, and right-hand grip rules for HKDSE.',
@@ -396,10 +400,10 @@ export const en = {
   'waves.comingSoon': 'Interactive labs, worksheets, quizzes, and flashcards for this strand are coming soon.',
   // Electricity and magnetism
   'strand.electricity.title': 'Electricity and Magnetism',
-  'strand.electricity.desc': 'Coming soon',
+  'strand.electricity.desc': 'Electrostatics, domestic circuits, magnetic effect of current, Fleming hand rules, force on a moving charge',
   'strand.electricity.subtitle': 'Electricity and Magnetism — charge, circuits, and magnetic fields',
   'electricity.section.empty': 'Electricity and Magnetism strand content is coming soon.',
-  'electricity.comingSoon': 'Interactive labs, worksheets, quizzes, and flashcards for this strand are coming soon.',
+  'electricity.comingSoon': 'Worksheets, quizzes, and flashcards for this strand are coming soon.',
   'topic.electrostatics': 'Electrostatics',
   'topic.electricCircuits': 'Electric circuits',
   'topic.domesticElectricity': 'Domestic electricity',

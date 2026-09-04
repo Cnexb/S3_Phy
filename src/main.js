@@ -164,18 +164,26 @@ function wireSplashAnimations(splash) {
   const danmaku = splash.querySelector('#splashDanmaku');
   const startWrap = splash.querySelector('#splashStartWrap');
 
-  splashTimers.push(window.setTimeout(() => logoWrap?.classList.add('splash-logo-wrap--in'), 800));
+  splashTimers.push(window.setTimeout(() => logoWrap?.classList.add('splash-logo-wrap--in'), 160));
   splashTimers.push(
     window.setTimeout(() => {
       danmaku?.classList.add('splash-danmaku--visible');
       startWrap?.classList.add('splash-start-wrap--in');
       if (danmaku) startDanmaku(splash, danmaku);
-    }, 1600),
+    }, 420),
   );
 }
 
 function startApp() {
   routeStrand();
+}
+
+function isEmbeddedFrame() {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
 }
 
 function trySplashThenApp() {
@@ -185,7 +193,7 @@ function trySplashThenApp() {
   } catch {
     /* ignore */
   }
-  if (skip) {
+  if (skip || isEmbeddedFrame() || parseStrandFromHash()) {
     startApp();
     return;
   }

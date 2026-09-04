@@ -1,0 +1,3331 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magnetic Effect Lab | Current → Magnetic Field</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f2f7f6;
+      --bg2: #e6efed;
+      --surface: #ffffff;
+      --surface2: #f4faf8;
+      --ink: #14221f;
+      --muted: #5a6f69;
+      --line: #c9ddd6;
+      --teal: #0f7a6c;
+      --teal-bright: #14a391;
+      --copper: #c36b2e;
+      --field: #1a8cff;
+      --north: #e23d3d;
+      --south: #2b6be4;
+      --ok: #168a56;
+      --warn: #c36b2e;
+      --danger: #d14343;
+      --radius: 16px;
+      --shadow: 0 12px 36px rgba(20, 34, 31, 0.08);
+      --font: "Nunito Sans", system-ui, sans-serif;
+      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    html.s3phy-embed, html.s3phy-embed body {
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    html.s3phy-embed .wrap {
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(1000px 520px at 0% -5%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(900px 480px at 100% 0%, rgba(195, 107, 46, 0.12), transparent 50%),
+        radial-gradient(700px 400px at 50% 100%, rgba(26, 140, 255, 0.08), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .mono { font-family: var(--mono); }
+
+    .wrap {
+      width: min(1520px, calc(100% - 1.25rem));
+      margin: 0 auto;
+      padding: 1rem 0 2.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: 0.95rem; }
+    .brand-mark {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, #e8f5f2);
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .brand-mark svg { width: 32px; height: 32px; }
+    .brand h1 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: clamp(1.35rem, 2.8vw, 1.9rem);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.92rem; }
+
+    .lang-toggle {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .lang-toggle button.active {
+      background: var(--ink);
+      color: #fff;
+    }
+
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+
+    .tabs {
+      display: flex;
+      gap: 0.45rem;
+      overflow-x: auto;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1rem;
+      scrollbar-width: thin;
+      align-items: center;
+    }
+    .tabs-row {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 1rem;
+    }
+    .tabs-row .tabs {
+      flex: 1;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .fs-btn {
+      position: absolute;
+      top: 0.55rem;
+      right: 0.55rem;
+      z-index: 8;
+      flex: 0 0 auto;
+      width: auto;
+      height: auto;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(6px);
+      color: var(--ink);
+      padding: 0.42rem 0.55rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 2px 10px rgba(16, 34, 30, 0.1);
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+    .fs-btn:hover {
+      border-color: var(--teal-bright);
+      color: var(--teal);
+      background: #fff;
+    }
+    .fs-btn .fs-enter-label,
+    .fs-btn .fs-exit-label {
+      display: none;
+    }
+    @media (min-width: 720px) {
+      .fs-btn {
+        padding: 0.42rem 0.7rem;
+      }
+      .fs-btn .fs-enter-label:not([hidden]),
+      .fs-btn .fs-exit-label:not([hidden]) {
+        display: inline;
+      }
+    }
+
+    #labShell {
+      min-height: 0;
+    }
+    #labShell:fullscreen,
+    #labShell:-webkit-full-screen {
+      background:
+        radial-gradient(1000px 520px at 0% -5%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(900px 480px at 100% 0%, rgba(195, 107, 46, 0.12), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      overflow: hidden;
+      padding: 0.35rem 0.55rem 0.55rem;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    #labShell:fullscreen .tabs-row,
+    #labShell:-webkit-full-screen .tabs-row {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      flex: 0 0 auto;
+      background: rgba(242, 247, 246, 0.94);
+      backdrop-filter: blur(8px);
+      padding: 0.35rem 0 0.4rem;
+      margin-bottom: 0.35rem;
+      border-bottom: 1px solid var(--line);
+    }
+    #labShell:fullscreen .panel.active,
+    #labShell:-webkit-full-screen .panel.active {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #labShell:fullscreen .panel.active > .card,
+    #labShell:-webkit-full-screen .panel.active > .card {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+    }
+    #labShell:fullscreen .card-hd,
+    #labShell:-webkit-full-screen .card-hd {
+      flex: 0 0 auto;
+      padding: 0.4rem 0.85rem;
+    }
+    #labShell:fullscreen .card-hd h2,
+    #labShell:-webkit-full-screen .card-hd h2 {
+      font-size: 1.05rem;
+    }
+    #labShell:fullscreen .card-bd,
+    #labShell:-webkit-full-screen .card-bd {
+      flex: 1;
+      min-height: 0;
+      padding: 0.5rem 0.65rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+    }
+    #labShell:fullscreen .bell-modes,
+    #labShell:-webkit-full-screen .bell-modes {
+      flex: 0 0 auto;
+      margin-bottom: 0.4rem;
+    }
+    #labShell:fullscreen .bell-pane.active,
+    #labShell:-webkit-full-screen .bell-pane.active {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    #labShell:fullscreen .bell-pane.active > .grid-2,
+    #labShell:-webkit-full-screen .bell-pane.active > .grid-2 {
+      flex: 1;
+      min-height: 0;
+    }
+    #labShell:fullscreen .grid-2,
+    #labShell:-webkit-full-screen .grid-2 {
+      flex: 1;
+      min-height: 0;
+      grid-template-columns: minmax(0, 1fr) minmax(200px, 260px);
+      gap: 0.65rem;
+      align-items: stretch;
+    }
+    #labShell:fullscreen .grid-2 > div:first-child,
+    #labShell:-webkit-full-screen .grid-2 > div:first-child {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    #labShell:fullscreen .stage,
+    #labShell:-webkit-full-screen .stage {
+      flex: 1;
+      min-height: 0;
+      height: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #labShell:fullscreen .stage canvas,
+    #labShell:-webkit-full-screen .stage canvas {
+      width: auto;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    #labShell:fullscreen .bell-stage,
+    #labShell:-webkit-full-screen .bell-stage {
+      flex: 1;
+      min-height: 0;
+      height: auto;
+    }
+    #labShell:fullscreen .legend,
+    #labShell:-webkit-full-screen .legend {
+      position: absolute;
+      left: 0.65rem;
+      bottom: 0.55rem;
+      z-index: 4;
+      margin: 0;
+      padding: 0.3rem 0.55rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 1px 6px rgba(16, 34, 30, 0.08);
+    }
+    #labShell:fullscreen .controls,
+    #labShell:-webkit-full-screen .controls {
+      min-height: 0;
+      overflow: auto;
+    }
+    #labShell:fullscreen .btn-row,
+    #labShell:-webkit-full-screen .btn-row {
+      flex: 0 0 auto;
+      margin-top: 0.45rem !important;
+    }
+    @media (max-width: 900px) {
+      #labShell:fullscreen .grid-2,
+      #labShell:-webkit-full-screen .grid-2 {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr) auto;
+      }
+      #labShell:fullscreen .controls,
+      #labShell:-webkit-full-screen .controls {
+        max-height: 28vh;
+      }
+    }
+    .tab {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 0.55rem 0.95rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: 0.2s ease;
+    }
+    .tab:hover { color: var(--ink); border-color: #a8c9bf; }
+    .tab.active {
+      background: linear-gradient(135deg, #e8f8f4, #dff3ee);
+      color: var(--ink);
+      border-color: var(--teal-bright);
+      box-shadow: 0 0 0 1px rgba(20, 163, 145, 0.22);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card-hd {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .card-hd h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-size: 1.35rem;
+    }
+    .card-hd .hint { color: var(--muted); font-size: 0.9rem; }
+    .card-bd { padding: 1.1rem 1.25rem 1.35rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.55fr 0.95fr;
+      gap: 1.15rem;
+    }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .stage {
+      position: relative;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(20, 163, 145, 0.06), transparent 40%),
+        linear-gradient(180deg, #f7fcfb, #eef6f3);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      min-height: 520px;
+    }
+    .stage canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      touch-action: none;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+    .ctrl {
+      background: var(--surface2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+    }
+    .ctrl label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 0.45rem;
+    }
+    .ctrl label span.val {
+      font-family: var(--mono);
+      color: var(--teal);
+      font-size: 0.85rem;
+    }
+    .ctrl input[type="range"] {
+      width: 100%;
+      accent-color: var(--teal);
+    }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: 0.15s ease;
+    }
+    .btn:hover { border-color: var(--teal-bright); color: var(--teal); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--teal), #0b5f54);
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn.primary:hover { filter: brightness(1.06); color: #fff; }
+    .btn.copper {
+      background: linear-gradient(135deg, var(--copper), #9a4f1a);
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn.active-tog {
+      background: #e8f8f4;
+      border-color: var(--teal-bright);
+      color: var(--teal);
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .readout {
+      font-family: var(--mono);
+      font-size: 0.86rem;
+      background: #10221e;
+      color: #b8f0e0;
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      line-height: 1.55;
+    }
+    .readout .k { color: #7ad4c0; }
+    .readout .hi { color: #ffe08a; }
+    #wireReadout {
+      font-size: 1.2rem;
+      padding: 0.95rem 1.05rem;
+      line-height: 1.6;
+    }
+    #solReadout {
+      font-size: 1.35rem;
+      padding: 1rem 1.1rem;
+      line-height: 1.5;
+    }
+
+    .tips {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .tips li { margin: 0.35rem 0; }
+    .callout {
+      background: linear-gradient(135deg, #fff8ef, #fff3e4);
+      border: 1px solid #efd2b0;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-size: 0.92rem;
+      color: #6a4520;
+    }
+    .callout strong { color: var(--copper); }
+
+    /* Bell */
+    .bell-stage {
+      position: relative;
+      height: 520px;
+      background: linear-gradient(180deg, #f7fcfb, #e8f3ef);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      user-select: none;
+    }
+    .bell-stage > svg { width: 100%; height: 100%; display: block; }
+    .fs-btn svg {
+      width: 16px !important;
+      height: 16px !important;
+      flex-shrink: 0;
+    }
+    .bell-switch-hit { cursor: pointer; }
+    .bell-switch-hit:hover circle { filter: brightness(1.08); }
+    .bell-modes {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.9rem;
+    }
+    .bell-mode-btn {
+      border: 1px solid var(--line);
+      background: var(--surface2);
+      color: var(--muted);
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: 0.2s ease;
+    }
+    .bell-mode-btn:hover { color: var(--ink); border-color: #a8c9bf; }
+    .bell-mode-btn.active {
+      background: linear-gradient(135deg, #e8f8f4, #dff3ee);
+      color: var(--ink);
+      border-color: var(--teal-bright);
+      box-shadow: 0 0 0 1px rgba(20, 163, 145, 0.22);
+    }
+    .bell-pane { display: none; }
+    .bell-pane.active { display: block; }
+    .bell-hold-hint {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--muted);
+      pointer-events: none;
+      max-width: 220px;
+      line-height: 1.35;
+    }
+    .bell-hold-hint.live {
+      color: var(--teal);
+      border-color: #b7e5db;
+      background: #e8f8f4;
+    }
+    .bell-status-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+      margin-bottom: 0.75rem;
+    }
+    .bell-chip {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.45rem 0.55rem;
+      background: var(--surface2);
+      text-align: center;
+    }
+    .bell-chip .lab {
+      display: block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .bell-chip .val {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .bell-chip.on {
+      background: #e8f8f4;
+      border-color: #b7e5db;
+    }
+    .bell-chip.on .val { color: var(--teal); }
+    .bell-chip.warn {
+      background: #fff3e4;
+      border-color: #efd2b0;
+    }
+    .bell-chip.warn .val { color: var(--copper); }
+    .bell-chip.off .val { color: var(--muted); }
+    .step-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .step-list li {
+      display: flex;
+      gap: 0.65rem;
+      align-items: flex-start;
+      padding: 0.5rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-size: 0.86rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: 0.15s ease;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+      font: inherit;
+    }
+    .step-list li:hover {
+      border-color: #a8c9bf;
+      color: var(--ink);
+      background: #f4faf8;
+    }
+    .step-list li .n {
+      flex: 0 0 1.4rem;
+      height: 1.4rem;
+      border-radius: 50%;
+      background: #dde8e4;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+    .step-list li.on {
+      background: #e8f8f4;
+      border-color: #b7e5db;
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .step-list li.on .n {
+      background: var(--teal);
+      color: #fff;
+    }
+    #currentBead:active { cursor: grabbing; }
+    @keyframes gongShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      75% { transform: translateX(3px); }
+    }
+    .gong-hit { animation: gongShake 0.18s ease; }
+    @keyframes contactSpark {
+      0%, 100% { opacity: 1; }
+      40% { opacity: 0.25; }
+      70% { opacity: 1; }
+    }
+    @keyframes contactOpenPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    #contactBreakFx.live {
+      animation: contactSpark 0.55s ease-in-out 2;
+    }
+    #contactBreakLabel.live {
+      animation: contactOpenPulse 0.7s ease-in-out 2;
+    }
+
+    .footer-note {
+      margin-top: 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 0.65rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot.n { background: var(--north); }
+    .dot.s { background: var(--south); }
+    .dot.i { background: var(--copper); }
+    .dot.b { background: var(--field); }
+
+    .toggle-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .chk {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .chk input { accent-color: var(--teal); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="15" stroke="#0f7a6c" stroke-width="2" opacity="0.35"/>
+            <circle cx="20" cy="20" r="9" stroke="#0f7a6c" stroke-width="2" opacity="0.55"/>
+            <circle cx="20" cy="20" r="3.5" fill="#c36b2e"/>
+            <path d="M20 5v4M20 31v4M5 20h4M31 20h4" stroke="#14a391" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Magnetic Effect Lab</h1>
+          <p>
+            <span class="en">Current → Magnetic field · Chapter 4 interactive studio</span>
+            <span class="zh">電流 → 磁場 · 第四章互動實驗室</span>
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <div id="labShell">
+    <nav class="tabs-row" aria-label="Lab stations">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-panel="magnets"><span class="en">1 · Magnets</span><span class="zh">1 · 磁鐵</span></button>
+        <button class="tab" data-panel="wire"><span class="en">2 · Straight Wire</span><span class="zh">2 · 直導線</span></button>
+        <button class="tab" data-panel="solenoid"><span class="en">3 · Solenoid</span><span class="zh">3 · 螺線管</span></button>
+        <button class="tab" data-panel="bell"><span class="en">4 · Electric Bell</span><span class="zh">4 · 電鈴</span></button>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" class="active" data-lang="en">EN</button>
+        <button type="button" data-lang="zh-HK">中文</button>
+      </div>
+    </nav>
+
+    <!-- MAGNETS -->
+    <section class="panel active" id="panel-magnets">
+      <div class="card">
+        <div class="card-hd">
+          <h2><span class="en">Bar magnets &amp; field lines</span><span class="zh">條形磁鐵與磁力線</span></h2>
+          <span class="hint" id="magHint"><span class="en">Drag the magnet · watch compasses</span><span class="zh">拖動磁鐵 · 觀察指南針</span></span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2">
+            <div>
+              <div class="stage">
+                <button type="button" class="fs-btn" id="labFullscreenBtn" title="Fullscreen" aria-label="Fullscreen">
+                  <svg id="fsIconEnter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/>
+                  </svg>
+                  <svg id="fsIconExit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+                    <path d="M8 3v3a2 2 0 0 1-2 2H3M16 3v3a2 2 0 0 0 2 2h3M8 21v-3a2 2 0 0 0-2-2H3M16 21v-3a2 2 0 0 1 2-2h3"/>
+                  </svg>
+                  <span class="en fs-enter-label">Fullscreen</span>
+                  <span class="zh fs-enter-label">全螢幕</span>
+                  <span class="en fs-exit-label" hidden>Exit</span>
+                  <span class="zh fs-exit-label" hidden>退出</span>
+                </button>
+                <canvas id="magnetCanvas" width="720" height="420"></canvas>
+              </div>
+              <div class="legend">
+                <span><i class="dot n"></i> N pole</span>
+                <span><i class="dot s"></i> S pole</span>
+                <span><i class="dot b" style="background:#6c4ab6;"></i> <span class="en">Field lines (N→S)</span><span class="zh">磁力線（N→S）</span></span>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="ctrl">
+                <label><span class="en">Arrangement</span><span class="zh">排列方式</span></label>
+                <div class="btn-row">
+                  <button class="btn active-tog" data-mag-mode="single"><span class="en">One magnet</span><span class="zh">單磁鐵</span></button>
+                  <button class="btn" data-mag-mode="attract"><span class="en">Unlike (attract)</span><span class="zh">異極吸引</span></button>
+                  <button class="btn" data-mag-mode="repel"><span class="en">Like (repel)</span><span class="zh">同極排斥</span></button>
+                </div>
+                <div class="btn-row" id="magPairTransport" style="display:none; margin-top:0.55rem;">
+                  <button class="btn primary" id="magPairStart" type="button"><span class="en">Start</span><span class="zh">開始</span></button>
+                  <button class="btn" id="magPairReset" type="button"><span class="en">Reset</span><span class="zh">重設</span></button>
+                </div>
+              </div>
+              <div class="ctrl">
+                <div class="toggle-row">
+                  <label class="chk"><input type="checkbox" id="showFieldLines" checked /> <span class="en">Field lines</span><span class="zh">磁力線</span></label>
+                  <label class="chk"><input type="checkbox" id="showCompasses" checked /> <span class="en">Compasses</span><span class="zh">指南針</span></label>
+                  <label class="chk"><input type="checkbox" id="showNeutral" checked /> <span class="en">Neutral points</span><span class="zh">中性點</span></label>
+                </div>
+              </div>
+              <ul class="tips">
+                <li><span class="en">Denser field lines ⇒ stronger magnetic flux density B.</span><span class="zh">磁力線愈密 ⇒ 磁通密度 B 愈大。</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STRAIGHT WIRE -->
+    <section class="panel" id="panel-wire">
+      <div class="card">
+        <div class="card-hd">
+          <h2><span class="en">Magnetic field around a long straight wire</span><span class="zh">長直導線周圍的磁場</span></h2>
+          <span class="hint"><span class="en">Right-hand grip rule</span><span class="zh">右手握拳定則</span></span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2">
+            <div>
+              <div class="stage"><canvas id="wireCanvas" width="720" height="420"></canvas></div>
+              <div class="legend">
+                <span><i class="dot i"></i> <span class="en">Current</span><span class="zh">電流</span></span>
+                <span><i class="dot b"></i> <span class="en">Circular B lines</span><span class="zh">圓形磁力線</span></span>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="ctrl">
+                <label>
+                  <span class="en">Current I</span><span class="zh">電流 I</span>
+                  <span class="val" id="wireIVal">3.0 A</span>
+                </label>
+                <input type="range" id="wireI" min="0.5" max="8" step="0.1" value="3" />
+              </div>
+              <div class="ctrl">
+                <label><span class="en">Current direction</span><span class="zh">電流方向</span></label>
+                <div class="btn-row">
+                  <button class="btn active-tog" id="wireOut"><span class="en">Out of page (·)</span><span class="zh">穿出紙面 (·)</span></button>
+                  <button class="btn" id="wireIn"><span class="en">Into page (×)</span><span class="zh">穿入紙面 (×)</span></button>
+                </div>
+              </div>
+              <div class="ctrl">
+                <div class="toggle-row">
+                  <label class="chk"><input type="checkbox" id="wireCompasses" checked /> <span class="en">Compasses A &amp; B</span><span class="zh">指南針 A、B</span></label>
+                  <label class="chk"><input type="checkbox" id="wireAnimate" checked /> <span class="en">Animate field</span><span class="zh">動態磁場</span></label>
+                </div>
+              </div>
+              <div class="readout" id="wireReadout"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLENOID -->
+    <section class="panel" id="panel-solenoid">
+      <div class="card">
+        <div class="card-hd">
+          <h2><span class="en">Solenoid &amp; electromagnet</span><span class="zh">螺線管與電磁鐵</span></h2>
+          <span class="hint"><span class="en">Right-hand grip for coils</span><span class="zh">線圈的右手定則</span></span>
+        </div>
+        <div class="card-bd">
+          <div class="grid-2">
+            <div>
+              <div class="stage"><canvas id="solenoidCanvas" width="720" height="420"></canvas></div>
+            </div>
+            <div class="controls">
+              <div class="ctrl">
+                <label>
+                  <span class="en">Current I</span><span class="zh">電流 I</span>
+                  <span class="val" id="solIVal">2.0 A</span>
+                </label>
+                <input type="range" id="solI" min="0" max="8" step="0.1" value="2" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Turns N</span><span class="zh">匝數 N</span>
+                  <span class="val" id="solNVal">290</span>
+                </label>
+                <input type="range" id="solN" min="290" max="600" step="10" value="290" />
+              </div>
+              <div class="ctrl">
+                <label>
+                  <span class="en">Length <i>l</i></span>
+                  <span class="zh">長度 <i>l</i></span>
+                  <span class="val" id="solLVal">0.20 m</span>
+                </label>
+                <input type="range" id="solL" min="0.10" max="0.40" step="0.01" value="0.20" />
+              </div>
+              <div class="ctrl">
+                <label><span class="en">Current sense</span><span class="zh">電流方向</span></label>
+                <div class="btn-row">
+                  <button class="btn active-tog" id="solDirA"><span class="en">A → B (left→right face)</span><span class="zh">A → B</span></button>
+                  <button class="btn" id="solDirB"><span class="en">Reverse</span><span class="zh">反向</span></button>
+                </div>
+              </div>
+              <div class="ctrl">
+                <div class="toggle-row">
+                  <label class="chk"><input type="checkbox" id="solField" checked /> <span class="en">B field lines</span><span class="zh">磁力線</span></label>
+                  <label class="chk"><input type="checkbox" id="solCore" /> <span class="en">Soft-iron core</span><span class="zh">軟鐵芯</span></label>
+                  <label class="chk"><input type="checkbox" id="solCompass" checked /> <span class="en">Compasses</span><span class="zh">指南針</span></label>
+                </div>
+              </div>
+              <div class="readout" id="solReadout"></div>
+              <div class="legend" style="margin-top:0.5rem;">
+                <span><i class="dot" style="background:#6c4ab6;"></i> <span class="en">B lines (N→S outside)</span><span class="zh">磁力線（外：N→S）</span></span>
+                <span><i class="dot i"></i> <span class="en">Coil current</span><span class="zh">線圈電流</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BELL -->
+    <section class="panel" id="panel-bell">
+      <div class="card">
+        <div class="card-hd">
+          <h2><span class="en">Electric bell</span><span class="zh">電鈴</span></h2>
+          <span class="hint" id="bellHdHint">
+            <span class="en" data-for="trace">Close the switch · drag current around the loop</span>
+            <span class="zh" data-for="trace">閉合開關 · 拖動電流沿回路走</span>
+            <span class="en" data-for="ring" hidden>Hold the switch · make-and-break rings the gong</span>
+            <span class="zh" data-for="ring" hidden>按住開關 · 斷續器讓鑼連續響</span>
+          </span>
+        </div>
+        <div class="card-bd">
+          <div class="bell-modes" id="bellModes" role="tablist">
+            <button type="button" class="bell-mode-btn active" data-bell-mode="trace"><span class="en">1 · Trace cycle</span><span class="zh">1 · 追蹤循環</span></button>
+            <button type="button" class="bell-mode-btn" data-bell-mode="ring"><span class="en">2 · Continuous ring</span><span class="zh">2 · 持續響鈴</span></button>
+          </div>
+
+          <div class="bell-pane active" id="bellPane-trace" data-bell-pane="trace">
+          <div class="grid-2">
+            <div>
+              <div class="bell-stage" id="bellStage">
+                <div class="bell-hold-hint" id="bellHoldHint">
+                  <span class="en">Click switch, then drag I — it pauses at each step</span>
+                  <span class="zh">點開關，再拖 I — 每一步會停住</span>
+                </div>
+                <svg id="bellSvg" viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="gongGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#e8c36a"/>
+                      <stop offset="100%" stop-color="#c36b2e"/>
+                    </linearGradient>
+                    <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
+                      <feGaussianBlur stdDeviation="4" result="b"/>
+                      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <rect x="40" y="310" width="560" height="16" rx="4" fill="#c9ddd6"/>
+
+                  <g id="partBattery">
+                    <rect x="70" y="230" width="50" height="60" rx="4" fill="#10221e"/>
+                    <rect x="70" y="230" width="50" height="14" fill="#14a391"/>
+                    <text x="95" y="270" text-anchor="middle" fill="#b8f0e0" font-size="12" font-family="JetBrains Mono">2V</text>
+                    <text x="95" y="305" text-anchor="middle" fill="#5a6f69" font-size="11">Battery</text>
+                  </g>
+
+                  <!-- Battery top-right → switch pivot (head) -->
+                  <path id="wirePathBot" d="M120 230 H160 V250" fill="none" stroke="#c36b2e" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+                  <!-- Switch pad → over electromagnet → make-and-break contact -->
+                  <path id="wirePathTop" d="M210 210 H280 V160 H420" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+                  <!-- Contact → return to battery bottom -->
+                  <path id="wirePathReturn" d="M420 155 H500 V330 H120 V290 H95" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+
+                  <g id="bellSwitch" class="bell-switch-hit">
+                    <rect x="140" y="195" width="90" height="100" rx="10" fill="transparent"/>
+                    <!-- OFF gap mark (visible when open) -->
+                    <line id="switchGapMark" x1="200" y1="218" x2="218" y2="228" stroke="#c36b2e" stroke-width="2.5" stroke-linecap="round" opacity="0"/>
+                    <circle id="switchPivot" cx="160" cy="250" r="11" fill="#c36b2e" stroke="#9a4f1a" stroke-width="2"/>
+                    <line id="switchArm" x1="160" y1="250" x2="222" y2="238" stroke="#14221f" stroke-width="6" stroke-linecap="round"/>
+                    <circle id="switchContactGlow" cx="210" cy="210" r="14" fill="#14a391" opacity="0" filter="url(#softGlow)"/>
+                    <circle id="switchContact" cx="210" cy="210" r="8" fill="#5a6f69" stroke="#3d524c" stroke-width="1.5"/>
+                    <text x="185" y="302" text-anchor="middle" fill="#5a6f69" font-size="11">Switch</text>
+                    <rect id="switchCueBg" x="158" y="306" width="54" height="18" rx="6" fill="#e8f0ed"/>
+                    <text x="185" y="319" text-anchor="middle" fill="#5a6f69" font-size="11" font-weight="800" font-family="Nunito Sans" id="switchCue">OFF</text>
+                  </g>
+
+                  <g id="currentTraceLayer" style="pointer-events:none;">
+                    <!-- I rides the orange circuit: 2V → (H then V to pivot) → switch → pad → top feed → contact → return -->
+                    <path id="currentTracePath" d="M120 230 L160 230 L160 250 L210 210 L280 210 L280 160 L420 160 L420 155 L500 155 L500 330 L120 330 L120 290 L95 290" fill="none" stroke="none"/>
+                    <path id="currentTraceLit" d="M120 230 L160 230 L160 250 L210 210 L280 210 L280 160 L420 160 L420 155 L500 155 L500 330 L120 330 L120 290 L95 290" fill="none" stroke="#14a391" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+                  </g>
+
+                  <g id="partMagnet" style="pointer-events:none;">
+                    <rect x="280" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="coreRect"/>
+                    <path d="M275 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5" id="coilL"/>
+                    <rect x="320" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="coreRect2"/>
+                    <path d="M315 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5" id="coilR"/>
+                    <text x="314" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Electromagnet</text>
+                    <g id="fieldMarks" opacity="0">
+                      <path d="M250 160 Q230 185 250 210" fill="none" stroke="#14a391" stroke-width="1.5" stroke-dasharray="4 3"/>
+                      <path d="M378 160 Q398 185 378 210" fill="none" stroke="#14a391" stroke-width="1.5" stroke-dasharray="4 3"/>
+                    </g>
+                  </g>
+
+                  <g id="partArmature" style="pointer-events:none;">
+                    <!-- Fixed make-and-break screw (stays put when armature moves) -->
+                    <g id="fixedContact">
+                      <circle id="contactPoint" cx="420" cy="155" r="7" fill="#c36b2e" stroke="#9a4f1a" stroke-width="1.5"/>
+                      <circle id="currentDropTarget" cx="420" cy="155" r="16" fill="none" stroke="#14a391" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
+                    </g>
+                    <g id="hammerGroup" style="transform-origin: 366px 170px; transition: transform 0.22s ease;">
+                      <rect x="360" y="120" width="12" height="100" rx="2" fill="#5a6f69" id="armature"/>
+                      <line id="hammerShaft" x1="372" y1="130" x2="472" y2="94" stroke="#14221f" stroke-width="5" stroke-linecap="round"/>
+                      <circle cx="482" cy="90" r="14" fill="#14221f" id="hammerHead"/>
+                      <!-- Moving contact leaf — touches the fixed screw when closed -->
+                      <line id="contact" x1="372" y1="155" x2="412" y2="155" stroke="#c36b2e" stroke-width="3.5" stroke-linecap="round"/>
+                      <circle id="contactLeafTip" cx="412" cy="155" r="5" fill="#c36b2e" stroke="#9a4f1a" stroke-width="1"/>
+                    </g>
+                    <!-- Obvious open-gap cue when circuit breaks -->
+                    <g id="contactBreakFx" opacity="0" style="pointer-events:none;">
+                      <line id="contactGapMark" x1="392" y1="155" x2="412" y2="155" stroke="#c36b2e" stroke-width="2.5" stroke-dasharray="4 3" opacity="0.9"/>
+                      <path id="contactSpark" d="M396 148 L400 155 L396 162 L404 155 L400 148" fill="none" stroke="#e8c36a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <circle cx="402" cy="155" r="14" fill="#c36b2e" opacity="0.18" filter="url(#softGlow)"/>
+                      <text id="contactBreakLabel" x="402" y="138" text-anchor="middle" fill="#c36b2e" font-size="13" font-weight="800" font-family="Nunito Sans">OPEN</text>
+                    </g>
+                    <text x="400" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Armature + contact</text>
+                  </g>
+
+                  <g id="partGong" style="pointer-events:none;">
+                    <g id="gongGroup">
+                      <ellipse cx="540" cy="90" rx="42" ry="48" fill="url(#gongGrad)" stroke="#9a4f1a" stroke-width="2"/>
+                      <text x="540" y="98" text-anchor="middle" fill="#fff8ef" font-size="13" font-weight="700" opacity="0.85">♪</text>
+                    </g>
+                    <text x="540" y="160" text-anchor="middle" fill="#5a6f69" font-size="11">Gong</text>
+                  </g>
+
+                  <circle id="currentGlow" cx="314" cy="185" r="0" fill="#14a391" opacity="0.22" filter="url(#softGlow)" style="pointer-events:none;"/>
+                  <text id="bellStatus" x="320" y="360" text-anchor="middle" fill="#0f7a6c" font-size="14" font-family="Nunito Sans" font-weight="700" style="pointer-events:none;">Ready — click the switch</text>
+
+                  <!-- I bead on top so it stays draggable over coils / armature -->
+                  <g id="currentBeadLayer">
+                    <circle id="currentBeadHit" cx="120" cy="230" r="22" fill="transparent" style="cursor:grab; pointer-events:all;"/>
+                    <circle id="currentBead" cx="120" cy="230" r="12" fill="#c36b2e" stroke="#fff8ef" stroke-width="2.5" filter="url(#softGlow)" style="cursor:grab; pointer-events:all;"/>
+                    <text id="currentBeadLabel" x="120" y="230" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="800" font-family="JetBrains Mono" style="pointer-events:none;">I</text>
+                  </g>
+                </svg>
+              </div>
+              <div class="btn-row" style="margin-top:0.75rem;" id="bellTransport">
+                <button class="btn" id="bellReset" type="button"><span class="en">Reset</span><span class="zh">重設</span></button>
+                <label class="chk" style="margin-left:auto;">
+                  <input type="checkbox" id="bellSound" checked />
+                  <span class="en">Gong sound</span><span class="zh">鑼聲</span>
+                </label>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="bell-status-row" aria-live="polite">
+                <div class="bell-chip off" id="chipCurrent"><span class="lab"><span class="en">Current</span><span class="zh">電流</span></span><span class="val" id="chipCurrentVal">OFF</span></div>
+                <div class="bell-chip off" id="chipMagnet"><span class="lab"><span class="en">Magnet</span><span class="zh">電磁鐵</span></span><span class="val" id="chipMagnetVal">OFF</span></div>
+                <div class="bell-chip off" id="chipContact"><span class="lab"><span class="en">Contact</span><span class="zh">接點</span></span><span class="val" id="chipContactVal">open</span></div>
+              </div>
+
+              <div class="callout">
+                <strong><span class="en">How to ring:</span><span class="zh">怎樣響鈴：</span></strong>
+                <span class="en">1) Click the switch. 2) Drag <b>I</b> along the circuit — it <b>stops at each step</b> so you can see what happens. 3) Release, then keep dragging to the next stop (gong, break, return).</span>
+                <span class="zh">1) 點開關。2) 沿電路拖動 <b>I</b> — 每一步會<b>停住</b>讓你看清楚。3) 鬆開，再繼續拖到下一步（敲鑼、斷路、回彈）。</span>
+              </div>
+              <ol class="step-list" id="bellSteps" style="margin-top:0.65rem;">
+                <li data-step="0"><span class="n">1</span><span><span class="en">Switch closed — circuit ready</span><span class="zh">開關閉合 — 電路就緒</span></span></li>
+                <li data-step="1"><span class="n">2</span><span><span class="en">Current flows through the coil</span><span class="zh">電流流經線圈</span></span></li>
+                <li data-step="2"><span class="n">3</span><span><span class="en">Electromagnet becomes magnetized</span><span class="zh">電磁鐵被磁化</span></span></li>
+                <li data-step="3"><span class="n">4</span><span><span class="en">Contact opens · circuit breaks</span><span class="zh">接點分開 · 電路斷開</span></span></li>
+                <li data-step="4"><span class="n">5</span><span><span class="en">Armature pulled · hammer hits gong</span><span class="zh">銜鐵被吸 · 錘敲鑼</span></span></li>
+                <li data-step="5"><span class="n">6</span><span><span class="en">Electromagnet demagnetizes</span><span class="zh">電磁鐵消磁</span></span></li>
+                <li data-step="6"><span class="n">7</span><span><span class="en">Spring returns · cycle can repeat</span><span class="zh">彈簧帶回 · 循環可重覆</span></span></li>
+              </ol>
+            </div>
+          </div>
+          </div><!-- /bellPane-trace -->
+
+          <div class="bell-pane" id="bellPane-ring" data-bell-pane="ring">
+          <div class="grid-2">
+            <div>
+              <div class="bell-stage" id="ringStage">
+                <div class="bell-hold-hint" id="ringHoldHint">
+                  <span class="en">Hold the orange switch — gong hits again and again</span>
+                  <span class="zh">按住橙色開關 — 鑼會一下一下敲</span>
+                </div>
+                <svg id="ringSvg" viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="ringGongGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#e8c36a"/>
+                      <stop offset="100%" stop-color="#c36b2e"/>
+                    </linearGradient>
+                    <filter id="ringSoftGlow" x="-40%" y="-40%" width="180%" height="180%">
+                      <feGaussianBlur stdDeviation="4" result="b"/>
+                      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <rect x="40" y="310" width="560" height="16" rx="4" fill="#c9ddd6"/>
+
+                  <g>
+                    <rect x="70" y="230" width="50" height="60" rx="4" fill="#10221e"/>
+                    <rect x="70" y="230" width="50" height="14" fill="#14a391"/>
+                    <text x="95" y="270" text-anchor="middle" fill="#b8f0e0" font-size="12" font-family="JetBrains Mono">2V</text>
+                  </g>
+
+                  <!-- Wires under the switch so the orange head sits on the junction -->
+                  <!-- Battery top-right → switch pivot (head) -->
+                  <path id="ringWireBot" d="M120 230 H160 V250" fill="none" stroke="#c36b2e" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+                  <!-- Switch pad → electromagnet → make-and-break contact -->
+                  <path id="ringWireTop" d="M210 210 H280 V160 H400" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+                  <!-- Contact → return to battery bottom -->
+                  <path id="ringWireReturn" d="M420 155 H500 V330 H120 V290 H95" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+
+                  <g id="ringSwitch" class="bell-switch-hit">
+                    <rect x="140" y="195" width="90" height="100" rx="10" fill="transparent"/>
+                    <circle cx="160" cy="250" r="11" fill="#c36b2e" stroke="#9a4f1a" stroke-width="2"/>
+                    <line id="ringSwitchArm" x1="160" y1="250" x2="222" y2="238" stroke="#14221f" stroke-width="6" stroke-linecap="round"/>
+                    <circle id="ringSwitchPad" cx="210" cy="210" r="8" fill="#5a6f69"/>
+                    <text x="185" y="302" text-anchor="middle" fill="#5a6f69" font-size="11">Hold</text>
+                    <text id="ringSwitchCue" x="185" y="318" text-anchor="middle" fill="#0f7a6c" font-size="11" font-weight="800">HOLD</text>
+                  </g>
+                  <g>
+                    <rect x="280" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="ringCore1"/>
+                    <path id="ringCoilL" d="M275 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5"/>
+                    <rect x="320" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="ringCore2"/>
+                    <path id="ringCoilR" d="M315 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5"/>
+                    <text x="314" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Electromagnet</text>
+                    <g id="ringField" opacity="0">
+                      <path d="M250 160 Q230 185 250 210" fill="none" stroke="#14a391" stroke-width="1.5" stroke-dasharray="4 3"/>
+                      <path d="M378 160 Q398 185 378 210" fill="none" stroke="#14a391" stroke-width="1.5" stroke-dasharray="4 3"/>
+                    </g>
+                  </g>
+
+                  <g>
+                    <g id="ringHammer" style="transform-origin: 380px 160px; transition: transform 0.08s linear;">
+                      <rect x="360" y="120" width="12" height="100" rx="2" fill="#5a6f69"/>
+                      <line x1="372" y1="130" x2="472" y2="94" stroke="#14221f" stroke-width="5" stroke-linecap="round"/>
+                      <circle cx="482" cy="90" r="14" fill="#14221f"/>
+                      <line id="ringContact" x1="366" y1="155" x2="420" y2="155" stroke="#c36b2e" stroke-width="3"/>
+                      <circle id="ringContactPt" cx="420" cy="155" r="5" fill="#c36b2e"/>
+                    </g>
+                    <text x="400" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Armature + contact</text>
+                  </g>
+
+                  <g>
+                    <g id="ringGongGroup">
+                      <ellipse cx="540" cy="90" rx="42" ry="48" fill="url(#ringGongGrad)" stroke="#9a4f1a" stroke-width="2"/>
+                      <text id="ringNote" x="540" y="98" text-anchor="middle" fill="#fff8ef" font-size="13" font-weight="700" opacity="0.85">♪</text>
+                    </g>
+                    <text x="540" y="160" text-anchor="middle" fill="#5a6f69" font-size="11">Gong</text>
+                  </g>
+
+                  <circle id="ringGlow" cx="314" cy="185" r="0" fill="#14a391" opacity="0.22" filter="url(#ringSoftGlow)"/>
+                  <text id="ringStatus" x="320" y="360" text-anchor="middle" fill="#0f7a6c" font-size="14" font-family="Nunito Sans" font-weight="700">Ready — hold the switch to ring</text>
+                  <text id="ringHitCount" x="320" y="380" text-anchor="middle" fill="#5a6f69" font-size="12" font-family="JetBrains Mono" font-weight="600"></text>
+                </svg>
+              </div>
+              <div class="btn-row" style="margin-top:0.75rem;">
+                <button class="btn primary" id="ringHoldBtn" type="button"><span class="en">Hold to ring</span><span class="zh">按住響鈴</span></button>
+                <label class="chk" style="margin-left:auto;">
+                  <input type="checkbox" id="ringSound" checked />
+                  <span class="en">Gong sound</span><span class="zh">鑼聲</span>
+                </label>
+              </div>
+              <div class="ctrl" style="margin-top:0.65rem;">
+                <label>
+                  <span class="en">Ring speed</span><span class="zh">響鈴速度</span>
+                  <span class="val" id="ringSpeedVal">fast</span>
+                </label>
+                <input type="range" id="ringSpeed" min="1" max="5" step="1" value="3" />
+              </div>
+            </div>
+            <div class="controls">
+              <div class="bell-status-row" aria-live="polite">
+                <div class="bell-chip off" id="ringChipI"><span class="lab"><span class="en">Current</span><span class="zh">電流</span></span><span class="val" id="ringChipIVal">OFF</span></div>
+                <div class="bell-chip off" id="ringChipM"><span class="lab"><span class="en">Magnet</span><span class="zh">電磁鐵</span></span><span class="val" id="ringChipMVal">OFF</span></div>
+                <div class="bell-chip off" id="ringChipC"><span class="lab"><span class="en">Contact</span><span class="zh">接點</span></span><span class="val" id="ringChipCVal">open</span></div>
+              </div>
+
+              <div class="callout">
+                <strong><span class="en">Continuous ringing:</span><span class="zh">持續響鈴：</span></strong>
+                <span class="en">While you hold the switch, the make-and-break contact rapidly opens and closes. Each close → magnet ON → hit gong → contact opens → spring returns → repeat.</span>
+                <span class="zh">按住開關時，斷續接點快速開合。每次閉合 → 電磁鐵開 → 敲鑼 → 接點分開 → 彈簧回彈 → 重覆。</span>
+              </div>
+
+              <ol class="step-list" id="ringPhaseList" style="margin-top:0.65rem;">
+                <li data-ring-phase="0"><span class="n">1</span><span><span class="en">Contact closed · current ON</span><span class="zh">接點閉合 · 電流通</span></span></li>
+                <li data-ring-phase="1"><span class="n">2</span><span><span class="en">Electromagnet pulls armature</span><span class="zh">電磁鐵吸引銜鐵</span></span></li>
+                <li data-ring-phase="2"><span class="n">3</span><span><span class="en">Hammer hits gong</span><span class="zh">錘敲鑼</span></span></li>
+                <li data-ring-phase="3"><span class="n">4</span><span><span class="en">Contact opens · current OFF</span><span class="zh">接點分開 · 電流斷</span></span></li>
+                <li data-ring-phase="4"><span class="n">5</span><span><span class="en">Magnet demagnetizes</span><span class="zh">電磁鐵消磁</span></span></li>
+                <li data-ring-phase="5"><span class="n">6</span><span><span class="en">Spring returns · contact closes again</span><span class="zh">彈簧回彈 · 接點再閉合</span></span></li>
+              </ol>
+            </div>
+          </div>
+          </div><!-- /bellPane-ring -->
+        </div>
+      </div>
+    </section>
+    </div><!-- /labShell -->
+
+    <p class="footer-note">
+      <span class="en">Magnetic Effect Lab · based on Chapter 4 (Magnetic effect of electric current) · works offline in Chrome</span>
+      <span class="zh">磁場效應實驗室 · 根據第四章《電流的磁效應》· 可離線於 Chrome 開啟</span>
+    </p>
+  </div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    const MU0 = 4 * Math.PI * 1e-7;
+    let heroT = 0; // animation time for weak-field / neutral compass spin
+    const $ = (sel, root) => (root || document).querySelector(sel);
+    const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+    /* ---------- Language ---------- */
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      $$('.lang-toggle button').forEach((b) => {
+        b.classList.toggle('active', b.dataset.lang === lang);
+      });
+      window.dispatchEvent(new CustomEvent('lab-langchange'));
+    }
+    $$('.lang-toggle button').forEach((btn) => {
+      btn.addEventListener('click', () => setLang(btn.dataset.lang));
+    });
+    function hubLangToLocal(lang) {
+      const s = String(lang || '').toLowerCase();
+      return s.startsWith('zh') ? 'zh-HK' : 'en';
+    }
+    {
+      const params = new URLSearchParams(location.search);
+      const urlLang = params.get('lang');
+      if (urlLang) setLang(hubLangToLocal(urlLang));
+    }
+    window.addEventListener('message', (ev) => {
+      if (ev.data?.type !== 's3phy:lang') return;
+      setLang(hubLangToLocal(ev.data.lang));
+    });
+
+    /* ---------- Tabs ---------- */
+    function showPanel(id) {
+      $$('.tab').forEach((t) => t.classList.toggle('active', t.dataset.panel === id));
+      $$('.panel').forEach((p) => p.classList.toggle('active', p.id === 'panel-' + id));
+      window.dispatchEvent(new CustomEvent('panelchange', { detail: id }));
+    }
+    $$('.tab').forEach((t) => t.addEventListener('click', () => showPanel(t.dataset.panel)));
+
+    /* ---------- Fullscreen (keeps tab toolbar) ---------- */
+    (function initLabFullscreen() {
+      const shell = $('#labShell');
+      const btn = $('#labFullscreenBtn');
+      if (!shell || !btn) return;
+
+      function mountFsBtn() {
+        const panel = $('.panel.active');
+        if (!panel) return;
+        const host =
+          panel.querySelector('.bell-pane.active .bell-stage') ||
+          panel.querySelector('.bell-stage') ||
+          panel.querySelector('.stage');
+        if (host && btn.parentElement !== host) host.appendChild(btn);
+      }
+
+      function fsElement() {
+        return document.fullscreenElement || document.webkitFullscreenElement || null;
+      }
+      function updateFsBtn() {
+        const on = fsElement() === shell;
+        const enterIcon = $('#fsIconEnter');
+        const exitIcon = $('#fsIconExit');
+        if (enterIcon) enterIcon.hidden = on;
+        if (exitIcon) exitIcon.hidden = !on;
+        $$('.fs-enter-label').forEach((el) => { el.hidden = on; });
+        $$('.fs-exit-label').forEach((el) => { el.hidden = !on; });
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        btn.title = on ? 'Exit fullscreen' : 'Fullscreen';
+        btn.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Fullscreen');
+      }
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (fsElement() === shell) {
+          const exit = document.exitFullscreen || document.webkitExitFullscreen;
+          if (exit) exit.call(document);
+        } else {
+          const req = shell.requestFullscreen || shell.webkitRequestFullscreen;
+          if (req) req.call(shell);
+        }
+      });
+
+      document.addEventListener('fullscreenchange', updateFsBtn);
+      document.addEventListener('webkitfullscreenchange', updateFsBtn);
+      window.addEventListener('panelchange', mountFsBtn);
+      window.addEventListener('bellmodechange', mountFsBtn);
+      mountFsBtn();
+      updateFsBtn();
+    })();
+
+    /* ---------- Helpers ---------- */
+    function fmtB(b) {
+      if (!isFinite(b) || b === 0) return '0 T';
+      const abs = Math.abs(b);
+      if (abs >= 1e-3) return b.toFixed(3) + ' T';
+      if (abs >= 1e-6) return (b * 1e6).toFixed(3) + ' μT';
+      return (b * 1e9).toFixed(2) + ' nT';
+    }
+
+    function drawCompass(ctx, x, y, angle, r, tag, tagSide) {
+      r = r || 14;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.strokeStyle = '#8aa89f';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, -r + 2);
+      ctx.lineTo(4, 2);
+      ctx.lineTo(0, -2);
+      ctx.lineTo(-4, 2);
+      ctx.closePath();
+      ctx.fillStyle = '#e23d3d';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(0, r - 2);
+      ctx.lineTo(4, -2);
+      ctx.lineTo(0, 2);
+      ctx.lineTo(-4, -2);
+      ctx.closePath();
+      ctx.fillStyle = '#2b6be4';
+      ctx.fill();
+      // N / S sit just outside the needle tips (axis-aligned to the needle)
+      const fs = Math.max(7, Math.round(r * 0.58));
+      const tip = r + fs * 0.85;
+      ctx.font = '700 ' + fs + 'px Bricolage Grotesque, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.save();
+      ctx.translate(0, -tip);
+      ctx.rotate(-angle);
+      ctx.fillStyle = '#e23d3d';
+      ctx.fillText('N', 0, 0);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(0, tip);
+      ctx.rotate(-angle);
+      ctx.fillStyle = '#2b6be4';
+      ctx.fillText('S', 0, 0);
+      ctx.restore();
+      ctx.restore();
+
+      // Name tag (A/B/…) — fixed side so it never covers N/S as the needle turns
+      if (tag) {
+        const dist = r + fs + 14;
+        let tx = x;
+        let ty = y;
+        if (tagSide === 'left') {
+          tx = x - dist;
+        } else if (tagSide === 'right') {
+          tx = x + dist;
+        } else if (tagSide === 'below') {
+          ty = y + dist;
+        } else {
+          // Default: perpendicular to needle, prefer lower half
+          let ox = Math.cos(angle);
+          let oy = Math.sin(angle);
+          if (oy < 0 || (oy === 0 && ox < 0)) {
+            ox = -ox;
+            oy = -oy;
+          }
+          tx = x + ox * dist;
+          ty = y + oy * dist;
+        }
+        ctx.fillStyle = '#14221f';
+        ctx.font = '700 13px Nunito Sans, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(tag, tx, ty);
+      }
+    }
+
+    /* ===================== MAGNETS ===================== */
+    const MAG_HALF_L = 68;
+    const MAG_HALF_H = 18;
+    const FIELD_PURPLE = 'rgba(108, 74, 182, 0.88)';
+    const FIELD_PURPLE_SOFT = 'rgba(108, 74, 182, 0.55)';
+
+    const magState = {
+      mode: 'single',
+      magnets: [{ x: 360, y: 210, angle: Math.PI, tall: false }],
+      drag: null,
+      fieldCache: null,
+      fieldDirty: true,
+      animT: 0,
+      lastAnimSep: -1,
+      pairStarted: false,
+      pairPlaying: false,
+      pairDone: false
+    };
+
+    const PAIR_MAX_SEP = 340;
+    function pairTouchSep() {
+      return MAG_HALF_L * 2 + 2; // faces almost flush — “really touching”
+    }
+
+    function markMagFieldDirty() {
+      magState.fieldDirty = true;
+      magState.fieldCache = null;
+    }
+
+    function setMagHint(mode) {
+      const hint = $('#magHint');
+      if (!hint) return;
+      if (mode === 'single') {
+        hint.innerHTML = '<span class="en">Drag the magnet · watch compasses</span><span class="zh">拖動磁鐵 · 觀察指南針</span>';
+      } else if (mode === 'attract') {
+        hint.innerHTML = '<span class="en">Press Start — they attract until they touch</span><span class="zh">按開始 — 吸引至互相接觸後停下</span>';
+      } else {
+        hint.innerHTML = '<span class="en">Press Start — they repel until they separate</span><span class="zh">按開始 — 排斥至分開後停下</span>';
+      }
+    }
+
+    function placePairMagnets(sep) {
+      const mid = 360, cy = 210;
+      magState.magnets[0].x = mid - sep / 2;
+      magState.magnets[0].y = cy;
+      magState.magnets[1].x = mid + sep / 2;
+      magState.magnets[1].y = cy;
+    }
+
+    function resetPairDemo() {
+      magState.animT = 0;
+      magState.lastAnimSep = -1;
+      magState.pairStarted = false;
+      magState.pairPlaying = false;
+      magState.pairDone = false;
+      if (magState.mode === 'attract') {
+        placePairMagnets(PAIR_MAX_SEP);
+      } else if (magState.mode === 'repel') {
+        placePairMagnets(pairTouchSep());
+      }
+      markMagFieldDirty();
+      updatePairTransportUi();
+    }
+
+    function updatePairTransportUi() {
+      const row = $('#magPairTransport');
+      const startBtn = $('#magPairStart');
+      if (!row) return;
+      const pair = magState.mode === 'attract' || magState.mode === 'repel';
+      row.style.display = pair ? 'flex' : 'none';
+      if (startBtn) {
+        startBtn.disabled = magState.pairPlaying || magState.pairDone;
+      }
+    }
+
+    function setMagMode(mode) {
+      magState.mode = mode;
+      magState.drag = null;
+      magState.animT = 0;
+      magState.lastAnimSep = -1;
+      magState.pairStarted = false;
+      magState.pairPlaying = false;
+      magState.pairDone = false;
+      $$('[data-mag-mode]').forEach((b) => b.classList.toggle('active-tog', b.dataset.magMode === mode));
+      if (mode === 'single') {
+        magState.magnets = [{ x: 360, y: 210, angle: Math.PI, tall: false }];
+      } else if (mode === 'attract') {
+        // Unlike: N of left faces S of right — start far apart
+        magState.magnets = [
+          { x: 200, y: 210, angle: 0, tall: false },
+          { x: 520, y: 210, angle: 0, tall: false }
+        ];
+        placePairMagnets(PAIR_MAX_SEP);
+      } else if (mode === 'repel') {
+        // Like: N faces N — start touching
+        magState.magnets = [
+          { x: 288, y: 210, angle: 0, tall: false },
+          { x: 432, y: 210, angle: Math.PI, tall: false }
+        ];
+        placePairMagnets(pairTouchSep());
+      }
+      setMagHint(mode);
+      const canvas = $('#magnetCanvas');
+      if (canvas) canvas.style.cursor = mode === 'single' ? 'grab' : 'default';
+      markMagFieldDirty();
+      updatePairTransportUi();
+    }
+    $$('[data-mag-mode]').forEach((b) => b.addEventListener('click', () => setMagMode(b.dataset.magMode)));
+
+    (function initMagPairTransport() {
+      const startBtn = $('#magPairStart');
+      const resetBtn = $('#magPairReset');
+      if (!startBtn || !resetBtn) return;
+      startBtn.addEventListener('click', () => {
+        if (magState.mode !== 'attract' && magState.mode !== 'repel') return;
+        if (magState.pairPlaying || magState.pairDone) return;
+        magState.pairStarted = true;
+        magState.pairPlaying = true;
+        magState.pairDone = false;
+        magState.animT = 0;
+        magState.lastAnimSep = -1;
+        if (magState.mode === 'attract') placePairMagnets(PAIR_MAX_SEP);
+        else placePairMagnets(pairTouchSep());
+        markMagFieldDirty();
+        updatePairTransportUi();
+      });
+      resetBtn.addEventListener('click', () => {
+        if (magState.mode !== 'attract' && magState.mode !== 'repel') return;
+        resetPairDemo();
+      });
+      updatePairTransportUi();
+    })();
+
+    function updatePairMagnetAnimation() {
+      if (magState.mode !== 'attract' && magState.mode !== 'repel') return;
+      if (magState.magnets.length < 2) return;
+      if (!magState.pairPlaying || magState.pairDone) return;
+
+      magState.animT += 0.016;
+      const duration = 3.4;
+      const t = Math.min(1, magState.animT / duration);
+      const ease = t * t * (3 - 2 * t);
+
+      const minSep = pairTouchSep();
+      const maxSep = PAIR_MAX_SEP;
+      const sep = magState.mode === 'attract'
+        ? maxSep + (minSep - maxSep) * ease
+        : minSep + (maxSep - minSep) * ease;
+
+      placePairMagnets(sep);
+
+      if (Math.abs(sep - magState.lastAnimSep) > 3) {
+        magState.lastAnimSep = sep;
+        markMagFieldDirty();
+      }
+
+      if (t >= 1) {
+        magState.pairDone = true;
+        magState.pairPlaying = false;
+        placePairMagnets(magState.mode === 'attract' ? minSep : maxSep);
+        markMagFieldDirty();
+        updatePairTransportUi();
+      }
+    }
+
+    function magDims(m) {
+      return {
+        halfL: m.tall ? 28 : MAG_HALF_L,
+        halfH: m.tall ? 95 : MAG_HALF_H
+      };
+    }
+
+    function magnetPoles(m) {
+      const { halfL } = magDims(m);
+      const nx = Math.cos(m.angle), ny = Math.sin(m.angle);
+      return {
+        nx, ny,
+        N: { x: m.x + nx * halfL, y: m.y + ny * halfL, q: 1 },
+        S: { x: m.x - nx * halfL, y: m.y - ny * halfL, q: -1 }
+      };
+    }
+
+    function pointInMagnet(x, y, pad) {
+      pad = pad || 0;
+      for (let i = 0; i < magState.magnets.length; i++) {
+        const m = magState.magnets[i];
+        const { halfL, halfH } = magDims(m);
+        const dx = x - m.x, dy = y - m.y;
+        const lx = dx * Math.cos(m.angle) + dy * Math.sin(m.angle);
+        const ly = -dx * Math.sin(m.angle) + dy * Math.cos(m.angle);
+        if (Math.abs(lx) <= halfL + pad && Math.abs(ly) <= halfH + pad) return true;
+      }
+      return false;
+    }
+
+    function magnetField(x, y) {
+      // Softened two-monopole model per bar (smooth textbook curves)
+      let Bx = 0, By = 0;
+      magState.magnets.forEach((m) => {
+        const { halfH } = magDims(m);
+        const poles = magnetPoles(m);
+        const soft = m.tall ? 2200 : 900;
+        // Spread each pole slightly across the face for smoother near-field
+        const faceSamples = m.tall ? 5 : 3;
+        [poles.N, poles.S].forEach((p) => {
+          for (let i = 0; i < faceSamples; i++) {
+            const t = faceSamples === 1 ? 0 : (i / (faceSamples - 1) - 0.5) * 2;
+            const fx = p.x - poles.ny * t * halfH * 0.85;
+            const fy = p.y + poles.nx * t * halfH * 0.85;
+            const dx = x - fx, dy = y - fy;
+            const r2 = dx * dx + dy * dy + soft;
+            const r = Math.sqrt(r2);
+            const s = (p.q / faceSamples) / (r2 * r);
+            Bx += s * dx;
+            By += s * dy;
+          }
+        });
+      });
+      return { Bx, By, mag: Math.hypot(Bx, By) };
+    }
+
+    function drawFieldArrow(ctx, x, y, ang, scale) {
+      scale = scale || 1;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(ang);
+      ctx.beginPath();
+      ctx.moveTo(6 * scale, 0);
+      ctx.lineTo(-4 * scale, -4.2 * scale);
+      ctx.lineTo(-4 * scale, 4.2 * scale);
+      ctx.closePath();
+      ctx.fillStyle = FIELD_PURPLE;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function traceFieldLine(ctx, x0, y0, maxSteps, dir) {
+      dir = dir || 1;
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      const pts = [];
+      let x = x0, y = y0;
+      for (let step = 0; step < maxSteps; step++) {
+        if (x < -20 || y < -20 || x > w + 20 || y > h + 20) break;
+        if (pointInMagnet(x, y, -1)) {
+          // entered body — stop just outside
+          break;
+        }
+        const f = magnetField(x, y);
+        if (f.mag < 1.2e-9) break;
+
+        // Forward: stop at S (line enters). Backward: stop at N (line leaves).
+        let nearEnd = false;
+        magState.magnets.forEach((m) => {
+          const poles = magnetPoles(m);
+          const end = dir > 0 ? poles.S : poles.N;
+          if (Math.hypot(x - end.x, y - end.y) < 14) nearEnd = true;
+        });
+        // Arrowheads always follow true B (N → S)
+        pts.push({ x, y, ang: Math.atan2(f.By, f.Bx) });
+        if (nearEnd) break;
+
+        // Adaptive step: smaller near poles (stronger |B|)
+        const stepLen = Math.max(2.2, Math.min(5.5, 0.00045 / (f.mag + 1e-12)));
+        // Mid-point (RK2) for smoother curves
+        const ux = f.Bx / f.mag, uy = f.By / f.mag;
+        const mx = x + ux * stepLen * 0.5 * dir;
+        const my = y + uy * stepLen * 0.5 * dir;
+        const fm = magnetField(mx, my);
+        if (fm.mag < 1e-12) break;
+        x += (fm.Bx / fm.mag) * stepLen * dir;
+        y += (fm.By / fm.mag) * stepLen * dir;
+      }
+      if (pts.length < 4) return;
+
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.strokeStyle = FIELD_PURPLE;
+      ctx.lineWidth = 1.65;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.stroke();
+
+      // Direction arrows along the curve (like the reference)
+      const arrowEvery = Math.max(18, Math.floor(pts.length / 3));
+      for (let i = arrowEvery; i < pts.length - 4; i += arrowEvery) {
+        drawFieldArrow(ctx, pts[i].x, pts[i].y, pts[i].ang, 1);
+      }
+    }
+
+    function seedFieldLines(ctx) {
+      magState.magnets.forEach((m) => {
+        const { halfL, halfH } = magDims(m);
+        const { nx, ny, N, S } = magnetPoles(m);
+        // Fans leaving the N face — denser near axis (stronger field)
+        const angles = m.tall
+          ? [-1.15, -0.85, -0.55, -0.28, 0, 0.28, 0.55, 0.85, 1.15]
+          : [-1.35, -1.05, -0.75, -0.45, -0.2, 0, 0.2, 0.45, 0.75, 1.05, 1.35];
+        angles.forEach((a) => {
+          const along = 6 + (Math.abs(a) < 0.25 ? 2 : 0);
+          const across = a * halfH * 0.95;
+          const sx = N.x + nx * along - ny * across;
+          const sy = N.y + ny * along + nx * across;
+          const maxSteps = m.tall ? 160 : (Math.abs(a) > 1.0 ? 220 : 180);
+          traceFieldLine(ctx, sx, sy, maxSteps, 1);
+        });
+
+        // Matching fans at the S face (trace against B so lines fill around S;
+        // arrowheads still point into S)
+        angles.forEach((a) => {
+          const along = 6 + (Math.abs(a) < 0.25 ? 2 : 0);
+          const across = a * halfH * 0.95;
+          const sx = S.x - nx * along - ny * across;
+          const sy = S.y - ny * along + nx * across;
+          const maxSteps = m.tall ? 160 : (Math.abs(a) > 1.0 ? 220 : 180);
+          traceFieldLine(ctx, sx, sy, maxSteps, -1);
+        });
+
+        // Side seeds near both poles for classic outer loops
+        if (!m.tall) {
+          [-1, 1].forEach((side) => {
+            for (let k = 0; k < 3; k++) {
+              const along = halfL * (0.55 + k * 0.12);
+              const sxN = m.x + nx * along - ny * side * (halfH + 8);
+              const syN = m.y + ny * along + nx * side * (halfH + 8);
+              traceFieldLine(ctx, sxN, syN, 200, 1);
+              const sxS = m.x - nx * along - ny * side * (halfH + 8);
+              const syS = m.y - ny * along + nx * side * (halfH + 8);
+              traceFieldLine(ctx, sxS, syS, 200, -1);
+            }
+          });
+        }
+      });
+    }
+
+    function drawBarMagnet(ctx, m) {
+      const { halfL, halfH } = magDims(m);
+      ctx.save();
+      ctx.translate(m.x, m.y);
+      ctx.rotate(m.angle);
+      // White body like the reference diagram
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#2a2a2a';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.rect(-halfL, -halfH, halfL * 2, halfH * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Soft N / S tint edges
+      ctx.fillStyle = 'rgba(226, 61, 61, 0.12)';
+      ctx.fillRect(0, -halfH, halfL, halfH * 2);
+      ctx.fillStyle = 'rgba(43, 107, 228, 0.12)';
+      ctx.fillRect(-halfL, -halfH, halfL, halfH * 2);
+      ctx.font = '700 ' + (m.tall ? 22 : 18) + 'px Bricolage Grotesque';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#e23d3d';
+      ctx.fillText('N', halfL * 0.55, 1);
+      ctx.fillStyle = '#2b6be4';
+      ctx.fillText('S', -halfL * 0.55, 1);
+      ctx.restore();
+    }
+
+    function drawNeutralX(ctx, x, y) {
+      ctx.save();
+      ctx.strokeStyle = '#2f9e44';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x - 10, y - 10);
+      ctx.lineTo(x + 10, y + 10);
+      ctx.moveTo(x + 10, y - 10);
+      ctx.lineTo(x - 10, y + 10);
+      ctx.stroke();
+      ctx.fillStyle = '#2f9e44';
+      ctx.font = '700 12px Nunito Sans';
+      ctx.textAlign = 'left';
+      ctx.fillText('Neutral point', x + 14, y + 4);
+      ctx.restore();
+    }
+
+    function weakerFieldAnchor(m, w, h) {
+      // Sit on an outer loop, on the side of the bar with more free space (moves with magnet).
+      const { halfH } = magDims(m);
+      const { nx, ny } = magnetPoles(m);
+      // Farther “above” so the blue bracket sits higher on the outer arcs
+      const dist = halfH + 138;
+      const cands = [
+        { x: m.x - ny * dist, y: m.y + nx * dist },
+        { x: m.x + ny * dist, y: m.y - nx * dist }
+      ];
+      cands[0].above = cands[0].y < m.y;
+      cands[1].above = cands[1].y < m.y;
+      const boxW = 120, boxH = 70;
+      let best = cands[0], bestScore = -Infinity;
+      cands.forEach((c) => {
+        const bx = c.x - boxW / 2;
+        const by = c.y - boxH / 2;
+        const fits = bx >= 8 && by >= 28 && bx + boxW < w - 8 && by + boxH < h - 8;
+        const margin = Math.min(c.x, w - c.x, c.y, h - c.y);
+        const score = margin + (fits ? 100 : -220) + (c.above ? 40 : 0);
+        if (score > bestScore) {
+          bestScore = score;
+          best = c;
+        }
+      });
+      return best;
+    }
+
+    function drawStrengthHints(ctx) {
+      if (magState.mode !== 'single') return;
+      const m = magState.magnets[0];
+      const w = ctx.canvas.width, h = ctx.canvas.height;
+      const N = magnetPoles(m).N;
+      ctx.save();
+      ctx.font = '700 12px Nunito Sans';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 4]);
+
+      // Stronger: bracket the dense lines near N (label outside the bracket)
+      const sW = 70, sH = 84;
+      const sx = N.x - sW / 2, sy = N.y - sH / 2;
+      ctx.strokeStyle = 'rgba(47, 158, 68, 0.85)';
+      ctx.strokeRect(sx, sy, sW, sH);
+      const sLabelY = sy < 28 ? sy + sH + 14 : sy - 14;
+      ctx.setLineDash([]);
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.fillRect(N.x - 48, sLabelY - 9, 96, 18);
+      ctx.fillStyle = '#2f9e44';
+      ctx.fillText('Stronger field', N.x, sLabelY);
+
+      // Weaker: bracket sparse outer field lines (label outside, not inside)
+      const weak = weakerFieldAnchor(m, w, h);
+      const boxW = 120, boxH = 70;
+      let bx = weak.x - boxW / 2;
+      let by = weak.y - boxH / 2;
+      bx = Math.max(8, Math.min(w - boxW - 8, bx));
+      by = Math.max(8, Math.min(h - boxH - 8, by));
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = 'rgba(32, 168, 196, 0.95)';
+      ctx.strokeRect(bx, by, boxW, boxH);
+      ctx.setLineDash([]);
+      let wLabelY = by - 14;
+      if (wLabelY < 14) wLabelY = by + boxH + 14;
+      if (wLabelY > h - 10) wLabelY = by - 14;
+      ctx.fillStyle = 'rgba(255,255,255,0.92)';
+      ctx.fillRect(bx + boxW / 2 - 48, wLabelY - 9, 96, 18);
+      ctx.fillStyle = '#0f7a8c';
+      ctx.fillText('Weaker field', bx + boxW / 2, wLabelY);
+      ctx.restore();
+    }
+
+    function findNeutralPoint() {
+      if (magState.magnets.length < 2) return null;
+      const canvas = $('#magnetCanvas');
+      const w = canvas.width, h = canvas.height;
+      let best = null, bestM = Infinity;
+      // Focus search between magnets for repel/attract
+      const xs = magState.magnets.map((m) => m.x).sort((a, b) => a - b);
+      const x0 = xs[0] + 40, x1 = xs[1] - 40;
+      for (let x = Math.max(40, x0); x <= Math.min(w - 40, x1); x += 4) {
+        for (let y = 50; y < h - 50; y += 4) {
+          if (pointInMagnet(x, y, 8)) continue;
+          const f = magnetField(x, y);
+          if (f.mag < bestM) {
+            bestM = f.mag;
+            best = { x, y, mag: f.mag };
+          }
+        }
+      }
+      // For like poles, neutral is near the midpoint
+      if (magState.mode === 'repel' && best) return best;
+      // Attract usually has no free-space neutral between — only show if very weak
+      if (magState.mode === 'attract' && best && best.mag < 3e-8) return best;
+      if (magState.mode === 'repel') return best;
+      return null;
+    }
+
+    function rebuildMagFieldCache() {
+      const canvas = $('#magnetCanvas');
+      const cache = document.createElement('canvas');
+      cache.width = canvas.width;
+      cache.height = canvas.height;
+      const ctx = cache.getContext('2d');
+      seedFieldLines(ctx);
+      magState.fieldCache = cache;
+      magState.fieldDirty = false;
+    }
+
+    function drawMagnetLab() {
+      const canvas = $('#magnetCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      updatePairMagnetAnimation();
+
+      // Soft paper background (closer to the reference)
+      ctx.fillStyle = '#fbfcfe';
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(108, 74, 182, 0.05)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      if ($('#showFieldLines').checked) {
+        const pair = magState.mode === 'attract' || magState.mode === 'repel';
+        const allowLines = !pair || magState.pairStarted;
+        if (allowLines) {
+          if (magState.fieldDirty || !magState.fieldCache) rebuildMagFieldCache();
+          ctx.drawImage(magState.fieldCache, 0, 0);
+        }
+      }
+
+      if ($('#showNeutral').checked && magState.mode === 'repel' && magState.pairStarted) {
+        const n = findNeutralPoint();
+        if (n) drawNeutralX(ctx, n.x, n.y);
+      }
+
+      magState.magnets.forEach((m) => drawBarMagnet(ctx, m));
+
+      if ($('#showCompasses').checked) {
+        const positions = magState.mode === 'single'
+          ? [[200, 100], [360, 70], [520, 100], [160, 210], [560, 210], [220, 330], [360, 350], [500, 330]]
+          : [[180, 90], [360, 70], [540, 90], [360, 150], [180, 330], [360, 350], [540, 330]];
+        positions.forEach(([x, y]) => {
+          if (pointInMagnet(x, y, 12)) return;
+          const f = magnetField(x, y);
+          if (f.mag < 2e-9) {
+            drawCompass(ctx, x, y, heroT * 2.5, 12);
+          } else {
+            drawCompass(ctx, x, y, Math.atan2(f.By, f.Bx) + Math.PI / 2, 12);
+          }
+        });
+      }
+
+      // Draw after magnet + compasses so labels are never covered
+      if (magState.mode === 'single' && $('#showFieldLines').checked) {
+        drawStrengthHints(ctx);
+      }
+
+      // Motion caption for pair modes
+      if (magState.mode === 'attract' || magState.mode === 'repel') {
+        ctx.fillStyle = 'rgba(20, 34, 31, 0.72)';
+        ctx.font = '700 13px Nunito Sans';
+        ctx.textAlign = 'center';
+        let msg;
+        if (!magState.pairStarted) {
+          msg = 'Press Start';
+        } else if (magState.pairPlaying) {
+          msg = magState.mode === 'attract' ? 'Attracting →' : 'Repelling →';
+        } else if (magState.pairDone) {
+          msg = magState.mode === 'attract' ? 'Touching — stopped' : 'Separated — stopped';
+        } else {
+          msg = 'Press Start';
+        }
+        ctx.fillText(msg, w / 2, 28);
+      }
+    }
+
+    ['showFieldLines', 'showCompasses', 'showNeutral'].forEach((id) => {
+      const el = $('#' + id);
+      if (el) el.addEventListener('change', markMagFieldDirty);
+    });
+
+    (function magnetPointer() {
+      const canvas = $('#magnetCanvas');
+      canvas.style.cursor = 'grab';
+      function pos(e) {
+        const r = canvas.getBoundingClientRect();
+        const cx = (e.clientX - r.left) * (canvas.width / r.width);
+        const cy = (e.clientY - r.top) * (canvas.height / r.height);
+        return { x: cx, y: cy };
+      }
+      canvas.addEventListener('pointerdown', (e) => {
+        if (magState.mode !== 'single') return;
+        const p = pos(e);
+        for (let i = 0; i < magState.magnets.length; i++) {
+          const m = magState.magnets[i];
+          const { halfL, halfH } = magDims(m);
+          const hitR = Math.max(halfL, halfH) + 20;
+          if (Math.hypot(p.x - m.x, p.y - m.y) < hitR) {
+            magState.drag = i;
+            canvas.style.cursor = 'grabbing';
+            canvas.setPointerCapture(e.pointerId);
+            break;
+          }
+        }
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (magState.mode !== 'single' || magState.drag === null) return;
+        const p = pos(e);
+        const m = magState.magnets[magState.drag];
+        const { halfL, halfH } = magDims(m);
+        m.x = Math.max(halfL + 20, Math.min(canvas.width - halfL - 20, p.x));
+        m.y = Math.max(halfH + 20, Math.min(canvas.height - halfH - 20, p.y));
+        markMagFieldDirty();
+      });
+      canvas.addEventListener('pointerup', () => {
+        magState.drag = null;
+        if (magState.mode === 'single') canvas.style.cursor = 'grab';
+      });
+    })();
+
+    /* ===================== WIRE ===================== */
+    const wireState = { I: 3, out: true, t: 0 };
+
+    $('#wireI').addEventListener('input', (e) => {
+      wireState.I = +e.target.value;
+      $('#wireIVal').textContent = wireState.I.toFixed(1) + ' A';
+    });
+    $('#wireOut').addEventListener('click', () => {
+      wireState.out = true;
+      $('#wireOut').classList.add('active-tog');
+      $('#wireIn').classList.remove('active-tog');
+    });
+    $('#wireIn').addEventListener('click', () => {
+      wireState.out = false;
+      $('#wireIn').classList.add('active-tog');
+      $('#wireOut').classList.remove('active-tog');
+    });
+
+    function drawWireLab() {
+      const canvas = $('#wireCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      const cx = w / 2, cy = h / 2;
+      ctx.clearRect(0, 0, w, h);
+
+      // cardboard
+      ctx.fillStyle = 'rgba(195,170,120,0.25)';
+      ctx.fillRect(40, 40, w - 80, h - 80);
+      ctx.strokeStyle = 'rgba(150,120,70,0.35)';
+      ctx.strokeRect(40, 40, w - 80, h - 80);
+      ctx.fillStyle = '#5a6f69';
+      ctx.font = '600 12px Nunito Sans';
+      ctx.fillText('cardboard', 52, 58);
+
+      const animate = $('#wireAnimate').checked;
+      // Canvas Y grows downward, so negative sense = visual anticlockwise on screen.
+      // Right-hand grip: out of page (·) → anticlockwise; into page (×) → clockwise.
+      const sense = wireState.out ? -1 : 1;
+
+      // Radii spaced so gaps grow with r (B ∝ 1/r → denser lines near wire)
+      const rMin = 34;
+      const rMax = Math.min(cx, cy) - 36;
+      const nLines = 6;
+      const radii = [];
+      for (let i = 0; i < nLines; i++) {
+        const t = nLines === 1 ? 0 : i / (nLines - 1);
+        radii.push(rMin * Math.pow(rMax / rMin, t));
+      }
+
+      radii.forEach((rr, i) => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(26,140,255,' + (0.72 - i * 0.07) + ')';
+        ctx.lineWidth = 2.1;
+        if (animate) {
+          ctx.setLineDash([10, 10]);
+          ctx.lineDashOffset = -sense * wireState.t * 30 * (wireState.I / 3);
+        } else {
+          ctx.setLineDash([]);
+        }
+        ctx.stroke();
+        // arrow
+        const a = sense * (wireState.t * 0.8 + i * 0.55);
+        const ax = cx + Math.cos(a) * rr;
+        const ay = cy + Math.sin(a) * rr;
+        const tx = -Math.sin(a) * sense;
+        const ty = Math.cos(a) * sense;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(ax + tx * 8, ay + ty * 8);
+        ctx.lineTo(ax - tx * 5 - ty * 5, ay - ty * 5 + tx * 5);
+        ctx.lineTo(ax - tx * 5 + ty * 5, ay - ty * 5 - tx * 5);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(26,140,255,0.75)';
+        ctx.fill();
+      });
+
+      // Stronger (near) / weaker (far) — top & bottom so they clear the compasses
+      if (radii.length >= 2) {
+        const nearR = (radii[0] + radii[1]) / 2;
+        const farR = (radii[radii.length - 2] + radii[radii.length - 1]) / 2;
+        ctx.save();
+        ctx.setLineDash([5, 4]);
+        ctx.lineWidth = 1.5;
+        // near — above wire
+        ctx.strokeStyle = 'rgba(47,158,68,0.9)';
+        ctx.strokeRect(cx - 22, cy - nearR - 20, 44, 40);
+        ctx.setLineDash([]);
+        ctx.font = '700 12px Nunito Sans';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const nearLabelY = cy - nearR - 34;
+        ctx.fillStyle = 'rgba(247,252,251,0.92)';
+        ctx.fillRect(cx - 58, nearLabelY - 18, 116, 32);
+        ctx.fillStyle = '#2f9e44';
+        ctx.fillText('Stronger field', cx, nearLabelY - 6);
+        ctx.font = '600 11px Nunito Sans';
+        ctx.fillText('(close)', cx, nearLabelY + 8);
+        // far — below wire
+        ctx.setLineDash([5, 4]);
+        ctx.strokeStyle = 'rgba(43,107,228,0.85)';
+        ctx.strokeRect(cx - 26, cy + farR - 20, 52, 40);
+        ctx.setLineDash([]);
+        ctx.font = '700 12px Nunito Sans';
+        const farLabelY = cy + farR + 34;
+        ctx.fillStyle = 'rgba(247,252,251,0.92)';
+        ctx.fillRect(cx - 54, farLabelY - 18, 108, 32);
+        ctx.fillStyle = '#2b6be4';
+        ctx.fillText('Weaker field', cx, farLabelY - 6);
+        ctx.font = '600 11px Nunito Sans';
+        ctx.fillText('(far)', cx, farLabelY + 8);
+        ctx.restore();
+      }
+
+      // wire
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+      ctx.fillStyle = '#c36b2e';
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 20px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(wireState.out ? '·' : '×', cx, cy + (wireState.out ? 2 : 1));
+
+      if ($('#wireCompasses').checked) {
+        // Sit outside the outermost B line so they don't cover the field
+        const compassR = Math.min(rMax + 42, Math.min(cx, w - cx) - 36);
+        const comps = [
+          { x: cx + compassR, y: cy, label: 'A' },
+          { x: cx - compassR, y: cy, label: 'B' }
+        ];
+        comps.forEach((c) => {
+          // B is tangential; out of page → anticlockwise (N of compass follows B)
+          const ang = Math.atan2(c.y - cy, c.x - cx);
+          const fieldAng = ang + (wireState.out ? -Math.PI / 2 : Math.PI / 2);
+          drawCompass(ctx, c.x, c.y, fieldAng + Math.PI / 2, 16, c.label, c.label === 'A' ? 'right' : 'left');
+        });
+      }
+
+      const rProbe = 0.05; // 5 cm
+      const B = MU0 * wireState.I / (2 * Math.PI * rProbe);
+      $('#wireReadout').innerHTML =
+        '<span class="k">B</span> at 5 cm = <span class="hi">' + fmtB(B) + '</span><br/>' +
+        (wireState.out
+          ? '<span class="en">Current out of page → B circles <b>anticlockwise</b></span><span class="zh">電流穿出 → 磁場<strong>逆時針</strong></span>'
+          : '<span class="en">Current into page → B circles <b>clockwise</b></span><span class="zh">電流穿入 → 磁場<strong>順時針</strong></span>');
+
+      wireState.t += 0.016;
+    }
+
+    /* ===================== SOLENOID ===================== */
+    // Soft iron: relative permeability μr is typically hundreds–thousands (illustrative value)
+    const SOL_MU_R = 800;
+    const solState = { I: 2, N: 290, L: 0.2, forward: true, t: 0, fieldCache: null, fieldKey: '' };
+
+    $('#solI').addEventListener('input', (e) => {
+      solState.I = +e.target.value;
+      $('#solIVal').textContent = solState.I.toFixed(1) + ' A';
+    });
+    $('#solN').addEventListener('input', (e) => {
+      solState.N = +e.target.value;
+      $('#solNVal').textContent = String(solState.N);
+      solState.fieldCache = null;
+    });
+    $('#solL').addEventListener('input', (e) => {
+      solState.L = +e.target.value;
+      $('#solLVal').textContent = solState.L.toFixed(2) + ' m';
+      solState.fieldCache = null;
+    });
+    $('#solDirA').addEventListener('click', () => {
+      solState.forward = true;
+      solState.fieldCache = null;
+      $('#solDirA').classList.add('active-tog');
+      $('#solDirB').classList.remove('active-tog');
+    });
+    $('#solDirB').addEventListener('click', () => {
+      solState.forward = false;
+      solState.fieldCache = null;
+      $('#solDirB').classList.add('active-tog');
+      $('#solDirA').classList.remove('active-tog');
+    });
+    ['solCore', 'solField'].forEach((id) => {
+      const el = $('#' + id);
+      if (el) el.addEventListener('change', () => { solState.fieldCache = null; });
+    });
+
+    function drawSolenoidLab() {
+      const canvas = $('#solenoidCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const coreOn = $('#solCore').checked;
+      const showField = $('#solField').checked;
+      const midX = w / 2;
+      const cy = h / 2 - 6;
+      // Drawn coil length scales with physical length l (ref 0.20 m → full span)
+      const halfLen = Math.max(100, Math.min(220, 192 * (solState.L / 0.20)));
+      const left = midX - halfLen;
+      const right = midX + halfLen;
+      const coilRx = 16;   // depth radius of each turn
+      const coilRy = 58;   // height radius
+      const turns = Math.min(12, Math.max(7, Math.round(solState.N / 40)));
+      const dir = solState.forward ? 1 : -1; // +1 → B to the right → N on right
+      const nX = dir > 0 ? right : left;
+      const sX = dir > 0 ? left : right;
+
+      function turnXs() {
+        const xs = [];
+        for (let i = 0; i < turns; i++) {
+          xs.push(left + coilRx + 6 + i * ((right - left - coilRx * 2 - 12) / Math.max(1, turns - 1)));
+        }
+        return xs;
+      }
+      const xs = turnXs();
+
+      function wireStyle(c, front) {
+        const g = c.createLinearGradient(0, cy - coilRy, 0, cy + coilRy);
+        if (solState.I > 0.05) {
+          g.addColorStop(0, front ? '#6a7d78' : '#9aaca5');
+          g.addColorStop(0.45, front ? '#2f3f3b' : '#6a7d78');
+          g.addColorStop(1, front ? '#5a6f69' : '#8aa89f');
+        } else {
+          g.addColorStop(0, '#c5d4cf');
+          g.addColorStop(1, '#8aa89f');
+        }
+        c.strokeStyle = g;
+        c.lineWidth = front ? 5.2 : 4.2;
+        c.lineCap = 'round';
+        c.globalAlpha = front ? 1 : 0.55;
+      }
+
+      // Back halves of helix (behind the field)
+      xs.forEach((x) => {
+        ctx.beginPath();
+        ctx.ellipse(x, cy, coilRx, coilRy, 0, Math.PI * 0.5, Math.PI * 1.5);
+        wireStyle(ctx, false);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      });
+
+      // Soft-iron core (inside bore, behind front wire)
+      if (coreOn) {
+        const r = coilRy - 14;
+        ctx.beginPath();
+        ctx.moveTo(left + 14, cy - r);
+        ctx.lineTo(right - 14, cy - r);
+        ctx.quadraticCurveTo(right - 4, cy - r, right - 4, cy);
+        ctx.quadraticCurveTo(right - 4, cy + r, right - 14, cy + r);
+        ctx.lineTo(left + 14, cy + r);
+        ctx.quadraticCurveTo(left + 4, cy + r, left + 4, cy);
+        ctx.quadraticCurveTo(left + 4, cy - r, left + 14, cy - r);
+        ctx.closePath();
+        const cg = ctx.createLinearGradient(left, cy - r, left, cy + r);
+        cg.addColorStop(0, '#b8c4bf');
+        cg.addColorStop(0.45, '#6a7d78');
+        cg.addColorStop(1, '#3d4f4a');
+        ctx.fillStyle = cg;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(20, 34, 31, 0.35)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,0.28)';
+        ctx.fillRect(left + 16, cy - r, right - left - 32, 9);
+        ctx.fillStyle = '#14221f';
+        ctx.font = '700 11px Nunito Sans';
+        ctx.textAlign = 'center';
+        ctx.fillText('soft iron', midX, cy + 4);
+      }
+
+      // Smooth textbook B lines — denser / stronger when soft-iron core is in
+      if (showField && solState.I > 0.05) {
+        const key = (solState.forward ? 'f' : 'r') + (coreOn ? 'c' : 'a') +
+          'L' + solState.L.toFixed(2) + 'N' + solState.N;
+        if (!solState.fieldCache || solState.fieldKey !== key) {
+          const cache = document.createElement('canvas');
+          cache.width = w;
+          cache.height = h;
+          const c = cache.getContext('2d');
+          c.lineJoin = 'round';
+          c.lineCap = 'round';
+          c.strokeStyle = FIELD_PURPLE;
+          c.lineWidth = coreOn ? 2.35 : 1.75;
+
+          function arrowAt(x, y, ang) {
+            drawFieldArrow(c, x, y, ang, coreOn ? 1.15 : 1);
+          }
+
+          function drawClosedLoop(yIn, yOut, tip) {
+            const xA = sX + dir * 22;
+            const xB = nX - dir * 22;
+
+            c.beginPath();
+            c.moveTo(xA, yIn);
+            c.lineTo(xB, yIn);
+            if (dir > 0) {
+              c.bezierCurveTo(xB + tip, yIn, xB + tip, yOut, xB, yOut);
+              c.lineTo(xA, yOut);
+              c.bezierCurveTo(xA - tip, yOut, xA - tip, yIn, xA, yIn);
+            } else {
+              c.bezierCurveTo(xB - tip, yIn, xB - tip, yOut, xB, yOut);
+              c.lineTo(xA, yOut);
+              c.bezierCurveTo(xA + tip, yOut, xA + tip, yIn, xA, yIn);
+            }
+            c.stroke();
+
+            arrowAt((xA + xB) / 2, yIn, dir > 0 ? 0 : Math.PI);
+            arrowAt((xA + xB) / 2, yOut, dir > 0 ? Math.PI : 0);
+          }
+
+          const loops = coreOn
+            ? [
+                { yIn: -32, yOut: -(coilRy + 14), tip: 30 },
+                { yIn: -24, yOut: -(coilRy + 26), tip: 40 },
+                { yIn: -14, yOut: -(coilRy + 40), tip: 52 },
+                { yIn: -6,  yOut: -(coilRy + 56), tip: 68 },
+                { yIn: 6,   yOut: (coilRy + 56), tip: 68 },
+                { yIn: 14,  yOut: (coilRy + 40), tip: 52 },
+                { yIn: 24,  yOut: (coilRy + 26), tip: 40 },
+                { yIn: 32,  yOut: (coilRy + 14), tip: 30 }
+              ]
+            : [
+                { yIn: -28, yOut: -(coilRy + 18), tip: 36 },
+                { yIn: -16, yOut: -(coilRy + 38), tip: 52 },
+                { yIn: -6,  yOut: -(coilRy + 58), tip: 70 },
+                { yIn: 6,   yOut: (coilRy + 58), tip: 70 },
+                { yIn: 16,  yOut: (coilRy + 38), tip: 52 },
+                { yIn: 28,  yOut: (coilRy + 18), tip: 36 }
+              ];
+          loops.forEach((L) => {
+            drawClosedLoop(cy + L.yIn, cy + L.yOut, L.tip);
+          });
+
+          // Interior density — much denser with soft-iron core (stronger B)
+          const yIns = coreOn
+            ? [-40, -34, -28, -21, -14, -7, 0, 7, 14, 21, 28, 34, 40]
+            : [-38, -26, -14, 0, 14, 26, 38];
+          yIns.forEach((dy) => {
+            const y = cy + dy;
+            const x0 = sX + dir * 28;
+            const x1 = nX - dir * 28;
+            c.beginPath();
+            c.moveTo(x0, y);
+            c.lineTo(x1, y);
+            c.globalAlpha = coreOn ? 0.95 : 0.88;
+            c.stroke();
+            c.globalAlpha = 1;
+            arrowAt((x0 + x1) / 2, y, dir > 0 ? 0 : Math.PI);
+          });
+
+          solState.fieldCache = cache;
+          solState.fieldKey = key;
+        }
+        ctx.drawImage(solState.fieldCache, 0, 0);
+      }
+
+      // Front halves of helix (in front of the field) — creates hollow 3D look
+      xs.forEach((x) => {
+        ctx.beginPath();
+        ctx.ellipse(x, cy, coilRx, coilRy, 0, -Math.PI * 0.5, Math.PI * 0.5);
+        wireStyle(ctx, true);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        // thin highlight on front wire
+        ctx.beginPath();
+        ctx.ellipse(x, cy, coilRx - 1.5, coilRy - 2, 0, -0.9, 0.9);
+        ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+      });
+
+      // Current direction ON the coil windings (no separate lead wire)
+      // Forward (A→B): front arcs run top → bottom
+      if (solState.I > 0.05) {
+        const frontDown = solState.forward;
+        ctx.fillStyle = '#c36b2e';
+        ctx.font = '700 13px Nunito Sans';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('I', midX, cy - coilRy - 10);
+
+        xs.forEach((x) => {
+          const angles = frontDown
+            ? [-0.55, 0.15, 0.85]
+            : [0.55, -0.15, -0.85];
+          angles.forEach((a) => {
+            const px = x + Math.cos(a) * coilRx;
+            const py = cy + Math.sin(a) * coilRy;
+            let tx = -Math.sin(a) * coilRx;
+            let ty = Math.cos(a) * coilRy;
+            if (!frontDown) { tx = -tx; ty = -ty; }
+            const len = Math.hypot(tx, ty) || 1;
+            const ang = Math.atan2(ty / len, tx / len);
+            ctx.save();
+            ctx.translate(px, py);
+            ctx.rotate(ang);
+            ctx.beginPath();
+            ctx.moveTo(5, 0);
+            ctx.lineTo(-3.5, -3.8);
+            ctx.lineTo(-3.5, 3.8);
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          });
+        });
+      }
+
+      // Subtle axis guide through open ends
+      ctx.strokeStyle = 'rgba(90, 111, 105, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(left - 20, cy);
+      ctx.lineTo(right + 20, cy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Pole letters at the openings (reference style)
+      if (solState.I > 0.05) {
+        ctx.font = '800 26px Bricolage Grotesque';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#e23d3d';
+        ctx.fillText('N', nX + dir * 34, cy);
+        ctx.fillStyle = '#2b6be4';
+        ctx.fillText('S', sX - dir * 34, cy);
+      }
+
+      // Face labels A / B
+      ctx.fillStyle = '#5a6f69';
+      ctx.font = '700 13px Nunito Sans';
+      ctx.textAlign = 'center';
+      ctx.fillText('A', left - 36, cy + coilRy + 18);
+      ctx.fillText('B', right + 36, cy + coilRy + 18);
+
+      if ($('#solCompass').checked && solState.I > 0.05) {
+        // Outside above: return field N→S
+        drawCompass(ctx, midX, cy - coilRy - 48, dir > 0 ? 0 : Math.PI, 11);
+        // Near N pole outside
+        drawCompass(ctx, nX + dir * 62, cy - 36, dir > 0 ? -0.9 : Math.PI + 0.9, 10);
+      }
+
+      const Bair = MU0 * (solState.N / solState.L) * solState.I;
+      const B = coreOn ? SOL_MU_R * Bair : Bair;
+      const formula = coreOn
+        ? '(μ₀ μ<sub>r</sub> N I)/<i>l</i>'
+        : '(μ₀ N I)/<i>l</i>';
+      $('#solReadout').innerHTML =
+        '<span class="hi">B = ' + formula + ' = ' + fmtB(B) + '</span>';
+
+      solState.t += 0.016;
+    }
+
+    /* ===================== BELL ===================== */
+    const bell = {
+      step: -1,
+      switchOn: false,
+      auto: false,
+      timer: null,
+      lastGong: 0,
+      audio: null,
+      traceProgress: 0,
+      traceDragging: false,
+      gateIndex: 1, // next stop along STEP_TO_TRACE the bead may reach
+      pausedAtGate: false, // hit a step stop — must release before continuing
+      activePointerId: null
+    };
+
+    const BELL_MSGS = [
+      { en: '1 · Switch closed', zh: '1 · 開關閉合' },
+      { en: '2 · Current flows', zh: '2 · 電流流通' },
+      { en: '3 · Electromagnet ON', zh: '3 · 電磁鐵開啟' },
+      { en: '4 · Circuit breaks', zh: '4 · 電路斷開' },
+      { en: '5 · Gong!', zh: '5 · 敲鑼！' },
+      { en: '6 · Demagnetized', zh: '6 · 消磁' },
+      { en: '7 · Hammer returns — repeat', zh: '7 · 錘回彈 — 重覆' }
+    ];
+
+    // Path fractions for each step stop (recomputed on init from contact)
+    const STEP_TO_TRACE = [0.02, 0.55, 0.58, 0.62, 0.72, 0.84, 0.96];
+    const CONTACT_TARGET = { x: 420, y: 155 };
+
+    function bellLang(obj) {
+      return document.documentElement.lang === 'zh-HK' ? obj.zh : obj.en;
+    }
+
+    function bellContinueHint(step) {
+      if (step >= 6) {
+        return bellLang({
+          en: 'Cycle complete — drag I from 2V again to repeat.',
+          zh: '循環完成 — 再從 2V 拖 I 重覆一次。'
+        });
+      }
+      return bellLang({
+        en: BELL_MSGS[step].en + ' — release, then drag I again to continue.',
+        zh: BELL_MSGS[step].zh + ' — 鬆開，再拖 I 繼續。'
+      });
+    }
+
+    function rebuildBellGates() {
+      const e = nearestTraceFrac(CONTACT_TARGET.x, CONTACT_TARGET.y, 0, 0.55);
+      STEP_TO_TRACE[0] = 0.02;
+      STEP_TO_TRACE[1] = e;
+      STEP_TO_TRACE[2] = e + (1 - e) * 0.08;
+      STEP_TO_TRACE[3] = e + (1 - e) * 0.22;
+      STEP_TO_TRACE[4] = e + (1 - e) * 0.42;
+      STEP_TO_TRACE[5] = e + (1 - e) * 0.62;
+      STEP_TO_TRACE[6] = e + (1 - e) * 0.90;
+    }
+
+    function resetBellDragState() {
+      bell.traceProgress = 0;
+      bell.traceDragging = false;
+      bell.gateIndex = 1;
+      bell.pausedAtGate = false;
+      bell.activePointerId = null;
+    }
+
+    function ensureBellAudio() {
+      if (!bell.audio) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) bell.audio = new AC();
+      }
+      if (bell.audio && bell.audio.state === 'suspended') bell.audio.resume();
+      return bell.audio;
+    }
+
+    function playGong() {
+      if (!$('#bellSound').checked) return;
+      const now = performance.now();
+      if (now - bell.lastGong < 180) return;
+      bell.lastGong = now;
+      const ctx = ensureBellAudio();
+      if (!ctx) return;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(880, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.35);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.42);
+      const gong = $('#gongGroup');
+      if (gong) {
+        gong.classList.remove('gong-hit');
+        void gong.offsetWidth;
+        gong.classList.add('gong-hit');
+      }
+    }
+
+    function setChip(chipId, valId, on, text) {
+      const chip = $('#' + chipId);
+      $('#' + valId).textContent = text;
+      chip.classList.toggle('on', on);
+      chip.classList.toggle('off', !on);
+      chip.classList.remove('warn');
+    }
+
+    function getTracePath() {
+      return $('#currentTracePath');
+    }
+
+    function placeCurrentBead(frac) {
+      const path = getTracePath();
+      const bead = $('#currentBead');
+      const hit = $('#currentBeadHit');
+      const label = $('#currentBeadLabel');
+      const lit = $('#currentTraceLit');
+      if (!path || !bead) return;
+      const len = path.getTotalLength();
+      const t = Math.max(0, Math.min(1, frac));
+      const pt = path.getPointAtLength(t * len);
+      bead.setAttribute('cx', pt.x);
+      bead.setAttribute('cy', pt.y);
+      if (hit) {
+        hit.setAttribute('cx', pt.x);
+        hit.setAttribute('cy', pt.y);
+      }
+      if (label) {
+        label.setAttribute('x', pt.x);
+        label.setAttribute('y', pt.y);
+      }
+      if (lit) {
+        lit.style.strokeDasharray = String(len);
+        lit.style.strokeDashoffset = String(len * (1 - t));
+      }
+    }
+
+    function nearestTraceFrac(x, y, minFrac, maxFrac) {
+      const path = getTracePath();
+      if (!path) return 0;
+      const len = path.getTotalLength();
+      const loBound = minFrac == null ? 0 : minFrac;
+      const hiBound = maxFrac == null ? 1 : maxFrac;
+      let best = loBound, bestD = Infinity;
+      const samples = 120;
+      for (let i = 0; i <= samples; i++) {
+        const f = loBound + (hiBound - loBound) * (i / samples);
+        const p = path.getPointAtLength(f * len);
+        const d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+        if (d < bestD) { bestD = d; best = f; }
+      }
+      // Local refine within the same allowed band
+      const lo = Math.max(loBound, best - 0.03);
+      const hi = Math.min(hiBound, best + 0.03);
+      for (let i = 0; i <= 40; i++) {
+        const f = lo + (hi - lo) * (i / 40);
+        const p = path.getPointAtLength(f * len);
+        const d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
+        if (d < bestD) { bestD = d; best = f; }
+      }
+      return best;
+    }
+
+    function svgPointerPoint(evt) {
+      const svg = $('#bellSvg');
+      const pt = svg.createSVGPoint();
+      pt.x = evt.clientX;
+      pt.y = evt.clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse());
+    }
+
+    function applyBellVisuals(s) {
+      const hammer = $('#hammerGroup');
+      const arm = $('#switchArm');
+      const glow = $('#currentGlow');
+      const status = $('#bellStatus');
+      const coilL = $('#coilL');
+      const coilR = $('#coilR');
+      const core = $('#coreRect');
+      const core2 = $('#coreRect2');
+      const contact = $('#contact');
+      const contactPt = $('#contactPoint');
+      const wireTop = $('#wirePathTop');
+      const wireBot = $('#wirePathBot');
+      const wireRet = $('#wirePathReturn');
+      const field = $('#fieldMarks');
+      const switchCue = $('#switchCue');
+      const hint = $('#bellHoldHint');
+
+      const switchOn = bell.switchOn || bell.auto;
+      let energized = s === 1 || s === 2 || s === 3;
+      let hitting = s === 4;
+      let broken = s === 3 || s === 5;
+      let magnetOn = energized;
+      const leaf = $('#contactLeafTip');
+      const breakFx = $('#contactBreakFx');
+      const breakLabel = $('#contactBreakLabel');
+      const lit = $('#currentTraceLit');
+
+      // Switch: clear open vs closed pose + colour
+      const contactEl = $('#switchContact');
+      const contactGlow = $('#switchContactGlow');
+      const gapMark = $('#switchGapMark');
+      const cueBg = $('#switchCueBg');
+      const pivot = $('#switchPivot');
+      if (switchOn) {
+        arm.setAttribute('x2', '210');
+        arm.setAttribute('y2', '210');
+        arm.setAttribute('stroke', '#0f7a6c');
+        arm.setAttribute('stroke-width', '6');
+        contactEl.setAttribute('fill', '#14a391');
+        contactEl.setAttribute('stroke', '#0b5f54');
+        if (contactGlow) contactGlow.setAttribute('opacity', '0.45');
+        if (gapMark) gapMark.setAttribute('opacity', '0');
+        if (pivot) {
+          pivot.setAttribute('fill', '#14a391');
+          pivot.setAttribute('stroke', '#0b5f54');
+        }
+        switchCue.textContent = 'ON';
+        switchCue.setAttribute('fill', '#0f7a6c');
+        if (cueBg) cueBg.setAttribute('fill', '#d8f5ee');
+      } else {
+        arm.setAttribute('x2', '228');
+        arm.setAttribute('y2', '242');
+        arm.setAttribute('stroke', '#14221f');
+        arm.setAttribute('stroke-width', '6');
+        contactEl.setAttribute('fill', '#8aa89f');
+        contactEl.setAttribute('stroke', '#5a6f69');
+        if (contactGlow) contactGlow.setAttribute('opacity', '0');
+        if (gapMark) gapMark.setAttribute('opacity', '1');
+        if (pivot) {
+          pivot.setAttribute('fill', '#c36b2e');
+          pivot.setAttribute('stroke', '#9a4f1a');
+        }
+        switchCue.textContent = 'OFF';
+        switchCue.setAttribute('fill', '#9a4f1a');
+        if (cueBg) cueBg.setAttribute('fill', '#f7e8dc');
+      }
+      hint.classList.toggle('live', !!switchOn);
+
+      const coilColor = magnetOn ? '#14a391' : '#0f7a6c';
+      coilL.setAttribute('stroke', coilColor);
+      coilR.setAttribute('stroke', coilColor);
+      const coreFill = magnetOn ? '#5ec4b0' : '#8a9e98';
+      core.setAttribute('fill', coreFill);
+      core2.setAttribute('fill', coreFill);
+      const wireOp = energized ? '0.95' : (broken ? '0.2' : '0.35');
+      if (wireTop) wireTop.setAttribute('opacity', wireOp);
+      if (wireBot) wireBot.setAttribute('opacity', switchOn ? (broken ? '0.45' : '0.95') : '0.55');
+      if (wireRet) wireRet.setAttribute('opacity', broken ? '0.2' : wireOp);
+      glow.setAttribute('r', magnetOn ? '40' : '0');
+      field.setAttribute('opacity', magnetOn ? '1' : '0');
+
+      // Contact leaf + fixed screw: closed touch vs open gap
+      if (broken || hitting) {
+        contact.setAttribute('opacity', '1');
+        contact.setAttribute('stroke', '#c36b2e');
+        if (leaf) {
+          leaf.setAttribute('fill', '#c36b2e');
+          leaf.setAttribute('opacity', '1');
+        }
+        contactPt.setAttribute('fill', broken ? '#8a9e98' : '#c36b2e');
+        contactPt.setAttribute('stroke', broken ? '#5a6f69' : '#9a4f1a');
+        contactPt.setAttribute('opacity', '1');
+      } else {
+        contact.setAttribute('opacity', '1');
+        if (leaf) leaf.setAttribute('opacity', '1');
+        contactPt.setAttribute('fill', '#c36b2e');
+        contactPt.setAttribute('stroke', '#9a4f1a');
+        contactPt.setAttribute('opacity', '1');
+      }
+
+      if (hitting) {
+        // Step 4 only: armature pulled to cores + hammer hits gong
+        hammer.style.transform = 'translate(-16px, 0) rotate(-11deg)';
+      } else if (broken) {
+        // Hold the open gap so the break is obvious
+        hammer.style.transform = 'translate(-18px, 0) rotate(-8deg)';
+      } else {
+        // Steps 1–3: armature stays at rest until it is pulled
+        hammer.style.transform = 'translate(0, 0)';
+      }
+
+      // Break FX: visible air gap + spark + OPEN label
+      if (breakFx) {
+        const showBreak = broken || hitting;
+        breakFx.setAttribute('opacity', showBreak ? '1' : '0');
+        breakFx.classList.toggle('live', broken);
+        // Place gap mark between pulled leaf tip (~394) and fixed screw (420)
+        const gap = $('#contactGapMark');
+        if (gap) {
+          gap.setAttribute('x1', hitting || broken ? '388' : '412');
+          gap.setAttribute('x2', '414');
+        }
+        const spark = $('#contactSpark');
+        if (spark) {
+          spark.setAttribute('opacity', broken ? '1' : (hitting ? '0.55' : '0'));
+        }
+      }
+      if (breakLabel) {
+        breakLabel.classList.toggle('live', broken);
+        breakLabel.setAttribute('opacity', broken ? '1' : '0');
+        breakLabel.textContent = broken ? 'OPEN' : '';
+      }
+
+      // Lit current fades hard when the circuit opens
+      if (lit) {
+        lit.setAttribute('opacity', broken ? '0.2' : '0.95');
+        lit.setAttribute('stroke', broken ? '#8a9e98' : '#14a391');
+      }
+
+      const curOn = energized && switchOn;
+      const magOn = magnetOn && switchOn;
+      const contactClosed = switchOn && !broken && !hitting;
+      setChip('chipCurrent', 'chipCurrentVal', curOn, curOn ? 'ON' : 'OFF');
+      setChip('chipMagnet', 'chipMagnetVal', magOn, magOn ? 'ON' : 'OFF');
+      const chipC = $('#chipContact');
+      $('#chipContactVal').textContent = contactClosed ? 'closed' : 'open';
+      chipC.classList.toggle('on', contactClosed);
+      chipC.classList.toggle('warn', !contactClosed && switchOn);
+      chipC.classList.toggle('off', !switchOn);
+
+      $$('#bellSteps li').forEach((li) => {
+        li.classList.toggle('on', +li.dataset.step === s);
+      });
+
+      if (s >= 0 && s < BELL_MSGS.length && !bell.pausedAtGate) {
+        status.textContent = bellLang(BELL_MSGS[s]);
+      } else if (s < 0) {
+        status.textContent = bellLang({
+          en: 'Ready — click the switch, then drag I along the circuit',
+          zh: '就緒 — 點開關，再沿電路拖動 I'
+        });
+      }
+
+      if (hitting) playGong();
+
+      const drop = $('#currentDropTarget');
+      if (drop) {
+        const showTarget = switchOn && bell.gateIndex === 1 && !bell.pausedAtGate && s >= 0 && s < 1;
+        drop.setAttribute('opacity', showTarget ? '0.95' : '0');
+      }
+    }
+
+    function setBellStep(s) {
+      bell.step = s;
+      applyBellVisuals(s);
+    }
+
+    function stopBellAuto() {
+      bell.auto = false;
+      clearInterval(bell.timer);
+      bell.timer = null;
+    }
+
+    function hitBellGate(gate) {
+      const frac = STEP_TO_TRACE[gate];
+      bell.traceProgress = frac;
+      placeCurrentBead(frac);
+      bell.pausedAtGate = true;
+      setBellStep(gate);
+      $('#bellStatus').textContent = bellContinueHint(gate);
+    }
+
+    function unlockNextBellGate() {
+      if (!bell.pausedAtGate) return;
+      bell.pausedAtGate = false;
+      if (bell.gateIndex >= 6) {
+        // Finished — snap back to battery for another cycle
+        resetBellDragState();
+        placeCurrentBead(0);
+        setBellStep(0);
+        $('#bellStatus').textContent = bellLang({
+          en: 'Cycle complete — drag I from 2V again to repeat.',
+          zh: '循環完成 — 再從 2V 拖 I 重覆一次。'
+        });
+        return;
+      }
+      bell.gateIndex += 1;
+      $('#bellStatus').textContent = bellLang({
+        en: 'Keep dragging I to the next stop.',
+        zh: '繼續把 I 拖到下一站。'
+      });
+    }
+
+    function resetBell() {
+      stopBellAuto();
+      bell.switchOn = false;
+      resetBellDragState();
+      placeCurrentBead(0);
+      setBellStep(-1);
+    }
+
+    function toggleSwitch() {
+      ensureBellAudio();
+      stopBellAuto();
+      bell.switchOn = !bell.switchOn;
+      if (!bell.switchOn) {
+        resetBellDragState();
+        placeCurrentBead(0);
+        setBellStep(-1);
+        $('#bellStatus').textContent = bellLang({
+          en: 'Switch OFF — circuit open. Click again to close.',
+          zh: '開關關閉 — 電路斷開。再點可閉合。'
+        });
+        applyBellVisuals(-1);
+        return;
+      }
+      resetBellDragState();
+      placeCurrentBead(0);
+      setBellStep(0);
+      $('#bellStatus').textContent = bellLang({
+        en: 'Switch ON — drag I along the circuit. It will pause at each step.',
+        zh: '開關開啟 — 沿電路拖動 I。每一步會停住。'
+      });
+    }
+
+    function onTracePointerDown(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (bell.auto) return;
+      if (!bell.switchOn) {
+        $('#bellStatus').textContent = bellLang({
+          en: 'Click the switch first — current cannot leave the battery.',
+          zh: '請先點開關 — 電流不能離開電池。'
+        });
+      }
+      const bead = $('#currentBead');
+      const hit = $('#currentBeadHit');
+      const target = e.currentTarget;
+      try {
+        target.setPointerCapture(e.pointerId);
+      } catch (err) { /* ignore */ }
+      bell.traceDragging = true;
+      bell.activePointerId = e.pointerId;
+      if (bead) bead.style.cursor = 'grabbing';
+      if (hit) hit.style.cursor = 'grabbing';
+      onTracePointerMove(e);
+    }
+
+    function onTracePointerMove(e) {
+      if (!bell.traceDragging || bell.auto) return;
+      if (bell.activePointerId != null && e.pointerId !== bell.activePointerId) return;
+      if (bell.pausedAtGate) {
+        // Stay locked on this step until release
+        placeCurrentBead(STEP_TO_TRACE[bell.gateIndex]);
+        return;
+      }
+      const p = svgPointerPoint(e);
+      const cap = STEP_TO_TRACE[bell.gateIndex];
+      let next = nearestTraceFrac(p.x, p.y, 0, cap);
+      if (next < bell.traceProgress - 0.04) next = bell.traceProgress - 0.04;
+      if (next < 0) next = 0;
+      if (!bell.switchOn) {
+        next = Math.min(next, 0.02);
+        $('#bellStatus').textContent = bellLang({
+          en: 'Click the switch first — current cannot leave the battery.',
+          zh: '請先點開關 — 電流不能離開電池。'
+        });
+        bell.traceProgress = next;
+        placeCurrentBead(next);
+        return;
+      }
+      if (next > cap) next = cap;
+      bell.traceProgress = next;
+      placeCurrentBead(next);
+
+      // Soft preview: approaching first contact shows “current flows”
+      if (bell.gateIndex === 1 && next >= cap * 0.55 && bell.step < 1) setBellStep(1);
+      else if (bell.gateIndex === 1 && next < cap * 0.55 && bell.step !== 0) setBellStep(0);
+
+      if (next >= cap - 0.01) {
+        hitBellGate(bell.gateIndex);
+      }
+    }
+
+    function onTracePointerUp(e) {
+      if (!bell.traceDragging) return;
+      if (e && bell.activePointerId != null && e.pointerId !== bell.activePointerId) return;
+      const wasPaused = bell.pausedAtGate;
+      bell.traceDragging = false;
+      bell.activePointerId = null;
+      const bead = $('#currentBead');
+      const hit = $('#currentBeadHit');
+      if (bead) {
+        bead.style.cursor = 'grab';
+        try {
+          if (e) bead.releasePointerCapture(e.pointerId);
+        } catch (err) { /* ignore */ }
+      }
+      if (hit) {
+        hit.style.cursor = 'grab';
+        try {
+          if (e) hit.releasePointerCapture(e.pointerId);
+        } catch (err) { /* ignore */ }
+      }
+      if (wasPaused) unlockNextBellGate();
+    }
+
+    (function initBell() {
+      rebuildBellGates();
+      placeCurrentBead(0);
+      applyBellVisuals(-1);
+      const bead = $('#currentBead');
+      const hit = $('#currentBeadHit');
+      [bead, hit].forEach((el) => {
+        if (!el) return;
+        el.addEventListener('pointerdown', onTracePointerDown);
+      });
+      window.addEventListener('pointermove', onTracePointerMove);
+      window.addEventListener('pointerup', onTracePointerUp);
+      window.addEventListener('pointercancel', onTracePointerUp);
+      $('#bellSwitch').addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        toggleSwitch();
+      });
+      $('#bellReset').addEventListener('click', resetBell);
+      function refreshBellLang() {
+        applyBellVisuals(bell.step);
+        if (bell.pausedAtGate) $('#bellStatus').textContent = bellContinueHint(bell.step);
+      }
+      $$('.lang-toggle button').forEach((btn) => {
+        btn.addEventListener('click', refreshBellLang);
+      });
+      window.addEventListener('lab-langchange', refreshBellLang);
+    })();
+
+    /* ===================== CONTINUOUS RING ===================== */
+    const ring = {
+      holding: false,
+      phase: -1,
+      timer: null,
+      hits: 0,
+      lastGong: 0,
+      audio: null
+    };
+
+    const RING_MSGS = [
+      { en: 'Contact closed · current ON', zh: '接點閉合 · 電流通' },
+      { en: 'Electromagnet pulls armature', zh: '電磁鐵吸引銜鐵' },
+      { en: 'Gong!', zh: '敲鑼！' },
+      { en: 'Contact opens · current OFF', zh: '接點分開 · 電流斷' },
+      { en: 'Electromagnet demagnetizes', zh: '電磁鐵消磁' },
+      { en: 'Spring returns · ready to hit again', zh: '彈簧回彈 · 準備再敲' }
+    ];
+
+    function ringLang(obj) {
+      return document.documentElement.lang === 'zh-HK' ? obj.zh : obj.en;
+    }
+
+    function ensureRingAudio() {
+      if (!ring.audio) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) ring.audio = new AC();
+      }
+      if (ring.audio && ring.audio.state === 'suspended') ring.audio.resume();
+      return ring.audio;
+    }
+
+    function playRingGong() {
+      if (!$('#ringSound') || !$('#ringSound').checked) return;
+      const now = performance.now();
+      if (now - ring.lastGong < 120) return;
+      ring.lastGong = now;
+      const ctx = ensureRingAudio();
+      if (!ctx) return;
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = 'triangle';
+      o.frequency.setValueAtTime(920, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(240, ctx.currentTime + 0.28);
+      g.gain.setValueAtTime(0.0001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.32);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start();
+      o.stop(ctx.currentTime + 0.34);
+      const gong = $('#ringGongGroup');
+      if (gong) {
+        gong.classList.remove('gong-hit');
+        void gong.offsetWidth;
+        gong.classList.add('gong-hit');
+      }
+    }
+
+    function setRingChip(chipId, valId, on, text) {
+      const chip = $('#' + chipId);
+      const val = $('#' + valId);
+      if (!chip || !val) return;
+      val.textContent = text;
+      chip.classList.toggle('on', on);
+      chip.classList.toggle('off', !on);
+      chip.classList.toggle('warn', !on && ring.holding && (chipId === 'ringChipC'));
+    }
+
+    function applyRingPhase(p) {
+      ring.phase = p;
+      const hammer = $('#ringHammer');
+      const arm = $('#ringSwitchArm');
+      const pad = $('#ringSwitchPad');
+      const cue = $('#ringSwitchCue');
+      const hint = $('#ringHoldHint');
+      const coilL = $('#ringCoilL');
+      const coilR = $('#ringCoilR');
+      const core1 = $('#ringCore1');
+      const core2 = $('#ringCore2');
+      const contact = $('#ringContact');
+      const contactPt = $('#ringContactPt');
+      const wireTop = $('#ringWireTop');
+      const wireBot = $('#ringWireBot');
+      const wireRet = $('#ringWireReturn');
+      const field = $('#ringField');
+      const glow = $('#ringGlow');
+      const status = $('#ringStatus');
+      const hitEl = $('#ringHitCount');
+
+      const holding = ring.holding;
+      const energized = holding && (p === 0 || p === 1 || p === 2);
+      const hitting = holding && p === 2;
+      const broken = holding && (p === 3 || p === 4);
+
+      if (holding) {
+        arm.setAttribute('x2', '210');
+        arm.setAttribute('y2', '210');
+        arm.setAttribute('stroke', '#0f7a6c');
+        pad.setAttribute('fill', '#14a391');
+        cue.textContent = 'ON';
+        cue.setAttribute('fill', '#0f7a6c');
+        hint.classList.add('live');
+      } else {
+        arm.setAttribute('x2', '222');
+        arm.setAttribute('y2', '238');
+        arm.setAttribute('stroke', '#14221f');
+        pad.setAttribute('fill', '#5a6f69');
+        cue.textContent = 'HOLD';
+        cue.setAttribute('fill', '#0f7a6c');
+        hint.classList.remove('live');
+      }
+
+      const coilColor = energized ? '#14a391' : '#0f7a6c';
+      coilL.setAttribute('stroke', coilColor);
+      coilR.setAttribute('stroke', coilColor);
+      const coreFill = energized ? '#5ec4b0' : '#8a9e98';
+      core1.setAttribute('fill', coreFill);
+      core2.setAttribute('fill', coreFill);
+      const wireOp = energized ? '0.95' : '0.35';
+      if (wireTop) wireTop.setAttribute('opacity', wireOp);
+      if (wireBot) wireBot.setAttribute('opacity', holding ? '0.95' : '0.55');
+      if (wireRet) wireRet.setAttribute('opacity', wireOp);
+      glow.setAttribute('r', energized ? '40' : '0');
+      field.setAttribute('opacity', energized ? '1' : '0');
+      contact.setAttribute('opacity', broken ? '0.25' : '1');
+      contactPt.setAttribute('opacity', broken ? '0.25' : '1');
+
+      if (hitting) {
+        hammer.style.transform = 'translate(12px, 0)';
+      } else if (p === 1) {
+        hammer.style.transform = 'translate(-5px, 0) rotate(-7deg)';
+      } else if (p === 5) {
+        hammer.style.transform = 'translate(0, 0)';
+      } else if (broken) {
+        hammer.style.transform = 'translate(8px, 0)';
+      } else {
+        hammer.style.transform = 'translate(0, 0)';
+      }
+
+      setRingChip('ringChipI', 'ringChipIVal', energized, energized ? 'ON' : 'OFF');
+      setRingChip('ringChipM', 'ringChipMVal', energized, energized ? 'ON' : 'OFF');
+      const closed = holding && (p === 0 || p === 1 || p === 2 || p === 5);
+      setRingChip('ringChipC', 'ringChipCVal', closed, closed ? 'closed' : 'open');
+      const chipC = $('#ringChipC');
+      if (chipC) {
+        chipC.classList.toggle('warn', holding && !closed);
+      }
+
+      $$('#ringPhaseList li').forEach((li) => {
+        li.classList.toggle('on', holding && +li.dataset.ringPhase === p);
+      });
+
+      if (!holding || p < 0) {
+        status.textContent = ringLang({
+          en: 'Ready — hold the switch to ring continuously',
+          zh: '就緒 — 按住開關持續響鈴'
+        });
+        hitEl.textContent = '';
+      } else {
+        status.textContent = ringLang(RING_MSGS[p]);
+        hitEl.textContent = ringLang({
+          en: 'Hits: ' + ring.hits,
+          zh: '敲擊次數：' + ring.hits
+        });
+      }
+    }
+
+    function ringIntervalMs() {
+      const sp = +($('#ringSpeed') && $('#ringSpeed').value || 3);
+      // 1 slow … 5 fast
+      return [280, 200, 140, 100, 70][sp - 1] || 140;
+    }
+
+    function updateRingSpeedLabel() {
+      const sp = +($('#ringSpeed') && $('#ringSpeed').value || 3);
+      const labels = {
+        en: ['very slow', 'slow', 'medium', 'fast', 'very fast'],
+        zh: ['很慢', '慢', '中等', '快', '很快']
+      };
+      const lang = document.documentElement.lang === 'zh-HK' ? 'zh' : 'en';
+      const el = $('#ringSpeedVal');
+      if (el) el.textContent = labels[lang][sp - 1];
+    }
+
+    function stopRingCycle() {
+      ring.holding = false;
+      clearInterval(ring.timer);
+      ring.timer = null;
+      ring.phase = -1;
+      applyRingPhase(-1);
+    }
+
+    function startRingCycle() {
+      if (ring.holding) return;
+      ensureRingAudio();
+      ring.holding = true;
+      ring.hits = 0;
+      ring.phase = 0;
+      applyRingPhase(0);
+      clearInterval(ring.timer);
+      const tick = () => {
+        if (!ring.holding) return;
+        ring.phase = (ring.phase + 1) % 6;
+        applyRingPhase(ring.phase);
+        if (ring.phase === 2) {
+          ring.hits += 1;
+          playRingGong();
+          const hitEl = $('#ringHitCount');
+          if (hitEl) {
+            hitEl.textContent = ringLang({
+              en: 'Hits: ' + ring.hits,
+              zh: '敲擊次數：' + ring.hits
+            });
+          }
+        }
+      };
+      ring.timer = setInterval(tick, ringIntervalMs());
+    }
+
+    function restartRingTimerIfHolding() {
+      if (!ring.holding) return;
+      clearInterval(ring.timer);
+      ring.timer = setInterval(() => {
+        if (!ring.holding) return;
+        ring.phase = (ring.phase + 1) % 6;
+        applyRingPhase(ring.phase);
+        if (ring.phase === 2) {
+          ring.hits += 1;
+          playRingGong();
+          const hitEl = $('#ringHitCount');
+          if (hitEl) {
+            hitEl.textContent = ringLang({
+              en: 'Hits: ' + ring.hits,
+              zh: '敲擊次數：' + ring.hits
+            });
+          }
+        }
+      }, ringIntervalMs());
+    }
+
+    (function initContinuousRing() {
+      const sw = $('#ringSwitch');
+      const btn = $('#ringHoldBtn');
+      if (!sw || !btn) return;
+
+      function begin(e) {
+        if (e) e.preventDefault();
+        startRingCycle();
+      }
+      function end() {
+        stopRingCycle();
+      }
+
+      sw.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        sw.setPointerCapture(e.pointerId);
+        begin(e);
+      });
+      sw.addEventListener('pointerup', end);
+      sw.addEventListener('pointercancel', end);
+      sw.addEventListener('lostpointercapture', end);
+
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        btn.setPointerCapture(e.pointerId);
+        begin(e);
+      });
+      btn.addEventListener('pointerup', end);
+      btn.addEventListener('pointercancel', end);
+      btn.addEventListener('lostpointercapture', end);
+
+      $('#ringSpeed').addEventListener('input', () => {
+        updateRingSpeedLabel();
+        restartRingTimerIfHolding();
+      });
+      updateRingSpeedLabel();
+      applyRingPhase(-1);
+
+      window.addEventListener('panelchange', (e) => {
+        if (e.detail !== 'bell') stopRingCycle();
+      });
+      function refreshRingLang() {
+        updateRingSpeedLabel();
+        applyRingPhase(ring.phase);
+      }
+      $$('.lang-toggle button').forEach((b) => {
+        b.addEventListener('click', refreshRingLang);
+      });
+      window.addEventListener('lab-langchange', refreshRingLang);
+    })();
+
+    (function initBellModes() {
+      const modes = $$('#bellModes .bell-mode-btn');
+      if (!modes.length) return;
+
+      function setBellMode(mode) {
+        modes.forEach((b) => b.classList.toggle('active', b.dataset.bellMode === mode));
+        $$('.bell-pane').forEach((p) => p.classList.toggle('active', p.dataset.bellPane === mode));
+        $$('#bellHdHint [data-for]').forEach((el) => {
+          el.hidden = el.dataset.for !== mode;
+        });
+        if (mode !== 'ring') stopRingCycle();
+        window.dispatchEvent(new CustomEvent('bellmodechange', { detail: mode }));
+      }
+
+      modes.forEach((btn) => {
+        btn.addEventListener('click', () => setBellMode(btn.dataset.bellMode));
+      });
+      setBellMode('trace');
+    })();
+
+    /* ===================== MAIN LOOP ===================== */
+    function frame() {
+      heroT += 0.016;
+      try {
+        const active = $('.panel.active');
+        if (active) {
+          const id = active.id;
+          if (id === 'panel-magnets') drawMagnetLab();
+          if (id === 'panel-wire') drawWireLab();
+          if (id === 'panel-solenoid') drawSolenoidLab();
+        }
+      } finally {
+        requestAnimationFrame(frame);
+      }
+    }
+
+    requestAnimationFrame(frame);
+
+    // Kick first paint when switching panels
+    window.addEventListener('panelchange', () => {});
+  })();
+  </script>
+</body>
+</html>
