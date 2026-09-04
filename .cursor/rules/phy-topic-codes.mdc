@@ -1,0 +1,19 @@
+---
+description: Physics topic tags (F01, F02, …) and student-facing topic names
+alwaysApply: true
+---
+
+# Physics topic codes
+
+Canonical list: `content/topics/physics-topics.json` (from Physics Topics List.xlsx). Use **Symbol** as the tag and **Topic Number** as the syllabus name.
+
+## Foundation quizzes (this repo)
+
+| Tag | Students see (EN) | Students see (ZH) | Source folder |
+| --- | --- | --- | --- |
+| F01 | Quantities and units | 物理量與單位 | `quizzes/foundations-quantities/` |
+| F02 | Useful mathematics in physics | 物理中常用的數學 | `quizzes/foundations-useful-math/` |
+
+Students see the **topic name**, not the tag. Do not prefix F01/F02 on hub labels, quiz titles, or `quizData.js` section labels.
+
+Frozen tracking ids (do not change in this teacher role): `phy-foundations-quantities`, `phy-foundations-useful-math`. Mapping those to F01/F02 in UniPlus is a technical-owner task.

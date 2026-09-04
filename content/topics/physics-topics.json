@@ -1,0 +1,441 @@
+{
+  "source": "Physics Topics List.xlsx (Syllabus Updated (V1))",
+  "quizzes": [
+    {
+      "tag": "F01",
+      "studentNameEn": "Quantities and units",
+      "studentNameZh": "物理量與單位",
+      "quizFolder": "quizzes/foundations-quantities",
+      "quizIdFrozen": "phy-foundations-quantities"
+    },
+    {
+      "tag": "F02",
+      "studentNameEn": "Useful mathematics in physics",
+      "studentNameZh": "物理中常用的數學",
+      "quizFolder": "quizzes/foundations-useful-math",
+      "quizIdFrozen": "phy-foundations-useful-math"
+    }
+  ],
+  "topics": [
+    {
+      "symbol": "F01",
+      "topicNumber": "JPF01 Quantities and Unit",
+      "chapter": "CH0 Foundation",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "F02",
+      "topicNumber": "JPF02 Useful Mathematics In Physics",
+      "chapter": "CH0 Foundation",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "HG01",
+      "topicNumber": "JPHG01 Temperature and thermometer (溫度與溫度計).",
+      "chapter": "CH1 Heat and Gases",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "HG02",
+      "topicNumber": "JPHG02 Heat and internal energy (熱與內能).",
+      "chapter": "CH1 Heat and Gases",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "HG03",
+      "topicNumber": "JPHG03 Change of state (物態變化).",
+      "chapter": "CH1 Heat and Gases",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "HG04",
+      "topicNumber": "JPHG04 Transfer process (傳熱過程).",
+      "chapter": "CH1 Heat and Gases",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "HG05",
+      "topicNumber": "SPHG05 Gases (氣體).",
+      "chapter": "CH1 Heat and Gases",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM01",
+      "topicNumber": "JPFM01 Position and movement (位置與運動).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM02",
+      "topicNumber": "JPFM02 Linear motion (勻加速直線運動).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM03",
+      "topicNumber": "JPFM03 Vertical motion (垂直運動).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM04",
+      "topicNumber": "JPFM04 Motion graph (運動圖像).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM05",
+      "topicNumber": "JPFM05 Force (I) (力 (I)).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM06",
+      "topicNumber": "JPFM06 Force (II) (力 (II)).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM07",
+      "topicNumber": "JPFM07 Force (III) (力 (III)).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM08",
+      "topicNumber": "JPFM08 Moment of force (力矩).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM09",
+      "topicNumber": "SPFM09 Work, energy and power (功、能量與功率).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM10",
+      "topicNumber": "SPFM10 Momentum (動量).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM11",
+      "topicNumber": "SPFM11 Projectile motion (拋體運動).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM12",
+      "topicNumber": "SPFM12 Circular motion (圓周運動).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "FM13",
+      "topicNumber": "SPFM13 Gravitation (萬有引力).",
+      "chapter": "CH2 Force and Motion",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "WM01",
+      "topicNumber": "JPWM01 Nature of waves (波的性質).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "WM02",
+      "topicNumber": "JPWM02 Wave phenomenon (波動現象).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "WM03",
+      "topicNumber": "JPWM03 Stationary wave (駐波).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "WM04",
+      "topicNumber": "JPWM04 Wave nature of light (光的波動性).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "WM05",
+      "topicNumber": "JPWM05 Sound wave (聲波).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "WM06",
+      "topicNumber": "JPWM06 Light reflection (光的反射).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "WM07",
+      "topicNumber": "JPWM07 Light refraction (光的折射).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "WM08",
+      "topicNumber": "JPWM08 Total internal reflection (全內反射).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "WM09",
+      "topicNumber": "JPWM09 Convex lens (凸透鏡).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "WM10",
+      "topicNumber": "JPWM10 Magnification and lens formula (放大率與透鏡公式).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "WM11",
+      "topicNumber": "JPWM11 Concave lens (凹透鏡).",
+      "chapter": "CH3 Wave Motion and Optics",
+      "level": "(S3)",
+      "department": "Junior Physics"
+    },
+    {
+      "symbol": "EM01",
+      "topicNumber": "SPEM01 Electrostatics (靜電學).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM02",
+      "topicNumber": "SPEM02 Electric circuits (電路).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM03",
+      "topicNumber": "SPEM03 Domestic electricity (家居用電).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM04",
+      "topicNumber": "SPEM04 Magnetic effect of electric current (電流的磁效應).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM05",
+      "topicNumber": "SPEM05 Force due to magnetic field (磁場對載電導線的作用力).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM06",
+      "topicNumber": "SPEM06 Magnetic force on moving charge (磁場對運動電荷的作用力).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM07",
+      "topicNumber": "SPEM07 Electromagnetic induction (電磁感應).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM08",
+      "topicNumber": "SPEM08 Applications of electromagnetic induction (電磁感應的應用).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "EM09",
+      "topicNumber": "SPEM09 Alternating current and transformer (交變電流與變壓器).",
+      "chapter": "CH4 Electricity and Magnetism",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "RN01",
+      "topicNumber": "SPRN01 Nuclear radiation (核輻射).",
+      "chapter": "CH5 Radioactivity and Nuclear energy",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "RN02",
+      "topicNumber": "SPRN02 Radioactivity decay (放射性衰變).",
+      "chapter": "CH5 Radioactivity and Nuclear energy",
+      "level": "(S5)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "RN03",
+      "topicNumber": "SPRN03 Nuclear energy (核能).",
+      "chapter": "CH5 Radioactivity and Nuclear energy",
+      "level": "(S6)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E1AS01",
+      "topicNumber": "SPE1AS01 The Universe as Seeen in Different Scales (以不同尺度看宇宙).",
+      "chapter": "CH6 Astonomy and Space science",
+      "level": "(S6)(E1)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E1AS02",
+      "topicNumber": "SPE1AS02 Astronomy through History (天文學的歷史).",
+      "chapter": "CH6 Astonomy and Space science",
+      "level": "(S6)(E1)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E1AS03",
+      "topicNumber": "SPE1AS03 Orbital Motions under Gravity (重力下的軌道運動).",
+      "chapter": "CH6 Astonomy and Space science",
+      "level": "(S6)(E1)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E1AS04",
+      "topicNumber": "SPE1AS04 Stars and the Universe (恆星與宇宙).",
+      "chapter": "CH6 Astonomy and Space science",
+      "level": "(S6)(E1)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E2AW01",
+      "topicNumber": "SPE2AW01 Rutherford Atomic model (盧瑟福原子模型).",
+      "chapter": "CH7 Atomic world",
+      "level": "(S6)(E2)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E2AW02",
+      "topicNumber": "SPE2AW02 Photoelectric effect (光電效應).",
+      "chapter": "CH7 Atomic world",
+      "level": "(S6)(E2)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E2AW03",
+      "topicNumber": "SPE2AW03 Energy level (能級).",
+      "chapter": "CH7 Atomic world",
+      "level": "(S6)(E2)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E2AW04",
+      "topicNumber": "SPE2AW04 De Broglie wavelength (德布羅意波長).",
+      "chapter": "CH7 Atomic world",
+      "level": "(S6)(E2)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E2AW05",
+      "topicNumber": "SPE2AW05 Nanomaterial (納米材料).",
+      "chapter": "CH7 Atomic world",
+      "level": "(S6)(E2)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E2AW06",
+      "topicNumber": "SPE2AW06 Microscope (顯微鏡).",
+      "chapter": "CH7 Atomic world",
+      "level": "(S6)(E2)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E3EN01",
+      "topicNumber": "SPE3EN01 Lighting (照明).",
+      "chapter": "CH8 Energy and use of energy",
+      "level": "(S6)(E3)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E3EN02",
+      "topicNumber": "SPE3EN02 Cooking and Cooling (烹調與冷卻).",
+      "chapter": "CH8 Energy and use of energy",
+      "level": "(S6)(E3)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E3EN03",
+      "topicNumber": "SPE3EN03 Energy efficiency in building and transportation (建築物與運輸的能源效益).",
+      "chapter": "CH8 Energy and use of energy",
+      "level": "(S6)(E3)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E3EN04",
+      "topicNumber": "SPE3EN04 Energy sources and Energy consumption (能源與能源消耗).",
+      "chapter": "CH8 Energy and use of energy",
+      "level": "(S6)(E3)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E4MP01",
+      "topicNumber": "SPE4MP01 Human Vision and Fibre Optic Endoscopy (人類視覺與光纖內視鏡).",
+      "chapter": "CH9 Medicial physics",
+      "level": "(S6)(E4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E4MP02",
+      "topicNumber": "SPE4MP02 Human Hearing and Ultra Scans (人類聽覺與超聲波掃描).",
+      "chapter": "CH9 Medicial physics",
+      "level": "(S6)(E4)",
+      "department": "Senior Physics"
+    },
+    {
+      "symbol": "E4MP03",
+      "topicNumber": "SPE4MP03 Medical Imaging Using Ionization Radiation (電離輻射的醫學成像).",
+      "chapter": "CH9 Medicial physics",
+      "level": "(S6)(E4)",
+      "department": "Senior Physics"
+    }
+  ]
+}
