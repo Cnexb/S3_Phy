@@ -3,15 +3,19 @@
   "quizzes": [
     {
       "tag": "F01",
-      "studentNameEn": "Quantities and units",
-      "studentNameZh": "物理量與單位",
+      "notesNameEn": "F01 Notes-Quantities and Units",
+      "notesNameZh": "F01 筆記-物理量與單位",
+      "studentNameEn": "F01 Quantities and Units",
+      "studentNameZh": "F01 物理量與單位",
       "quizFolder": "quizzes/foundations-quantities",
       "quizIdFrozen": "phy-foundations-quantities"
     },
     {
       "tag": "F02",
-      "studentNameEn": "Useful mathematics in physics",
-      "studentNameZh": "物理中常用的數學",
+      "notesNameEn": "F02 Notes-Useful Mathematics in Physics",
+      "notesNameZh": "F02 筆記-物理中常用的數學",
+      "studentNameEn": "F02 Useful Mathematics in Physics",
+      "studentNameZh": "F02 物理中常用的數學",
       "quizFolder": "quizzes/foundations-useful-math",
       "quizIdFrozen": "phy-foundations-useful-math"
     }

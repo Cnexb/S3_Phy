@@ -1,1 +1,0 @@
-import{c as t}from"./createLabIframe-8e5INMaB.js";import"./index-Bi7egCS9.js";function o(e){return t(e,{slug:"stacked-boxes",titleKey:"tools.stackedBoxes.title",className:"tool-stacked-boxes-lab",extraParams:()=>"&v=20260827_stacked_boxes_v2"})}export{o as createStackedBoxesLab};

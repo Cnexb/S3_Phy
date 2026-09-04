@@ -1,6 +1,6 @@
 /** S3 Foundations — Useful mathematics in physics */
 export const QUIZ_SECTIONS = [
-  { id: "useful-maths", label: "Useful mathematics in physics", labelZh: "物理中常用的數學" },
+  { id: "useful-maths", label: "F02 Useful Mathematics in Physics", labelZh: "F02 物理中常用的數學" },
 ];
 
 export const QUIZ_ITEMS = [

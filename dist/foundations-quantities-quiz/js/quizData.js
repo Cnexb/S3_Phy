@@ -1,6 +1,6 @@
 /** S3 Foundations — Quantities and units (Ch.00 notes) */
 export const QUIZ_SECTIONS = [
-  { id: "quantities-units", label: "Quantities and units", labelZh: "物理量與單位" },
+  { id: "quantities-units", label: "F01 Quantities and Units", labelZh: "F01 物理量與單位" },
 ];
 
 export const QUIZ_ITEMS = [

@@ -117,7 +117,7 @@ export function mountFoundationsHub(root) {
   function renderQuiz() {
     const buttons = QUIZ_ORDER.map(
       (id) =>
-        `<button type="button" data-quiz="${id}" class="${quizId === id ? 'active' : ''}">${t(`topic.${id}`)}</button>`,
+        `<button type="button" data-quiz="${id}" class="${quizId === id ? 'active' : ''}">${t(`quiz.label.${id}`)}</button>`,
     ).join('');
     return `
       <section class="panel panel--quiz-embed">

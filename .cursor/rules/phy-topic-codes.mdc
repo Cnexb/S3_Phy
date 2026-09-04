@@ -1,5 +1,5 @@
 ---
-description: Physics topic tags (F01, F02, …) and student-facing topic names
+description: Physics topic tags (F01, F02, …) and student-facing notes/quiz labels
 alwaysApply: true
 ---
 
@@ -7,13 +7,13 @@ alwaysApply: true
 
 Canonical list: `content/topics/physics-topics.json` (from Physics Topics List.xlsx). Use **Symbol** as the tag and **Topic Number** as the syllabus name.
 
-## Foundation quizzes (this repo)
+## Foundation (this repo)
 
-| Tag | Students see (EN) | Students see (ZH) | Source folder |
-| --- | --- | --- | --- |
-| F01 | Quantities and units | 物理量與單位 | `quizzes/foundations-quantities/` |
-| F02 | Useful mathematics in physics | 物理中常用的數學 | `quizzes/foundations-useful-math/` |
+- **F01 notes:** F01 Notes-Quantities and Units / F01 筆記-物理量與單位 (`notes.card.quantitiesUnits`)
+- **F01 quiz:** F01 Quantities and Units / F01 物理量與單位 (`quiz.label.quantitiesUnits`, `quizzes/foundations-quantities/`)
+- **F02 notes:** F02 Notes-Useful Mathematics in Physics / F02 筆記-物理中常用的數學 (`notes.card.usefulMaths`)
+- **F02 quiz:** F02 Useful Mathematics in Physics / F02 物理中常用的數學 (`quiz.label.usefulMaths`, `quizzes/foundations-useful-math/`)
 
-Students see the **topic name**, not the tag. Do not prefix F01/F02 on hub labels, quiz titles, or `quizData.js` section labels.
+Do not put F01/F02 on flashcard or summary `topic.*` strings unless the teacher asks.
 
 Frozen tracking ids (do not change in this teacher role): `phy-foundations-quantities`, `phy-foundations-useful-math`. Mapping those to F01/F02 in UniPlus is a technical-owner task.

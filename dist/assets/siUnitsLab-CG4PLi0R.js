@@ -1,0 +1,1 @@
+import{c as i}from"./createLabIframe-CUgD43F6.js";import"./index-C7PJAb7d.js";function e(t){return i(t,{slug:"si-units",titleKey:"tools.siUnits.title",className:"tool-si-units-lab",extraParams:()=>"&v=20260902c"})}export{e as createSiUnitsLab};
