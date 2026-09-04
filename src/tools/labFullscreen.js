@@ -26,11 +26,10 @@ function notifyLabResize(stage) {
   });
 }
 
-/** Hub-wide fullscreen for any strand section (notes, labs, quiz, …). */
+/** Fullscreen control for Interactive labs only (not notes, quiz, worksheets, …). */
 export function initHubFullscreen({ app, stage, t }) {
   let overlayMode = false;
   let overlayBackdrop = null;
-  let floatBtn = null;
   let destroyed = false;
 
   const isModeActive = () => isFullscreenActive(stage) || overlayMode;
@@ -50,39 +49,11 @@ export function initHubFullscreen({ app, stage, t }) {
     if (icon && icon.textContent !== iconText) icon.textContent = iconText;
   };
 
-  const ensureFloatButton = () => {
-    if (floatBtn) return floatBtn;
-    floatBtn = document.createElement('button');
-    floatBtn.type = 'button';
-    floatBtn.className = 's3phy-fs-btn hub-fs-btn';
-    floatBtn.innerHTML =
-      '<span class="s3phy-fs-btn__icon material-symbols-outlined" aria-hidden="true">fullscreen</span>' +
-      '<span class="s3phy-fs-btn__label"></span>';
-    floatBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      toggleFullscreen();
-    });
-    document.body.appendChild(floatBtn);
-    return floatBtn;
-  };
-
   const syncButtons = () => {
     if (destroyed) return;
     const active = isModeActive() || Boolean(app?.classList.contains('is-lab-fullscreen'));
     const bar = toolbarBtn();
-    if (bar) {
-      if (floatBtn) {
-        floatBtn.hidden = true;
-        floatBtn.setAttribute('aria-hidden', 'true');
-      }
-      paintButton(bar, active);
-      return;
-    }
-    const btn = ensureFloatButton();
-    btn.hidden = false;
-    btn.removeAttribute('aria-hidden');
-    paintButton(btn, active);
+    if (bar) paintButton(bar, active);
   };
 
   const clearOverlay = () => {
@@ -210,8 +181,6 @@ export function initHubFullscreen({ app, stage, t }) {
       document.removeEventListener('fullscreenchange', onFullscreenChange);
       document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
       finishExit();
-      floatBtn?.remove();
-      floatBtn = null;
     },
     exit: finishExit,
   };
