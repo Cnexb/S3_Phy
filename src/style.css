@@ -1796,9 +1796,7 @@ iframe.note-preview {
 .panel--worksheets-embed .tool-foundations-notes-quiz,
 .panel--quiz-embed .tool-heat-ch1-quiz,
 .panel--quiz-embed .tool-optics-ch3-quiz,
-.panel--quiz-embed .tool-foundations-quantities-quiz,
-.panel--quiz-embed .worksheet-stage .tool-foundations-quantities-quiz,
-.panel--quiz-embed .worksheet-stage .tool-foundations-useful-math-quiz {
+.panel--quiz-embed .tool-foundations-quantities-quiz {
   width: 100%;
   flex: 1 1 auto;
   min-height: 0;

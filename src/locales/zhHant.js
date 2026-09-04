@@ -166,7 +166,7 @@ export const zhHant = {
   'worksheets.opticsEmWaveTitle': '\u4e2d\u4e09\u5149\u5b78 \u7b2c\u56db\u7ae0 \u96fb\u78c1\u6ce2',
   'quiz.practiceTitle': '\u4e2d\u4e09\u71b1\u5b78 Ch.1 \u6e2c\u9a57',
   'quiz.opticsCh3Title': '\u4e2d\u4e09\u5149\u5b78 \u7b2c\u4e09\u7ae0\u6e2c\u9a57',
-  'quiz.foundationsTitle': 'F01 \u7269\u7406\u91cf\u8207\u55ae\u4f4d',
+  'quiz.foundationsTitle': '\u4e2d\u4e09\u7269\u7406\u57fa\u790e\u6e2c\u9a57',
   'quiz.foundationsUsefulMathTitle': 'F02 \u7269\u7406\u4e2d\u5e38\u7528\u7684\u6578\u5b78',
   'quiz.label.quantitiesUnits': 'F01 \u7269\u7406\u91cf\u8207\u55ae\u4f4d',
   'quiz.label.usefulMaths': 'F02 \u7269\u7406\u4e2d\u5e38\u7528\u7684\u6578\u5b78',

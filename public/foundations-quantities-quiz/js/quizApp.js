@@ -216,6 +216,10 @@ export function initQuiz() {
   const attemptMap = new Map();
 
   const QUIZ_META = { subject: "PHY", quizId: "phy-foundations-quantities" };
+  const QUIZ_ID_BY_SECTION = {
+    "quantities-units": "phy-foundations-quantities",
+    "useful-maths": "phy-foundations-useful-math",
+  };
 
   function getOptionOrTableText(q, key) {
     if (key === undefined || key === null) return null;
@@ -251,7 +255,7 @@ export function initQuiz() {
       const payload = {
         type: "uniplus:quizAnswer",
         subject: QUIZ_META.subject,
-        quizId: QUIZ_META.quizId,
+        quizId: QUIZ_ID_BY_SECTION[q.section] || QUIZ_META.quizId,
         questionId: String(q.id),
         section: q.section || null,
         difficulty: q.difficulty || null,

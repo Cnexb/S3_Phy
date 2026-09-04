@@ -13,6 +13,7 @@ Canonical list: `content/topics/physics-topics.json` (from Physics Topics List.x
 - **F01 quiz:** F01 Quantities and Units / F01 物理量與單位 (`quiz.label.quantitiesUnits`, `quizzes/foundations-quantities/`)
 - **F02 notes:** F02 Notes-Useful Mathematics in Physics / F02 筆記-物理中常用的數學 (`notes.card.usefulMaths`)
 - **F02 quiz:** F02 Useful Mathematics in Physics / F02 物理中常用的數學 (`quiz.label.usefulMaths`, `quizzes/foundations-useful-math/`)
+- **Foundations hub Quiz tab:** one worksheet. Students choose F01 and F02 under Topics in worksheet settings. Do not add a top F01/F02 picker.
 
 Do not put F01/F02 on flashcard or summary `topic.*` strings unless the teacher asks.
 

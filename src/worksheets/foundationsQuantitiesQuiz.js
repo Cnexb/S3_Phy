@@ -1,5 +1,7 @@
 import { getLang } from '../i18n.js';
 
+const FOUNDATIONS_QUIZ_VERSION = '20260904a';
+
 /** @param {(key: string) => string} t */
 export function createFoundationsQuantitiesQuiz(t) {
   const wrap = document.createElement('div');
@@ -10,7 +12,7 @@ export function createFoundationsQuantitiesQuiz(t) {
   const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}foundations-quantities-quiz/quiz.html?embed=1`;
+    return `${root}foundations-quantities-quiz/quiz.html?embed=1&v=${FOUNDATIONS_QUIZ_VERSION}`;
   }
 
   iframe.src = iframeSrc();

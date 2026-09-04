@@ -166,7 +166,7 @@ export const en = {
   'worksheets.opticsEmWaveTitle': 'S3 Optics Ch.4 · Electromagnetic Waves',
   'quiz.practiceTitle': 'S3 Heat Ch.1 quiz',
   'quiz.opticsCh3Title': 'S3 Optics Ch.3 · Light & Lens quiz',
-  'quiz.foundationsTitle': 'F01 Quantities and Units',
+  'quiz.foundationsTitle': 'S3 Foundations quiz',
   'quiz.foundationsUsefulMathTitle': 'F02 Useful Mathematics in Physics',
   'quiz.label.quantitiesUnits': 'F01 Quantities and Units',
   'quiz.label.usefulMaths': 'F02 Useful Mathematics in Physics',
