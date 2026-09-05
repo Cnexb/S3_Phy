@@ -1,9 +1,9 @@
 /** @type {Record<string, string>} */
 export const zhHant = {
   'app.title': 'Uni+ HKDSE \u7269\u7406\u5b78\u7fd2\u4e2d\u5fc3',
-  'app.subtitle': '\u4e2d\u4e09\u7269\u7406 \u2014 \u57fa\u790e\u3001\u5149\u3001\u71b1\u8207\u96fb',
+  'app.subtitle': '\u4e2d\u4e09\u7269\u7406 \u2014 \u57fa\u790e\u3001\u5149\u8207\u71b1',
   'strands.title': '\u9078\u64c7\u55ae\u5143',
-  'strands.intro': '\u7269\u7406\u57fa\u790e\u3001\u5149\u5b78\uff08\u5149\uff09\u3001\u71b1\u5b78\u8207\u96fb\u548c\u78c1\u5df2\u53ef\u4f7f\u7528\u3002\u5176\u4ed6\u55ae\u5143\u5373\u5c07\u63a8\u51fa\uff0c\u4ecd\u53ef\u9032\u5165\u9810\u89bd\u3002',
+  'strands.intro': '\u7269\u7406\u57fa\u790e\u3001\u5149\u5b78\uff08\u5149\uff09\u8207\u71b1\u5b78\u5df2\u53ef\u4f7f\u7528\u3002\u5176\u4ed6\u55ae\u5143\u5373\u5c07\u63a8\u51fa\uff0c\u4ecd\u53ef\u9032\u5165\u9810\u89bd\u3002',
   'strand.optics.title': '\u5149\u5b78',
   'strand.optics.desc': '\u53cd\u5c04\u3001\u6298\u5c04\u3001\u5168\u5167\u53cd\u5c04\u3001\u51f8\u900f\u93e1\u3001\u51f9\u900f\u93e1\u3001\u96fb\u78c1\u6ce2',
   'strand.optics.subtitle': '\u5149\u5b78 \u2014 \u5149\u8207\u6ce2\u52d5',
@@ -311,7 +311,7 @@ export const zhHant = {
   'summary.item.usefulMaths': '物理中常用的數學',
   // Mechanics translations
   'strand.mechanics.title': '力學',
-  'strand.mechanics.desc': '即將推出',
+  'strand.mechanics.desc': '位置和移動、運動方程、力、功、能量和功率、動量、拋體與圓周運動、萬有引力',
   'strand.mechanics.subtitle': '力學 — 力與運動',
   'mechanics.section.empty': '力學單元內容即將推出。',
   'tools.vectorTool.title': '矢量實驗室 — 分解',
@@ -322,7 +322,7 @@ export const zhHant = {
   'tools.orbitalForces.title': '軌道力實驗室 — 萬有引力與向心力',
   // Gas and kinetic theory translations
   'strand.gas.title': '\u6c23\u9ad4\u8207\u5206\u5b50\u904b\u52d5\u8ad6',
-  'strand.gas.desc': '即將推出',
+  'strand.gas.desc': '氣體、氣體分子運動論、氣體壓強與分子運動',
   'strand.gas.subtitle': '氣體與分子運動論 — 氣體定律與分子動能',
   'gas.section.empty': '氣體單元內容即將推出。',
   'topic.gasLaws': '氣體',
@@ -379,7 +379,7 @@ export const zhHant = {
   'flashcards.comingSoon': '力學單元的閃卡將於日後推出。',
   // Waves translations
   'strand.waves.title': '波動',
-  'strand.waves.desc': '即將推出',
+  'strand.waves.desc': '波動運動、波動特性、駐波、光波、聲波',
   'strand.waves.subtitle': '波動 — 波動運動與波動現象',
   'waves.section.empty': '波動單元內容即將推出。',
   'topic.waveMotion': '波動運動',
@@ -421,7 +421,7 @@ export const zhHant = {
   'summary.item.electromagneticInduction': '電磁感應',
   // Radioactivity and nuclear energy
   'strand.radioactivity.title': '放射現象與核能',
-  'strand.radioactivity.desc': '即將推出',
+  'strand.radioactivity.desc': '輻射與放射現象、原子模型、核能',
   'strand.radioactivity.subtitle': '放射現象與核能 — 輻射與原子核',
   'radioactivity.section.empty': '放射現象與核能單元內容即將推出。',
   'radioactivity.comingSoon': '此單元的工作紙、測驗及閃卡將於日後推出。',

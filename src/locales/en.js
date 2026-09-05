@@ -1,9 +1,9 @@
 /** @type {Record<string, string>} */
 export const en = {
   'app.title': 'Uni+ HKDSE Physics Hub',
-  'app.subtitle': 'S3 Physics — Foundations, Optics, Heat & Electricity',
+  'app.subtitle': 'S3 Physics — Foundations, Optics & Heat',
   'strands.title': 'Choose a strand',
-  'strands.intro': 'Foundations, Optics (light), Heat, and Electricity are ready. Other strands are coming soon, but you can still open them.',
+  'strands.intro': 'Foundations, Optics (light), and Heat are ready. Other strands are coming soon, but you can still open them.',
   'strand.optics.title': 'Optics',
   'strand.optics.desc': 'Reflection, refraction, total internal reflection, convex lens, concave lens, electromagnetic waves',
   'strand.optics.subtitle': 'Optics — light and waves',
@@ -311,7 +311,7 @@ export const en = {
   'summary.item.usefulMaths': 'Useful mathematics in physics',
   // Mechanics translations
   'strand.mechanics.title': 'Mechanics',
-  'strand.mechanics.desc': 'Coming soon',
+  'strand.mechanics.desc': 'Position and movement, equations of motion, force, work energy and power, momentum, projectile and circular motion, gravitation',
   'strand.mechanics.subtitle': 'Mechanics — force and motion',
   'mechanics.section.empty': 'Mechanics strand content is coming soon.',
   'tools.vectorTool.title': 'Vector lab — decomposition',
@@ -322,7 +322,7 @@ export const en = {
   'tools.orbitalForces.title': 'Orbital Forces Lab — gravity & centripetal',
   // Gas and kinetic theory translations
   'strand.gas.title': 'Gas & Kinetic Theory',
-  'strand.gas.desc': 'Coming soon',
+  'strand.gas.desc': 'Gases, kinetic theory of gases, gas pressure and molecular motion',
   'strand.gas.subtitle': 'Gas & Kinetic Theory — gas laws and molecular kinetic energy',
   'gas.section.empty': 'Gas strand content is coming soon.',
   'topic.gasLaws': 'Gases',
@@ -379,7 +379,7 @@ export const en = {
   'flashcards.comingSoon': 'Flashcards for Mechanics are coming soon.',
   // Waves translations
   'strand.waves.title': 'Waves',
-  'strand.waves.desc': 'Coming soon',
+  'strand.waves.desc': 'Wave motion, wave properties, stationary wave, light wave, sound wave',
   'strand.waves.subtitle': 'Waves — wave motion and wave phenomena',
   'waves.section.empty': 'Waves strand content is coming soon.',
   'topic.waveMotion': 'Wave motion',
@@ -421,7 +421,7 @@ export const en = {
   'summary.item.electromagneticInduction': 'Electromagnetic induction',
   // Radioactivity and nuclear energy
   'strand.radioactivity.title': 'Radioactivity and Nuclear Energy',
-  'strand.radioactivity.desc': 'Coming soon',
+  'strand.radioactivity.desc': 'Radiation and radioactivity, atomic model, nuclear energy',
   'strand.radioactivity.subtitle': 'Radioactivity and Nuclear Energy — radiation and the nucleus',
   'radioactivity.section.empty': 'Radioactivity and Nuclear Energy strand content is coming soon.',
   'radioactivity.comingSoon': 'Worksheets, quizzes, and flashcards for this strand are coming soon.',

@@ -8,7 +8,7 @@ const STRANDS = [
   { id: 'mechanics', titleKey: 'strand.mechanics.title', descKey: 'strand.mechanics.desc', ready: false },
   { id: 'gas', titleKey: 'strand.gas.title', descKey: 'strand.gas.desc', ready: false },
   { id: 'waves', titleKey: 'strand.waves.title', descKey: 'strand.waves.desc', ready: false },
-  { id: 'electricity', titleKey: 'strand.electricity.title', descKey: 'strand.electricity.desc', ready: true },
+  { id: 'electricity', titleKey: 'strand.electricity.title', descKey: 'strand.electricity.desc', ready: false },
   { id: 'radioactivity', titleKey: 'strand.radioactivity.title', descKey: 'strand.radioactivity.desc', ready: false },
 ];
 
@@ -37,7 +37,7 @@ export function mountStrandHub(root) {
         <div class="grid cols-2 topic-hub-grid strand-hub-grid">
           ${STRANDS.map(({ id, titleKey, descKey, ready }) => {
             const badge = ready ? '' : ` <span class="strand-soon-badge">${t('strand.comingSoon')}</span>`;
-            const desc = ready ? t(descKey) : t('strand.comingSoon');
+            const desc = t(descKey);
             return `
             <div class="card${ready ? '' : ' card--coming-soon'}">
               <h3>${t(titleKey)}${badge}</h3>
