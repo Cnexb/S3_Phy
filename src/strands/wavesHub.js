@@ -44,6 +44,7 @@ const WAVES_TOPICS = [
 
 const TOOL_ORDER = [
   'waveMotion',
+  'rippleTank',
   'longitudinalWave',
   'waveInterference',
   'waveDiffraction',
@@ -56,6 +57,7 @@ const TOOL_ORDER = [
 
 const TOOL_LOADERS = {
   waveMotion: () => import('../tools/waveMotionLab.js').then((m) => m.createWaveMotionLab),
+  rippleTank: () => import('../tools/rippleTankLab.js').then((m) => m.createRippleTankLab),
   longitudinalWave: () =>
     import('../tools/longitudinalWaveLab.js').then((m) => m.createLongitudinalWaveLab),
   waveInterference: () => import('../tools/waveInterferenceLab.js').then((m) => m.createWaveInterferenceLab),
@@ -76,6 +78,7 @@ const TOOL_LOADERS = {
 function toolLabel(id) {
   const map = {
     waveMotion: 'tools.waveMotion.title',
+    rippleTank: 'tools.rippleTank.title',
     longitudinalWave: 'tools.longitudinalWave.title',
     waveInterference: 'tools.waveInterference.title',
     waveDiffraction: 'tools.waveDiffraction.title',

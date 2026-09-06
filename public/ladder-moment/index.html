@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Ladder Lab | Moment Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6efe4; --bg2: #efe4d2; --surface: #fffdf8; --surface2: #f7f0e4;
+      --ink: #2a2118; --muted: #6b5b4a; --line: #e0d0b6; --wood: #b45309;
+      --teal: #0f7a6c; --ccw: #0f7a6c; --cw: #c2410c; --ok: #168a56; --danger: #c2410c;
+      --radius: 16px; --shadow: 0 12px 36px rgba(42, 33, 24, 0.08);
+      --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh; min-height: 100dvh; line-height: 1.5;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .wrap {
+      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
+      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
+      display: flex; flex-direction: column;
+    }
+    .wrap:fullscreen, .wrap:-webkit-full-screen {
+      width: 100%; height: 100%; padding: 0.7rem 0.8rem 0.8rem;
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-mark {
+      width: 54px; height: 54px; border-radius: 14px;
+      background: linear-gradient(145deg, #fff, #f3e6d2);
+      border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow);
+    }
+    .brand h1 { margin: 0; font-family: var(--display); font-size: clamp(1.3rem, 2.6vw, 1.85rem); letter-spacing: -0.02em; line-height: 1.15; }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.92rem; }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; }
+    .lang-toggle { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
+    .lang-toggle button { border: 0; background: transparent; padding: 0.42rem 0.85rem; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.85rem; }
+    .lang-toggle button.active { background: var(--ink); color: #fff; }
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+    .card-hd { position: relative; padding: 0.75rem 7.5rem 0.55rem 1rem; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.15rem; }
+    .card-hd p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.9rem; }
+    .card-bd { padding: 0.8rem; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .stage {
+      position: relative; flex: 1; min-height: 0; height: 100%;
+      background: #eaf4fb; border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+    canvas.dragging { cursor: grabbing; }
+    .hint-chip { background: rgba(255,253,248,0.92); border: 1px solid var(--line); border-radius: 999px; padding: 0.28rem 0.7rem; font-size: 0.78rem; font-weight: 700; color: var(--muted); align-self: flex-start; }
+    .fs-btn {
+      position: absolute; top: 0.7rem; right: 1rem; z-index: 2;
+      border: 1px solid var(--line); background: #fff; border-radius: 10px;
+      padding: 0.35rem 0.65rem; font-weight: 700; font-size: 0.75rem;
+    }
+    .side {
+      position: absolute; top: 10px; left: 10px; z-index: 3;
+      width: min(260px, calc(100% - 24px));
+      display: flex; flex-direction: column; align-items: stretch; gap: 0.45rem;
+      pointer-events: none;
+    }
+    .side > * { pointer-events: auto; }
+    @media (max-width: 700px) {
+      .side { width: min(260px, calc(100% - 24px)); }
+    }
+    .box {
+      width: 100%; background: rgba(255,253,248,0.94); border: 1px solid var(--line);
+      border-radius: 12px; padding: 0.75rem; box-shadow: var(--shadow);
+    }
+    .box h3 { margin: 0 0 0.45rem; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.18rem; margin: 0.45rem 0; }
+    .slider-head { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; }
+    .slider-head em { font-style: normal; font-family: var(--mono); color: var(--wood); }
+    input[type=range] { width: 100%; accent-color: var(--wood); cursor: pointer; }
+    .btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .btn { border: 0; background: var(--ink); color: #fff; border-radius: 10px; padding: 0.48rem 0.75rem; font-weight: 700; font-size: 0.82rem; }
+    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn.teal { background: var(--teal); }
+    .btn:hover { filter: brightness(1.08); }
+
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    html.s3phy-embed .wrap {
+      min-height: 0 !important;
+      height: 100% !important;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    html.s3phy-embed .fs-btn { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="wrap" id="labShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M6 24h20" stroke="#7c3f12" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M16 24V8" stroke="#b45309" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="16" cy="8" r="3.2" fill="#0f7a6c"/>
+            <path d="M16 8c7 1 11 6 12 12" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1><span class="en">Ladder Lab</span><span class="zh">梯子實驗</span></h1>
+          <p><span class="en">Smooth wall · ground friction · climb until slip</span><span class="zh">光滑牆 · 地面摩擦 · 爬到滑倒</span></p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="btn-en" class="active">EN</button>
+          <button type="button" id="btn-zh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <button class="fs-btn" type="button" data-fs="labShell"><span class="en">Full screen</span><span class="zh">全螢幕</span></button>
+        <h2><span class="en">Ladder against a wall</span><span class="zh">靠牆的梯子</span></h2>
+        <p>
+          <span class="en">A uniform ladder leans on a smooth wall. Climb up and watch the friction needed at the ground. If it exceeds the maximum friction, the ladder slips.</span>
+          <span class="zh">均勻梯子靠在光滑牆上。向上攀爬，觀察地面所需摩擦力。若超過最大摩擦力，梯子會滑倒。</span>
+        </p>
+      </div>
+      <div class="card-bd">
+        <div class="stage">
+          <div class="side">
+            <div class="hint-chip"><span class="en">Drag the climber along the ladder</span><span class="zh">沿梯子拖曳攀爬者</span></div>
+            <div class="box">
+              <h3><span class="en">Setup</span><span class="zh">設定</span></h3>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Climb distance</span><span class="zh">攀爬距離</span><em id="val-climb">2.00 m</em></div>
+                <input type="range" id="sl-climb" min="0.2" max="4.8" step="0.05" value="2.00" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Angle to ground</span><span class="zh">與地面夾角</span><em id="val-ang">50°</em></div>
+                <input type="range" id="sl-ang" min="42" max="80" step="1" value="50" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Max ground friction</span><span class="zh">最大地面摩擦力</span><em id="val-fmax">304 N</em></div>
+                <input type="range" id="sl-fmax" min="120" max="560" step="1" value="304" />
+              </div>
+              <div class="btns">
+                <button class="btn teal" type="button" id="btn-max-climb"><span class="en">Climb to the limit</span><span class="zh">爬到極限</span></button>
+                <button class="btn sec" type="button" id="btn-lad-reset"><span class="en">Reset</span><span class="zh">重設</span></button>
+              </div>
+            </div>
+          </div>
+          <canvas id="cv-ladder" width="900" height="460"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </div>
+<script>
+(function () {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  let lang = "en";
+  function setLang(next) {
+    lang = next;
+    document.documentElement.lang = next === "zh" ? "zh-HK" : "en";
+    $("btn-en").classList.toggle("active", next === "en");
+    $("btn-zh").classList.toggle("active", next === "zh");
+    if (typeof updateUI === "function") updateUI();
+  }
+  $("btn-en").onclick = () => setLang("en");
+  $("btn-zh").onclick = () => setLang("zh");
+  function applyLangFromHub(raw) {
+    const next = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    setLang(next);
+  }
+  try {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q) applyLangFromHub(q);
+  } catch (e) { /* ignore */ }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+  });
+
+  document.querySelectorAll("[data-fs]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const el = $(btn.dataset.fs);
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      } else {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      }
+    });
+  });
+  const canvasCache = new WeakMap();
+  function fitCanvas(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(320, rect.width || 320);
+    const h = Math.max(300, rect.height || 460);
+    const prev = canvasCache.get(canvas);
+    const ctx = canvas.getContext("2d");
+    if (!prev || prev.w !== w || prev.h !== h || prev.dpr !== dpr) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvasCache.set(canvas, { w, h, dpr });
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function drawPerson(ctx, x, y, scale, shirt, flip) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(flip ? -1 : 1, 1);
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    ctx.strokeStyle = "#2a2118"; ctx.lineWidth = 2;
+    ctx.fillStyle = "#f3d2b3";
+    ctx.beginPath(); ctx.arc(0, -38 * scale, 8 * scale, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = shirt;
+    ctx.beginPath();
+    ctx.moveTo(-10 * scale, -28 * scale); ctx.lineTo(10 * scale, -28 * scale);
+    ctx.lineTo(8 * scale, -6 * scale); ctx.lineTo(-8 * scale, -6 * scale);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-8 * scale, -6 * scale); ctx.lineTo(-6 * scale, 8 * scale);
+    ctx.moveTo(8 * scale, -6 * scale); ctx.lineTo(6 * scale, 8 * scale);
+    ctx.stroke();
+    ctx.restore();
+  }
+  function arrow(ctx, x1, y1, x2, y2, color, width) {
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    ctx.strokeStyle = color; ctx.fillStyle = color;
+    ctx.lineWidth = width || 3; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 12 * Math.cos(ang - 0.4), y2 - 12 * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - 12 * Math.cos(ang + 0.4), y2 - 12 * Math.sin(ang + 0.4));
+    ctx.closePath(); ctx.fill();
+  }
+  function forceLen(F, ref) {
+    return 28 + Math.min(70, (Math.max(0, F) / (ref || 700)) * 70);
+  }
+  function labeledForce(ctx, x1, y1, x2, y2, color, label, place) {
+    arrow(ctx, x1, y1, x2, y2, color, 3);
+    ctx.fillStyle = color;
+    ctx.font = "700 12px Nunito Sans, sans-serif";
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    if (place === "below") {
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText(label, Math.min(x1, x2) + 16, Math.max(y1, y2) + 5);
+    } else if (place === "end") {
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, Math.max(x1, x2) + 8, my);
+    } else if (place === "left" || place === "right") {
+      ctx.textAlign = place === "left" ? "right" : "left";
+      ctx.textBaseline = "middle";
+      const pad = 8;
+      const lx = place === "left" ? Math.min(x1, x2) - pad : Math.max(x1, x2) + pad;
+      ctx.fillText(label, lx, my);
+    } else {
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      ctx.fillText(label, mx, Math.min(y1, y2) - 8);
+    }
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+  }
+
+
+  const lad = { L: 5, Wl: 200, Wp: 600, ang: 50, s: 2.0, fmax: 304, drag: false, slipT: 0 };
+  const cvL = $("cv-ladder");
+  function ladderForces() {
+    const a = lad.ang * Math.PI / 180;
+    const cot = Math.cos(a) / Math.sin(a);
+    const Nw = (lad.Wl * 0.5 + lad.Wp * (lad.s / lad.L)) * cot;
+    const f = Nw;
+    const Ng = lad.Wl + lad.Wp;
+    const fmax = lad.fmax;
+    const safe = f <= fmax + 0.5;
+    let sMax = (lad.L / lad.Wp) * (lad.fmax / cot - lad.Wl * 0.5);
+    sMax = Math.max(0, Math.min(lad.L, sMax));
+    return { Nw, f, fmax, Ng, safe, sMax, a };
+  }
+  function ladderLayout(w, h, a) {
+    const padL = Math.min(280, w * 0.32);
+    const padT = 48;
+    const groundY = h * 0.93;
+    const wallX = w - 16 - 26;
+    const maxW = Math.max(140, wallX - padL);
+    const maxH = Math.max(100, groundY - padT);
+    const scale = Math.min(maxW / (lad.L * Math.cos(a)), maxH / (lad.L * Math.sin(a)));
+    const baseX = wallX - lad.L * Math.cos(a) * scale;
+    const topY = groundY - lad.L * Math.sin(a) * scale;
+    return { groundY, wallX, baseX, topY };
+  }
+  function updateUI() {
+    $("val-ang").textContent = lad.ang + "°";
+    $("val-climb").textContent = lad.s.toFixed(2) + " m";
+    $("val-fmax").textContent = lad.fmax.toFixed(0) + " N";
+    $("sl-climb").value = String(lad.s);
+  }
+  function drawLadder() {
+    const { ctx, w, h } = fitCanvas(cvL);
+    ctx.clearRect(0, 0, w, h);
+    const f = ladderForces();
+    const L = ladderLayout(w, h, f.a);
+    const groundY = L.groundY, wallX = L.wallX;
+    let baseX = L.baseX;
+    let topY = L.topY;
+    ctx.fillStyle = "#efe0c8"; ctx.fillRect(wallX, 0, w - wallX, groundY);
+    ctx.fillStyle = "#d7ccc8"; ctx.fillRect(0, groundY, w, h - groundY);
+    ctx.fillStyle = "#8d6e63"; ctx.fillRect(wallX, 0, 16, groundY);
+    if (!f.safe) {
+      lad.slipT += 0.08;
+      const shake = Math.sin(lad.slipT * 14) * 4;
+      baseX += 18 + shake;
+      topY += 8;
+    } else {
+      lad.slipT = 0;
+    }
+    ctx.strokeStyle = f.safe ? "#8d5a2b" : "#c2410c"; ctx.lineWidth = 10; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(baseX, groundY); ctx.lineTo(wallX, topY); ctx.stroke();
+    ctx.strokeStyle = f.safe ? "#e0b56a" : "#f4a261"; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(baseX, groundY); ctx.lineTo(wallX, topY); ctx.stroke();
+    ctx.strokeStyle = "rgba(42,33,24,0.35)"; ctx.lineWidth = 1.5;
+    ctx.fillStyle = "#6b5b4a"; ctx.font = "600 10px JetBrains Mono, monospace";
+    for (let m = 1; m < lad.L; m += 1) {
+      const tck = m / lad.L;
+      const tx = baseX + (wallX - baseX) * tck;
+      const ty = groundY + (topY - groundY) * tck;
+      const nx = -(topY - groundY), ny = wallX - baseX;
+      const nlen = Math.hypot(nx, ny) || 1;
+      ctx.beginPath();
+      ctx.moveTo(tx - 6 * nx / nlen, ty - 6 * ny / nlen);
+      ctx.lineTo(tx + 6 * nx / nlen, ty + 6 * ny / nlen);
+      ctx.stroke();
+      ctx.fillText(m + " m", tx + 10, ty - 6);
+    }
+    const frac = lad.s / lad.L;
+    const px = baseX + (wallX - baseX) * frac;
+    const py = groundY + (topY - groundY) * frac;
+    const pScale = 1.2;
+    drawPerson(ctx, px, py, pScale, "#6a1b9a", false);
+    const wallLen = forceLen(f.Nw, 900);
+    const fricLen = forceLen(f.f, 900);
+    const normLen = forceLen(f.Ng, 900);
+    const weightLen = forceLen(lad.Wp, 900);
+    const ladderWLen = forceLen(lad.Wl, 900);
+    const tipX = baseX;
+    const tipY = groundY;
+    const footY = py + 8 * pScale;
+    const weightRoom = Math.max(24, groundY - footY - 10);
+    const midX = (baseX + wallX) / 2;
+    const midY = (groundY + topY) / 2 + 8;
+    const ladderWRoom = Math.max(24, groundY - midY - 10);
+    labeledForce(ctx, wallX - 6, topY, wallX - 6 - wallLen, topY, "#1565c0",
+      (lang === "zh" ? "牆 N " : "wall N ") + f.Nw.toFixed(0) + " N");
+    labeledForce(ctx, tipX, tipY, tipX + fricLen, tipY, "#c2410c",
+      (lang === "zh" ? "地面摩擦 f " : "ground friction f ") + f.f.toFixed(0) + " N", "below");
+    labeledForce(ctx, tipX, tipY, tipX, tipY - normLen, "#0f7a6c",
+      (lang === "zh" ? "地面 N " : "ground N ") + f.Ng.toFixed(0) + " N", "left");
+    labeledForce(ctx, px, footY, px, footY + Math.min(weightLen, weightRoom), "#6a1b9a",
+      (lang === "zh" ? "人體重量 " : "person weight ") + lad.Wp.toFixed(0) + " N", "right");
+    labeledForce(ctx, midX, midY, midX, midY + Math.min(ladderWLen, ladderWRoom), "#b45309",
+      (lang === "zh" ? "梯子重量 " : "ladder weight ") + lad.Wl.toFixed(0) + " N", "right");
+    ctx.save();
+    ctx.fillStyle = "#6b5b4a";
+    ctx.font = "700 12px Nunito Sans, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.translate(wallX + 16 + 13, groundY * 0.48);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(lang === "zh" ? "光滑牆，無摩擦" : "Smooth Wall, No Friction", 0, 0);
+    ctx.restore();
+    ctx.font = "600 15px Nunito Sans, sans-serif";
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      (lang === "zh" ? "最大地面摩擦力：" : "maximum ground friction: ") + f.fmax.toFixed(0) + " N",
+      w - 10,
+      (groundY + h) / 2
+    );
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    if (!f.safe) {
+      const bw = 220, bh = 40, bx = Math.max(280, (w - bw) / 2);
+      ctx.fillStyle = "rgba(194,65,12,0.94)"; roundRect(ctx, bx, 16, bw, bh, 8); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.font = "800 15px Nunito Sans, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(lang === "zh" ? "梯子正在滑走！" : "Ladder sliding away!", bx + bw / 2, 42);
+      ctx.textAlign = "left";
+    }
+  }
+  function ladderFromPointer(ev) {
+    const rect = cvL.getBoundingClientRect();
+    const w = rect.width, h = rect.height;
+    const f = ladderForces();
+    const L = ladderLayout(w, h, f.a);
+    const { groundY, wallX, baseX, topY } = L;
+    const x = ev.clientX - rect.left, y = ev.clientY - rect.top;
+    const dx = wallX - baseX, dy = topY - groundY;
+    const tparam = ((x - baseX) * dx + (y - groundY) * dy) / (dx * dx + dy * dy);
+    lad.s = Math.max(0.2, Math.min(lad.L - 0.2, tparam * lad.L));
+    updateUI();
+  }
+  cvL.addEventListener("pointerdown", (ev) => { lad.drag = true; cvL.classList.add("dragging"); cvL.setPointerCapture(ev.pointerId); ladderFromPointer(ev); });
+  cvL.addEventListener("pointermove", (ev) => { if (lad.drag) ladderFromPointer(ev); });
+  cvL.addEventListener("pointerup", () => { lad.drag = false; cvL.classList.remove("dragging"); });
+  $("sl-ang").addEventListener("input", () => { lad.ang = +$("sl-ang").value; updateUI(); });
+  $("sl-climb").addEventListener("input", () => { lad.s = +$("sl-climb").value; updateUI(); });
+  $("sl-fmax").addEventListener("input", () => { lad.fmax = +$("sl-fmax").value; updateUI(); });
+  $("btn-max-climb").onclick = () => {
+    const f = ladderForces();
+    lad.s = Math.max(0.2, Math.min(lad.L - 0.05, f.sMax - 0.02));
+    updateUI();
+  };
+  $("btn-lad-reset").onclick = () => {
+    lad.ang = 50; lad.s = 2.0; lad.fmax = 304;
+    $("sl-ang").value = "50"; $("sl-fmax").value = "304"; updateUI();
+  };
+  updateUI();
+  function loop() { drawLadder(); requestAnimationFrame(loop); }
+  window.addEventListener("resize", drawLadder);
+  requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

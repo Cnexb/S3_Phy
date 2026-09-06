@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Bullet swing | Momentum Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6efe4; --bg2: #efe4d2; --surface: #fffdf8; --surface2: #f7f0e4;
+      --ink: #2a2118; --muted: #6b5b4a; --line: #e0d0b6;
+      --teal: #0f7a6c; --amber: #c2410c; --ok: #168a56; --danger: #c2410c;
+      --blue: #1d6fd8; --purple: #6a1b9a;
+      --radius: 16px; --shadow: 0 12px 36px rgba(42, 33, 24, 0.08);
+      --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh; min-height: 100dvh; line-height: 1.5;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .wrap {
+      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
+      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
+      display: flex; flex-direction: column;
+    }
+    .wrap:fullscreen, .wrap:-webkit-full-screen {
+      width: 100%; height: 100%; padding: 0.7rem 0.8rem 0.8rem;
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.55rem; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-mark {
+      width: 54px; height: 54px; border-radius: 14px;
+      background: linear-gradient(145deg, #fff, #f3e6d2);
+      border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow);
+    }
+    .brand h1 { margin: 0; font-family: var(--display); font-size: clamp(1.25rem, 2.5vw, 1.8rem); letter-spacing: -0.02em; line-height: 1.15; }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.9rem; }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+    .lang-toggle, .tabs { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; flex-wrap: wrap; }
+    .lang-toggle button, .tabs button {
+      border: 0; background: transparent; padding: 0.42rem 0.85rem; border-radius: 999px;
+      color: var(--muted); font-weight: 700; font-size: 0.85rem;
+    }
+    .lang-toggle button.active, .tabs button.active { background: var(--ink); color: #fff; }
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+    .card-hd { padding: 0.65rem 1rem 0.5rem; border-bottom: 1px solid var(--line); flex-shrink: 0; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .card-hd > div:first-child { min-width: 0; flex: 1; }
+    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.12rem; }
+    .card-hd p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.88rem; }
+    .hd-crash {
+      min-width: 0;
+    }
+    .hd-crash h3 { margin: 0 0 0.3rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+    .hd-actions { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.65rem; flex-shrink: 0; }
+    .hd-crash-row { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 0.7rem; }
+    .hd-run { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+    .workspace {
+      flex: 1; min-height: 0; display: flex;
+    }
+    .stage {
+      position: relative; flex: 1; min-height: 0;
+      background: linear-gradient(180deg, #eaf4fb 0%, #eaf4fb 58%, #d8eccf 58%, #cfe6c4 100%);
+      overflow: hidden;
+    }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    .hint-chip { display: none; }
+    .hud {
+      position: absolute; top: 10px; z-index: 3;
+      background: rgba(255, 253, 248, 0.94);
+      border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+      padding: 0.55rem 0.65rem 0.6rem;
+      max-height: calc(100% - 20px); overflow: auto;
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .hud-left { left: 10px; width: min(300px, calc(50% - 18px)); }
+    .hud-right { right: 10px; width: min(270px, calc(50% - 18px)); }
+    .hud h3 { margin: 0 0 0.28rem; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+    .hud .slider-wrap { margin: 0.16rem 0; }
+    .hud-hd {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; flex-shrink: 0;
+    }
+    .hud-hd h3 { margin: 0; }
+    .hud-toggle {
+      border: 1px solid var(--line); background: #fff; border-radius: 8px;
+      padding: 0.18rem 0.5rem; font-size: 0.72rem; font-weight: 700; color: var(--muted);
+    }
+    .hud-toggle:hover { color: var(--ink); border-color: var(--ink); }
+    .hud-right.collapsed { width: auto; max-width: none; padding: 0.4rem 0.55rem; }
+    .hud-right.collapsed .hud-body { display: none; }
+    .seg { display: flex; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
+    .seg button { flex: 1; border: 0; background: transparent; border-radius: 8px; padding: 0.38rem 0.2rem; font-weight: 700; font-size: 0.68rem; line-height: 1.2; color: var(--muted); }
+    .seg button.on { background: var(--ink); color: #fff; }
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.12rem; margin: 0.28rem 0; }
+    .slider-head { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; }
+    .slider-head em { font-style: normal; font-family: var(--mono); }
+    .slider-head em.a { color: var(--teal); } .slider-head em.b { color: var(--amber); }
+    input[type=range] { width: 100%; cursor: pointer; }
+    .a-range { accent-color: var(--teal); } .b-range { accent-color: var(--amber); }
+    .btns { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .btn { border: 0; background: var(--ink); color: #fff; border-radius: 10px; padding: 0.48rem 0.72rem; font-weight: 700; font-size: 0.82rem; }
+    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn.teal { background: var(--teal); }
+    .btn.amber { background: var(--amber); }
+    .btn:hover { filter: brightness(1.08); }
+    .btn[disabled] { opacity: 0.4; cursor: not-allowed; filter: none; }
+    .presets { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 0.28rem 0.55rem; font-size: 0.72rem; font-weight: 700; color: var(--muted); }
+    .chip:hover { border-color: var(--ink); color: var(--ink); }
+    .bars { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.15rem; }
+    .bar-row { display: grid; grid-template-columns: 108px 1fr 78px; gap: 0.45rem; align-items: center; font-size: 0.92rem; font-weight: 700; }
+    .bar { height: 16px; background: #efe4d2; border-radius: 99px; overflow: hidden; position: relative; }
+    .bar > i { display: block; height: 100%; border-radius: 99px; width: 0; transition: width 0.18s; }
+    .bar > i.p { background: var(--blue); } .bar > i.ke { background: var(--purple); }
+    .bar > i.lost { background: var(--danger); } .bar > i.pe { background: var(--amber); }
+    .bar > i.a { background: var(--teal); } .bar > i.b { background: var(--amber); }
+    .bar-row span:last-child { font-family: var(--mono); font-size: 0.95rem; }
+    .hud-left .bar-row { grid-template-columns: 118px 1fr 78px; font-size: 0.74rem; gap: 0.3rem; }
+    .hud-left .bar { height: 11px; }
+    .hud-left .bar-row span:last-child { font-size: 0.78rem; white-space: nowrap; }
+    @media (max-width: 860px) {
+      .hud-left, .hud-right { width: calc(50% - 14px); max-height: 46%; }
+      .stage { min-height: 280px; }
+      .tabs button { padding: 0.4rem 0.55rem; font-size: 0.78rem; }
+    }
+  
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    html.s3phy-embed .wrap {
+      min-height: 0 !important;
+      height: 100% !important;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    html.s3phy-embed .fs-btn { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="wrap" id="labShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="14" width="10" height="7" rx="2" fill="#0f7a6c"/>
+            <rect x="18" y="14" width="10" height="7" rx="2" fill="#c2410c"/>
+            <circle cx="7" cy="22" r="1.6" fill="#2a2118"/>
+            <circle cx="11" cy="22" r="1.6" fill="#2a2118"/>
+            <circle cx="21" cy="22" r="1.6" fill="#2a2118"/>
+            <circle cx="25" cy="22" r="1.6" fill="#2a2118"/>
+            <path d="M14 10h10" stroke="#1d6fd8" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M22 10l3-2.2M22 10l3 2.2" stroke="#1d6fd8" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1><span class="en">Bullet swing</span><span class="zh">子彈擺</span></h1>
+          <p><span class="en">momentum then energy</span><span class="zh">先動量，後能量</span></p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="btn-en" class="active">EN</button>
+          <button type="button" id="btn-zh">中文</button>
+        </div>
+      </div>
+    </header>
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2 id="hd-title"></h2>
+          <p id="hd-sub"></p>
+        </div>
+        <div class="hd-actions">
+          <div class="hd-run">
+            <button class="btn teal" type="button" id="btn-play"><span class="en">Fire</span><span class="zh">發射</span></button>
+            <button class="btn sec" type="button" id="btn-reset"><span class="en">Reset</span><span class="zh">重設</span></button>
+            <button class="btn sec" type="button" id="btn-fs"><span class="en">Full screen</span><span class="zh">全螢幕</span></button>
+            <button class="btn sec" type="button" id="btn-unfs" hidden><span class="en">Exit full screen</span><span class="zh">退出全螢幕</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="workspace">
+        <div class="stage">
+
+          <div class="hint-chip" id="hint"></div>
+          <aside class="hud hud-left">
+            <div>
+              <h3><span class="en">Before vs after</span><span class="zh">碰撞前後</span></h3>
+              <div class="bars" id="bars"></div>
+            </div>
+          </aside>
+          <aside class="hud hud-right" id="hud-controls">
+            <div class="hud-hd">
+              <h3><span class="en">Control bar</span><span class="zh">控制列</span></h3>
+              <button class="hud-toggle" type="button" id="btn-hide-controls"><span class="en">Hide</span><span class="zh">隱藏</span></button>
+            </div>
+            <div class="hud-body">
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Bullet mass</span><span class="zh">子彈質量</span><em class="a" id="val-bm">20 g</em></div>
+                <input class="a-range" type="range" id="sl-bm" min="5" max="80" step="1" value="20" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Bullet speed</span><span class="zh">子彈速率</span><em class="a" id="val-bu">300 m/s</em></div>
+                <input class="a-range" type="range" id="sl-bu" min="50" max="500" step="10" value="300" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Block mass</span><span class="zh">木塊質量</span><em class="b" id="val-bM">5.0 kg</em></div>
+                <input class="b-range" type="range" id="sl-bM" min="1" max="10" step="0.5" value="5" />
+              </div>
+            </div>
+          </aside>
+          <canvas id="cv" width="900" height="460"></canvas>
+
+        </div>
+      </div>
+    </section>
+  </div>
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  let lang = "en";
+  const t = (en, zh) => (lang === "zh" ? zh : en);
+  function setLang(next) {
+    lang = next;
+    document.documentElement.lang = next === "zh" ? "zh-HK" : "en";
+    $("btn-en").classList.toggle("active", next === "en");
+    $("btn-zh").classList.toggle("active", next === "zh");
+    updateUI();
+  }
+  $("btn-en").onclick = () => setLang("en");
+  $("btn-zh").onclick = () => setLang("zh");
+  function applyLangFromHub(raw) {
+    const next = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    setLang(next);
+  }
+  try {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q) applyLangFromHub(q);
+  } catch (e) { /* ignore */ }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+  });
+
+  function syncHideControls() {
+    const hidden = $("hud-controls").classList.contains("collapsed");
+    $("btn-hide-controls").innerHTML = hidden
+      ? '<span class="en">Show</span><span class="zh">顯示</span>'
+      : '<span class="en">Hide</span><span class="zh">隱藏</span>';
+  }
+  $("btn-hide-controls").onclick = () => {
+    $("hud-controls").classList.toggle("collapsed");
+    syncHideControls();
+  };
+  function isFullscreen() {
+    return !!(document.fullscreenElement || document.webkitFullscreenElement);
+  }
+  function syncFsButtons() {
+    $("btn-fs").hidden = isFullscreen();
+    $("btn-unfs").hidden = !isFullscreen();
+  }
+  $("btn-fs").onclick = () => {
+    const el = $("labShell");
+    (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+  };
+  $("btn-unfs").onclick = () => {
+    (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+  };
+  document.addEventListener("fullscreenchange", syncFsButtons);
+  document.addEventListener("webkitfullscreenchange", syncFsButtons);
+  syncFsButtons();
+  const canvasCache = new WeakMap();
+  function fitCanvas(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(320, rect.width || 320);
+    const h = Math.max(260, rect.height || 460);
+    const prev = canvasCache.get(canvas);
+    const ctx = canvas.getContext("2d");
+    if (!prev || prev.w !== w || prev.h !== h || prev.dpr !== dpr) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvasCache.set(canvas, { w, h, dpr });
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+  function roundRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+  function arrow(ctx, x1, y1, x2, y2, color, width) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy);
+    if (len < 8) return;
+    const ang = Math.atan2(dy, dx);
+    const head = Math.max(8, (width || 3) * 3.2);
+    ctx.strokeStyle = color; ctx.fillStyle = color;
+    ctx.lineWidth = width || 3; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
+    ctx.closePath(); ctx.fill();
+  }
+  function fmt(n, d) {
+    if (!isFinite(n)) return "—";
+    const s = Number(n).toFixed(d == null ? 2 : d);
+    return (n > 0 && d !== 0 ? "+" : "") + s;
+  }
+  function fmtAbs(n, d) {
+    if (!isFinite(n)) return "—";
+    return Number(n).toFixed(d == null ? 2 : d);
+  }
+  const pOf = (m, v) => m * v;
+  const keOf = (m, v) => 0.5 * m * v * v;
+  function spawnSparks(x, y) {
+    for (let i = 0; i < 14; i++) {
+      S.sparks.push({
+        x, y,
+        vx: (Math.random() - 0.5) * 180,
+        vy: (Math.random() - 0.8) * 140,
+        life: 1,
+        c: Math.random() > 0.5 ? "#0f7a6c" : "#c2410c"
+      });
+    }
+  }
+  function bar(label, frac, cls, val) {
+    const row = document.createElement("div");
+    row.className = "bar-row";
+    const a = document.createElement("span"); a.textContent = label;
+    const b = document.createElement("div"); b.className = "bar";
+    const i = document.createElement("i"); i.className = cls; i.style.width = Math.min(100, Math.max(0, frac * 100)) + "%";
+    b.appendChild(i);
+    const c = document.createElement("span"); c.textContent = val;
+    row.appendChild(a); row.appendChild(b); row.appendChild(c);
+    $("bars").appendChild(row);
+  }
+
+  const G = 9.81;
+  const S = {
+    running: false, speed: 1,
+    bm: 0.02, bu: 300, bM: 5, bL: 1.5,
+    bphase: "idle", bx: 0.28, theta: 0, omega: 0, embedT: 0, thPeak: 0,
+    sparks: [], flash: 0
+  };
+  const cv = $("cv");
+  const BALLISTIC = { pivot: 2.45, blockW: 0.38, blockH: 0.32, visU: 1.9 };
+  function blockWorldSize() {
+    const s = Math.pow(S.bM / 5, 0.4);
+    return { w: BALLISTIC.blockW * s, h: BALLISTIC.blockH * s };
+  }
+  function resetBullet() {
+    S.running = false; S.bphase = "idle"; S.bx = 0.28;
+    S.theta = 0; S.omega = 0; S.embedT = 0; S.thPeak = 0; S.flash = 0; S.sparks = [];
+  }
+  function restoreBulletControls() {
+    S.bm = 0.02; S.bu = 300; S.bM = 5; S.bL = 1.5;
+    $("sl-bm").value = "20"; $("sl-bu").value = "300"; $("sl-bM").value = "5";
+    resetBullet();
+  }
+  function bulletLive() {
+    const m = S.bm, M = S.bM, u = S.bu, L = S.bL;
+    const tot = m + M;
+    const p0 = m * u;
+    const vc = tot > 0 ? p0 / tot : 0;
+    const kBullet0 = keOf(m, u);
+    const kBox0 = 0;
+    const kBullet1 = keOf(m, vc);
+    const kBox1 = keOf(M, vc);
+    const k0 = kBullet0;
+    const k1 = kBullet1 + kBox1;
+    const hMax = (vc * vc) / (2 * G);
+    const c = Math.max(-1, Math.min(1, 1 - hMax / Math.max(L, 1e-6)));
+    const thMax = Math.acos(c);
+    const hNow = L * (1 - Math.cos(S.theta));
+    const vTan = L * S.omega;
+    const kNow = S.bphase === "approach" || S.bphase === "idle" ? k0 : keOf(tot, vTan);
+    const peNow = tot * G * hNow;
+    return { m, M, u, L, tot, p0, vc, k0, k1, kBullet0, kBox0, kBullet1, kBox1, hMax, thMax, hNow, kNow, peNow, lost: k0 - k1 };
+  }
+  function bindSlider(id, key) {
+    $(id).addEventListener("input", () => {
+      if (S.running) return;
+      S[key] = Number($(id).value);
+      resetBullet(); updateUI();
+    });
+  }
+  bindSlider("sl-bM", "bM"); bindSlider("sl-bu", "bu");
+  $("sl-bm").addEventListener("input", () => {
+    if (S.running) return;
+    S.bm = Number($("sl-bm").value) / 1000;
+    resetBullet(); updateUI();
+  });
+  $("btn-play").onclick = () => {
+    if (S.running) return;
+    resetBullet(); S.bphase = "approach"; S.running = true; updateUI();
+  };
+  $("btn-reset").onclick = () => { restoreBulletControls(); updateUI(); };
+  function updateUI() {
+    $("hd-title").textContent = t("Ballistic pendulum", "彈道擺");
+    $("hd-sub").textContent = t("Bullet embeds in a hanging block. Use momentum for the crash, then energy for the rise.", "子彈射入懸掛木塊。碰撞用動量，升高用能量。");
+    $("hint").style.display = "none";
+    $("val-bm").textContent = fmtAbs(S.bm * 1000, 0) + " g";
+    $("val-bu").textContent = fmtAbs(S.bu, 0) + " m/s";
+    $("val-bM").textContent = fmtAbs(S.bM, 1) + " kg";
+    $("bars").innerHTML = "";
+    const B = bulletLive();
+    const collided = S.bphase === "embed" || S.bphase === "swing" || S.bphase === "peak";
+    const kNow = S.bphase === "swing" || S.bphase === "peak" ? Math.max(0, B.kNow) : (S.bphase === "embed" ? B.k1 : B.k0);
+    const kBeforeMax = Math.max(B.kBullet0, B.kBox0, 0.01);
+    bar(t("KE bullet before", "子彈前動能"), B.kBullet0 / kBeforeMax, "a", fmtAbs(B.kBullet0, 1) + " J");
+    bar(t("KE box before", "木塊前動能"), B.kBox0 / kBeforeMax, "b", fmtAbs(B.kBox0, 2) + " J");
+    if (collided) {
+      const kBulletAfter = B.tot > 0 ? (B.m / B.tot) * kNow : 0;
+      const kBoxAfter = B.tot > 0 ? (B.M / B.tot) * kNow : 0;
+      const kAfterMax = Math.max(B.kBullet1, B.kBox1, 0.01);
+      bar(t("KE bullet after", "子彈後動能"), kBulletAfter / kAfterMax, "a", fmtAbs(kBulletAfter, 4) + " J");
+      bar(t("KE box after", "木塊後動能"), kBoxAfter / kAfterMax, "b", fmtAbs(kBoxAfter, 4) + " J");
+    }
+    bar(t("PE box before", "木塊前勢能"), 0, "pe", "0.00 J");
+    if (collided) {
+      const afterMax = Math.max(B.k1, kNow + B.peNow, 0.01);
+      bar(t("PE box after", "木塊後勢能"), B.peNow / afterMax, "pe", fmtAbs(B.peNow, 3) + " J");
+    }
+    ["sl-bm","sl-bu","sl-bM"].forEach((id) => { $(id).disabled = S.running; });
+  }
+  function stepBullet(dt) {
+    const B = bulletLive();
+    const rate = S.speed;
+    const hitX = BALLISTIC.pivot - blockWorldSize().w / 2 - 0.03;
+    if (S.bphase === "approach" && S.running) {
+      S.bx += BALLISTIC.visU * dt * rate;
+      if (S.bx >= hitX) {
+        S.bx = hitX; S.bphase = "embed"; S.embedT = 0; S.flash = 1; spawnSparks(0, 0);
+      }
+    } else if (S.bphase === "embed" && S.running) {
+      S.embedT += dt;
+      if (S.embedT > (0.62 / Math.max(0.25, S.speed))) {
+        S.bphase = "swing"; S.theta = 0; S.omega = B.vc / Math.max(S.bL, 0.05);
+      }
+    } else if (S.bphase === "swing" && S.running) {
+      const prev = S.omega;
+      const n = 8; const hstep = dt * rate / n;
+      for (let i = 0; i < n; i++) {
+        S.omega += -(G / S.bL) * Math.sin(S.theta) * hstep;
+        S.theta += S.omega * hstep;
+      }
+      if (S.theta > S.thPeak) S.thPeak = S.theta;
+      if ((prev > 1e-6 && S.omega <= 0 && S.theta > 0.004) || (S.omega < 0 && S.theta < S.thPeak - 0.003)) {
+        S.omega = 0; S.theta = S.thPeak; S.bphase = "peak"; S.running = false; updateUI();
+      }
+      if (S.theta > Math.PI * 0.9) { S.bphase = "peak"; S.running = false; updateUI(); }
+    }
+  }
+  function drawBullet(ctx, x, y, r, flying) {
+    ctx.save(); ctx.translate(x, y);
+    if (flying) {
+      ctx.globalAlpha = 0.22; ctx.fillStyle = "#3a3a3a";
+      for (let i = 1; i <= 4; i++) {
+        ctx.beginPath(); ctx.ellipse(-i * 11, 0, r * 0.9, r * 0.55, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+    ctx.fillStyle = "#4a4a4a";
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 1.55, r * 0.72, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#c9a227";
+    ctx.beginPath(); ctx.ellipse(r * 0.95, 0, r * 0.55, r * 0.62, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  function drawWoodBlock(ctx, x, y, bw, bh, embedded) {
+    ctx.save();
+    ctx.fillStyle = "rgba(42,33,24,0.12)";
+    ctx.beginPath(); ctx.ellipse(x + bw / 2, y + bh + 7, bw * 0.38, 5, 0, 0, Math.PI * 2); ctx.fill();
+    const pad = Math.max(4, bw * 0.05);
+    const title = Math.max(9, Math.min(16, bw * 0.11));
+    ctx.fillStyle = "#c9954a"; roundRect(ctx, x, y, bw, bh, Math.min(8, bw * 0.08)); ctx.fill();
+    ctx.strokeStyle = "#8a5a2b"; ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = "rgba(90,55,20,0.35)"; ctx.lineWidth = 1.5;
+    for (let i = 1; i <= 3; i++) {
+      const yy = y + (bh * i) / 4;
+      ctx.beginPath(); ctx.moveTo(x + pad, yy); ctx.lineTo(x + bw - pad, yy); ctx.stroke();
+    }
+    ctx.fillStyle = "#fff8ee";
+    ctx.font = "800 " + title + "px Bricolage Grotesque, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(embedded ? "m+M" : "M", x + bw / 2, y + bh / 2 - title * 0.35);
+    ctx.font = "700 " + Math.max(8, title - 3) + "px Nunito Sans, sans-serif";
+    ctx.fillStyle = "#5a3a18";
+    const mass = embedded ? (S.bm + S.bM) : S.bM;
+    ctx.fillText(fmtAbs(mass, 2) + " kg", x + bw / 2, y + bh / 2 + title * 0.85);
+    if (embedded) drawBullet(ctx, x + bw * 0.28, y + bh / 2, Math.max(4, bw * 0.07), false);
+    ctx.restore();
+  }
+  function drawScene(dt) {
+    const { ctx, w, h } = fitCanvas(cv);
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#efe6d6"; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "#d7c4a0"; ctx.fillRect(0, h * 0.88, w, h);
+    ctx.fillStyle = "#c8b48a"; ctx.fillRect(0, h * 0.88, w, 8);
+    const ceiling = 50; const floorY = h * 0.88;
+    const box = blockWorldSize();
+    const worldLeft = 0.12;
+    const worldRight = BALLISTIC.pivot + S.bL * 0.95 + box.w;
+    const scale = Math.min(
+      (floorY - ceiling - 16) / (S.bL + box.h),
+      (w - 80) / Math.max(2.4, worldRight - worldLeft)
+    );
+    const used = (worldRight - worldLeft) * scale;
+    const originX = Math.max(36, (w - used) / 2);
+    const PX = (mx) => originX + (mx - worldLeft) * scale;
+    const PY = (my) => ceiling + my * scale;
+    const bw = box.w * scale; const bh = box.h * scale;
+    const Lpx = S.bL * scale; const th = S.theta;
+    const cx = PX(BALLISTIC.pivot);
+    const leftA = cx - bw / 2; const rightA = cx + bw / 2;
+    const bx = cx + Lpx * Math.sin(th) - bw / 2;
+    const by = PY(S.bL * Math.cos(th));
+    const restY = PY(S.bL);
+    const embedded = S.bphase !== "idle" && S.bphase !== "approach";
+    ctx.fillStyle = "#8d6e4a"; roundRect(ctx, 28, 18, w - 56, 16, 6); ctx.fill();
+    ctx.fillStyle = "#c4a574"; roundRect(ctx, 28, 18, w - 56, 7, 6); ctx.fill();
+    ctx.strokeStyle = "#2a2118"; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.moveTo(leftA, 32); ctx.lineTo(bx, by);
+    ctx.moveTo(rightA, 32); ctx.lineTo(bx + bw, by); ctx.stroke();
+    if (th > 0.01) {
+      ctx.save(); ctx.setLineDash([5, 5]);
+      ctx.strokeStyle = "rgba(42,33,24,0.28)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(leftA, 32); ctx.lineTo(leftA, restY);
+      ctx.moveTo(rightA, 32); ctx.lineTo(rightA, restY); ctx.stroke();
+      ctx.setLineDash([]); ctx.restore();
+      ctx.globalAlpha = 0.28; drawWoodBlock(ctx, leftA, restY, bw, bh, true); ctx.globalAlpha = 1;
+    }
+    drawWoodBlock(ctx, bx, by, bw, bh, embedded);
+    const hitX = BALLISTIC.pivot - box.w / 2 - 0.03;
+    if (!embedded) {
+      const bpx = PX(S.bx); const bpy = restY + bh / 2;
+      drawBullet(ctx, bpx, bpy, Math.max(6, 7 + S.bm * 80), S.bphase === "approach");
+      if (S.bphase !== "approach") {
+        ctx.fillStyle = "#3a3a3a"; roundRect(ctx, PX(0.12) - 36, bpy - 9, 42, 12, 3); ctx.fill();
+        ctx.fillStyle = "#5a4634"; roundRect(ctx, PX(0.12) - 36, bpy + 1, 14, 16, 3); ctx.fill();
+      }
+      arrow(ctx, bpx + 16, bpy - 22, bpx + 64, bpy - 22, "#0f7a6c", 3);
+      ctx.fillStyle = "#0f7a6c";
+      ctx.font = "600 12px JetBrains Mono, monospace";
+      ctx.textAlign = "left";
+      ctx.fillText(fmtAbs(S.bu, 0) + " m/s", bpx + 70, bpy - 18);
+    }
+    const hNow = S.bL * (1 - Math.cos(th));
+    if (th > 0.008) {
+      const y1 = restY + bh; const y2 = by + bh; const hx = bx + bw + 18;
+      ctx.strokeStyle = "#c2410c"; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(hx - 6, y1); ctx.lineTo(hx + 6, y1);
+      ctx.moveTo(hx - 6, y2); ctx.lineTo(hx + 6, y2); ctx.stroke();
+      arrow(ctx, hx, y1, hx, Math.min(y2, y1 - 10), "#c2410c", 2);
+      ctx.fillStyle = "#c2410c";
+      ctx.font = "700 12px Nunito Sans, sans-serif"; ctx.textAlign = "left";
+      ctx.fillText("h = " + fmtAbs(hNow * 100, 2) + " cm", hx + 10, (y1 + y2) / 2 + 4);
+    }
+    if (S.bphase === "embed") {
+      const mx = bx + bw / 2, my = by + bh / 2;
+      arrow(ctx, mx, by - 8, mx, by - 52, "#1d6fd8", 3);
+      arrow(ctx, mx, my + 8, mx, my + 50, "#c2410c", 3);
+      arrow(ctx, bx + bw + 6, my, bx + bw + 62, my, "#6a1b9a", 3);
+      ctx.font = "700 11px Nunito Sans, sans-serif";
+      ctx.fillStyle = "#1d6fd8"; ctx.textAlign = "center"; ctx.fillText("T", mx, by - 56);
+      ctx.fillStyle = "#c2410c"; ctx.fillText("Mg", mx, my + 64);
+      ctx.fillStyle = "#6a1b9a"; ctx.textAlign = "left";
+      ctx.fillText(t("collision F", "撞擊力 F"), bx + bw + 66, my + 4);
+    }
+    S.flash *= 0.9;
+    if (S.flash > 0.04) {
+      ctx.fillStyle = "rgba(255,220,120," + (S.flash * 0.35) + ")";
+      ctx.fillRect(0, 0, w, h);
+    }
+    const impactX = PX(hitX); const impactY = restY + bh / 2;
+    S.sparks.forEach((p) => {
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 220 * dt; p.life -= dt * 1.8;
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(impactX + p.x, impactY + p.y, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+    S.sparks = S.sparks.filter((p) => p.life > 0);
+  }
+  let last = performance.now(); let uiAcc = 0;
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000); last = now;
+    stepBullet(dt); drawScene(dt);
+    uiAcc += dt;
+    if (!S.running || uiAcc > 0.12) { if (S.running) updateUI(); uiAcc = 0; }
+    requestAnimationFrame(loop);
+  }
+  resetBullet(); updateUI(); requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

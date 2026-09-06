@@ -128,7 +128,20 @@ const MECHANICS_DECK_OPTIONS = [
   })),
 ];
 
-const TOOL_ORDER = ['vectorTool', 'newtonFirstLaw', 'elevatorWeight', 'stackedBoxes', 'projectileMotion', 'orbitalForces'];
+const TOOL_ORDER = [
+  'vectorTool',
+  'newtonFirstLaw',
+  'elevatorWeight',
+  'stackedBoxes',
+  'seesawMoment',
+  'ladderMoment',
+  'supportsMoment',
+  'impulseMomentum',
+  'crashTrackMomentum',
+  'bulletMomentum',
+  'projectileMotion',
+  'orbitalForces',
+];
 
 const TOOL_LOADERS = {
   vectorTool: () => import('../tools/vectorToolLab.js').then((m) => m.createVectorToolLab),
@@ -138,6 +151,15 @@ const TOOL_LOADERS = {
     import('../tools/elevatorWeightLab.js').then((m) => m.createElevatorWeightLab),
   stackedBoxes: () =>
     import('../tools/stackedBoxesLab.js').then((m) => m.createStackedBoxesLab),
+  seesawMoment: () => import('../tools/seesawMomentLab.js').then((m) => m.createSeesawMomentLab),
+  ladderMoment: () => import('../tools/ladderMomentLab.js').then((m) => m.createLadderMomentLab),
+  supportsMoment: () => import('../tools/supportsMomentLab.js').then((m) => m.createSupportsMomentLab),
+  impulseMomentum: () =>
+    import('../tools/impulseMomentumLab.js').then((m) => m.createImpulseMomentumLab),
+  crashTrackMomentum: () =>
+    import('../tools/crashTrackMomentumLab.js').then((m) => m.createCrashTrackMomentumLab),
+  bulletMomentum: () =>
+    import('../tools/bulletMomentumLab.js').then((m) => m.createBulletMomentumLab),
   projectileMotion: () =>
     import('../tools/projectileMotionLab.js').then((m) => m.createProjectileMotionLab),
   orbitalForces: () =>
@@ -150,6 +172,12 @@ function toolLabel(id) {
     newtonFirstLaw: 'tools.newtonFirstLaw.title',
     elevatorWeight: 'tools.elevatorWeight.title',
     stackedBoxes: 'tools.stackedBoxes.title',
+    seesawMoment: 'tools.seesawMoment.title',
+    ladderMoment: 'tools.ladderMoment.title',
+    supportsMoment: 'tools.supportsMoment.title',
+    impulseMomentum: 'tools.impulseMomentum.title',
+    crashTrackMomentum: 'tools.crashTrackMomentum.title',
+    bulletMomentum: 'tools.bulletMomentum.title',
     projectileMotion: 'tools.projectileMotion.title',
     orbitalForces: 'tools.orbitalForces.title',
   };
