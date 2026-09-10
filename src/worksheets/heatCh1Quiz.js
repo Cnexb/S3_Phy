@@ -1,6 +1,6 @@
 import { getLang } from '../i18n.js';
 
-const JPHG01_QUIZ_VERSION = '20260910jphg01';
+const JPHG01_QUIZ_VERSION = '20260910jphg01c';
 
 /** @param {(key: string) => string} t */
 export function createHeatCh1Quiz(t) {

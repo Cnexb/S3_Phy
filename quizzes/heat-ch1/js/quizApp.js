@@ -1,4 +1,4 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META } from "./quizData.js";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
@@ -14,7 +14,6 @@ import {
   allFillFieldsCorrect,
   countFillBlanks,
   getFillLines,
-  buildQuizBankStats,
   filterQuizPool,
 } from "./quizUtils.js";
 import {
@@ -329,9 +328,19 @@ export function initQuiz() {
     els.quizArea.querySelectorAll(".split-text-target").forEach((node) => animateSplitText(node));
   }
 
+  function selectedTopics() {
+    return Array.from(els.typeChecks?.querySelectorAll("input:checked") || []).map((x) => x.value);
+  }
+
   function getFilterState() {
+    const topics = selectedTopics();
+    const sections = [
+      ...new Set(
+        QUIZ_ITEMS.filter((q) => topics.includes(itemTopicId(q))).map((q) => q.section)
+      ),
+    ];
     return {
-      sections: selectedSections(),
+      sections,
       formats: ["mcq"],
       difficulty: "all",
     };
@@ -339,21 +348,20 @@ export function initQuiz() {
 
   function updateBankSummary() {
     if (!els.bankSummary) return;
-    const { sections } = getFilterState();
+    const topics = selectedTopics();
 
-    if (!sections.length) {
+    if (!topics.length) {
       els.bankSummary.innerHTML = `<p class="font-label-bold text-on-surface mb-1">${escHtml(t("bankSummaryTitle"))}</p><p class="text-on-surface-variant">${escHtml(t("bankNone"))}</p>`;
       return;
     }
 
     const pool = filterQuizPool(QUIZ_ITEMS, getFilterState());
-    const stats = buildQuizBankStats(pool, sections, ["mcq"]);
 
-    const topicRows = sections
-      .map((sid) => {
-        const sec = QUIZ_SECTIONS.find((s) => s.id === sid);
-        const label = sec ? (isChineseUI(lang) ? sec.labelZh : sec.label) : sid;
-        const n = stats.bySection[sid] || 0;
+    const topicRows = topics
+      .map((tid) => {
+        const sec = QUIZ_SECTIONS.find((s) => s.id === tid);
+        const label = sec ? (isChineseUI(lang) ? sec.labelZh : sec.label) : tid;
+        const n = pool.filter((q) => itemTopicId(q) === tid).length;
         return `<li class="flex justify-between gap-2"><span>${escHtml(label)}</span><span class="font-label-bold tabular-nums">${n}</span></li>`;
       })
       .join("");
@@ -361,7 +369,7 @@ export function initQuiz() {
     els.bankSummary.innerHTML = `
       <p class="font-label-bold text-on-surface mb-2">${escHtml(t("bankSummaryTitle"))}</p>
       <p class="text-on-surface-variant text-[11px] uppercase tracking-wide mb-0.5">${escHtml(t("bankAvailable"))}</p>
-      <p class="bank-available tabular-nums mb-4">${stats.total}</p>
+      <p class="bank-available tabular-nums mb-4">${pool.length}</p>
       <div>
         <p class="font-label-bold text-on-surface-variant text-[11px] uppercase tracking-wide mb-2">${escHtml(t("bankByTopic"))}</p>
         <ul class="space-y-1 text-on-surface">${topicRows}</ul>
@@ -393,11 +401,11 @@ export function initQuiz() {
   }
 
   function selectedSections() {
-    return Array.from(els.typeChecks?.querySelectorAll("input:checked") || []).map((x) => x.value);
+    return selectedTopics();
   }
 
   function generate() {
-    const sections = selectedSections();
+    const sections = selectedTopics();
     if (!sections.length) {
       alert(t("alertNoTypes"));
       return;
@@ -484,7 +492,7 @@ export function initQuiz() {
         "Q" +
         (idx + 1) +
         " · " +
-        sectionLabel(q.section, lang).toUpperCase() +
+        sectionLabel(itemTopicId(q), lang).toUpperCase() +
         " · " +
         formatTypeLabel(q) +
         " · " +

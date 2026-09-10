@@ -6,27 +6,28 @@ export const QUIZ_META = {
   topic: "JPHG01 Temperature and thermometer",
 };
 
-export const QUIZ_SECTIONS = [
+/** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
+export const QUIZ_TOPICS = [
   {
-    id: "JPHG01.1",
-    label: "JPHG01.1 Temperature scale",
-    labelZh: "JPHG01.1 溫標",
-  },
-  {
-    id: "JPHG01.2",
-    label: "JPHG01.2 Calibration of thermometer",
-    labelZh: "JPHG01.2 溫度計的校準",
-  },
-  {
-    id: "JPHG01.3",
-    label: "JPHG01.3 Types of thermometer",
-    labelZh: "JPHG01.3 溫度計的種類",
+    id: "JPHG01",
+    label: "JPHG01 Temperature and thermometer",
+    labelZh: "JPHG01 溫度與溫度計",
   },
 ];
+
+export const QUIZ_SECTIONS = QUIZ_TOPICS;
+
+export function itemTopicId(q) {
+  if (q?.topic) return q.topic;
+  const sec = String(q?.section || "");
+  const i = sec.lastIndexOf(".");
+  return i > 0 ? sec.slice(0, i) : sec;
+}
 
 export const QUIZ_ITEMS = [
   {
     id: "jphg01-1",
+    topic: "JPHG01",
     section: "JPHG01.3",
     difficulty: "Foundation",
     stem: "Which of the following thermometers measures temperature by detecting the intensity of radiation?",
@@ -41,6 +42,7 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "jphg01-2",
+    topic: "JPHG01",
     section: "JPHG01.1",
     difficulty: "Foundation",
     stem: "Which of the following statements about the Celsius temperature scale is/are correct?\n(1) The lower fixed point is the lowest temperature existing in nature.\n(2) The upper fixed point is the temperature of steam.\n(3) The unit of this scale is °C.",
@@ -55,6 +57,7 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "jphg01-3",
+    topic: "JPHG01",
     section: "JPHG01.2",
     difficulty: "Standard",
     stem: "A faulty thermometer with uniform scale reads 5 °C and 95 °C when it is placed in melting ice and boiling water respectively. What is the actual temperature if the thermometer reads 30 °C?",
