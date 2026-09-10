@@ -1,5 +1,7 @@
 import { getLang } from '../i18n.js';
 
+const JPWM06_QUIZ_VERSION = '20260910jpwm06';
+
 /** @param {(key: string) => string} t */
 export function createOpticsCh3Quiz(t) {
   const wrap = document.createElement('div');
@@ -10,7 +12,7 @@ export function createOpticsCh3Quiz(t) {
   const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}optics-ch3-quiz/quiz.html?embed=1`;
+    return `${root}optics-ch3-quiz/quiz.html?embed=1&v=${JPWM06_QUIZ_VERSION}`;
   }
 
   iframe.src = iframeSrc();

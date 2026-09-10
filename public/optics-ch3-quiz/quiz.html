@@ -4,7 +4,7 @@
   <meta name="google" content="notranslate">
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>S3 · Optics Ch.3 · Light &amp; Lens</title>
+<title>S3 · JPWM06 Light reflection</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
@@ -110,7 +110,7 @@ tailwind.config = {
 <label class="block text-body-sm font-label-bold text-on-surface-variant mb-2" data-i18n="lblTypes">Topics</label>
 <div class="space-y-2 mb-4" id="quiz-type-checks"></div>
 <label class="block text-body-sm font-label-bold text-on-surface-variant mb-1" for="quiz-num-count" data-i18n="lblCount">Number of questions (1–50)</label>
-<input class="w-full mb-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" id="quiz-num-count" max="50" min="1" type="number" value="10"/>
+<input class="w-full mb-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" id="quiz-num-count" max="50" min="1" type="number" value="4"/>
 <button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-bold shadow-md hover:opacity-90 transition-opacity mb-6" id="btn-generate" type="button" data-i18n="btnGenerate">Generate questions</button>
 <h3 class="font-label-bold text-on-surface mb-2" data-i18n="hExport">Export</h3>
 <p class="text-body-sm text-on-surface-variant mb-3" data-i18n="txtExportHint">Word: .doc for Microsoft Word. Use Print → Save as PDF for a PDF copy.</p>
@@ -124,7 +124,7 @@ tailwind.config = {
 <div class="min-w-0 space-y-4">
 <div class="flex flex-wrap items-center justify-between gap-3 focus-dim">
 <div class="min-w-0 flex-1">
-<p class="font-label-bold text-primary text-body-sm mb-1">S3 Optics · Ch.3 Light &amp; Lens</p>
+<p class="font-label-bold text-primary text-body-sm mb-1">CH3 Wave Motion and Optics · JPWM06 Light reflection</p>
 <p class="font-label-bold text-on-surface-variant text-body-sm" id="quiz-progress-text">No session yet</p>
 <div class="h-2.5 w-full max-w-md mt-2 bg-surface-container-high rounded-full relative overflow-hidden">
 <div class="shiny-progress-bar absolute left-0 top-0 h-full bg-primary-container rounded-full transition-all duration-500" id="quiz-progress-bar" style="width:0%"></div>
@@ -155,6 +155,19 @@ tailwind.config = {
 </main>
 
 <div aria-hidden="true" id="quiz-pdf-sheet"></div>
-<script src="./js/quiz.bundle.js?v=20260826s" defer></script>
+<script type="module">
+  const showLoadError = (err) => {
+    const msg = String(err?.message || err);
+    const box = document.getElementById("quiz-bank-summary");
+    if (box) {
+      box.innerHTML = `
+        <p class="font-label-bold text-tertiary mb-1">Quiz failed to load</p>
+        <p class="text-body-sm text-on-surface-variant">${msg.replace(/</g, "&lt;")}</p>
+        <p class="text-body-sm text-on-surface-variant mt-2">Try <strong>Ctrl+F5</strong> (hard refresh).</p>`;
+    }
+    console.error("Quiz module load failed:", err);
+  };
+  import("./js/quizApp.js?v=20260910jpwm06").catch(showLoadError);
+</script>
 </body>
 </html>

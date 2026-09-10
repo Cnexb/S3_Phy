@@ -1,4 +1,4 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS } from "./quizData.js";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META } from "./quizData.js";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
@@ -26,7 +26,7 @@ import {
 
 const UI = {
   en: {
-    appSubtitle: "S3 Optics Ch.3 · Reflection, refraction, lenses · English UI",
+    appSubtitle: "JPWM06 Light reflection · English UI",
     hSettings: "Worksheet settings",
     lblTypes: "Topics",
     lblFormats: "Question types",
@@ -219,6 +219,67 @@ export function initQuiz() {
   let lang = resolveQuizLang();
   let lastQuestions = [];
   const attemptMap = new Map();
+
+  function getOptionOrTableText(q, key) {
+    if (key === undefined || key === null) return null;
+    const opt = q.options?.find((o) => o.key === key);
+    if (opt) return opt.text || null;
+    const row = q.optionTable?.rows?.find((r) => r.key === key);
+    if (row) {
+      const cells = (row.cells || []).join(" ");
+      return cells ? `${row.key}. ${cells}` : row.key;
+    }
+    return null;
+  }
+
+  function reportPhyAttempt(q, isCorrect, state) {
+    try {
+      let selectedAnswerText = getOptionOrTableText(q, state.selected);
+      if (!selectedAnswerText) {
+        if (state.fillValues) {
+          selectedAnswerText = state.fillValues.filter(Boolean).join(" / ") || null;
+        } else if (state.typeinValue !== undefined && state.typeinValue !== null && state.typeinValue !== "") {
+          selectedAnswerText = String(state.typeinValue);
+        }
+      }
+
+      let correctAnswerText = getOptionOrTableText(q, q.answer);
+      if (!correctAnswerText) {
+        try {
+          const ma = modelAnswerText(q);
+          correctAnswerText = ma?.en || null;
+        } catch (_) {}
+      }
+
+      const payload = {
+        type: "uniplus:quizAnswer",
+        subject: QUIZ_META.subject,
+        quizId: QUIZ_META.quizId,
+        questionId: String(q.id),
+        section: q.section || null,
+        difficulty: q.difficulty || null,
+        stem: q.stem || null,
+        selectedAnswer:
+          state.selected !== undefined && state.selected !== null
+            ? String(state.selected)
+            : state.fillValues
+              ? JSON.stringify(state.fillValues)
+              : null,
+        selectedAnswerText,
+        correctAnswer: q.answer !== undefined ? String(q.answer) : null,
+        correctAnswerText,
+        isCorrect: !!isCorrect,
+        attemptNumber: state.wrong + 1,
+        msTaken: 0,
+      };
+      window.parent.postMessage(payload, "*");
+      if (window.top !== window.parent) {
+        try {
+          window.top.postMessage(payload, "*");
+        } catch (_) {}
+      }
+    } catch (_) {}
+  }
 
   const t = (key) => UI[lang]?.[key] || UI.en[key] || key;
 
@@ -616,6 +677,7 @@ export function initQuiz() {
         if (ok) {
           state.solved = true;
           attemptMap.set(q.id, state);
+          reportPhyAttempt(q, true, state);
           fb.className = "mt-3 text-body-sm p-3 rounded-xl bg-secondary/10 text-secondary font-label-bold";
           fb.textContent = t("correct");
           btn.disabled = true;
@@ -635,6 +697,7 @@ export function initQuiz() {
 
         state.wrong += 1;
         attemptMap.set(q.id, state);
+        reportPhyAttempt(q, false, state);
 
         if (fmt !== "fill") {
           const wrongBtn = optionButtons.find((b) => b.dataset.key === state.selected);

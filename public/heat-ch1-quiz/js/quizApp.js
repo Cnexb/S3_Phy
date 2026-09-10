@@ -1,4 +1,4 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS } from "./quizData.js";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META } from "./quizData.js";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
@@ -214,8 +214,6 @@ export function initQuiz() {
   let lang = resolveQuizLang();
   let lastQuestions = [];
   const attemptMap = new Map();
-
-  const QUIZ_META = { subject: "PHY", quizId: "phy-heat-ch1" };
 
   function getOptionOrTableText(q, key) {
     if (key === undefined || key === null) return null;
