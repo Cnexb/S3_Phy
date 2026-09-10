@@ -809,4 +809,8 @@ export function initQuiz() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => initQuiz());
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => initQuiz());
+} else {
+  initQuiz();
+}
