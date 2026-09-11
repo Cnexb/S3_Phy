@@ -6,6 +6,6 @@ export function createRayDiagramLab(t) {
     slug: 'ray-diagram',
     titleKey: 'tools.rayDiagram.title',
     className: 'tool-ray-diagram',
-    extraParams: () => '&v=20260911_ray_diagram',
+    extraParams: () => '&v=20260911_ray_diagram_notop',
   });
 }

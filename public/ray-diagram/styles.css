@@ -145,7 +145,7 @@ select:focus-visible {
 .workspace {
   display: grid;
   grid-template-columns: 184px minmax(400px, 1fr) 270px;
-  height: calc(100dvh - 83px);
+  height: 100dvh;
   min-height: 600px;
 }
 .toolbox {
@@ -879,7 +879,7 @@ dialog h2 {
 @media (max-width: 780px) {
   .workspace {
     grid-template-columns: 54px minmax(270px, 1fr);
-    height: calc(100dvh - 109px);
+    height: 100dvh;
     min-height: 450px;
   }
   .inspector {

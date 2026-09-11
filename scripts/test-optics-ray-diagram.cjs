@@ -42,7 +42,8 @@ assert.ok(fs.existsSync(path.join(root, "labs/ray-diagram/NOTICE")));
 
 const en = read("src/locales/en.js");
 const zh = read("src/locales/zhHant.js");
-assert.match(en, /'tools\.rayDiagram\.title':/);
+assert.match(en, /'tools\.rayDiagram\.title': 'Image formed by plane mirror'/);
 assert.match(zh, /'tools\.rayDiagram\.title':/);
+assert.match(read("labs/ray-diagram/index.html"), /\.topbar \{ display: none/);
 
 console.log("ok  optics ray-diagram seams");

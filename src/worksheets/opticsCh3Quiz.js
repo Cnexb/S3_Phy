@@ -1,6 +1,6 @@
 import { getLang } from '../i18n.js';
 
-const JPWM06_QUIZ_VERSION = '20260910jpwm06c';
+const JPWM06_QUIZ_VERSION = '20260911jpwm06imgs';
 
 /** @param {(key: string) => string} t */
 export function createOpticsCh3Quiz(t) {
