@@ -4,7 +4,7 @@
   "chapter": "CH3 Wave Motion and Optics",
   "chapterCode": "CH3",
   "scope": "optics",
-  "source": "existing public/notes paths; files were not moved",
+  "source": "Copies of hub PDFs. public/notes/ is unchanged for vendor Pages.",
   "notes": [
     {
       "topicCode": "JPWM06",
@@ -17,8 +17,8 @@
         "JPWM06.4"
       ],
       "files": {
-        "en": "public/notes/jpwm06-light-reflection-en.pdf",
-        "zhHant": "public/notes/jpwm06-light-reflection-zhHant.pdf"
+        "en": "content-packs/ch3-optics/notes/JPWM06-en.pdf",
+        "zhHant": "content-packs/ch3-optics/notes/JPWM06-zhHant.pdf"
       }
     },
     {
@@ -33,8 +33,8 @@
         "JPWM07.5"
       ],
       "files": {
-        "en": "public/notes/refraction-en.pdf",
-        "zhHant": "public/notes/refraction-zhHant.pdf"
+        "en": "content-packs/ch3-optics/notes/JPWM07-en.pdf",
+        "zhHant": "content-packs/ch3-optics/notes/JPWM07-zhHant.pdf"
       }
     },
     {
@@ -47,8 +47,8 @@
         "JPWM08.3"
       ],
       "files": {
-        "en": "public/notes/tir-en.pdf",
-        "zhHant": "public/notes/tir-zhHant.pdf"
+        "en": "content-packs/ch3-optics/notes/JPWM08-en.pdf",
+        "zhHant": "content-packs/ch3-optics/notes/JPWM08-zhHant.pdf"
       }
     },
     {
@@ -57,8 +57,8 @@
       "title": { "en": "Convex lens", "zhHant": "凸透鏡" },
       "subtopics": ["JPWM09.1", "JPWM09.2"],
       "files": {
-        "en": "public/notes/convex-lens-en.pdf",
-        "zhHant": "public/notes/convex-lens-zhHant.pdf"
+        "en": "content-packs/ch3-optics/notes/JPWM09-en.pdf",
+        "zhHant": "content-packs/ch3-optics/notes/JPWM09-zhHant.pdf"
       }
     },
     {
@@ -67,8 +67,8 @@
       "title": { "en": "Concave lens", "zhHant": "凹透鏡" },
       "subtopics": ["JPWM11.1", "JPWM11.2"],
       "files": {
-        "en": "public/notes/concave-lens-en.pdf",
-        "zhHant": "public/notes/concave-lens-zhHant.pdf"
+        "en": "content-packs/ch3-optics/notes/JPWM11-en.pdf",
+        "zhHant": "content-packs/ch3-optics/notes/JPWM11-zhHant.pdf"
       }
     },
     {
@@ -83,8 +83,8 @@
       ],
       "includedBecause": "Optics hub already ships emwaves PDFs. CSV places JPWM04 in Senior S4 CH3.",
       "files": {
-        "en": "public/notes/emwaves-en.pdf",
-        "zhHant": "public/notes/emwaves-zhHant.pdf"
+        "en": "content-packs/ch3-optics/notes/JPWM04-en.pdf",
+        "zhHant": "content-packs/ch3-optics/notes/JPWM04-zhHant.pdf"
       }
     }
   ],

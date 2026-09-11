@@ -20,8 +20,8 @@ export function loadCh3OpticsNotesPack(repoRoot) {
   for (const note of pack.notes) {
     for (const locale of ["en", "zhHant"]) {
       const relative = note.files[locale];
-      if (!relative.startsWith("public/notes/")) {
-        throw new Error(`${note.topicCode} ${locale} must stay under public/notes/`);
+      if (!relative.startsWith("content-packs/ch3-optics/notes/")) {
+        throw new Error(`${note.topicCode} ${locale} must live under the chapter pack notes/`);
       }
       const absolute = path.join(repoRoot, relative);
       if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) {
