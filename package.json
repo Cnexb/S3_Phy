@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "export:heat-flashcards": "node scripts/export-heat-ch1-flashcards.js",
     "export:light-flashcards": "node scripts/export-light-ch3-flashcards.js",
-    "export:optics-definitions-flashcards": "python scripts/export-optics-definitions-flashcards.py"
+    "export:optics-definitions-flashcards": "python scripts/export-optics-definitions-flashcards.py",
+    "test:ch3-pack": "node scripts/test-ch3-content-pack.mjs"
   },
   "devDependencies": {
     "playwright": "^1.61.1",

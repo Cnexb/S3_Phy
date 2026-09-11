@@ -1,0 +1,130 @@
+{
+  "packId": "phy-ch3-optics-notes-v1",
+  "subject": "PHY",
+  "chapter": "CH3 Wave Motion and Optics",
+  "chapterCode": "CH3",
+  "scope": "optics",
+  "source": "existing public/notes paths; files were not moved",
+  "notes": [
+    {
+      "topicCode": "JPWM06",
+      "symbol": "WM06",
+      "title": { "en": "Light reflection", "zhHant": "光的反射" },
+      "subtopics": [
+        "JPWM06.1",
+        "JPWM06.2",
+        "JPWM06.3",
+        "JPWM06.4"
+      ],
+      "files": {
+        "en": "public/notes/jpwm06-light-reflection-en.pdf",
+        "zhHant": "public/notes/jpwm06-light-reflection-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM07",
+      "symbol": "WM07",
+      "title": { "en": "Light refraction", "zhHant": "光的折射" },
+      "subtopics": [
+        "JPWM07.1",
+        "JPWM07.2",
+        "JPWM07.3",
+        "JPWM07.4",
+        "JPWM07.5"
+      ],
+      "files": {
+        "en": "public/notes/refraction-en.pdf",
+        "zhHant": "public/notes/refraction-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM08",
+      "symbol": "WM08",
+      "title": { "en": "Total internal reflection", "zhHant": "全內反射" },
+      "subtopics": [
+        "JPWM08.1",
+        "JPWM08.2",
+        "JPWM08.3"
+      ],
+      "files": {
+        "en": "public/notes/tir-en.pdf",
+        "zhHant": "public/notes/tir-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM09",
+      "symbol": "WM09",
+      "title": { "en": "Convex lens", "zhHant": "凸透鏡" },
+      "subtopics": ["JPWM09.1", "JPWM09.2"],
+      "files": {
+        "en": "public/notes/convex-lens-en.pdf",
+        "zhHant": "public/notes/convex-lens-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM11",
+      "symbol": "WM11",
+      "title": { "en": "Concave lens", "zhHant": "凹透鏡" },
+      "subtopics": ["JPWM11.1", "JPWM11.2"],
+      "files": {
+        "en": "public/notes/concave-lens-en.pdf",
+        "zhHant": "public/notes/concave-lens-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM04",
+      "symbol": "WM04",
+      "title": { "en": "Electromagnetic waves", "zhHant": "電磁波" },
+      "subtopics": [
+        "JPWM04.1",
+        "JPWM04.2",
+        "JPWM04.3",
+        "JPWM04.4"
+      ],
+      "includedBecause": "Optics hub already ships emwaves PDFs. CSV places JPWM04 in Senior S4 CH3.",
+      "files": {
+        "en": "public/notes/emwaves-en.pdf",
+        "zhHant": "public/notes/emwaves-zhHant.pdf"
+      }
+    }
+  ],
+  "topics": [
+    {
+      "topicCode": "JPWM06",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM07",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM08",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM09",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM10",
+      "level": "(S3)",
+      "title": { "en": "Magnification and lens formula", "zhHant": "放大率與透鏡公式" },
+      "subtopics": ["JPWM10.1", "JPWM10.2"],
+      "notes": null
+    },
+    {
+      "topicCode": "JPWM11",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM04",
+      "level": "(S4)",
+      "notes": "published"
+    }
+  ]
+}
