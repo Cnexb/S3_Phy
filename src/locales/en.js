@@ -54,7 +54,7 @@ export const en = {
   'topic.em': 'Electromagnetic waves',
   'topic.openTool': 'Open lab',
   'notes.title': 'Study notes (PDF)',
-  'notes.card.reflection': 'Reflection',
+  'notes.card.reflection': 'JPWM06 Light reflection',
   'notes.card.refraction': 'Refraction and Snell law',
   'notes.card.tir': 'Total internal reflection',
   'notes.card.convexLens': 'Convex lens',

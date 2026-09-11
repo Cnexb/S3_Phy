@@ -33,7 +33,7 @@ const OPTICS_COMIC_ROWS = [
 ];
 
 const OPTICS_NOTE_ROWS = [
-  { key: 'reflection', fileEn: 'reflection-en.pdf', fileZh: 'reflection-zhHant.pdf' },
+  { key: 'reflection', fileEn: 'jpwm06-light-reflection-en.pdf', fileZh: 'jpwm06-light-reflection-zhHant.pdf' },
   { key: 'refraction', fileEn: 'refraction-en.pdf', fileZh: 'refraction-zhHant.pdf' },
   { key: 'tir', fileEn: 'tir-en.pdf', fileZh: 'tir-zhHant.pdf' },
   { key: 'convexLens', fileEn: 'convex-lens-en.pdf', fileZh: 'convex-lens-zhHant.pdf' },

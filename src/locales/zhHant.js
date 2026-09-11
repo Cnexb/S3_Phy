@@ -54,7 +54,7 @@ export const zhHant = {
   'topic.em': '\u96fb\u78c1\u6ce2',
   'topic.openTool': '\u958b\u555f\u5be6\u9a57\u5ba4',
   'notes.title': '\u5b78\u7fd2\u7b46\u8a18\uff08PDF\uff09',
-  'notes.card.reflection': '\u53cd\u5c04',
+  'notes.card.reflection': 'JPWM06 \u5149\u7684\u53cd\u5c04',
   'notes.card.refraction': '\u6298\u5c04\u8207\u53f8\u4e43\u8033\u5b9a\u5f8b',
   'notes.card.tir': '\u5168\u5167\u53cd\u5c04',
   'notes.card.convexLens': '\u51f8\u900f\u93e1',
