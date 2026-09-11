@@ -53,7 +53,16 @@ function syncComponent(componentDir, category) {
     for (const entry of fs.readdirSync(componentDir)) copyEntry(path.join(componentDir, entry), path.join(publicDir, entry), exclude, excludeDirs);
   }
 }
+function syncShared() {
+  const src = path.join(repoRoot, 'labs', 'shared');
+  const dest = path.join(repoRoot, 'public', 'shared');
+  if (!fs.existsSync(src)) return;
+  console.log('[labs] shared -> public/shared/');
+  copyEntry(src, dest, DEFAULT_EXCLUDE, DEFAULT_EXCLUDE_DIRS);
+}
+
 function main() {
+  syncShared();
   let count = 0;
   for (const rootName of SOURCE_ROOTS) {
     const sourceRoot = path.join(repoRoot, rootName);

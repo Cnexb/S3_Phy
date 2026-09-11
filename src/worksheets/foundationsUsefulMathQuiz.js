@@ -1,4 +1,5 @@
 import { getLang } from '../i18n.js';
+import { embedPageUrl } from '../tools/embedPageUrl.js';
 
 /** @param {(key: string) => string} t */
 export function createFoundationsUsefulMathQuiz(t) {
@@ -6,11 +7,9 @@ export function createFoundationsUsefulMathQuiz(t) {
   wrap.className = 'tool-foundations-useful-math-quiz';
 
   const iframe = document.createElement('iframe');
-  const base = import.meta.env.BASE_URL || '/';
-  const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}foundations-useful-math-quiz/quiz.html?embed=1`;
+    return embedPageUrl('foundations-useful-math-quiz/quiz.html?embed=1');
   }
 
   iframe.src = iframeSrc();

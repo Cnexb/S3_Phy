@@ -1,4 +1,5 @@
 import { getLang } from '../i18n.js';
+import { embedPageUrl } from '../tools/embedPageUrl.js';
 
 /** @param {(key: string) => string} t */
 export function createOpticsCh4EmWorksheet(t) {
@@ -6,11 +7,9 @@ export function createOpticsCh4EmWorksheet(t) {
   wrap.className = 'tool-optics-ch4-em-quiz';
 
   const iframe = document.createElement('iframe');
-  const base = import.meta.env.BASE_URL || '/';
-  const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}optics-ch4-em-wave/quiz.html?embed=1`;
+    return embedPageUrl('optics-ch4-em-wave/quiz.html?embed=1&v=20260911noloop');
   }
 
   iframe.src = iframeSrc();

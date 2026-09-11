@@ -1,4 +1,5 @@
 import { getLang } from '../i18n.js';
+import { embedPageUrl } from '../tools/embedPageUrl.js';
 
 const FOUNDATIONS_QUIZ_VERSION = '20260904a';
 
@@ -8,11 +9,9 @@ export function createFoundationsQuantitiesQuiz(t) {
   wrap.className = 'tool-foundations-quantities-quiz';
 
   const iframe = document.createElement('iframe');
-  const base = import.meta.env.BASE_URL || '/';
-  const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}foundations-quantities-quiz/quiz.html?embed=1&v=${FOUNDATIONS_QUIZ_VERSION}`;
+    return embedPageUrl(`foundations-quantities-quiz/quiz.html?embed=1&v=${FOUNDATIONS_QUIZ_VERSION}`);
   }
 
   iframe.src = iframeSrc();

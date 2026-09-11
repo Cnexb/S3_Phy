@@ -186,7 +186,16 @@ function isEmbeddedFrame() {
   }
 }
 
+function isHubEntryPath() {
+  const p = location.pathname.replace(/\/index\.html$/i, '').replace(/\/+$/, '') || '/';
+  if (p === '/') return true;
+  return /(?:^|\/)dist$/.test(p);
+}
+
 function trySplashThenApp() {
+  if (!isHubEntryPath()) {
+    return;
+  }
   let skip = false;
   try {
     skip = sessionStorage.getItem(SPLASH_KEY) === '1';
