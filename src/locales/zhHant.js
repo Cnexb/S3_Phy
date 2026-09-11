@@ -164,6 +164,8 @@ export const zhHant = {
   'topic.rgbMixer': 'RGB \u984f\u8272\u6df7\u5408',
   'tools.em.title': '\u96fb\u78c1\u6ce2\u8b5c',
   'tools.em.pick': '\u63a2\u7d22\u6ce2\u9577\u3001\u983b\u7387\u8207\u6a21\u64ec\u5be6\u9a57',
+  'tools.rayDiagram.title': '\u5149\u7dda\u5716',
+  'tools.rayDiagram.pick': '\u5728\u65b9\u683c\u4e0a\u756b\u5e73\u9762\u93e1\u5149\u7dda\u5716',
   'worksheets.practiceTitle': '\u4e92\u52d5\u7df4\u7fd2',
   'worksheets.foundationsNotesTitle': '\u4e2d\u4e09\u7269\u7406\u57fa\u790e \u00b7 \u7269\u7406\u91cf\u3001\u55ae\u4f4d\u8207\u5e38\u7528\u6578\u5b78',
   'worksheets.pick': '\u9078\u64c7\u5de5\u4f5c\u7d19',

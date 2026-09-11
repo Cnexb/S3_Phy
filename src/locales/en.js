@@ -164,6 +164,8 @@ export const en = {
   'topic.rgbMixer': 'RGB colour mixing',
   'tools.em.title': 'Electromagnetic spectrum',
   'tools.em.pick': 'Explore wavelength, frequency, and simulation labs',
+  'tools.rayDiagram.title': 'Ray diagram',
+  'tools.rayDiagram.pick': 'Draw plane-mirror ray diagrams on a square grid',
   'worksheets.practiceTitle': 'On-screen practice',
   'worksheets.foundationsNotesTitle': 'S3 Foundations · Quantities, units and maths',
   'worksheets.pick': 'Choose worksheet',
