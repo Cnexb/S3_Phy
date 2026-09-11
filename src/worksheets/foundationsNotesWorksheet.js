@@ -1,4 +1,5 @@
 import { getLang } from '../i18n.js';
+import { embedPageUrl } from '../tools/embedPageUrl.js';
 
 const FOUNDATIONS_WORKSHEET_VERSION = '20260901a';
 
@@ -8,11 +9,9 @@ export function createFoundationsNotesWorksheet(t) {
   wrap.className = 'tool-foundations-notes-quiz';
 
   const iframe = document.createElement('iframe');
-  const base = import.meta.env.BASE_URL || '/';
-  const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}foundations-notes/quiz.html?embed=1&v=${FOUNDATIONS_WORKSHEET_VERSION}`;
+    return embedPageUrl(`foundations-notes/quiz.html?embed=1&v=${FOUNDATIONS_WORKSHEET_VERSION}`);
   }
 
   iframe.src = iframeSrc();

@@ -1,4 +1,5 @@
 import { getLang } from '../i18n.js';
+import { embedPageUrl } from '../tools/embedPageUrl.js';
 
 const JPHG01_QUIZ_VERSION = '20260910jphg01c';
 
@@ -8,11 +9,9 @@ export function createHeatCh1Quiz(t) {
   wrap.className = 'tool-heat-ch1-quiz';
 
   const iframe = document.createElement('iframe');
-  const base = import.meta.env.BASE_URL || '/';
-  const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}heat-ch1-quiz/quiz.html?embed=1&v=${JPHG01_QUIZ_VERSION}`;
+    return embedPageUrl(`heat-ch1-quiz/quiz.html?embed=1&v=${JPHG01_QUIZ_VERSION}`);
   }
 
   iframe.src = iframeSrc();

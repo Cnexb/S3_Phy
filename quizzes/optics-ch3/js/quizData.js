@@ -40,7 +40,7 @@ export const QUIZ_ITEMS = [
     answer: "D",
     hint: "A plane mirror reverses left and right. The image 12 looks like SI, which corresponds to 10:10.",
     image: {
-      src: "./assets/jpwm06-1-clock.png",
+      src: "./assets/jpwm06-1-clock.png?v=20260911imgs",
       alt: "Clock image formed by a plane mirror",
       caption: "Fig · Plane-mirror image of a clock",
     },
@@ -60,7 +60,7 @@ export const QUIZ_ITEMS = [
     answer: "B",
     hint: "Reflected rays appear to come from the image I behind the mirror. Q and S do; P and R do not.",
     image: {
-      src: "./assets/jpwm06-2-rays.png",
+      src: "./assets/jpwm06-2-rays.png?v=20260911imgs",
       alt: "Plane mirror with object O and rays P, Q, R and S",
       caption: "Fig · Object O and rays at a plane mirror",
     },
@@ -80,7 +80,7 @@ export const QUIZ_ITEMS = [
     answer: "C",
     hint: "The lamp is 2 m from the mirror, so its image is 2 m behind the mirror. Peter is 4 m from the mirror, so he must focus 6 m away.",
     image: {
-      src: "./assets/jpwm06-3-peter.png",
+      src: "./assets/jpwm06-3-peter.png?v=20260911imgs",
       alt: "Peter, a lamp, and a plane mirror",
       caption: "Fig · Photographing the image of the lamp",
     },
@@ -100,7 +100,7 @@ export const QUIZ_ITEMS = [
     answer: "C",
     hint: "Incident ray is 30° to the horizontal and the reflected ray is vertical. Angle of incidence equals angle of reflection, so the reflector is 60° to the horizontal.",
     image: {
-      src: "./assets/jpwm06-4-reflector.png",
+      src: "./assets/jpwm06-4-reflector.png?v=20260911imgs",
       alt: "Sunlight reflector on a roof directing light vertically into a building",
       caption: "Fig · Sunlight reflector",
     },

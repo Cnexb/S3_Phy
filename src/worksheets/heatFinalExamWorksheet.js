@@ -1,4 +1,5 @@
 import { getLang } from '../i18n.js';
+import { embedPageUrl } from '../tools/embedPageUrl.js';
 
 const HEAT_WORKSHEET_VERSION = '20260826s';
 
@@ -8,11 +9,9 @@ export function createHeatFinalExamWorksheet(t) {
   wrap.className = 'tool-heat-final-exam-quiz';
 
   const iframe = document.createElement('iframe');
-  const base = import.meta.env.BASE_URL || '/';
-  const root = base.endsWith('/') ? base : `${base}/`;
 
   function iframeSrc() {
-    return `${root}f3-heat-final-exam/quiz.html?embed=1&v=${HEAT_WORKSHEET_VERSION}`;
+    return embedPageUrl(`f3-heat-final-exam/quiz.html?embed=1&v=${HEAT_WORKSHEET_VERSION}`);
   }
 
   iframe.src = iframeSrc();

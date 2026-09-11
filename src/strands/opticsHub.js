@@ -13,7 +13,7 @@ import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
-const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em'];
+const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em', 'rayDiagram'];
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
@@ -66,6 +66,7 @@ const TOOL_LOADERS = {
   lens: () => import('../tools/lensLab.js').then((m) => m.createLensLab),
   rgbMixer: () => import('../tools/rgbColorMixerLab.js').then((m) => m.createRgbColorMixerLab),
   em: () => import('../tools/emLab.js').then((m) => m.createEmLab),
+  rayDiagram: () => import('../tools/rayDiagramLab.js').then((m) => m.createRayDiagramLab),
 };
 
 function toolLabel(id) {
@@ -78,6 +79,7 @@ function toolLabel(id) {
     lens: 'tools.lens.title',
     rgbMixer: 'tools.rgbMixer.title',
     em: 'tools.em.title',
+    rayDiagram: 'tools.rayDiagram.title',
   };
   return t(map[id] || id);
 }
