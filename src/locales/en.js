@@ -233,7 +233,7 @@ export const en = {
   'topic.heatTransfer': 'Heat transfer',
   'topic.thermometerLab': 'Thermometry & Calibration Lab',
   'topic.viewNotes': 'View notes',
-  'notes.card.thermometer': 'Ch.1.1 Thermometer',
+  'notes.card.thermometer': 'JPHG01 Temperature and thermometer',
   'notes.card.heatInternalEnergy': 'Ch.1.2 Heat and internal energy',
   'notes.card.changeOfState': 'Ch.1.3 Change of state',
   'notes.card.heatTransfer': 'Ch.1.4 Heat transfer process',

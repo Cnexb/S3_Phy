@@ -9,8 +9,8 @@ const HEAT_TOPICS = [
   {
     id: 'thermometer',
     titleKey: 'topic.thermometer',
-    fileEn: 'thermometer-en.pdf',
-    fileZh: 'thermometer-zhHant.pdf',
+    fileEn: 'jphg01-temperature-and-thermometer-en.pdf',
+    fileZh: 'jphg01-temperature-and-thermometer-zhHant.pdf',
     tool: 'liquid',
   },
   {

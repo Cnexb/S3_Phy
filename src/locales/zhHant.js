@@ -233,7 +233,7 @@ export const zhHant = {
   'topic.heatTransfer': '\u71b1\u50b3\u5165',
   'topic.thermometerLab': '\u6eab\u5ea6\u8a08\u8207\u6821\u6e96\u5be6\u9a57\u5ba4',
   'topic.viewNotes': '\u67e5\u95b1\u7b46\u8a18',
-  'notes.card.thermometer': 'Ch.1.1 \u6eab\u5ea6\u8a08',
+  'notes.card.thermometer': 'JPHG01 \u6eab\u5ea6\u8207\u6eab\u5ea6\u8a08',
   'notes.card.heatInternalEnergy': 'Ch.1.2 \u71b1\u8207\u5167\u80fd',
   'notes.card.changeOfState': 'Ch.1.3 \u7269\u614b\u8b8a\u5316',
   'notes.card.heatTransfer': 'Ch.1.4 \u71b1\u50b3\u5165',
