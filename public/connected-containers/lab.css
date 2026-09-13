@@ -142,12 +142,12 @@ canvas#c { cursor: pointer; }
 }
 .stat-hot span { font-size: 0.72rem; color: #b91c1c; letter-spacing: 0.03em; }
 .stat-hot b { font-size: 1.2rem; color: #b91c1c; line-height: 1.2; }
-.stat-a { border-color: #fde68a; background: #fffbeb; }
-.stat-a span { color: var(--pressure); }
-.stat-a b { color: var(--pressure); font-size: 1.15rem; }
-.stat-b { border-color: #bae6fd; background: #f0f9ff; }
-.stat-b span { color: var(--boyle); }
-.stat-b b { color: var(--boyle); font-size: 1.15rem; }
+.stat-a,
+.stat-b { border-color: #e2e8f0; background: #fff; }
+.stat-a span,
+.stat-b span { color: #64748b; }
+.stat-a b,
+.stat-b b { color: #4f46e5; font-size: 1.15rem; }
 
 .block-label {
   margin: 0.15rem 0 0;

@@ -13,6 +13,9 @@
   var TAU = 1.65;
   var VIEW_W = 1100;
   var VIEW_H = 670;
+  var FONT = "Plus Jakarta Sans, Inter, Segoe UI, sans-serif";
+  var COL_COLD = [2, 132, 199];
+  var COL_HOT = [249, 115, 22];
 
   var lang = "en";
   var canvas = document.getElementById("c");
@@ -128,6 +131,28 @@
   function hueFor(T) {
     var u = Math.min(1, Math.max(0, (T - T_ICE) / 100));
     return 175 - u * 150;
+  }
+
+  function clamp01(u) {
+    return Math.min(1, Math.max(0, u));
+  }
+
+  function mixRgb(a, b, t) {
+    t = clamp01(t);
+    return [
+      Math.round(a[0] + (b[0] - a[0]) * t),
+      Math.round(a[1] + (b[1] - a[1]) * t),
+      Math.round(a[2] + (b[2] - a[2]) * t)
+    ];
+  }
+
+  function rgbCss(c, a) {
+    if (a == null) return "rgb(" + c[0] + ", " + c[1] + ", " + c[2] + ")";
+    return "rgba(" + c[0] + ", " + c[1] + ", " + c[2] + ", " + a + ")";
+  }
+
+  function particleColor(T) {
+    return rgbCss(mixRgb(COL_COLD, COL_HOT, (T - T_ICE) / 100));
   }
 
   function spawnIn(where, count) {
@@ -330,21 +355,24 @@
   function makeIcePile(bath, count, seed) {
     var rnd = seeded(seed);
     var pile = [];
-    var pad = 14;
-    var floor = bath.y + bath.h - 8;
-    var cols = Math.ceil(count * 0.62);
-    var i, layer, col, w, h;
+    var cols = count > 10 ? 5 : 4;
+    var pad = 16;
+    var cellW = (bath.w - pad * 2) / cols;
+    var cellH = 22;
+    var size = Math.min(22, cellW * 0.82);
+    var baseY = bath.y + bath.h - pad - 2;
+    var i, col, row, x, y;
     for (i = 0; i < count; i++) {
-      layer = i < cols ? 0 : 1;
-      col = layer === 0 ? i : i - cols;
-      w = 22 + rnd() * 12;
-      h = 12 + rnd() * 7;
+      col = i % cols;
+      row = Math.floor(i / cols);
+      x = bath.x + pad + col * cellW + (cellW - size) / 2;
+      y = baseY - row * cellH - size;
       pile.push({
-        x: bath.x + pad + (col + 0.15 + rnd() * 0.7) * ((bath.w - pad * 2) / (layer === 0 ? cols : Math.max(1, count - cols))) - w / 2,
-        y: floor - h - layer * (10 + rnd() * 5) - rnd() * 3,
-        w: w,
-        h: h,
-        rot: (rnd() - 0.5) * 0.22,
+        x: x,
+        y: y,
+        w: size,
+        h: size * 0.82,
+        rot: (rnd() - 0.5) * 0.05,
         order: rnd()
       });
     }
@@ -352,34 +380,78 @@
     return pile;
   }
 
-  var ICE_A = makeIcePile(BATH_A, 12, 42);
-  var ICE_B = makeIcePile(BATH_B, 18, 91);
+  var ICE_A = makeIcePile(BATH_A, 8, 42);
+  var ICE_B = makeIcePile(BATH_B, 12, 91);
+
+  function drawIceCube(cube, fade) {
+    if (fade <= 0.02) return;
+    ctx.save();
+    ctx.globalAlpha = fade;
+    ctx.translate(cube.x + cube.w / 2, cube.y + cube.h / 2);
+    ctx.rotate(cube.rot);
+    var x = -cube.w / 2;
+    var y = -cube.h / 2;
+    var g = ctx.createLinearGradient(0, y, 0, y + cube.h);
+    g.addColorStop(0, "#ffffff");
+    g.addColorStop(1, "#e2e8f0");
+    roundRect(ctx, x, y, cube.w, cube.h, 4);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = "#64748b";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x + 4, y + 3);
+    ctx.lineTo(x + cube.w - 4, y + 3);
+    ctx.strokeStyle = "rgba(255,255,255,0.8)";
+    ctx.lineWidth = 1.6;
+    ctx.lineCap = "round";
+    ctx.stroke();
+    ctx.restore();
+  }
 
   function drawIcePile(pile, bath, melt) {
     var fade = melt > 0.72 ? Math.max(0, 1 - (melt - 0.72) / 0.28) : 1;
     if (fade <= 0.02) return;
     ctx.save();
-    openBath(ctx, bath.x, bath.y, bath.w, bath.h, 14);
+    openBath(ctx, bath.x, bath.y, bath.w, bath.h, 8);
     ctx.clip();
-    ctx.lineWidth = 1.1;
     for (var i = 0; i < pile.length; i++) {
       var cube = pile[i];
       if (cube.order < melt) continue;
-      ctx.save();
-      ctx.translate(cube.x + cube.w / 2, cube.y + cube.h / 2 + melt * 6);
-      ctx.rotate(cube.rot);
-      ctx.globalAlpha = 0.92 * fade;
-      roundRect(ctx, -cube.w / 2, -cube.h / 2, cube.w, cube.h, 4);
-      ctx.fillStyle = "rgba(255,255,255,0.95)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(3, 105, 161, 0.35)";
-      ctx.stroke();
-      ctx.fillStyle = "rgba(255,255,255,0.55)";
-      roundRect(ctx, -cube.w / 2 + 3, -cube.h / 2 + 2, cube.w * 0.38, cube.h * 0.34, 2);
-      ctx.fill();
-      ctx.restore();
+      drawIceCube({
+        x: cube.x,
+        y: cube.y + melt * 5,
+        w: cube.w,
+        h: cube.h,
+        rot: cube.rot
+      }, fade);
     }
     ctx.restore();
+  }
+
+  function fillBath(bath, heat) {
+    var top = mixRgb([240, 249, 255], [255, 247, 237], heat);
+    var bot = mixRgb([186, 230, 253], [253, 186, 116], heat);
+    var g = ctx.createLinearGradient(bath.x, bath.y, bath.x, bath.y + bath.h);
+    g.addColorStop(0, rgbCss(top, 0.88));
+    g.addColorStop(1, rgbCss(bot, 0.96));
+    openBath(ctx, bath.x, bath.y, bath.w, bath.h, 8);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+
+  function strokeBath(bath) {
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    openBath(ctx, bath.x, bath.y, bath.w, bath.h, 8);
+    ctx.stroke();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "rgba(255,255,255,0.7)";
+    openBath(ctx, bath.x + 3, bath.y, bath.w - 6, bath.h - 3, 6);
+    ctx.stroke();
   }
 
   function worldScale() {
@@ -406,24 +478,25 @@
 
   function drawThermo(x, y, T, hot) {
     var h = 78;
-    var frac = (T - T_ICE) / 100;
+    var frac = clamp01((T - T_ICE) / 100);
+    var ink = hot ? "#f97316" : "#0284c7";
     ctx.save();
     ctx.translate(x, y);
-    ctx.fillStyle = "#fff";
-    ctx.strokeStyle = "#5b7280";
-    ctx.lineWidth = 1.5;
     roundRect(ctx, -6, -h, 12, h, 6);
+    ctx.fillStyle = "#ffffff";
     ctx.fill();
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 1.5;
     ctx.stroke();
     ctx.beginPath();
-    ctx.arc(0, 8, 10, 0, Math.PI * 2);
-    ctx.fillStyle = hot ? "#c2410c" : "#0369a1";
+    ctx.arc(0, 8, 9, 0, Math.PI * 2);
+    ctx.fillStyle = ink;
     ctx.fill();
-    ctx.fillStyle = hot ? "#c2410c" : "#0369a1";
     roundRect(ctx, -3, -h * frac, 6, h * frac + 8, 3);
+    ctx.fillStyle = ink;
     ctx.fill();
-    ctx.fillStyle = "#1a2430";
-    ctx.font = "700 11px Segoe UI, sans-serif";
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "700 11px " + FONT;
     ctx.textAlign = "left";
     ctx.fillText(Math.round(T - 273.15) + "°C", 14, -h + 8);
     ctx.restore();
@@ -431,35 +504,48 @@
 
   function drawChip(x, y, text) {
     ctx.save();
-    ctx.font = "700 12px Segoe UI, sans-serif";
+    ctx.font = "700 11px " + FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    var w = Math.min(210, ctx.measureText(text).width + 18);
-    roundRect(ctx, x - w / 2, y - 11, w, 22, 9);
-    ctx.fillStyle = "rgba(255,253,249,0.96)";
+    var w = Math.min(220, ctx.measureText(text).width + 18);
+    roundRect(ctx, x - w / 2, y - 11, w, 22, 8);
+    ctx.fillStyle = "#ffffff";
     ctx.fill();
-    ctx.strokeStyle = "#cfdce6";
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = "#e2e8f0";
+    ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.fillStyle = "#5a6878";
+    ctx.fillStyle = "#64748b";
     ctx.fillText(text, x, y + 0.5);
     ctx.restore();
   }
 
-  function drawFlask(f, fill, label) {
+  function drawFlask(f, dens, heat, label, isVac) {
+    var d = clamp01(dens);
+    var u = clamp01(heat);
+    var top = isVac
+      ? [255, 255, 255]
+      : mixRgb([255, 255, 255], mixRgb([56, 189, 248], [251, 146, 60], u), 0.22 + 0.78 * d);
+    var bot = isVac
+      ? [241, 245, 249]
+      : mixRgb([241, 245, 249], mixRgb([3, 105, 161], [194, 65, 12], u), 0.22 + 0.78 * d);
+    var g = ctx.createLinearGradient(f.x, f.y - f.r, f.x, f.y + f.r);
+    g.addColorStop(0, rgbCss(top));
+    g.addColorStop(1, rgbCss(bot));
     ctx.beginPath();
-    ctx.arc(f.x, f.y, f.r - 3, 0, Math.PI * 2);
-    ctx.fillStyle = fill;
+    ctx.arc(f.x, f.y, f.r - 2, 0, Math.PI * 2);
+    ctx.fillStyle = g;
     ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = "#5b7280";
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = isVac ? "#94a3b8" : (u > 0.55 ? "#ea580c" : "#0284c7");
     ctx.stroke();
     ctx.beginPath();
-    ctx.ellipse(f.x - f.r * 0.28, f.y - f.r * 0.32, f.r * 0.16, f.r * 0.28, -0.5, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255,0.45)";
-    ctx.fill();
-    ctx.fillStyle = "#1a2430";
-    ctx.font = "800 22px Trebuchet MS, Segoe UI, sans-serif";
+    ctx.arc(f.x, f.y, f.r - 11, -Math.PI * 0.92, -Math.PI * 0.52);
+    ctx.strokeStyle = "rgba(255,255,255,0.72)";
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    ctx.stroke();
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "800 20px " + FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(label, f.x, f.y - f.r - 36);
@@ -468,66 +554,68 @@
   function drawScene() {
     var ws = worldScale();
     ctx.clearRect(0, 0, ws.w, ws.h);
-    ctx.fillStyle = "rgba(255,253,249,0.35)";
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, ws.w, ws.h);
 
     ctx.save();
     ctx.translate(ws.ox, ws.oy);
     ctx.scale(ws.s, ws.s);
 
-    ctx.fillStyle = "#d7e6ec";
-    roundRect(ctx, TABLE.x, TABLE.y, TABLE.w, TABLE.h, 16);
+    roundRect(ctx, TABLE.x, TABLE.y, TABLE.w, TABLE.h, 12);
+    ctx.fillStyle = "#f1f5f9";
     ctx.fill();
-    ctx.fillStyle = "#c5d4de";
-    roundRect(ctx, TABLE.x, TABLE.y, TABLE.w, 18, 8);
-    ctx.fill();
-
-    var heat = Math.min(1, Math.max(0, (state.TA - T_ICE) / 100));
-    var meltA = Math.min(1, Math.max(0, (state.TA - T_ICE) / 72));
-    ctx.fillStyle = "rgba(" +
-      Math.round(125 + 70 * heat) + ", " +
-      Math.round(211 - 90 * heat) + ", " +
-      Math.round(252 - 180 * heat) + ", " +
-      (0.2 + 0.08 * heat) + ")";
-    ctx.strokeStyle = "#5b7280";
+    ctx.strokeStyle = "#94a3b8";
     ctx.lineWidth = 2;
-    openBath(ctx, BATH_A.x, BATH_A.y, BATH_A.w, BATH_A.h, 14);
-    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(TABLE.x, TABLE.y);
+    ctx.lineTo(TABLE.x + TABLE.w, TABLE.y);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(100,116,139,0.35)";
+    ctx.lineWidth = 1;
+    var sx;
+    for (sx = TABLE.x + 10; sx < TABLE.x + TABLE.w; sx += 18) {
+      ctx.beginPath();
+      ctx.moveTo(sx, TABLE.y + 6);
+      ctx.lineTo(sx - 8, TABLE.y + 18);
+      ctx.stroke();
+    }
 
-    ctx.fillStyle = "rgba(125, 211, 252, 0.22)";
-    openBath(ctx, BATH_B.x, BATH_B.y, BATH_B.w, BATH_B.h, 14);
-    ctx.fill();
-
+    var heat = clamp01((state.TA - T_ICE) / 100);
+    var meltA = clamp01((state.TA - T_ICE) / 72);
+    fillBath(BATH_A, heat);
+    fillBath(BATH_B, 0);
     drawIcePile(ICE_A, BATH_A, meltA);
     drawIcePile(ICE_B, BATH_B, 0);
 
-    openBath(ctx, BATH_A.x, BATH_A.y, BATH_A.w, BATH_A.h, 14);
-    ctx.stroke();
-    openBath(ctx, BATH_B.x, BATH_B.y, BATH_B.w, BATH_B.h, 14);
-    ctx.stroke();
-
     if (state.heating || state.TA > T_ICE + 2) {
       ctx.save();
-      ctx.globalAlpha = 0.25 + 0.55 * ((state.TA - T_ICE) / 100);
-      ctx.fillStyle = "#c2410c";
-      roundRect(ctx, A.x - 48, TABLE.y + 10, 96, 12, 4);
+      ctx.globalAlpha = 0.35 + 0.55 * heat;
+      roundRect(ctx, A.x - 44, TABLE.y + 8, 88, 8, 4);
+      ctx.fillStyle = "#f97316";
       ctx.fill();
       ctx.restore();
     }
 
-    ctx.fillStyle = "#d7e6ec";
-    roundRect(ctx, TUBE.x1, TUBE.y - TUBE.h / 2, TUBE.x2 - TUBE.x1, TUBE.h, 10);
+    roundRect(ctx, TUBE.x1, TUBE.y - TUBE.h / 2, TUBE.x2 - TUBE.x1, TUBE.h, 8);
+    ctx.fillStyle = "#f1f5f9";
     ctx.fill();
-    ctx.strokeStyle = "#5b7280";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(TUBE.x1 + 10, TUBE.y - TUBE.h / 2 + 5);
+    ctx.lineTo(TUBE.x2 - 10, TUBE.y - TUBE.h / 2 + 5);
+    ctx.strokeStyle = "rgba(255,255,255,0.7)";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
     ctx.stroke();
 
     if (!state.tapOpen) {
-      ctx.fillStyle = "#c2410c";
-      roundRect(ctx, TAP.x - 7, TUBE.y - 18, 14, 36, 4);
+      roundRect(ctx, TAP.x - 6, TUBE.y - 16, 12, 32, 4);
+      ctx.fillStyle = "#334155";
       ctx.fill();
     } else if (Math.abs(pA() - pB()) > 4000) {
-      ctx.fillStyle = "rgba(180, 83, 9, 0.45)";
+      ctx.fillStyle = "rgba(249, 115, 22, 0.55)";
       var dir = pA() > pB() ? 1 : -1;
       for (var i = 0; i < 5; i++) {
         var x = TAP.x - 40 + ((state.time * 80 * dir + i * 18) % 90);
@@ -543,44 +631,47 @@
     ctx.translate(TAP.x, TAP.y - 28);
     ctx.rotate(state.tapOpen ? -0.7 : 0);
     ctx.beginPath();
-    ctx.arc(0, 0, 16, 0, Math.PI * 2);
-    ctx.fillStyle = "#b45309";
+    ctx.arc(0, 0, 15, 0, Math.PI * 2);
+    ctx.fillStyle = "#6366f1";
     ctx.fill();
-    ctx.strokeStyle = "#7c2d12";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#4338ca";
+    ctx.lineWidth = 2;
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(-14, 0); ctx.lineTo(14, 0);
-    ctx.moveTo(0, -14); ctx.lineTo(0, 14);
+    ctx.moveTo(-12, 0); ctx.lineTo(12, 0);
+    ctx.moveTo(0, -12); ctx.lineTo(0, 12);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
     ctx.stroke();
     ctx.restore();
-    ctx.fillStyle = "#b45309";
-    roundRect(ctx, TAP.x - 5, TAP.y - 22, 10, 18, 3);
+    roundRect(ctx, TAP.x - 4, TAP.y - 20, 8, 16, 3);
+    ctx.fillStyle = "#4f46e5";
     ctx.fill();
-    ctx.fillStyle = "#1a2430";
-    ctx.font = "800 13px Trebuchet MS, Segoe UI, sans-serif";
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "800 12px " + FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(tr("tap"), TAP.x, TAP.y - 56);
 
     var densA = Math.min(1, (state.nA / N_TOTAL) * 1.15);
     var densB = Math.min(1, (state.nB / N_TOTAL) * (VA / VB) / 0.2);
-    var fillA = "rgba(" + Math.round(15 + 180 * heat) + ", " + Math.round(118 - 50 * heat) + ", " + Math.round(110 - 80 * heat) + ", " + (0.08 + densA * 0.22) + ")";
-    var fillB = pB() < 500 ? "rgba(255,253,249,0.4)" : "rgba(15, 118, 110, " + (0.06 + Math.min(0.22, densB * 0.18)) + ")";
-    drawFlask(A, fillA, "A");
-    drawFlask(B, fillB, "B");
+    drawFlask(A, densA, heat, "A", false);
+    drawFlask(B, densB, 0, "B", pB() < 500);
+    strokeBath(BATH_A);
+    strokeBath(BATH_B);
 
     if (pB() < 800 && !state.tapOpen) {
-      ctx.fillStyle = "#0369a1";
-      ctx.font = "800 16px Trebuchet MS, Segoe UI, sans-serif";
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "800 13px " + FONT;
       ctx.fillText(tr("vacLabel"), B.x, B.y + 6);
     }
 
     var b, trItem, p;
     for (b = 0; b < bubbles.length; b++) {
-      ctx.globalAlpha = Math.max(0, bubbles[b].a);
-      ctx.strokeStyle = "rgba(3, 105, 161, 0.65)";
-      ctx.lineWidth = 1.5;
+      ctx.globalAlpha = Math.max(0, bubbles[b].a) * 0.7;
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1.4;
       ctx.beginPath();
       ctx.arc(bubbles[b].x, bubbles[b].y, bubbles[b].r, 0, Math.PI * 2);
       ctx.stroke();
@@ -590,7 +681,7 @@
     for (var t = 0; t < transit.length; t++) {
       trItem = transit[t];
       ctx.beginPath();
-      ctx.fillStyle = "hsl(" + hueFor(trItem.T) + " 70% 42%)";
+      ctx.fillStyle = particleColor(trItem.T);
       ctx.arc(trItem.x, trItem.y, trItem.r || 3.6, 0, Math.PI * 2);
       ctx.fill();
     }
@@ -599,7 +690,7 @@
       p = particles[n];
       var T = p.where === "A" ? state.TA : state.TB;
       ctx.beginPath();
-      ctx.fillStyle = "hsl(" + hueFor(T) + " 70% 42%)";
+      ctx.fillStyle = particleColor(T);
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fill();
     }
@@ -610,8 +701,8 @@
     drawThermo(BATH_A.x + BATH_A.w + 22, BATH_A.y + BATH_A.h - 28, state.TA, state.TA > 320);
     drawThermo(BATH_B.x + BATH_B.w + 22, BATH_B.y + BATH_B.h - 28, state.TB, false);
 
-    ctx.fillStyle = "#5a6878";
-    ctx.font = "700 12px Segoe UI, sans-serif";
+    ctx.fillStyle = "#64748b";
+    ctx.font = "700 12px " + FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(tr("bathA"), BATH_A.x + BATH_A.w / 2, TABLE.y + 38);
