@@ -334,6 +334,45 @@ body {
   color: #fff !important;
 }
 
+.subtabs {
+  background: #fff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.subtabs button,
+.subtabs button.on[data-law="pressure"],
+.subtabs button.on[data-law="boyle"],
+.subtabs button.on[data-law="charles"] {
+  border-radius: 0.5rem;
+}
+
+.subtabs button.on[data-law="pressure"],
+.subtabs button.on[data-law="boyle"],
+.subtabs button.on[data-law="charles"] {
+  background: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+  color: #fff !important;
+}
+
+.stage-hint {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+.stat-hot {
+  border-color: #e2e8f0 !important;
+  background: #fff !important;
+}
+
+.stat-hot span {
+  color: #64748b !important;
+}
+
+.stat-hot b {
+  color: #4f46e5 !important;
+}
+
 input[type="range"] {
   accent-color: #6366f1;
 }

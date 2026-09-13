@@ -285,35 +285,43 @@
     }
   }
 
+  function n1() {
+    return window.N1Art;
+  }
+
   function drawChamber(c, cx, W, H, box, list, opts) {
     opts = opts || {};
-    cx.clearRect(0, 0, W, H);
-    cx.fillStyle = "rgba(255,253,249,0.35)";
-    cx.fillRect(0, 0, W, H);
-
-    cx.fillStyle = "#d7e6ec";
-    cx.strokeStyle = "#5b7280";
-    cx.lineWidth = 3;
-    roundRect(cx, box.x - 4, box.y - 4, box.w + 8, box.h + 8, 10);
-    cx.fill();
-    cx.stroke();
-
+    var art = n1();
+    var heat = Math.min(1, Math.max(0, ((opts.T || 300) - 293) / 180));
     var dens = Math.min(1, (opts.N || list.length) / 70 * (50 / Math.max(20, opts.V || 50)));
-    cx.fillStyle = "rgba(15, 118, 110, " + (0.06 + dens * 0.18) + ")";
-    cx.fillRect(box.x, box.y, box.w, box.h);
+
+    if (art) art.fillStage(cx, W, H);
+    else {
+      cx.clearRect(0, 0, W, H);
+      cx.fillStyle = "#ffffff";
+      cx.fillRect(0, 0, W, H);
+    }
+
+    if (art) art.drawGlassChamber(cx, box.x, box.y, box.w, box.h, heat, dens);
+    else {
+      roundRect(cx, box.x, box.y, box.w, box.h, 8);
+      cx.fillStyle = "#f8fafc";
+      cx.fill();
+      cx.strokeStyle = "#0284c7";
+      cx.lineWidth = 2;
+      cx.stroke();
+    }
 
     for (var i = 0; i < list.length; i++) {
       var p = list[i];
-      cx.beginPath();
-      cx.fillStyle = "hsl(" + p.hue + " 70% 42%)";
-      cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      cx.fill();
-      if (opts.trails) {
-        cx.strokeStyle = "hsla(" + p.hue + " 70% 42% / 0.25)";
+      if (art) {
+        if (opts.trails) art.drawSpeedTrail(cx, p.x, p.y, p.vx, p.vy, heat);
+        art.drawDot(cx, p.x, p.y, p.r, heat);
+      } else {
         cx.beginPath();
-        cx.moveTo(p.x, p.y);
-        cx.lineTo(p.x - p.vx * 2.2, p.y - p.vy * 2.2);
-        cx.stroke();
+        cx.fillStyle = "#0284c7";
+        cx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        cx.fill();
       }
     }
 
@@ -322,42 +330,41 @@
         var fl = opts.flashes[f];
         fl.life -= 0.04;
         if (fl.life <= 0) { opts.flashes.splice(f, 1); continue; }
-        cx.beginPath();
-        cx.strokeStyle = "rgba(194, 65, 12, " + fl.life + ")";
-        cx.lineWidth = 2;
-        cx.arc(fl.x, fl.y, 6 + (1 - fl.life) * 14, 0, Math.PI * 2);
-        cx.stroke();
+        if (art) art.drawHitFlash(cx, fl.x, fl.y, fl.life);
+        else {
+          cx.beginPath();
+          cx.strokeStyle = "rgba(249, 115, 22, " + fl.life + ")";
+          cx.lineWidth = 2;
+          cx.arc(fl.x, fl.y, 6 + (1 - fl.life) * 14, 0, Math.PI * 2);
+          cx.stroke();
+        }
       }
     }
 
-    var px = box.x + box.w;
-    cx.fillStyle = "#94a3b8";
-    cx.fillRect(px, box.y - 6, 14, box.h + 12);
-    cx.fillStyle = "#64748b";
-    cx.fillRect(px + 14, box.y + box.h * 0.35, 48, box.h * 0.3);
-    cx.fillStyle = "#1a2430";
-    cx.font = "700 12px sans-serif";
-    cx.fillText("V", px + 30, box.y + box.h * 0.52);
-
-    cx.fillStyle = "#5a6878";
-    cx.font = "700 11px sans-serif";
-    cx.fillText("θ → speed", box.x, box.y - 12);
-    if (opts.label) {
-      cx.fillStyle = "#1a2430";
-      cx.font = "800 13px sans-serif";
-      cx.fillText(opts.label, box.x, H - 16);
+    if (art) art.drawPiston(cx, box.x + box.w, box.y, box.h, "V");
+    else {
+      cx.fillStyle = "#475569";
+      cx.fillRect(box.x + box.w, box.y - 6, 14, box.h + 12);
     }
 
-    cx.beginPath();
-    cx.fillStyle = "#c2410c";
-    var heat = Math.min(1, ((opts.T || 300) - 223) / 350);
-    cx.globalAlpha = 0.25 + heat * 0.55;
-    cx.arc(box.x + box.w * 0.5, box.y + box.h + 22, 8 + heat * 6, 0, Math.PI * 2);
-    cx.fill();
-    cx.globalAlpha = 1;
-    cx.fillStyle = "#5a6878";
-    cx.font = "600 10px sans-serif";
-    cx.fillText("vibrator / heat", box.x + box.w * 0.5 - 36, box.y + box.h + 40);
+    cx.fillStyle = "#64748b";
+    cx.font = art ? art.font(700, 11) : "700 11px Plus Jakarta Sans, sans-serif";
+    cx.textAlign = "left";
+    cx.fillText("θ → speed", box.x, box.y - 12);
+    if (opts.label) {
+      cx.fillStyle = "#0f172a";
+      cx.font = art ? art.font(800, 13) : "800 13px Plus Jakarta Sans, sans-serif";
+      cx.textAlign = "right";
+      cx.fillText(opts.label, W - 16, 22);
+      cx.textAlign = "left";
+    }
+
+    if (heat > 0.08 && art) art.drawHeatBar(cx, box.x + 8, box.y + box.h + 16, Math.max(48, box.w - 16), heat);
+    if (heat > 0.08) {
+      cx.fillStyle = "#64748b";
+      cx.font = art ? art.font(600, 10) : "600 10px Plus Jakarta Sans, sans-serif";
+      cx.fillText("vibrator / heat", box.x + box.w * 0.5 - 36, box.y + box.h + 40);
+    }
   }
 
   function roundRect(cx, x, y, w, h, r) {

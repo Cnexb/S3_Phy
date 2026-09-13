@@ -6,6 +6,6 @@ export function createPressureLawLab(t) {
     slug: 'pressure-law',
     titleKey: 'tools.pressureLaw.title',
     className: 'tool-pressure-law-lab',
-    extraParams: () => '&v=20260913_n1_skin',
+    extraParams: () => '&v=20260913_n1_canvas',
   });
 }

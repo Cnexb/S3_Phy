@@ -6,6 +6,6 @@ export function createCharlesLawLab(t) {
     slug: 'charles-law',
     titleKey: 'tools.charlesLaw.title',
     className: 'tool-charles-law-lab',
-    extraParams: () => '&v=20260913_n1_skin',
+    extraParams: () => '&v=20260913_n1_canvas',
   });
 }

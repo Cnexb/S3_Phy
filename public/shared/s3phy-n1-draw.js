@@ -216,11 +216,11 @@
     drawGlowingBox(ctx, x + 14, y + h * 0.42, 36, 12, C.slateTop, C.slateBot, C.slateStroke);
     skyBox(ctx, x + 48, y + h * 0.42 - 5, 18, 22);
     if (label) {
-      ctx.fillStyle = C.ink;
+      ctx.fillStyle = "#ffffff";
       ctx.font = font(800, 12);
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(label, x + 32, y + h * 0.52);
+      ctx.fillText(label, x + 32, y + h * 0.42 + 6);
     }
   }
 
