@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Aircraft Turn Lab — Mechanics</title>
+  <link rel="stylesheet" href="lab.css" />
+  <link rel="preload" as="image" href="plane.png" />
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="wrap lab-wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🌀</div>
+        <div>
+          <h1>
+            <span class="en">Aircraft Turn Lab</span>
+            <span class="zh">飛機轉彎實驗室</span>
+          </h1>
+          <p>
+            <span class="en">See who supplies the inward push — speed can stay the same while direction keeps changing.</span>
+            <span class="zh">看是誰提供指向圓心的力——速率可以不變，但方向一直在變。</span>
+          </p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="langEn" class="active">EN</button>
+          <button type="button" id="langZh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2 id="stTitle"></h2>
+          <p id="stSub"></p>
+        </div>
+        <div class="hd-actions">
+          <button type="button" class="btn teal" id="btnPlay"></button>
+          <button type="button" class="btn sec" id="btnSlow"></button>
+          <button type="button" class="btn sec" id="btnReset">
+            <span class="en">Reset</span>
+            <span class="zh">重設</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div class="stage">
+          <canvas id="c" width="1280" height="780" aria-label="Aircraft making a turn"></canvas>
+        </div>
+
+        <div class="right-col">
+          <aside class="panel">
+            <div class="toggles">
+              <button type="button" class="chip on" id="chipForces">
+                <span class="en">Force arrows</span>
+                <span class="zh">力的箭頭</span>
+              </button>
+            </div>
+
+            <div class="panel-sliders">
+              <div class="slider-wrap" id="wrapAV">
+                <div class="slider-head">
+                  <span class="en">Speed v</span>
+                  <span class="zh">速率 v</span>
+                  <em id="valAV">250 m/s</em>
+                </div>
+                <input type="range" id="slAV" min="80" max="320" value="250" />
+              </div>
+              <div class="slider-wrap" id="wrapAR">
+                <div class="slider-head">
+                  <span class="en">Turn radius r</span>
+                  <span class="zh">轉彎半徑 r</span>
+                  <em id="valAR">20 km</em>
+                </div>
+                <input type="range" id="slAR" min="4" max="30" value="20" />
+              </div>
+              <div class="slider-wrap" id="wrapAM">
+                <div class="slider-head">
+                  <span class="en">Aircraft mass m</span>
+                  <span class="zh">飛機質量 m</span>
+                  <em id="valAM">2000 kg</em>
+                </div>
+                <input type="range" id="slAM" min="800" max="5000" step="50" value="2000" />
+              </div>
+            </div>
+
+            <div class="readouts" id="readouts"></div>
+            <div class="legend" id="legend"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      <span class="en">Open index.html in Google Chrome · Keep this folder together when sharing · Teaching model · g = 10 m s⁻² · centripetal force is the net inward force, not an extra force</span>
+      <span class="zh">用 Google Chrome 開啟 index.html · 分享時請整夾一齊傳送 · 教學模型 · g = 10 m s⁻² · 向心力是指向圓心的淨力，不是多出來的力</span>
+    </p>
+  </div>
+  <script src="lab.js"></script>
+</body>
+</html>

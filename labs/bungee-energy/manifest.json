@@ -1,0 +1,8 @@
+{
+  "slug": "bungee-energy",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

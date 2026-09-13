@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Connected Containers Lab — Heat &amp; Gases</title>
+  <link rel="stylesheet" href="lab.css" />
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="wrap lab-wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🧪</div>
+        <div>
+          <h1>
+            <span class="en">Connected Containers Lab</span>
+            <span class="zh">連通容器實驗</span>
+          </h1>
+          <p>
+            <span class="en">Watch pressure, volume and temperature after you open the tap.</span>
+            <span class="zh">打開活栓後，觀察壓强、體積與溫度如何改變。</span>
+          </p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="langEn" class="active">EN</button>
+          <button type="button" id="langZh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2>
+            <span class="en">Two flasks · one tap</span>
+            <span class="zh">兩個容器 · 一個活栓</span>
+          </h2>
+          <p>
+            <span class="en">A starts full. B is a vacuum. Volumes stay fixed by the glass.</span>
+            <span class="zh">A 起初充滿氣體，B 是真空。玻璃壁令體積保持不變。</span>
+          </p>
+        </div>
+        <div class="hd-actions">
+          <button type="button" class="btn teal" id="btnTap"></button>
+          <button type="button" class="btn warm" id="btnHeat"></button>
+          <button type="button" class="btn sec" id="btnSlow">
+            <span class="en">Slow motion</span><span class="zh">慢動作</span>
+          </button>
+          <button type="button" class="btn sec" id="btnReset">
+            <span class="en">Reset</span><span class="zh">重設</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div class="stage stage-chamber">
+          <div class="hud">
+            <p class="block-label">
+              <span class="en">Container A · 100 cm³</span>
+              <span class="zh">容器 A · 100 cm³</span>
+            </p>
+            <div class="readouts">
+              <div class="stat stat-a"><span>P<sub>A</sub></span><b id="pA">12.00 × 10⁵ Pa</b></div>
+              <div class="stat"><span class="en">Temperature</span><span class="zh">溫度</span><b id="tA">0 °C</b></div>
+            </div>
+
+            <p class="block-label">
+              <span class="en">Container B · 500 cm³</span>
+              <span class="zh">容器 B · 500 cm³</span>
+            </p>
+            <div class="readouts">
+              <div class="stat stat-b"><span>P<sub>B</sub></span><b id="pB">0.00 × 10⁵ Pa</b></div>
+              <div class="stat"><span class="en">Temperature</span><span class="zh">溫度</span><b id="tB">0 °C</b></div>
+            </div>
+
+            <div class="compare">
+              <div class="stat">
+                <span class="en">Same P?</span><span class="zh">壓强相同？</span>
+                <b id="cmpP" class="no">No</b>
+              </div>
+              <div class="stat">
+                <span class="en">Same T?</span><span class="zh">溫度相同？</span>
+                <b id="cmpT" class="yes">Yes</b>
+              </div>
+              <div class="stat">
+                <span class="en">Same amount?</span><span class="zh">氣體量相同？</span>
+                <b id="cmpN" class="no">No</b>
+              </div>
+            </div>
+          </div>
+          <canvas id="c" width="900" height="560" aria-label="Connected flasks"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      <span class="en">Open in Google Chrome · Ideal-gas teaching model · volumes stay fixed · watch P and T change</span>
+      <span class="zh">用 Google Chrome 開啟 · 教學用理想氣體模型 · 體積固定 · 觀察 P 與 T 的變化</span>
+    </p>
+  </div>
+  <script src="lab.js"></script>
+</body>
+</html>

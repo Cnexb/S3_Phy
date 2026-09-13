@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Conical Pendulum Lab — Mechanics</title>
+  <!-- All CSS and JS live in this file so it still works if someone saves only index.html -->
+  <style>
+    :root {
+      --bg: #e7eef8;
+      --bg2: #f3ebe3;
+      --surface: #fffdf9;
+      --ink: #1a2430;
+      --muted: #5a6878;
+      --line: #cfd8e6;
+      --accent: #1d4ed8;
+      --accent2: #c2410c;
+      --teal: #0f766e;
+      --violet: #6d28d9;
+      --ok: #15803d;
+      --bad: #b91c1c;
+      --warm: #d97706;
+      --radius: 16px;
+      --shadow: 0 12px 36px rgba(26, 36, 48, 0.08);
+      --font: "Segoe UI", "PingFang HK", "Noto Sans TC", system-ui, sans-serif;
+      --display: "Trebuchet MS", "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+    html, body { height: 100%; overflow: hidden; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% -10%, rgba(29, 78, 216, 0.14), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      min-height: 100dvh;
+      line-height: 1.45;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+
+    .wrap {
+      width: 100%; height: 100%;
+      min-height: 100vh; min-height: 100dvh;
+      margin: 0 auto; padding: 0.45rem 0.7rem 0.4rem;
+      display: flex; flex-direction: column;
+    }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 0.7rem; margin-bottom: 0.35rem; flex-shrink: 0;
+    }
+    .brand { display: flex; align-items: center; gap: 0.85rem; }
+    .brand-mark {
+      width: 58px; height: 58px; border-radius: 14px;
+      background: linear-gradient(145deg, #fff, #dbe7ff);
+      border: 1px solid var(--line); display: grid; place-items: center;
+      box-shadow: var(--shadow); font-size: 1.65rem;
+    }
+    .brand h1 {
+      margin: 0; font-family: var(--display);
+      font-size: clamp(1.35rem, 2.6vw, 1.95rem);
+      letter-spacing: -0.02em; line-height: 1.15;
+    }
+    .brand p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.95rem; }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+    .lang-toggle {
+      display: inline-flex; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 999px; padding: 4px;
+    }
+    .lang-toggle button {
+      border: 0; background: transparent; padding: 0.45rem 0.9rem;
+      border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.9rem;
+    }
+    .lang-toggle button.active { background: var(--ink); color: #fff; }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+    .card-hd {
+      padding: 0.6rem 1.1rem 0.55rem; border-bottom: 1px solid var(--line);
+      flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 0.65rem;
+    }
+    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.28rem; }
+    .card-hd p { margin: 0.12rem 0 0; color: var(--muted); font-size: 0.95rem; }
+    .hd-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+
+    .btn {
+      border: 0; background: var(--ink); color: #fff; border-radius: 10px;
+      padding: 0.52rem 0.88rem; font-weight: 700; font-size: 0.9rem;
+    }
+    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn.teal { background: var(--teal); }
+    .btn.on { box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.28); }
+    .btn:hover { filter: brightness(1.08); }
+
+    .workspace {
+      flex: 1; min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(340px, 0.78fr);
+      align-items: stretch;
+    }
+    .stage {
+      position: relative; min-height: 0; min-width: 0;
+      background:
+        linear-gradient(180deg, rgba(231,238,248,0.95), rgba(243,235,227,0.5)),
+        repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(29,78,216,0.04) 24px),
+        repeating-linear-gradient(90deg, transparent, transparent 23px, rgba(29,78,216,0.04) 24px);
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+    }
+    canvas#c {
+      display: block; width: 100%; height: 100%; touch-action: none;
+    }
+
+    .right-col {
+      min-width: 0; min-height: 0;
+      display: flex; flex-direction: column;
+      background: rgba(255,253,249,0.97);
+    }
+    .panel {
+      flex: 1; overflow: auto;
+      padding: 0.7rem 0.9rem 0.85rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .toggles { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .chip {
+      border: 1px solid var(--line); background: #fff; border-radius: 999px;
+      padding: 0.36rem 0.72rem; font-size: 0.82rem; font-weight: 800; color: var(--muted);
+    }
+    .chip.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    .panel-sliders { display: flex; flex-direction: column; gap: 0.38rem; }
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.16rem; }
+    .slider-head {
+      display: flex; justify-content: space-between; font-size: 0.88rem;
+      font-weight: 700; gap: 0.4rem;
+    }
+    .slider-head em { font-style: normal; font-family: var(--mono); color: var(--accent); }
+    input[type=range] { width: 100%; height: 1.35rem; cursor: pointer; accent-color: var(--accent); }
+
+    .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem; }
+    .stat {
+      border: 1px solid var(--line); border-radius: 10px; padding: 0.42rem 0.55rem; background: #fff;
+    }
+    .stat span {
+      display: block; font-size: 0.7rem; color: var(--muted); font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .stat b { font-family: var(--mono); font-size: 0.95rem; }
+    .stat-hot {
+      border-color: #c7d2fe; background: #eef2ff;
+    }
+    .stat-hot span { color: var(--accent); }
+    .stat-hot b { color: var(--accent); font-size: 1.15rem; }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem;
+      font-size: 0.78rem; font-weight: 800; color: var(--muted);
+    }
+    .legend i {
+      display: inline-block; width: 12px; height: 12px; border-radius: 50%;
+      margin-right: 0.3rem; vertical-align: -1px;
+    }
+
+    .footer-note {
+      flex-shrink: 0; margin-top: 0.3rem; font-size: 0.78rem; color: var(--muted); text-align: center;
+    }
+
+    .toast {
+      position: fixed; top: 14px; left: 50%;
+      transform: translateX(-50%) translateY(-12px);
+      background: var(--ink); color: #fff;
+      padding: 0.45rem 0.9rem; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 700;
+      opacity: 0; pointer-events: none; transition: 0.2s; z-index: 30;
+      box-shadow: var(--shadow); max-width: min(92vw, 520px); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+      html, body { overflow: auto; }
+      .workspace { grid-template-columns: 1fr; }
+      .stage { border-right: 0; border-bottom: 1px solid var(--line); min-height: 52vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="wrap lab-wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🌀</div>
+        <div>
+          <h1>
+            <span class="en">Conical Pendulum Lab</span>
+            <span class="zh">圓錐擺實驗室</span>
+          </h1>
+          <p>
+            <span class="en">A bob flies in a horizontal circle. Tension leans inward: that sideways part is the centripetal force.</span>
+            <span class="zh">擺錘在水平圓上飛。張力向內傾：那橫向分量就是向心力。</span>
+          </p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="langEn" class="active">EN</button>
+          <button type="button" id="langZh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2 id="stTitle"></h2>
+          <p id="stSub"></p>
+        </div>
+        <div class="hd-actions">
+          <button type="button" class="btn teal" id="btnPlay"></button>
+          <button type="button" class="btn sec" id="btnSlow"></button>
+          <button type="button" class="btn sec" id="btnReset">
+            <span class="en">Reset</span><span class="zh">重設</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div class="stage">
+          <canvas id="c" width="1280" height="780" aria-label="Conical pendulum scene"></canvas>
+        </div>
+
+        <div class="right-col">
+          <aside class="panel">
+            <div class="toggles">
+              <button type="button" class="chip on" id="chipForces">
+                <span class="en">Force arrows</span><span class="zh">力的箭頭</span>
+              </button>
+            </div>
+
+            <div class="panel-sliders">
+              <div class="slider-wrap">
+                <div class="slider-head">
+                  <span class="en">String length L</span><span class="zh">繩長 L</span>
+                  <em id="valL">3.00 m</em>
+                </div>
+                <input type="range" id="slL" min="100" max="400" value="300" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head">
+                  <span class="en">Angle from vertical θ</span><span class="zh">與鉛垂線夾角 θ</span>
+                  <em id="valTheta">20°</em>
+                </div>
+                <input type="range" id="slTheta" min="8" max="50" value="20" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head">
+                  <span class="en">Bob mass m</span><span class="zh">擺錘質量 m</span>
+                  <em id="valM">0.10 kg</em>
+                </div>
+                <input type="range" id="slM" min="5" max="200" value="10" />
+              </div>
+            </div>
+
+            <div class="readouts" id="readouts"></div>
+            <div class="legend" id="legend"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      <span class="en">Open in Google Chrome · Teaching model · g = 10 m s⁻² · centripetal force is the net inward force, not an extra force · drag the bob to change θ</span>
+      <span class="zh">用 Google Chrome 開啟 · 教學模型 · g = 10 m s⁻² · 向心力是指向圓心的淨力，不是多出來的力 · 可拖動擺錘改變 θ</span>
+    </p>
+  </div>
+  <script>
+/* Conical Pendulum Lab — self-contained. Open this index.html in Chrome or any browser. */
+(function () {
+  "use strict";
+
+  var G = 10;
+  var canvas = document.getElementById("c");
+  var ctx = canvas.getContext("2d");
+  var cssW = 1280;
+  var cssH = 780;
+  var lang = "en";
+  var running = true;
+  var slow = false;
+  var showForces = true;
+  var t = 0;
+  var spinPhi = 0;
+  var lastTs = 0;
+  var lastW = 0;
+  var lastH = 0;
+  var lastDpr = 0;
+  var toastTimer = 0;
+
+  var S = {
+    L: 3,
+    thetaDeg: 20,
+    m: 0.1
+  };
+
+  var COPY = {
+    en: {
+      play: "Pause",
+      pause: "Play",
+      slowOn: "Normal speed",
+      slowOff: "Slow motion",
+      toastReset: "Lab reset",
+      pendTitle: "Conical pendulum",
+      pendSub: "A bob flies in a horizontal circle. Tension leans inward: that sideways part is the centripetal force.",
+      tension: "tension",
+      weight: "weight",
+      net: "net inward"
+    },
+    zh: {
+      play: "暫停",
+      pause: "播放",
+      slowOn: "正常速度",
+      slowOff: "慢動作",
+      toastReset: "實驗已重設",
+      pendTitle: "圓錐擺",
+      pendSub: "擺錘在水平圓上飛。張力向內傾：那橫向分量就是向心力。",
+      tension: "張力",
+      weight: "重量",
+      net: "淨向內"
+    }
+  };
+
+  function tr(key) {
+    return COPY[lang][key];
+  }
+  function clamp(v, a, b) {
+    return Math.max(a, Math.min(b, v));
+  }
+  function fmt(n, d) {
+    if (!isFinite(n)) return "—";
+    return Number(n).toFixed(d);
+  }
+  function visOmega(omega) {
+    var realT = (2 * Math.PI) / Math.max(omega, 0.08);
+    var Tvis = clamp(0.45 + (realT - 1.0) * 4.2, 0.4, 7.5);
+    return (2 * Math.PI) / Tvis;
+  }
+  function ghostPhis(omega) {
+    var vis = visOmega(omega);
+    var pace = clamp(vis / 8, 0.1, 1.4);
+    var n = Math.round(2 + 14 * pace);
+    var gap = 0.05 + 0.22 * pace;
+    var out = [];
+    var i;
+    for (i = n; i >= 1; i--) out.push(spinPhi - i * gap);
+    return out;
+  }
+  function drawVArrow(x, y, tx, ty, v, vRef) {
+    var mag = Math.hypot(tx, ty) || 1;
+    var len = 16 + 62 * clamp(v / Math.max(vRef, 0.05), 0.1, 1.5);
+    drawArrow(x, y, x + (tx / mag) * len, y + (ty / mag) * len, "#e11d48", 3.5);
+    labelAt(x + (tx / mag) * len, y + (ty / mag) * len - 12, "v", "#e11d48");
+  }
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove("show"); }, 2200);
+  }
+
+  function physics() {
+    var th = (S.thetaDeg * Math.PI) / 180;
+    var o = {
+      th: th,
+      m: S.m,
+      L: S.L
+    };
+    o.T = (S.m * G) / Math.cos(th);
+    o.r = S.L * Math.sin(th);
+    o.omega = Math.sqrt(G / (S.L * Math.cos(th)));
+    o.period = (2 * Math.PI) / o.omega;
+    o.v = o.omega * o.r;
+    o.Fc = S.m * o.r * o.omega * o.omega;
+    return o;
+  }
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = canvas.clientWidth || 1280;
+    var h = canvas.clientHeight || 780;
+    if (w === lastW && h === lastH && dpr === lastDpr) return;
+    lastW = w;
+    lastH = h;
+    lastDpr = dpr;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cssW = w;
+    cssH = h;
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, r);
+    else ctx.rect(x, y, w, h);
+  }
+
+  function drawArrow(x1, y1, x2, y2, color, w) {
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+    var len = Math.hypot(dx, dy);
+    if (len < 6) return;
+    var ux = dx / len;
+    var uy = dy / len;
+    var hw = w || 2.6;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = hw;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2 - ux * 11, y2 - uy * 11);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - ux * 13 - uy * 6.5, y2 - uy * 13 + ux * 6.5);
+    ctx.lineTo(x2 - ux * 13 + uy * 6.5, y2 - uy * 13 - ux * 6.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function labelAt(x, y, text, color) {
+    ctx.save();
+    ctx.font = "700 14px " + getComputedStyle(document.body).fontFamily;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    var pad = 6;
+    var tw = ctx.measureText(text).width;
+    ctx.fillStyle = "rgba(255,253,249,0.88)";
+    roundRect(x - tw / 2 - pad, y - 10, tw + pad * 2, 20, 7);
+    ctx.fill();
+    ctx.fillStyle = color || "#1a2430";
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  function drawThetaMark(px, py, strX, strY, degText) {
+    var dx = strX - px;
+    var dy = strY - py;
+    var slen = Math.hypot(dx, dy) || 1;
+    var strAng = Math.atan2(dy, dx);
+    var vertAng = Math.PI / 2;
+    var d = strAng - vertAng;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    var radius = clamp(slen * 0.28, 36, 58);
+    var mid = vertAng + d * 0.5;
+    ctx.save();
+    ctx.strokeStyle = "#c2410c";
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    if (Math.abs(d) > 0.05) {
+      ctx.beginPath();
+      var steps = Math.max(10, Math.round(Math.abs(d) * 28));
+      var i;
+      for (i = 0; i <= steps; i++) {
+        var u = i / steps;
+        var a = vertAng + d * (0.04 + 0.92 * u);
+        var ax = px + Math.cos(a) * radius;
+        var ay = py + Math.sin(a) * radius;
+        if (i === 0) ctx.moveTo(ax, ay);
+        else ctx.lineTo(ax, ay);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+    labelAt(px + Math.cos(mid) * (radius + 22), py + Math.sin(mid) * (radius + 22), "θ = " + degText, "#c2410c");
+  }
+
+  function drawBob(x, y, r, hue) {
+    var g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, 2, x, y, r);
+    g.addColorStop(0, "#fff7");
+    g.addColorStop(0.2, "hsl(" + hue + " 70% 62%)");
+    g.addColorStop(1, "hsl(" + hue + " 72% 32%)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(15,23,42,0.25)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  function drawPendulum(o) {
+    var W = cssW;
+    var H = cssH;
+    var cx = W * 0.5;
+    var beamY = 8;
+    var beamH = 22;
+    var boxW = 28;
+    var boxH = 18;
+    var boxY = beamY + beamH - 3;
+    var pivotX = cx;
+    var pivotY = boxY + boxH;
+    var Lwant = Math.min(W, H) * 0.70 * (o.L / 4);
+    var fit = Math.min(1, (W * 0.46) / Math.max(24, Lwant * Math.sin(o.th)), (H - pivotY - 54) / Math.max(24, Lwant * Math.cos(o.th)));
+    var Lpx = Lwant * fit;
+    var rpx = Lpx * Math.sin(o.th);
+    var hpx = Lpx * Math.cos(o.th);
+    var cy = pivotY + hpx;
+    var persp = 0.34;
+    var phi = spinPhi;
+
+    ctx.fillStyle = "#c4b5a0";
+    roundRect(cx - 110, beamY, 220, beamH, 5);
+    ctx.fill();
+    ctx.fillStyle = "#57534e";
+    roundRect(cx - boxW / 2, boxY, boxW, boxH, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#292524";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(pivotX, pivotY - 1, 5, 0, Math.PI);
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(29,78,216,0.35)";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rpx, rpx * persp, 0, Math.PI, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle = "#94a3b8";
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(pivotX, pivotY);
+    ctx.lineTo(cx, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    var ghosts = ghostPhis(o.omega);
+    var gi;
+    for (gi = 0; gi < ghosts.length; gi++) {
+      var gphi = ghosts[gi];
+      var gx = cx + rpx * Math.cos(gphi);
+      var gy = cy + rpx * Math.sin(gphi) * persp;
+      ctx.globalAlpha = 0.06 + 0.22 * (gi / ghosts.length);
+      drawBob(gx, gy, 14 * (0.75 + 0.25 * Math.sin(gphi)), 210);
+    }
+    ctx.globalAlpha = 1;
+
+    var bobX = cx + rpx * Math.cos(phi);
+    var bobY = cy + rpx * Math.sin(phi) * persp;
+    var depth = 0.75 + 0.25 * Math.sin(phi);
+
+    ctx.strokeStyle = "#44403c";
+    ctx.lineWidth = 3.4;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(pivotX, pivotY);
+    ctx.lineTo(bobX, bobY);
+    ctx.stroke();
+    ctx.lineCap = "butt";
+
+    drawBob(bobX, bobY, 16 * depth, 210);
+    drawVArrow(bobX, bobY, -Math.sin(phi), Math.cos(phi) * persp, o.v, 2.4);
+
+    ctx.strokeStyle = "rgba(29,78,216,0.55)";
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, rpx, rpx * persp, 0, 0, Math.PI);
+    ctx.stroke();
+
+    drawThetaMark(pivotX, pivotY, bobX, bobY, Math.round(S.thetaDeg) + "°");
+
+    var inwardX = cx - bobX;
+    var inwardY = cy - bobY;
+    var il = Math.hypot(inwardX, inwardY) || 1;
+    if (showForces) {
+      var Tlen = 118;
+      var slen = Math.hypot(pivotX - bobX, pivotY - bobY) || 1;
+      var sux = (pivotX - bobX) / slen;
+      var suy = (pivotY - bobY) / slen;
+      drawArrow(bobX, bobY, bobX + sux * Tlen, bobY + suy * Tlen, "#0f766e", 3.6);
+      labelAt(bobX + sux * Tlen, bobY + suy * Tlen - 14, tr("tension"), "#0f766e");
+      drawArrow(bobX, bobY, bobX, bobY + 72, "#334155", 3.6);
+      labelAt(bobX + 30, bobY + 50, tr("weight"), "#334155");
+      drawArrow(bobX, bobY, bobX + inwardX / il * 48, bobY + inwardY / il * 48, "#6d28d9", 3.2);
+      labelAt(bobX + inwardX / il * 48, bobY + inwardY / il * 48 - 14, tr("net"), "#6d28d9");
+    }
+
+    ctx.fillStyle = "#64748b";
+    ctx.font = "700 15px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("O", cx - 16, cy - rpx * persp - 8);
+  }
+
+  function draw() {
+    resize();
+    ctx.clearRect(0, 0, cssW, cssH);
+    drawPendulum(physics());
+    if (!running) {
+      ctx.fillStyle = "rgba(15,23,42,0.08)";
+      ctx.fillRect(0, 0, cssW, cssH);
+    }
+  }
+
+  function updateUI() {
+    var o = physics();
+    document.getElementById("stTitle").textContent = tr("pendTitle");
+    document.getElementById("stSub").textContent = tr("pendSub");
+    document.getElementById("btnPlay").textContent = running ? tr("play") : tr("pause");
+    document.getElementById("btnSlow").textContent = slow ? tr("slowOn") : tr("slowOff");
+    document.getElementById("btnSlow").classList.toggle("on", slow);
+    document.getElementById("valL").textContent = fmt(S.L, 2) + " m";
+    document.getElementById("valTheta").textContent = S.thetaDeg + "°";
+    document.getElementById("valM").textContent = fmt(S.m, 2) + " kg";
+
+    var box = document.getElementById("readouts");
+    box.innerHTML = "";
+    function add(label, value, cls) {
+      var d = document.createElement("div");
+      d.className = "stat" + (cls ? " " + cls : "");
+      d.innerHTML = "<span>" + label + "</span><b>" + value + "</b>";
+      box.appendChild(d);
+    }
+    add(lang === "zh" ? "速率" : "speed v", fmt(o.v, 2) + " m/s", "stat-hot");
+    add("ω", fmt(o.omega, 2) + " rad/s");
+    add(lang === "zh" ? "週期" : "period", fmt(o.period, 2) + " s");
+    add(lang === "zh" ? "半徑" : "radius r", fmt(o.r, 2) + " m");
+
+    document.getElementById("legend").innerHTML =
+      "<span><i style='background:#0f766e'></i>" + tr("tension") + "</span>" +
+      "<span><i style='background:#334155'></i>" + tr("weight") + "</span>" +
+      "<span><i style='background:#6d28d9'></i>" + tr("net") + "</span>" +
+      "<span><i style='background:#e11d48'></i>v</span>";
+  }
+
+  function applyLangFromHub(raw) {
+    var next = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    setLang(next);
+  }
+  window.addEventListener("message", function (ev) {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+  });
+  function setLang(next) {
+    lang = next;
+    document.documentElement.lang = next === "zh" ? "zh-HK" : "en";
+    document.getElementById("langEn").classList.toggle("active", next === "en");
+    document.getElementById("langZh").classList.toggle("active", next === "zh");
+    updateUI();
+  }
+
+  function reset() {
+    S.L = 3;
+    S.thetaDeg = 20;
+    S.m = 0.1;
+    t = 0;
+    spinPhi = 0;
+    document.getElementById("slL").value = 300;
+    document.getElementById("slTheta").value = 20;
+    document.getElementById("slM").value = 10;
+    toast(tr("toastReset"));
+    updateUI();
+  }
+
+  document.getElementById("langEn").addEventListener("click", function () { setLang("en"); });
+  document.getElementById("langZh").addEventListener("click", function () { setLang("zh"); });
+  document.getElementById("btnPlay").addEventListener("click", function () {
+    running = !running;
+    updateUI();
+  });
+  document.getElementById("btnSlow").addEventListener("click", function () {
+    slow = !slow;
+    updateUI();
+  });
+  document.getElementById("btnReset").addEventListener("click", reset);
+  document.getElementById("chipForces").addEventListener("click", function () {
+    showForces = !showForces;
+    this.classList.toggle("on", showForces);
+  });
+
+  function bindSlider(id, apply) {
+    document.getElementById(id).addEventListener("input", function () {
+      apply.call(this);
+      updateUI();
+    });
+  }
+  bindSlider("slL", function () { S.L = this.value / 100; });
+  bindSlider("slTheta", function () { S.thetaDeg = +this.value; });
+  bindSlider("slM", function () { S.m = this.value / 100; });
+
+  var drag = false;
+  canvas.addEventListener("pointerdown", function (e) {
+    drag = true;
+    canvas.setPointerCapture(e.pointerId);
+    nudgeTheta(e);
+  });
+  canvas.addEventListener("pointermove", function (e) {
+    if (!drag) return;
+    nudgeTheta(e);
+  });
+  canvas.addEventListener("pointerup", function () { drag = false; });
+  canvas.addEventListener("pointercancel", function () { drag = false; });
+
+  function nudgeTheta(e) {
+    var rect = canvas.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var cx = cssW * 0.5;
+    var attachY = 8 + 22 - 3 + 18;
+    var dx = x - cx;
+    var dy = Math.max(20, e.clientY - rect.top - attachY);
+    var ang = Math.atan(Math.abs(dx) / dy);
+    S.thetaDeg = Math.round(clamp((ang * 180) / Math.PI, 8, 50));
+    document.getElementById("slTheta").value = S.thetaDeg;
+    updateUI();
+  }
+
+  window.addEventListener("keydown", function (e) {
+    if (e.code === "Space" && e.target === document.body) {
+      e.preventDefault();
+      running = !running;
+      updateUI();
+    }
+  });
+  window.addEventListener("resize", function () { resize(); draw(); });
+
+  function loop(ts) {
+    if (!lastTs) lastTs = ts;
+    var dt = Math.min(0.05, (ts - lastTs) / 1000);
+    lastTs = ts;
+    if (running) {
+      var pace = visOmega(physics().omega || 1);
+      var step = dt * (slow ? 0.28 : 1);
+      t += step;
+      spinPhi += pace * step;
+    }
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  try {
+    var qLang = new URLSearchParams(location.search).get("lang");
+    if (qLang) applyLangFromHub(qLang);
+    else setLang("en");
+  } catch (e) { setLang("en"); }
+  updateUI();
+  resize();
+  requestAnimationFrame(loop);
+})();
+  </script>
+</body>
+</html>

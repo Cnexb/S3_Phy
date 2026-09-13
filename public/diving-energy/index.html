@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Diving | Energy in Mechanics</title>
+  <style>
+    :root {
+      --bg: #e8f2ff;
+      --bg2: #e9f7ee;
+      --surface: #fffefb;
+      --surface2: #f4f8ff;
+      --ink: #1c2434;
+      --muted: #5b6578;
+      --line: #d5e0ee;
+      --ke: #f59e0b;
+      --pe: #2563eb;
+      --epe: #7c3aed;
+      --th: #64748b;
+      --accent: #0f766e;
+      --radius: 16px;
+      --shadow: 0 12px 36px rgba(28, 36, 52, 0.08);
+      --font: "Segoe UI", "PingFang HK", "Noto Sans TC", system-ui, sans-serif;
+      --display: "Trebuchet MS", "Segoe UI", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    }
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% -10%, rgba(37, 99, 235, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(245, 158, 11, 0.18), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      min-height: 100dvh;
+      line-height: 1.5;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+
+    .wrap {
+      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
+      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
+      display: flex; flex-direction: column;
+    }
+    .topbar {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 0.8rem; margin-bottom: 0.55rem; flex-shrink: 0;
+    }
+    .brand { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-mark {
+      width: 54px; height: 54px; border-radius: 14px;
+      background: linear-gradient(145deg, #fff, #ffe8b8);
+      border: 1px solid var(--line); display: grid; place-items: center;
+      box-shadow: var(--shadow); font-size: 1.55rem;
+    }
+    .brand h1 {
+      margin: 0; font-family: var(--display);
+      font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+      letter-spacing: -0.02em; line-height: 1.15;
+    }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.9rem; }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+    .lang-toggle, .tabs {
+      display: inline-flex; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 999px; padding: 4px; flex-wrap: wrap;
+    }
+    .lang-toggle button, .tabs button {
+      border: 0; background: transparent; padding: 0.42rem 0.8rem;
+      border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.85rem;
+    }
+    .lang-toggle button.active, .tabs button.active { background: var(--ink); color: #fff; }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+    .card-hd {
+      padding: 0.65rem 1rem 0.55rem; border-bottom: 1px solid var(--line);
+      flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: 0.75rem;
+    }
+    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.12rem; }
+    .card-hd p { margin: 0.15rem 0 0; color: var(--muted); font-size: 0.88rem; }
+    .hd-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+    .hd-actions .seg {
+      flex: 0 0 auto; min-width: 12.5rem;
+    }
+    .hd-actions .seg button {
+      font-size: 0.8rem; padding: 0.42rem 0.65rem; white-space: nowrap;
+    }
+
+    .btn {
+      border: 0; background: var(--ink); color: #fff; border-radius: 10px;
+      padding: 0.48rem 0.78rem; font-weight: 700; font-size: 0.82rem;
+    }
+    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn.teal { background: var(--accent); }
+    .btn:hover { filter: brightness(1.08); }
+    .btn[disabled] { opacity: 0.4; cursor: not-allowed; filter: none; }
+
+    .workspace { flex: 1; min-height: 0; position: relative; }
+    .stage {
+      position: relative; width: 100%; height: 100%; min-height: 0;
+      background: linear-gradient(180deg, #cfe8ff 0%, #eaf4fb 52%, #d8eccf 52%, #cfe6c4 100%);
+      overflow: hidden;
+    }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+    .panel {
+      position: absolute; top: 12px; right: 12px; z-index: 6;
+      width: min(320px, 42vw); max-height: calc(100% - 24px);
+      border: 1px solid var(--line); border-radius: 14px;
+      background: rgba(255,254,251,0.94);
+      box-shadow: var(--shadow);
+      overflow: auto; padding: 0.7rem 0.75rem 0.85rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .hidden { display: none !important; }
+
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.18rem; }
+    .slider-head { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 700; gap: 0.4rem; }
+    .slider-head em { font-style: normal; font-family: var(--mono); color: var(--accent); }
+    input[type=range] { width: 100%; height: 1.25rem; cursor: pointer; accent-color: var(--accent); }
+    .seg { display: flex; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
+    .seg button {
+      flex: 1; border: 0; background: transparent; border-radius: 8px;
+      padding: 0.38rem 0.2rem; font-weight: 700; font-size: 0.72rem; color: var(--muted);
+    }
+    .seg button.on { background: var(--ink); color: #fff; }
+    .presets { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .chip {
+      border: 1px solid var(--line); background: #fff; border-radius: 999px;
+      padding: 0.32rem 0.62rem; font-size: 0.78rem; font-weight: 700; color: var(--muted);
+    }
+    .chip:hover, .chip.on { border-color: var(--ink); color: var(--ink); }
+    #parkPresets {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem;
+      margin-bottom: 1.1rem;
+    }
+    #parkPresets.hidden { display: none !important; }
+    #parkPresets .chip {
+      border-radius: 12px; padding: 0.62rem 0.55rem; font-size: 0.9rem;
+      text-align: center; line-height: 1.25;
+    }
+    #parkSingleHud {
+      display: flex; flex-direction: column; gap: 0.7rem;
+    }
+    .race-split {
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .race-card {
+      background: #fff; border: 1px solid var(--line); border-radius: 12px;
+      padding: 0.65rem 0.7rem 0.75rem;
+    }
+    .race-card h3 {
+      margin: 0 0 0.55rem; font-size: 0.88rem; font-weight: 800;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .race-card h3 i {
+      width: 10px; height: 10px; border-radius: 99px; display: inline-block;
+    }
+    .race-card .bars { gap: 0.4rem; }
+    .race-card .bar-row {
+      grid-template-columns: 72px 1fr 68px; font-size: 0.78rem;
+    }
+    .race-card .readout { margin-top: 0.55rem; gap: 0.35rem; }
+    .race-card .stat { padding: 0.35rem 0.45rem; }
+    .race-card .stat b { font-size: 0.66rem; }
+    .race-card .stat em { font-size: 0.92rem; }
+
+    .bars { display: flex; flex-direction: column; gap: 0.55rem; }
+    .bar-row {
+      display: grid; grid-template-columns: 108px 1fr 80px; gap: 0.45rem;
+      align-items: center; font-size: 0.84rem; font-weight: 700;
+    }
+    .bar { height: 16px; background: #e8eef6; border-radius: 99px; overflow: hidden; }
+    .bar > i { display: block; height: 100%; border-radius: 99px; width: 0; transition: width 0.12s linear; }
+    .bar > i.ke { background: var(--ke); }
+    .bar > i.pe { background: var(--pe); }
+    .bar > i.epe { background: var(--epe); }
+    .bar > i.th { background: var(--th); }
+    .bar > i.tot { background: linear-gradient(90deg, var(--pe), var(--ke)); }
+    .bar-row span:last-child { font-family: var(--mono); font-size: 0.86rem; text-align: right; }
+
+    .readout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+    }
+    .stat {
+      background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.5rem 0.6rem;
+    }
+    .stat b { display: block; font-size: 0.74rem; color: var(--muted); font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+    .stat em { font-style: normal; font-family: var(--mono); font-weight: 700; font-size: 1.05rem; }
+
+    .station-ui[data-ui="pendulum"] .bar,
+    .station-ui[data-ui="bungee"] .bar,
+    .station-ui[data-ui="dive"] .bar { height: 22px; }
+    .station-ui[data-ui="pendulum"] .bar-row,
+    .station-ui[data-ui="bungee"] .bar-row {
+      font-size: 0.95rem;
+      grid-template-columns: 118px 1fr 90px;
+    }
+    .station-ui[data-ui="dive"] .bar-row {
+      font-size: 0.95rem;
+      grid-template-columns: 148px 1fr 90px;
+    }
+    .station-ui[data-ui="pendulum"] .bar-row span:last-child,
+    .station-ui[data-ui="bungee"] .bar-row span:last-child,
+    .station-ui[data-ui="dive"] .bar-row span:last-child { font-size: 0.95rem; }
+    .station-ui[data-ui="pendulum"] .slider-head,
+    .station-ui[data-ui="bungee"] .slider-head,
+    .station-ui[data-ui="dive"] .slider-head { font-size: 0.92rem; }
+    .station-ui[data-ui="pendulum"] input[type=range],
+    .station-ui[data-ui="bungee"] input[type=range],
+    .station-ui[data-ui="dive"] input[type=range] { height: 1.55rem; }
+    .station-ui[data-ui="pendulum"] .stat em,
+    .station-ui[data-ui="bungee"] .stat em,
+    .station-ui[data-ui="dive"] .stat em { font-size: 1.22rem; }
+    .station-ui[data-ui="pendulum"] .stat b,
+    .station-ui[data-ui="bungee"] .stat b,
+    .station-ui[data-ui="dive"] .stat b { font-size: 0.8rem; }
+    .station-ui[data-ui="pendulum"] .chip,
+    .station-ui[data-ui="bungee"] .chip,
+    .station-ui[data-ui="dive"] .chip {
+      font-size: 0.88rem; padding: 0.42rem 0.75rem;
+    }
+    @media (max-width: 900px) {
+      .panel { width: min(280px, calc(100% - 20px)); top: 8px; right: 8px; max-height: calc(100% - 16px); }
+      .stage { min-height: 280px; }
+    }
+  
+  </style>
+</head>
+<body>
+  <div class="wrap lab-wrap" id="labShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">⚡</div>
+        <div>
+          <h1 class="en">Energy in Mechanics</h1>
+          <h1 class="zh">力學中的能量</h1>
+          <p class="en">Diving · platform to water</p>
+          <p class="zh">跳水 · 從跳台到水中</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="btnEn" class="active">EN</button>
+          <button type="button" id="btnZh">中</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2 id="stationTitle">Diving — from platform to water</h2>
+          <p id="stationSub">Jump up from P, fall past the platform into the pool, and stop at Q.</p>
+        </div>
+        <div class="hd-actions" id="runActions">
+          <button type="button" class="btn teal" id="btnPlay"><span class="en">Play</span><span class="zh">播放</span></button>
+          <button type="button" class="btn sec" id="btnReset"><span class="en">Reset</span><span class="zh">重設</span></button>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div id="stage" class="stage">
+          <canvas id="c"></canvas>
+          <aside id="panel" class="panel">
+          <div class="station-ui" data-ui="dive">
+            <div class="bars">
+              <div class="bar-row"><span class="en">GPE</span><span class="zh">重力勢能</span><div class="bar"><i class="pe" id="divePE"></i></div><span id="divePEVal">0 J</span></div>
+              <div class="bar-row"><span class="en">KE</span><span class="zh">動能</span><div class="bar"><i class="ke" id="diveKE"></i></div><span id="diveKEVal">0 J</span></div>
+              <div class="bar-row"><span class="en">Work done by water</span><span class="zh">水做的功</span><div class="bar"><i class="th" id="diveTH"></i></div><span id="diveTHVal">0 J</span></div>
+              <div class="bar-row"><span class="en">Total</span><span class="zh">總能量</span><div class="bar"><i class="tot" id="diveTOT"></i></div><span id="diveTOTVal">0 J</span></div>
+            </div>
+            <div class="readout">
+              <div class="stat"><b class="en">Velocity</b><b class="zh">速度</b><em id="diveV">5.00 m/s</em></div>
+            </div>
+          </div>
+        </aside>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="./lab.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Boyle's Law Lab — Heat &amp; Gases</title>
+  <link rel="stylesheet" href="lab.css" />
+</head>
+<body data-lab="boyle">
+  <div class="wrap lab-wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🌡️</div>
+        <div>
+          <h1>
+            <span class="en">Boyle's Law Lab</span>
+            <span class="zh">波義耳定律實驗</span>
+          </h1>
+          <p>
+            <span class="en">Fixed mass & temperature · squeeze the syringe and watch P × V stay constant.</span>
+            <span class="zh">質量與溫度固定 · 擠壓注射器，看 P × V 保持不變。</span>
+          </p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="langEn" class="active">EN</button>
+          <button type="button" id="langZh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2 id="modeTitle">Boyle's law lab</h2>
+          <p id="modeSub">Fixed mass &amp; temperature · squeeze the syringe and watch P × V stay constant.</p>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div class="stage stage-chamber">
+          <canvas id="c" width="900" height="560" aria-label="Gas particle chamber"></canvas>
+        </div>
+
+        <div class="right-col">
+          <aside class="panel" id="controlsPanel">
+            <div class="locks" id="lockBadges" aria-live="polite"></div>
+
+            <div class="panel-sliders">
+              <div class="slider-wrap" id="wrapN">
+                <div class="slider-head">
+                  <span class="en">Amount of gas (n)</span><span class="zh">氣體量 (n)</span>
+                  <em id="valN">0.040 mol</em>
+                </div>
+                <input type="range" id="slN" min="10" max="80" value="40" />
+              </div>
+
+              <div class="slider-wrap" id="wrapV">
+                <div class="slider-head">
+                  <span class="en">Volume (V)</span><span class="zh">體積 (V)</span>
+                  <em id="valV">50.0 cm³</em>
+                </div>
+                <input type="range" id="slV" min="20" max="100" value="50" step="1" />
+              </div>
+
+              <div class="slider-wrap" id="wrapT">
+                <div class="slider-head">
+                  <span class="en">Temperature (θ)</span><span class="zh">溫度 (θ)</span>
+                  <em id="valT">27 °C  ·  300 K</em>
+                </div>
+                <input type="range" id="slT" min="-50" max="200" value="27" step="1" />
+              </div>
+
+              <div class="slider-wrap" id="wrapP" hidden>
+                <div class="slider-head">
+                  <span class="en">Pressure (P)</span><span class="zh">壓强 (P)</span>
+                  <em id="valPTarget">100 kPa</em>
+                </div>
+                <input type="range" id="slP" min="50" max="300" value="100" step="1" />
+              </div>
+            </div>
+
+            <div class="panel-side">
+              <div class="readouts">
+                <div class="stat"><span>P</span><b id="outP">100.0 kPa</b></div>
+                <div class="stat"><span>V</span><b id="outV">50.0 cm³</b></div>
+                <div class="stat"><span>T</span><b id="outT">300 K</b></div>
+                <div class="stat"><span>PV / T</span><b id="outPVT">16.7</b></div>
+              </div>
+            </div>
+          </aside>
+
+          <div class="stage stage-graph">
+            <canvas id="g" width="480" height="360" aria-label="Gas law graph"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      <span class="en">Open in Google Chrome · Ideal-gas model for learning (R = 8.31 J mol⁻¹ K⁻¹)</span>
+      <span class="zh">用 Google Chrome 開啟 · 教學用理想氣體模型（R = 8.31 J mol⁻¹ K⁻¹）</span>
+    </p>
+  </div>
+  <script src="lab.js"></script>
+</body>
+</html>

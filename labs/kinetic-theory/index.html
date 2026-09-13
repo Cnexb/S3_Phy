@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Kinetic Theory Lab — Heat &amp; Gases</title>
+  <link rel="stylesheet" href="lab.css" />
+</head>
+<body>
+  <div class="wrap lab-wrap">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">⚛️</div>
+        <div>
+          <h1>
+            <span class="en">Kinetic Theory Lab</span>
+            <span class="zh">分子動力論實驗室</span>
+          </h1>
+          <p>
+            <span class="en">See how tiny molecules create pressure — and why the gas laws work.</span>
+            <span class="zh">看微小分子如何產生壓强——以及氣體定律為何成立。</span>
+          </p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="langEn" class="active">EN</button>
+          <button type="button" id="langZh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card" id="panelExplore">
+      <div class="card-hd">
+        <div>
+          <h2 id="exploreTitle">
+            <span class="en">Boyle's law · kinetic theory</span>
+            <span class="zh">波義耳定律 · 分子動力論</span>
+          </h2>
+          <p id="exploreSub">
+            <span class="en">Fixed mass &amp; temperature · squeeze the syringe and watch P × V stay constant.</span>
+            <span class="zh">質量與溫度固定 · 擠壓注射器，看 P × V 保持不變。</span>
+          </p>
+        </div>
+        <div class="hd-actions">
+          <button type="button" class="btn sec" id="btnReset">
+            <span class="en">Reset</span><span class="zh">重設</span>
+          </button>
+          <button type="button" class="btn teal" id="btnPulse">
+            <span class="en">Highlight wall hits</span><span class="zh">突顯撞擊牆</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="subtabs" role="tablist" aria-label="Gas laws">
+        <button type="button" class="on" data-law="boyle" role="tab" aria-selected="true">
+          <span class="en">Boyle's law</span><span class="zh">波義耳定律</span>
+        </button>
+        <button type="button" data-law="pressure" role="tab" aria-selected="false">
+          <span class="en">Pressure-temperature relationship</span><span class="zh">壓强–溫度關係</span>
+        </button>
+        <button type="button" data-law="charles" role="tab" aria-selected="false">
+          <span class="en">Volume-temperature relation</span><span class="zh">體積–溫度關係</span>
+        </button>
+      </div>
+
+      <div class="workspace">
+        <div class="stage stage-chamber">
+          <canvas id="c" width="900" height="560" aria-label="Gas molecule chamber"></canvas>
+          <div class="stage-hint" id="stageHint">
+            <span class="en">Use the sliders · particles bounce elastically</span>
+            <span class="zh">用滑桿調控 · 粒子彈性碰撞</span>
+          </div>
+        </div>
+
+        <div class="right-col right-col-solo">
+          <aside class="panel panel-fill">
+            <div class="locks" id="lockBadges" aria-live="polite"></div>
+
+            <div class="panel-sliders">
+              <div class="slider-wrap" id="wrapV">
+                <div class="slider-head">
+                  <span class="en">Volume (V)</span><span class="zh">體積 (V)</span>
+                  <em id="valV">50 cm³</em>
+                </div>
+                <input type="range" id="slV" min="20" max="100" value="50" />
+              </div>
+              <div class="slider-wrap" id="wrapT">
+                <div class="slider-head">
+                  <span class="en">Temperature (θ)</span><span class="zh">溫度 (θ)</span>
+                  <em id="valT">27 °C · 300 K</em>
+                </div>
+                <input type="range" id="slT" min="-50" max="200" value="27" />
+              </div>
+              <div class="slider-wrap" id="wrapN">
+                <div class="slider-head">
+                  <span class="en">Molecules (N)</span><span class="zh">分子數 (N)</span>
+                  <em id="valN">40</em>
+                </div>
+                <input type="range" id="slN" min="12" max="80" value="40" />
+              </div>
+            </div>
+
+            <div class="readouts readouts-highlight">
+              <div class="stat stat-hot"><span id="outHotLabel">P</span><b id="outHot">— kPa</b></div>
+              <div class="stat stat-hot"><span class="en">Collision freq.</span><span class="zh">碰撞頻率</span><b id="outHits">0 / s</b></div>
+            </div>
+            <div class="readouts readouts-secondary">
+              <div class="stat"><span id="outSecLabel">T</span><b id="outSec">300 K</b></div>
+              <div class="stat"><span>v<sub>rms</sub></span><b id="outVrms">— m/s</b></div>
+              <div class="stat">
+                <span class="en">Gas separation</span><span class="zh">分子間距</span>
+                <b id="outSep">1.00×</b>
+              </div>
+            </div>
+
+            <p class="tip" id="exploreTip"></p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer-note">
+      <span class="en">Open in Google Chrome · Ideal-gas teaching model (R = 8.31 J mol⁻¹ K⁻¹ · N<sub>A</sub> = 6.02 × 10²³)</span>
+      <span class="zh">用 Google Chrome 開啟 · 教學用理想氣體模型（R = 8.31 J mol⁻¹ K⁻¹ · N<sub>A</sub> = 6.02 × 10²³）</span>
+    </p>
+  </div>
+  <script src="lab.js"></script>
+</body>
+</html>

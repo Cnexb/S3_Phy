@@ -1,0 +1,8 @@
+{
+  "slug": "conical-pendulum",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

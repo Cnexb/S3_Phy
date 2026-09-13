@@ -136,11 +136,17 @@ const TOOL_ORDER = [
   'seesawMoment',
   'ladderMoment',
   'supportsMoment',
+  'bungeeEnergy',
+  'divingEnergy',
+  'pendulumEnergy',
+  'skateParkEnergy',
   'impulseMomentum',
   'crashTrackMomentum',
   'bulletMomentum',
   'projectileMotion',
   'orbitalForces',
+  'aircraftTurn',
+  'conicalPendulum',
 ];
 
 const TOOL_LOADERS = {
@@ -154,6 +160,12 @@ const TOOL_LOADERS = {
   seesawMoment: () => import('../tools/seesawMomentLab.js').then((m) => m.createSeesawMomentLab),
   ladderMoment: () => import('../tools/ladderMomentLab.js').then((m) => m.createLadderMomentLab),
   supportsMoment: () => import('../tools/supportsMomentLab.js').then((m) => m.createSupportsMomentLab),
+  bungeeEnergy: () => import('../tools/bungeeEnergyLab.js').then((m) => m.createBungeeEnergyLab),
+  divingEnergy: () => import('../tools/divingEnergyLab.js').then((m) => m.createDivingEnergyLab),
+  pendulumEnergy: () =>
+    import('../tools/pendulumEnergyLab.js').then((m) => m.createPendulumEnergyLab),
+  skateParkEnergy: () =>
+    import('../tools/skateParkEnergyLab.js').then((m) => m.createSkateParkEnergyLab),
   impulseMomentum: () =>
     import('../tools/impulseMomentumLab.js').then((m) => m.createImpulseMomentumLab),
   crashTrackMomentum: () =>
@@ -164,6 +176,9 @@ const TOOL_LOADERS = {
     import('../tools/projectileMotionLab.js').then((m) => m.createProjectileMotionLab),
   orbitalForces: () =>
     import('../tools/orbitalForcesLab.js').then((m) => m.createOrbitalForcesLab),
+  aircraftTurn: () => import('../tools/aircraftTurnLab.js').then((m) => m.createAircraftTurnLab),
+  conicalPendulum: () =>
+    import('../tools/conicalPendulumLab.js').then((m) => m.createConicalPendulumLab),
 };
 
 function toolLabel(id) {
@@ -175,11 +190,17 @@ function toolLabel(id) {
     seesawMoment: 'tools.seesawMoment.title',
     ladderMoment: 'tools.ladderMoment.title',
     supportsMoment: 'tools.supportsMoment.title',
+    bungeeEnergy: 'tools.bungeeEnergy.title',
+    divingEnergy: 'tools.divingEnergy.title',
+    pendulumEnergy: 'tools.pendulumEnergy.title',
+    skateParkEnergy: 'tools.skateParkEnergy.title',
     impulseMomentum: 'tools.impulseMomentum.title',
     crashTrackMomentum: 'tools.crashTrackMomentum.title',
     bulletMomentum: 'tools.bulletMomentum.title',
     projectileMotion: 'tools.projectileMotion.title',
     orbitalForces: 'tools.orbitalForces.title',
+    aircraftTurn: 'tools.aircraftTurn.title',
+    conicalPendulum: 'tools.conicalPendulum.title',
   };
   return t(map[id] || id);
 }
