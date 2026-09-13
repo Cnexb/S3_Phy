@@ -8,29 +8,30 @@
   <script src="../shared/s3phy-embed-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="../shared/s3phy-n1-draw.js"></script>
   <style>
     :root {
-      --bg: #f2f7f6;
-      --bg2: #e6efed;
+      --bg: #f8fafc;
+      --bg2: #f8fafc;
       --surface: #ffffff;
-      --surface2: #f4faf8;
-      --ink: #14221f;
-      --muted: #5a6f69;
-      --line: #c9ddd6;
-      --teal: #0f7a6c;
-      --teal-bright: #14a391;
-      --copper: #c36b2e;
-      --field: #1a8cff;
-      --north: #e23d3d;
-      --south: #2b6be4;
-      --ok: #168a56;
-      --warn: #c36b2e;
-      --danger: #d14343;
+      --surface2: #f1f5f9;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --teal: #6366f1;
+      --teal-bright: #818cf8;
+      --copper: #f97316;
+      --field: #6366f1;
+      --north: #f97316;
+      --south: #0284c7;
+      --ok: #059669;
+      --warn: #f97316;
+      --danger: #e11d48;
       --radius: 16px;
-      --shadow: 0 12px 36px rgba(20, 34, 31, 0.08);
-      --font: "Nunito Sans", system-ui, sans-serif;
-      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+      --font: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+      --display: "Montserrat", "Plus Jakarta Sans", sans-serif;
       --mono: "JetBrains Mono", ui-monospace, monospace;
     }
 
@@ -52,9 +53,8 @@
       font-family: var(--font);
       color: var(--ink);
       background:
-        radial-gradient(1000px 520px at 0% -5%, rgba(20, 163, 145, 0.16), transparent 55%),
-        radial-gradient(900px 480px at 100% 0%, rgba(195, 107, 46, 0.12), transparent 50%),
-        radial-gradient(700px 400px at 50% 100%, rgba(26, 140, 255, 0.08), transparent 55%),
+        radial-gradient(1000px 520px at 25% -5%, rgba(99, 102, 241, 0.16), transparent 55%),
+        radial-gradient(900px 480px at 75% 0%, rgba(5, 150, 105, 0.10), transparent 50%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       min-height: 100vh;
       line-height: 1.5;
@@ -349,10 +349,10 @@
     }
     .tab:hover { color: var(--ink); border-color: #a8c9bf; }
     .tab.active {
-      background: linear-gradient(135deg, #e8f8f4, #dff3ee);
-      color: var(--ink);
-      border-color: var(--teal-bright);
-      box-shadow: 0 0 0 1px rgba(20, 163, 145, 0.22);
+      background: #eef2ff;
+      color: #312e81;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.28);
     }
 
     .panel { display: none; }
@@ -453,13 +453,13 @@
     }
     .btn:hover { border-color: var(--teal-bright); color: var(--teal); }
     .btn.primary {
-      background: linear-gradient(135deg, var(--teal), #0b5f54);
+      background: linear-gradient(135deg, var(--teal), #4338ca);
       color: #fff;
       border-color: transparent;
     }
     .btn.primary:hover { filter: brightness(1.06); color: #fff; }
     .btn.copper {
-      background: linear-gradient(135deg, var(--copper), #9a4f1a);
+      background: linear-gradient(135deg, var(--copper), #c2410c);
       color: #fff;
       border-color: transparent;
     }
@@ -737,9 +737,9 @@
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="20" r="15" stroke="#0f7a6c" stroke-width="2" opacity="0.35"/>
-            <circle cx="20" cy="20" r="9" stroke="#0f7a6c" stroke-width="2" opacity="0.55"/>
-            <circle cx="20" cy="20" r="3.5" fill="#c36b2e"/>
+            <circle cx="20" cy="20" r="15" stroke="#6366f1" stroke-width="2" opacity="0.35"/>
+            <circle cx="20" cy="20" r="9" stroke="#6366f1" stroke-width="2" opacity="0.55"/>
+            <circle cx="20" cy="20" r="3.5" fill="#f97316"/>
             <path d="M20 5v4M20 31v4M5 20h4M31 20h4" stroke="#14a391" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
@@ -961,7 +961,7 @@
                   <defs>
                     <linearGradient id="gongGrad" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stop-color="#e8c36a"/>
-                      <stop offset="100%" stop-color="#c36b2e"/>
+                      <stop offset="100%" stop-color="#f97316"/>
                     </linearGradient>
                     <filter id="softGlow" x="-40%" y="-40%" width="180%" height="180%">
                       <feGaussianBlur stdDeviation="4" result="b"/>
@@ -978,23 +978,23 @@
                   </g>
 
                   <!-- Battery top-right → switch pivot (head) -->
-                  <path id="wirePathBot" d="M120 230 H160 V250" fill="none" stroke="#c36b2e" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+                  <path id="wirePathBot" d="M120 230 H160 V250" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
                   <!-- Switch pad → over electromagnet → make-and-break contact -->
-                  <path id="wirePathTop" d="M210 210 H280 V160 H420" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+                  <path id="wirePathTop" d="M210 210 H280 V160 H420" fill="none" stroke="#f97316" stroke-width="3" opacity="0.35"/>
                   <!-- Contact → return to battery bottom -->
-                  <path id="wirePathReturn" d="M420 155 H500 V330 H120 V290 H95" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+                  <path id="wirePathReturn" d="M420 155 H500 V330 H120 V290 H95" fill="none" stroke="#f97316" stroke-width="3" opacity="0.35"/>
 
                   <g id="bellSwitch" class="bell-switch-hit">
                     <rect x="140" y="195" width="90" height="100" rx="10" fill="transparent"/>
                     <!-- OFF gap mark (visible when open) -->
-                    <line id="switchGapMark" x1="200" y1="218" x2="218" y2="228" stroke="#c36b2e" stroke-width="2.5" stroke-linecap="round" opacity="0"/>
-                    <circle id="switchPivot" cx="160" cy="250" r="11" fill="#c36b2e" stroke="#9a4f1a" stroke-width="2"/>
+                    <line id="switchGapMark" x1="200" y1="218" x2="218" y2="228" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" opacity="0"/>
+                    <circle id="switchPivot" cx="160" cy="250" r="11" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
                     <line id="switchArm" x1="160" y1="250" x2="222" y2="238" stroke="#14221f" stroke-width="6" stroke-linecap="round"/>
                     <circle id="switchContactGlow" cx="210" cy="210" r="14" fill="#14a391" opacity="0" filter="url(#softGlow)"/>
                     <circle id="switchContact" cx="210" cy="210" r="8" fill="#5a6f69" stroke="#3d524c" stroke-width="1.5"/>
                     <text x="185" y="302" text-anchor="middle" fill="#5a6f69" font-size="11">Switch</text>
                     <rect id="switchCueBg" x="158" y="306" width="54" height="18" rx="6" fill="#e8f0ed"/>
-                    <text x="185" y="319" text-anchor="middle" fill="#5a6f69" font-size="11" font-weight="800" font-family="Nunito Sans" id="switchCue">OFF</text>
+                    <text x="185" y="319" text-anchor="middle" fill="#5a6f69" font-size="11" font-weight="800" font-family="Plus Jakarta Sans" id="switchCue">OFF</text>
                   </g>
 
                   <g id="currentTraceLayer" style="pointer-events:none;">
@@ -1005,9 +1005,9 @@
 
                   <g id="partMagnet" style="pointer-events:none;">
                     <rect x="280" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="coreRect"/>
-                    <path d="M275 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5" id="coilL"/>
+                    <path d="M275 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#6366f1" stroke-width="5" id="coilL"/>
                     <rect x="320" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="coreRect2"/>
-                    <path d="M315 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5" id="coilR"/>
+                    <path d="M315 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#6366f1" stroke-width="5" id="coilR"/>
                     <text x="314" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Electromagnet</text>
                     <g id="fieldMarks" opacity="0">
                       <path d="M250 160 Q230 185 250 210" fill="none" stroke="#14a391" stroke-width="1.5" stroke-dasharray="4 3"/>
@@ -1018,7 +1018,7 @@
                   <g id="partArmature" style="pointer-events:none;">
                     <!-- Fixed make-and-break screw (stays put when armature moves) -->
                     <g id="fixedContact">
-                      <circle id="contactPoint" cx="420" cy="155" r="7" fill="#c36b2e" stroke="#9a4f1a" stroke-width="1.5"/>
+                      <circle id="contactPoint" cx="420" cy="155" r="7" fill="#f97316" stroke="#c2410c" stroke-width="1.5"/>
                       <circle id="currentDropTarget" cx="420" cy="155" r="16" fill="none" stroke="#14a391" stroke-width="2" stroke-dasharray="4 3" opacity="0"/>
                     </g>
                     <g id="hammerGroup" style="transform-origin: 366px 170px; transition: transform 0.22s ease;">
@@ -1026,34 +1026,34 @@
                       <line id="hammerShaft" x1="372" y1="130" x2="472" y2="94" stroke="#14221f" stroke-width="5" stroke-linecap="round"/>
                       <circle cx="482" cy="90" r="14" fill="#14221f" id="hammerHead"/>
                       <!-- Moving contact leaf — touches the fixed screw when closed -->
-                      <line id="contact" x1="372" y1="155" x2="412" y2="155" stroke="#c36b2e" stroke-width="3.5" stroke-linecap="round"/>
-                      <circle id="contactLeafTip" cx="412" cy="155" r="5" fill="#c36b2e" stroke="#9a4f1a" stroke-width="1"/>
+                      <line id="contact" x1="372" y1="155" x2="412" y2="155" stroke="#f97316" stroke-width="3.5" stroke-linecap="round"/>
+                      <circle id="contactLeafTip" cx="412" cy="155" r="5" fill="#f97316" stroke="#c2410c" stroke-width="1"/>
                     </g>
                     <!-- Obvious open-gap cue when circuit breaks -->
                     <g id="contactBreakFx" opacity="0" style="pointer-events:none;">
-                      <line id="contactGapMark" x1="392" y1="155" x2="412" y2="155" stroke="#c36b2e" stroke-width="2.5" stroke-dasharray="4 3" opacity="0.9"/>
+                      <line id="contactGapMark" x1="392" y1="155" x2="412" y2="155" stroke="#f97316" stroke-width="2.5" stroke-dasharray="4 3" opacity="0.9"/>
                       <path id="contactSpark" d="M396 148 L400 155 L396 162 L404 155 L400 148" fill="none" stroke="#e8c36a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                      <circle cx="402" cy="155" r="14" fill="#c36b2e" opacity="0.18" filter="url(#softGlow)"/>
-                      <text id="contactBreakLabel" x="402" y="138" text-anchor="middle" fill="#c36b2e" font-size="13" font-weight="800" font-family="Nunito Sans">OPEN</text>
+                      <circle cx="402" cy="155" r="14" fill="#f97316" opacity="0.18" filter="url(#softGlow)"/>
+                      <text id="contactBreakLabel" x="402" y="138" text-anchor="middle" fill="#f97316" font-size="13" font-weight="800" font-family="Plus Jakarta Sans">OPEN</text>
                     </g>
                     <text x="400" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Armature + contact</text>
                   </g>
 
                   <g id="partGong" style="pointer-events:none;">
                     <g id="gongGroup">
-                      <ellipse cx="540" cy="90" rx="42" ry="48" fill="url(#gongGrad)" stroke="#9a4f1a" stroke-width="2"/>
+                      <ellipse cx="540" cy="90" rx="42" ry="48" fill="url(#gongGrad)" stroke="#c2410c" stroke-width="2"/>
                       <text x="540" y="98" text-anchor="middle" fill="#fff8ef" font-size="13" font-weight="700" opacity="0.85">♪</text>
                     </g>
                     <text x="540" y="160" text-anchor="middle" fill="#5a6f69" font-size="11">Gong</text>
                   </g>
 
                   <circle id="currentGlow" cx="314" cy="185" r="0" fill="#14a391" opacity="0.22" filter="url(#softGlow)" style="pointer-events:none;"/>
-                  <text id="bellStatus" x="320" y="360" text-anchor="middle" fill="#0f7a6c" font-size="14" font-family="Nunito Sans" font-weight="700" style="pointer-events:none;">Ready — click the switch</text>
+                  <text id="bellStatus" x="320" y="360" text-anchor="middle" fill="#6366f1" font-size="14" font-family="Plus Jakarta Sans" font-weight="700" style="pointer-events:none;">Ready — click the switch</text>
 
                   <!-- I bead on top so it stays draggable over coils / armature -->
                   <g id="currentBeadLayer">
                     <circle id="currentBeadHit" cx="120" cy="230" r="22" fill="transparent" style="cursor:grab; pointer-events:all;"/>
-                    <circle id="currentBead" cx="120" cy="230" r="12" fill="#c36b2e" stroke="#fff8ef" stroke-width="2.5" filter="url(#softGlow)" style="cursor:grab; pointer-events:all;"/>
+                    <circle id="currentBead" cx="120" cy="230" r="12" fill="#f97316" stroke="#fff8ef" stroke-width="2.5" filter="url(#softGlow)" style="cursor:grab; pointer-events:all;"/>
                     <text id="currentBeadLabel" x="120" y="230" text-anchor="middle" dominant-baseline="central" fill="#fff" font-size="10" font-weight="800" font-family="JetBrains Mono" style="pointer-events:none;">I</text>
                   </g>
                 </svg>
@@ -1103,7 +1103,7 @@
                   <defs>
                     <linearGradient id="ringGongGrad" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stop-color="#e8c36a"/>
-                      <stop offset="100%" stop-color="#c36b2e"/>
+                      <stop offset="100%" stop-color="#f97316"/>
                     </linearGradient>
                     <filter id="ringSoftGlow" x="-40%" y="-40%" width="180%" height="180%">
                       <feGaussianBlur stdDeviation="4" result="b"/>
@@ -1120,25 +1120,25 @@
 
                   <!-- Wires under the switch so the orange head sits on the junction -->
                   <!-- Battery top-right → switch pivot (head) -->
-                  <path id="ringWireBot" d="M120 230 H160 V250" fill="none" stroke="#c36b2e" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
+                  <path id="ringWireBot" d="M120 230 H160 V250" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" opacity="0.55"/>
                   <!-- Switch pad → electromagnet → make-and-break contact -->
-                  <path id="ringWireTop" d="M210 210 H280 V160 H400" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+                  <path id="ringWireTop" d="M210 210 H280 V160 H400" fill="none" stroke="#f97316" stroke-width="3" opacity="0.35"/>
                   <!-- Contact → return to battery bottom -->
-                  <path id="ringWireReturn" d="M420 155 H500 V330 H120 V290 H95" fill="none" stroke="#c36b2e" stroke-width="3" opacity="0.35"/>
+                  <path id="ringWireReturn" d="M420 155 H500 V330 H120 V290 H95" fill="none" stroke="#f97316" stroke-width="3" opacity="0.35"/>
 
                   <g id="ringSwitch" class="bell-switch-hit">
                     <rect x="140" y="195" width="90" height="100" rx="10" fill="transparent"/>
-                    <circle cx="160" cy="250" r="11" fill="#c36b2e" stroke="#9a4f1a" stroke-width="2"/>
+                    <circle cx="160" cy="250" r="11" fill="#f97316" stroke="#c2410c" stroke-width="2"/>
                     <line id="ringSwitchArm" x1="160" y1="250" x2="222" y2="238" stroke="#14221f" stroke-width="6" stroke-linecap="round"/>
                     <circle id="ringSwitchPad" cx="210" cy="210" r="8" fill="#5a6f69"/>
                     <text x="185" y="302" text-anchor="middle" fill="#5a6f69" font-size="11">Hold</text>
-                    <text id="ringSwitchCue" x="185" y="318" text-anchor="middle" fill="#0f7a6c" font-size="11" font-weight="800">HOLD</text>
+                    <text id="ringSwitchCue" x="185" y="318" text-anchor="middle" fill="#6366f1" font-size="11" font-weight="800">HOLD</text>
                   </g>
                   <g>
                     <rect x="280" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="ringCore1"/>
-                    <path id="ringCoilL" d="M275 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5"/>
+                    <path id="ringCoilL" d="M275 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#6366f1" stroke-width="5"/>
                     <rect x="320" y="140" width="28" height="90" rx="4" fill="#8a9e98" id="ringCore2"/>
-                    <path id="ringCoilR" d="M315 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#0f7a6c" stroke-width="5"/>
+                    <path id="ringCoilR" d="M315 150 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18 q18 8 18 18 q-18 8 -18 18" fill="none" stroke="#6366f1" stroke-width="5"/>
                     <text x="314" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Electromagnet</text>
                     <g id="ringField" opacity="0">
                       <path d="M250 160 Q230 185 250 210" fill="none" stroke="#14a391" stroke-width="1.5" stroke-dasharray="4 3"/>
@@ -1151,22 +1151,22 @@
                       <rect x="360" y="120" width="12" height="100" rx="2" fill="#5a6f69"/>
                       <line x1="372" y1="130" x2="472" y2="94" stroke="#14221f" stroke-width="5" stroke-linecap="round"/>
                       <circle cx="482" cy="90" r="14" fill="#14221f"/>
-                      <line id="ringContact" x1="366" y1="155" x2="420" y2="155" stroke="#c36b2e" stroke-width="3"/>
-                      <circle id="ringContactPt" cx="420" cy="155" r="5" fill="#c36b2e"/>
+                      <line id="ringContact" x1="366" y1="155" x2="420" y2="155" stroke="#f97316" stroke-width="3"/>
+                      <circle id="ringContactPt" cx="420" cy="155" r="5" fill="#f97316"/>
                     </g>
                     <text x="400" y="255" text-anchor="middle" fill="#5a6f69" font-size="11">Armature + contact</text>
                   </g>
 
                   <g>
                     <g id="ringGongGroup">
-                      <ellipse cx="540" cy="90" rx="42" ry="48" fill="url(#ringGongGrad)" stroke="#9a4f1a" stroke-width="2"/>
+                      <ellipse cx="540" cy="90" rx="42" ry="48" fill="url(#ringGongGrad)" stroke="#c2410c" stroke-width="2"/>
                       <text id="ringNote" x="540" y="98" text-anchor="middle" fill="#fff8ef" font-size="13" font-weight="700" opacity="0.85">♪</text>
                     </g>
                     <text x="540" y="160" text-anchor="middle" fill="#5a6f69" font-size="11">Gong</text>
                   </g>
 
                   <circle id="ringGlow" cx="314" cy="185" r="0" fill="#14a391" opacity="0.22" filter="url(#ringSoftGlow)"/>
-                  <text id="ringStatus" x="320" y="360" text-anchor="middle" fill="#0f7a6c" font-size="14" font-family="Nunito Sans" font-weight="700">Ready — hold the switch to ring</text>
+                  <text id="ringStatus" x="320" y="360" text-anchor="middle" fill="#6366f1" font-size="14" font-family="Plus Jakarta Sans" font-weight="700">Ready — hold the switch to ring</text>
                   <text id="ringHitCount" x="320" y="380" text-anchor="middle" fill="#5a6f69" font-size="12" font-family="JetBrains Mono" font-weight="600"></text>
                 </svg>
               </div>
@@ -1331,7 +1331,7 @@
       ctx.arc(0, 0, r, 0, Math.PI * 2);
       ctx.fillStyle = '#fff';
       ctx.fill();
-      ctx.strokeStyle = '#8aa89f';
+      ctx.strokeStyle = '#94a3b8';
       ctx.lineWidth = 1.5;
       ctx.stroke();
       ctx.beginPath();
@@ -1340,7 +1340,7 @@
       ctx.lineTo(0, -2);
       ctx.lineTo(-4, 2);
       ctx.closePath();
-      ctx.fillStyle = '#e23d3d';
+      ctx.fillStyle = '#f97316';
       ctx.fill();
       ctx.beginPath();
       ctx.moveTo(0, r - 2);
@@ -1348,24 +1348,24 @@
       ctx.lineTo(0, 2);
       ctx.lineTo(-4, -2);
       ctx.closePath();
-      ctx.fillStyle = '#2b6be4';
+      ctx.fillStyle = '#0284c7';
       ctx.fill();
       // N / S sit just outside the needle tips (axis-aligned to the needle)
       const fs = Math.max(7, Math.round(r * 0.58));
       const tip = r + fs * 0.85;
-      ctx.font = '700 ' + fs + 'px Bricolage Grotesque, sans-serif';
+      ctx.font = '800 ' + fs + 'px Plus Jakarta Sans, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.save();
       ctx.translate(0, -tip);
       ctx.rotate(-angle);
-      ctx.fillStyle = '#e23d3d';
+      ctx.fillStyle = '#f97316';
       ctx.fillText('N', 0, 0);
       ctx.restore();
       ctx.save();
       ctx.translate(0, tip);
       ctx.rotate(-angle);
-      ctx.fillStyle = '#2b6be4';
+      ctx.fillStyle = '#0284c7';
       ctx.fillText('S', 0, 0);
       ctx.restore();
       ctx.restore();
@@ -1393,7 +1393,7 @@
           ty = y + oy * dist;
         }
         ctx.fillStyle = '#14221f';
-        ctx.font = '700 13px Nunito Sans, sans-serif';
+        ctx.font = '700 13px Plus Jakarta Sans, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(tag, tx, ty);
@@ -1403,8 +1403,8 @@
     /* ===================== MAGNETS ===================== */
     const MAG_HALF_L = 68;
     const MAG_HALF_H = 18;
-    const FIELD_PURPLE = 'rgba(108, 74, 182, 0.88)';
-    const FIELD_PURPLE_SOFT = 'rgba(108, 74, 182, 0.55)';
+    const FIELD_PURPLE = 'rgba(99, 102, 241, 0.72)';
+    const FIELD_PURPLE_SOFT = 'rgba(99, 102, 241, 0.42)';
 
     const magState = {
       mode: 'single',
@@ -1737,35 +1737,40 @@
 
     function drawBarMagnet(ctx, m) {
       const { halfL, halfH } = magDims(m);
+      const Art = window.N1Art;
       ctx.save();
       ctx.translate(m.x, m.y);
       ctx.rotate(m.angle);
-      // White body like the reference diagram
-      ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#2a2a2a';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.rect(-halfL, -halfH, halfL * 2, halfH * 2);
-      ctx.fill();
-      ctx.stroke();
-      // Soft N / S tint edges
-      ctx.fillStyle = 'rgba(226, 61, 61, 0.12)';
-      ctx.fillRect(0, -halfH, halfL, halfH * 2);
-      ctx.fillStyle = 'rgba(43, 107, 228, 0.12)';
-      ctx.fillRect(-halfL, -halfH, halfL, halfH * 2);
-      ctx.font = '700 ' + (m.tall ? 22 : 18) + 'px Bricolage Grotesque';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#e23d3d';
-      ctx.fillText('N', halfL * 0.55, 1);
-      ctx.fillStyle = '#2b6be4';
-      ctx.fillText('S', -halfL * 0.55, 1);
+      if (Art) {
+        Art.drawGlowingBox(ctx, 0, -halfH, halfL, halfH * 2, Art.C.orange, '#c2410c', '#ea580c');
+        Art.drawGlowingBox(ctx, -halfL, -halfH, halfL, halfH * 2, Art.C.skyTop, Art.C.skyBot, Art.C.skyStroke);
+        Art.labelBox(ctx, 0, -halfH, halfL, halfH * 2, 'N');
+        Art.labelBox(ctx, -halfL, -halfH, halfL, halfH * 2, 'S');
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.rect(-halfL, -halfH, halfL * 2, halfH * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(249, 115, 22, 0.18)';
+        ctx.fillRect(0, -halfH, halfL, halfH * 2);
+        ctx.fillStyle = 'rgba(2, 132, 199, 0.18)';
+        ctx.fillRect(-halfL, -halfH, halfL, halfH * 2);
+        ctx.font = '800 ' + (m.tall ? 22 : 18) + 'px Plus Jakarta Sans';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('N', halfL * 0.55, 1);
+        ctx.fillText('S', -halfL * 0.55, 1);
+      }
       ctx.restore();
     }
 
     function drawNeutralX(ctx, x, y) {
       ctx.save();
-      ctx.strokeStyle = '#2f9e44';
+      ctx.strokeStyle = '#059669';
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -1774,8 +1779,8 @@
       ctx.moveTo(x + 10, y - 10);
       ctx.lineTo(x - 10, y + 10);
       ctx.stroke();
-      ctx.fillStyle = '#2f9e44';
-      ctx.font = '700 12px Nunito Sans';
+      ctx.fillStyle = '#059669';
+      ctx.font = '700 12px Plus Jakarta Sans';
       ctx.textAlign = 'left';
       ctx.fillText('Neutral point', x + 14, y + 4);
       ctx.restore();
@@ -1815,7 +1820,7 @@
       const w = ctx.canvas.width, h = ctx.canvas.height;
       const N = magnetPoles(m).N;
       ctx.save();
-      ctx.font = '700 12px Nunito Sans';
+      ctx.font = '700 12px Plus Jakarta Sans';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.lineWidth = 2;
@@ -1830,7 +1835,7 @@
       ctx.setLineDash([]);
       ctx.fillStyle = 'rgba(255,255,255,0.92)';
       ctx.fillRect(N.x - 48, sLabelY - 9, 96, 18);
-      ctx.fillStyle = '#2f9e44';
+      ctx.fillStyle = '#059669';
       ctx.fillText('Stronger field', N.x, sLabelY);
 
       // Weaker: bracket sparse outer field lines (label outside, not inside)
@@ -1900,7 +1905,7 @@
       updatePairMagnetAnimation();
 
       // Soft paper background (closer to the reference)
-      ctx.fillStyle = '#fbfcfe';
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
       ctx.strokeStyle = 'rgba(108, 74, 182, 0.05)';
       ctx.lineWidth = 1;
@@ -1950,7 +1955,7 @@
       // Motion caption for pair modes
       if (magState.mode === 'attract' || magState.mode === 'repel') {
         ctx.fillStyle = 'rgba(20, 34, 31, 0.72)';
-        ctx.font = '700 13px Nunito Sans';
+        ctx.font = '700 13px Plus Jakarta Sans';
         ctx.textAlign = 'center';
         let msg;
         if (!magState.pairStarted) {
@@ -2041,7 +2046,7 @@
       ctx.strokeStyle = 'rgba(150,120,70,0.35)';
       ctx.strokeRect(40, 40, w - 80, h - 80);
       ctx.fillStyle = '#5a6f69';
-      ctx.font = '600 12px Nunito Sans';
+      ctx.font = '600 12px Plus Jakarta Sans';
       ctx.fillText('cardboard', 52, 58);
 
       const animate = $('#wireAnimate').checked;
@@ -2098,28 +2103,28 @@
         ctx.strokeStyle = 'rgba(47,158,68,0.9)';
         ctx.strokeRect(cx - 22, cy - nearR - 20, 44, 40);
         ctx.setLineDash([]);
-        ctx.font = '700 12px Nunito Sans';
+        ctx.font = '700 12px Plus Jakarta Sans';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const nearLabelY = cy - nearR - 34;
         ctx.fillStyle = 'rgba(247,252,251,0.92)';
         ctx.fillRect(cx - 58, nearLabelY - 18, 116, 32);
-        ctx.fillStyle = '#2f9e44';
+        ctx.fillStyle = '#059669';
         ctx.fillText('Stronger field', cx, nearLabelY - 6);
-        ctx.font = '600 11px Nunito Sans';
+        ctx.font = '600 11px Plus Jakarta Sans';
         ctx.fillText('(close)', cx, nearLabelY + 8);
         // far — below wire
         ctx.setLineDash([5, 4]);
         ctx.strokeStyle = 'rgba(43,107,228,0.85)';
         ctx.strokeRect(cx - 26, cy + farR - 20, 52, 40);
         ctx.setLineDash([]);
-        ctx.font = '700 12px Nunito Sans';
+        ctx.font = '700 12px Plus Jakarta Sans';
         const farLabelY = cy + farR + 34;
         ctx.fillStyle = 'rgba(247,252,251,0.92)';
         ctx.fillRect(cx - 54, farLabelY - 18, 108, 32);
-        ctx.fillStyle = '#2b6be4';
+        ctx.fillStyle = '#0284c7';
         ctx.fillText('Weaker field', cx, farLabelY - 6);
-        ctx.font = '600 11px Nunito Sans';
+        ctx.font = '600 11px Plus Jakarta Sans';
         ctx.fillText('(far)', cx, farLabelY + 8);
         ctx.restore();
       }
@@ -2127,7 +2132,7 @@
       // wire
       ctx.beginPath();
       ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-      ctx.fillStyle = '#c36b2e';
+      ctx.fillStyle = '#f97316';
       ctx.fill();
       ctx.fillStyle = '#fff';
       ctx.font = '700 20px JetBrains Mono';
@@ -2276,7 +2281,7 @@
         ctx.fillStyle = 'rgba(255,255,255,0.28)';
         ctx.fillRect(left + 16, cy - r, right - left - 32, 9);
         ctx.fillStyle = '#14221f';
-        ctx.font = '700 11px Nunito Sans';
+        ctx.font = '700 11px Plus Jakarta Sans';
         ctx.textAlign = 'center';
         ctx.fillText('soft iron', midX, cy + 4);
       }
@@ -2386,8 +2391,8 @@
       // Forward (A→B): front arcs run top → bottom
       if (solState.I > 0.05) {
         const frontDown = solState.forward;
-        ctx.fillStyle = '#c36b2e';
-        ctx.font = '700 13px Nunito Sans';
+        ctx.fillStyle = '#f97316';
+        ctx.font = '700 13px Plus Jakarta Sans';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
         ctx.fillText('I', midX, cy - coilRy - 10);
@@ -2430,18 +2435,18 @@
 
       // Pole letters at the openings (reference style)
       if (solState.I > 0.05) {
-        ctx.font = '800 26px Bricolage Grotesque';
+        ctx.font = '800 26px Montserrat';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#e23d3d';
+        ctx.fillStyle = '#f97316';
         ctx.fillText('N', nX + dir * 34, cy);
-        ctx.fillStyle = '#2b6be4';
+        ctx.fillStyle = '#0284c7';
         ctx.fillText('S', sX - dir * 34, cy);
       }
 
       // Face labels A / B
       ctx.fillStyle = '#5a6f69';
-      ctx.font = '700 13px Nunito Sans';
+      ctx.font = '700 13px Plus Jakarta Sans';
       ctx.textAlign = 'center';
       ctx.fillText('A', left - 36, cy + coilRy + 18);
       ctx.fillText('B', right + 36, cy + coilRy + 18);
@@ -2674,7 +2679,7 @@
       if (switchOn) {
         arm.setAttribute('x2', '210');
         arm.setAttribute('y2', '210');
-        arm.setAttribute('stroke', '#0f7a6c');
+        arm.setAttribute('stroke', '#6366f1');
         arm.setAttribute('stroke-width', '6');
         contactEl.setAttribute('fill', '#14a391');
         contactEl.setAttribute('stroke', '#0b5f54');
@@ -2685,7 +2690,7 @@
           pivot.setAttribute('stroke', '#0b5f54');
         }
         switchCue.textContent = 'ON';
-        switchCue.setAttribute('fill', '#0f7a6c');
+        switchCue.setAttribute('fill', '#6366f1');
         if (cueBg) cueBg.setAttribute('fill', '#d8f5ee');
       } else {
         arm.setAttribute('x2', '228');
@@ -2697,16 +2702,16 @@
         if (contactGlow) contactGlow.setAttribute('opacity', '0');
         if (gapMark) gapMark.setAttribute('opacity', '1');
         if (pivot) {
-          pivot.setAttribute('fill', '#c36b2e');
-          pivot.setAttribute('stroke', '#9a4f1a');
+          pivot.setAttribute('fill', '#f97316');
+          pivot.setAttribute('stroke', '#c2410c');
         }
         switchCue.textContent = 'OFF';
-        switchCue.setAttribute('fill', '#9a4f1a');
+        switchCue.setAttribute('fill', '#c2410c');
         if (cueBg) cueBg.setAttribute('fill', '#f7e8dc');
       }
       hint.classList.toggle('live', !!switchOn);
 
-      const coilColor = magnetOn ? '#14a391' : '#0f7a6c';
+      const coilColor = magnetOn ? '#14a391' : '#6366f1';
       coilL.setAttribute('stroke', coilColor);
       coilR.setAttribute('stroke', coilColor);
       const coreFill = magnetOn ? '#5ec4b0' : '#8a9e98';
@@ -2722,19 +2727,19 @@
       // Contact leaf + fixed screw: closed touch vs open gap
       if (broken || hitting) {
         contact.setAttribute('opacity', '1');
-        contact.setAttribute('stroke', '#c36b2e');
+        contact.setAttribute('stroke', '#f97316');
         if (leaf) {
-          leaf.setAttribute('fill', '#c36b2e');
+          leaf.setAttribute('fill', '#f97316');
           leaf.setAttribute('opacity', '1');
         }
-        contactPt.setAttribute('fill', broken ? '#8a9e98' : '#c36b2e');
-        contactPt.setAttribute('stroke', broken ? '#5a6f69' : '#9a4f1a');
+        contactPt.setAttribute('fill', broken ? '#8a9e98' : '#f97316');
+        contactPt.setAttribute('stroke', broken ? '#5a6f69' : '#c2410c');
         contactPt.setAttribute('opacity', '1');
       } else {
         contact.setAttribute('opacity', '1');
         if (leaf) leaf.setAttribute('opacity', '1');
-        contactPt.setAttribute('fill', '#c36b2e');
-        contactPt.setAttribute('stroke', '#9a4f1a');
+        contactPt.setAttribute('fill', '#f97316');
+        contactPt.setAttribute('stroke', '#c2410c');
         contactPt.setAttribute('opacity', '1');
       }
 
@@ -3091,10 +3096,10 @@
       if (holding) {
         arm.setAttribute('x2', '210');
         arm.setAttribute('y2', '210');
-        arm.setAttribute('stroke', '#0f7a6c');
+        arm.setAttribute('stroke', '#6366f1');
         pad.setAttribute('fill', '#14a391');
         cue.textContent = 'ON';
-        cue.setAttribute('fill', '#0f7a6c');
+        cue.setAttribute('fill', '#6366f1');
         hint.classList.add('live');
       } else {
         arm.setAttribute('x2', '222');
@@ -3102,11 +3107,11 @@
         arm.setAttribute('stroke', '#14221f');
         pad.setAttribute('fill', '#5a6f69');
         cue.textContent = 'HOLD';
-        cue.setAttribute('fill', '#0f7a6c');
+        cue.setAttribute('fill', '#6366f1');
         hint.classList.remove('live');
       }
 
-      const coilColor = energized ? '#14a391' : '#0f7a6c';
+      const coilColor = energized ? '#14a391' : '#6366f1';
       coilL.setAttribute('stroke', coilColor);
       coilR.setAttribute('stroke', coilColor);
       const coreFill = energized ? '#5ec4b0' : '#8a9e98';

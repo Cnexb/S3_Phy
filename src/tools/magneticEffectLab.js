@@ -6,6 +6,6 @@ export function createMagneticEffectLab(t) {
     slug: 'magnetic-effect',
     titleKey: 'tools.magneticEffect.title',
     className: 'tool-magnetic-effect-lab',
-    extraParams: () => '&v=20260904a',
+    extraParams: () => '&v=20260913_n1_em',
   });
 }

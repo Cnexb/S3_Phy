@@ -6,6 +6,6 @@ export function createMovingChargeForceLab(t) {
     slug: 'moving-charge-force',
     titleKey: 'tools.movingChargeForce.title',
     className: 'tool-moving-charge-force-lab',
-    extraParams: () => '&v=20260904a',
+    extraParams: () => '&v=20260913_n1_em',
   });
 }
