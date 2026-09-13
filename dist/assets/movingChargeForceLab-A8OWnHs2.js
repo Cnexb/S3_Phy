@@ -1,0 +1,1 @@
+import{c as r}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function c(e){return r(e,{slug:"moving-charge-force",titleKey:"tools.movingChargeForce.title",className:"tool-moving-charge-force-lab",extraParams:()=>"&v=20260904a"})}export{c as createMovingChargeForceLab};

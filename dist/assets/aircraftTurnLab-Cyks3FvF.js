@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function o(r){return t(r,{slug:"aircraft-turn",titleKey:"tools.aircraftTurn.title",className:"tool-aircraft-turn-lab",extraParams:()=>"&v=20260913_zip_labs"})}export{o as createAircraftTurnLab};

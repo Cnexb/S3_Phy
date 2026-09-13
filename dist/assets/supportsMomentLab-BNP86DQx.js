@@ -1,0 +1,1 @@
+import{c as o}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function s(t){return o(t,{slug:"supports-moment",titleKey:"tools.supportsMoment.title",className:"tool-supports-moment-lab",extraParams:()=>"&v=20260906_supports_moment"})}export{s as createSupportsMomentLab};

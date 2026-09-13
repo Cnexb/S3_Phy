@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function s(t){return e(t,{slug:"electrostatics",titleKey:"tools.electrostatics.title",className:"tool-electrostatics-lab",extraParams:()=>"&v=20260904a"})}export{s as createElectrostaticsLab};

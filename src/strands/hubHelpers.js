@@ -48,10 +48,23 @@ export async function assetExists(folder, name) {
     return assetExistsCache.get(url);
   }
   try {
-    const res = await fetch(url, { method: 'HEAD' });
-    const ok = res.ok;
-    assetExistsCache.set(url, ok);
-    return ok;
+    const head = await fetch(url, { method: 'HEAD' });
+    if (head.ok) {
+      assetExistsCache.set(url, true);
+      return true;
+    }
+    // Some hosts reject HEAD while GET still works.
+    if (head.status === 405 || head.status === 501 || head.status === 403) {
+      const get = await fetch(url, {
+        method: 'GET',
+        headers: { Range: 'bytes=0-0' },
+      });
+      const ok = get.ok || get.status === 206;
+      assetExistsCache.set(url, ok);
+      return ok;
+    }
+    assetExistsCache.set(url, false);
+    return false;
   } catch {
     assetExistsCache.set(url, false);
     return false;
@@ -64,17 +77,69 @@ export async function noteExists(name) {
 
 export function pdfPreviewSrc(url) {
   const base = String(url).split('#')[0];
-  return `${base}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`;
+  // Keep fragments minimal — toolbar=0 / navpanes=0 blank the viewer in some browsers.
+  return `${base}#page=1&view=FitH`;
 }
 
-export function renderPdfPreviewBlock(title, pdfUrl, linkLabel) {
-  const previewSrc = pdfPreviewSrc(pdfUrl);
+function pdfFileName(pdfUrl) {
+  try {
+    const path = String(pdfUrl).split('?')[0].split('#')[0];
+    return decodeURIComponent(path.split('/').pop() || 'notes.pdf');
+  } catch {
+    return 'notes.pdf';
+  }
+}
+
+/**
+ * Browser PDF plugins often render blank inside Uni+ (nested iframe).
+ * Blob URLs usually still preview; fall back to the direct URL.
+ */
+export async function resolvePdfPreviewUrl(pdfUrl) {
+  try {
+    const res = await fetch(pdfUrl);
+    if (!res.ok) return pdfUrl;
+    const blob = await res.blob();
+    if (!blob || blob.size === 0) return pdfUrl;
+    const pdfBlob =
+      blob.type === 'application/pdf'
+        ? blob
+        : new Blob([blob], { type: 'application/pdf' });
+    return URL.createObjectURL(pdfBlob);
+  } catch {
+    return pdfUrl;
+  }
+}
+
+export function renderPdfPreviewBlock(title, pdfUrl, linkLabel, previewUrl = pdfUrl) {
+  const previewSrc = pdfPreviewSrc(previewUrl);
   const safeTitle = title.replace(/"/g, '&quot;');
+  const fileName = pdfFileName(pdfUrl);
+  const openLabel = linkLabel || t('notes.openPdf');
+  const downloadLabel = t('notes.downloadPdf');
   return `
     <div class="note-preview-wrap">
-      <iframe class="note-preview" title="${safeTitle}" src="${previewSrc}" loading="lazy"></iframe>
+      <object class="note-preview" type="application/pdf" data="${previewSrc}" title="${safeTitle}">
+        <iframe class="note-preview" title="${safeTitle}" src="${previewSrc}"></iframe>
+      </object>
     </div>
-    <p class="note-preview-link"><a href="${pdfUrl}" target="_blank" rel="noopener">${linkLabel}</a></p>`;
+    <p class="note-preview-link note-preview-actions">
+      <a class="btn" href="${pdfUrl}" target="_blank" rel="noopener">${openLabel}</a>
+      <a class="btn primary" href="${pdfUrl}" download="${fileName}" rel="noopener">${downloadLabel}</a>
+    </p>`;
+}
+
+function revokePreviewUrls(body) {
+  if (!body) return;
+  body.querySelectorAll('object.note-preview, iframe.note-preview').forEach((el) => {
+    const src = el.getAttribute('data') || el.getAttribute('src') || '';
+    if (src.startsWith('blob:')) {
+      try {
+        URL.revokeObjectURL(src.split('#')[0]);
+      } catch {
+        /* ignore */
+      }
+    }
+  });
 }
 
 export async function hydrateNoteCards(root, rows) {
@@ -88,10 +153,13 @@ export async function hydrateNoteCards(root, rows) {
       const ok = await noteExists(file);
       const url = `${import.meta.env.BASE_URL}notes/${file}`;
       if (ok) {
+        revokePreviewUrls(body);
+        const previewUrl = await resolvePdfPreviewUrl(url);
         body.innerHTML = renderPdfPreviewBlock(
           t(`notes.card.${r.key}`),
           url,
           t('notes.openPdf'),
+          previewUrl,
         );
       } else {
         body.innerHTML = `<p class="lead">${t('notes.missing')}</p>
@@ -129,10 +197,13 @@ export async function hydrateSummaryCards(root, rows, { version = '' } = {}) {
       const ok = await assetExists('summary-pdfs', file);
       const url = `${import.meta.env.BASE_URL}summary-pdfs/${file}`;
       if (ok) {
+        revokePreviewUrls(body);
+        const previewUrl = await resolvePdfPreviewUrl(url);
         body.innerHTML = renderPdfPreviewBlock(
           t(`summary.item.${r.key}`),
           url,
           t('summary.download'),
+          previewUrl,
         );
       } else {
         body.innerHTML = `<p class="lead">${t('summary.missing')}</p>`;
@@ -201,7 +272,9 @@ export async function hydrateComicCards(root, rows, { version = '' } = {}) {
         return;
       }
       if (isPdf) {
-        body.innerHTML = renderPdfPreviewBlock(title, url, t('comics.openPdf'));
+        revokePreviewUrls(body);
+        const previewUrl = await resolvePdfPreviewUrl(url);
+        body.innerHTML = renderPdfPreviewBlock(title, url, t('comics.openPdf'), previewUrl);
       } else {
         body.innerHTML = `
           <img class="summary-thumb" src="${url}" alt="${title}" loading="lazy" />

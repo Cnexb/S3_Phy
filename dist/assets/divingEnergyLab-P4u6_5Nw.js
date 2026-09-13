@@ -1,0 +1,1 @@
+import{c as r}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function n(e){return r(e,{slug:"diving-energy",titleKey:"tools.divingEnergy.title",className:"tool-diving-energy-lab",extraParams:()=>"&v=20260913_zip_labs"})}export{n as createDivingEnergyLab};

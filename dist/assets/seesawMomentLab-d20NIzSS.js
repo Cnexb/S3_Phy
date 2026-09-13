@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function s(e){return t(e,{slug:"seesaw-moment",titleKey:"tools.seesawMoment.title",className:"tool-seesaw-moment-lab",extraParams:()=>"&v=20260906_seesaw_moment"})}export{s as createSeesawMomentLab};
