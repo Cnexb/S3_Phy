@@ -1,12 +1,12 @@
 /** @type {Record<string, string>} */
 export const en = {
   'app.title': 'Uni+ HKDSE Physics Hub',
-  'app.subtitle': 'S3 Physics — Foundations, Optics & Heat',
+  'app.subtitle': 'S3 Physics — Foundations, Light and Optics & Heat',
   'strands.title': 'Choose a strand',
-  'strands.intro': 'Foundations, Optics (light), Heat, Mechanics, Gas, and Radioactivity are ready. Other strands are coming soon, but you can still open them.',
-  'strand.optics.title': 'Optics',
+  'strands.intro': 'Foundations, Light and Optics, Heat, Mechanics, Gas, and Radioactivity are ready. Other strands are coming soon, but you can still open them.',
+  'strand.optics.title': 'Light and Optics',
   'strand.optics.desc': 'Reflection, refraction, total internal reflection, convex lens, concave lens, electromagnetic waves',
-  'strand.optics.subtitle': 'Optics — light and waves',
+  'strand.optics.subtitle': 'Light and Optics — light and waves',
   'strand.refraction.title': 'Refraction',
   'strand.refraction.desc': 'Refraction of light, Snell’s law, critical angle, and total internal reflection.',
   'strand.refraction.subtitle': 'Refraction — Snell’s Law & TIR',
