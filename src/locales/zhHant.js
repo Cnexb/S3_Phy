@@ -86,6 +86,9 @@ export const zhHant = {
   'tools.radiationDeflection.title': '\u8f3b\u5c04\u504f\u8f49\uff08\u03b1 \u03b2 \u03b3\uff09',
   'tools.radiationDeflection.subtitle':
     '\u03b1\u3001\u03b2\u3001\u03b3 \u5728\u96fb\u5834\u8207\u78c1\u5834\u4e2d\u7684\u504f\u8f49\u3002',
+  'tools.cloudChamber.title': '\u96f2\u5ba4\uff08\u03b1 \u03b2 \u03b3\uff09',
+  'tools.cloudChamber.subtitle':
+    '\u03b1\u3001\u03b2\u3001\u03b3 \u5728\u96f2\u5ba4\u4e2d\u7684\u5f91\u8de1\u3002',
   'tools.rotatingMirror.toggle.origNormal': '\u539f\u6cd5\u7dda',
   'tools.rotatingMirror.toggle.origRay': '\u539f\u53cd\u5c04\u5149',
   'tools.rotatingMirror.toggle.newNormal': '\u65b0\u6cd5\u7dda',

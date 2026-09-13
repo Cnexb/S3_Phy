@@ -4,15 +4,18 @@ import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 
 const TOOL_STORAGE_KEY = 's3phy.radioactivity.tool';
-const TOOL_ORDER = ['radiationDeflection'];
+const TOOL_ORDER = ['cloudChamber', 'radiationDeflection'];
 
 const TOOL_LOADERS = {
+  cloudChamber: () =>
+    import('../tools/cloudChamberLab.js').then((m) => m.createCloudChamberLab),
   radiationDeflection: () =>
     import('../tools/radiationDeflectionLab.js').then((m) => m.createRadiationDeflectionLab),
 };
 
 function toolLabel(id) {
   const map = {
+    cloudChamber: 'tools.cloudChamber.title',
     radiationDeflection: 'tools.radiationDeflection.title',
   };
   return t(map[id] || id);
@@ -41,7 +44,7 @@ const RADIOACTIVITY_TOPICS = [
 
 export function mountRadioactivityHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.radioactivity.section'));
-  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'radiationDeflection');
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'cloudChamber');
   let shell = null;
   let el = { main: null };
   let activeLabInstance = null;

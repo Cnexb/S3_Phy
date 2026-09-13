@@ -86,6 +86,9 @@ export const en = {
   'tools.radiationDeflection.title': 'Radiation deflection (α β γ)',
   'tools.radiationDeflection.subtitle':
     'Deflection of alpha, beta and gamma radiation in electric and magnetic fields.',
+  'tools.cloudChamber.title': 'Cloud chamber (α β γ)',
+  'tools.cloudChamber.subtitle':
+    'Tracks of alpha, beta and gamma radiation in a cloud chamber.',
   'tools.rotatingMirror.toggle.origNormal': 'Orig. normal',
   'tools.rotatingMirror.toggle.origRay': 'Orig. reflected',
   'tools.rotatingMirror.toggle.newNormal': 'New normal',
