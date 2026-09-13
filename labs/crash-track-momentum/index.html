@@ -5,205 +5,43 @@
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <link rel="stylesheet" href="../shared/s3phy-n1-sim.css">
   <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="../shared/s3phy-n1-draw.js"></script>
   <title>Crash track | Momentum Lab</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #f6efe4; --bg2: #efe4d2; --surface: #fffdf8; --surface2: #f7f0e4;
-      --ink: #2a2118; --muted: #6b5b4a; --line: #e0d0b6;
-      --teal: #0f7a6c; --amber: #c2410c; --ok: #168a56; --danger: #c2410c;
-      --blue: #1d6fd8; --purple: #6a1b9a;
-      --radius: 16px; --shadow: 0 12px 36px rgba(42, 33, 24, 0.08);
-      --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
-      --display: "Bricolage Grotesque", Georgia, sans-serif;
-      --mono: "JetBrains Mono", ui-monospace, monospace;
-    }
-    html, body { height: 100%; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: var(--font); color: var(--ink);
-      background:
-        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
-        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      min-height: 100vh; min-height: 100dvh; line-height: 1.5;
-    }
-    button, input { font: inherit; color: inherit; }
-    button { cursor: pointer; }
-    .wrap {
-      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
-      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
-      display: flex; flex-direction: column;
-    }
-    .wrap:fullscreen, .wrap:-webkit-full-screen {
-      width: 100%; height: 100%; padding: 0.7rem 0.8rem 0.8rem;
-      background:
-        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
-        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-    }
-    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.55rem; flex-shrink: 0; }
-    .brand { display: flex; align-items: center; gap: 0.9rem; }
-    .brand-mark {
-      width: 54px; height: 54px; border-radius: 14px;
-      background: linear-gradient(145deg, #fff, #f3e6d2);
-      border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow);
-    }
-    .brand h1 { margin: 0; font-family: var(--display); font-size: clamp(1.25rem, 2.5vw, 1.8rem); letter-spacing: -0.02em; line-height: 1.15; }
-    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.9rem; }
-    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
-    .lang-toggle, .tabs { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; flex-wrap: wrap; }
-    .lang-toggle button, .tabs button {
-      border: 0; background: transparent; padding: 0.42rem 0.85rem; border-radius: 999px;
-      color: var(--muted); font-weight: 700; font-size: 0.85rem;
-    }
-    .lang-toggle button.active, .tabs button.active { background: var(--ink); color: #fff; }
-    html[lang="en"] .zh { display: none !important; }
-    html[lang="zh-HK"] .en { display: none !important; }
-    .card {
-      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
-      display: flex; flex-direction: column;
-    }
-    .card-hd { padding: 0.65rem 1rem 0.5rem; border-bottom: 1px solid var(--line); flex-shrink: 0; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
-    .card-hd > div:first-child { min-width: 0; flex: 1; }
-    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.12rem; }
-    .card-hd p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.88rem; }
-    .hd-crash {
-      min-width: 0;
-    }
-    .hd-crash h3 { margin: 0 0 0.3rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-    .hd-actions { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.65rem; flex-shrink: 0; }
-    .hd-crash-row { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 0.7rem; }
-    .hd-run { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
-    .workspace {
-      flex: 1; min-height: 0; display: flex;
-    }
-    .stage {
-      position: relative; flex: 1; min-height: 0;
-      background: linear-gradient(180deg, #eaf4fb 0%, #eaf4fb 58%, #d8eccf 58%, #cfe6c4 100%);
-      overflow: hidden;
-    }
-    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
-    .hint-chip { display: none; }
-    .hud {
-      position: absolute; top: 10px; z-index: 3;
-      background: rgba(255, 253, 248, 0.94);
-      border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
-      padding: 0.55rem 0.65rem 0.6rem;
-      max-height: calc(100% - 20px); overflow: auto;
-      display: flex; flex-direction: column; gap: 0.45rem;
-    }
-    .hud-left { left: 10px; width: min(300px, calc(50% - 18px)); }
-    .hud-right { right: 10px; width: min(270px, calc(50% - 18px)); }
-    .hud h3 { margin: 0 0 0.28rem; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-    .hud .slider-wrap { margin: 0.16rem 0; }
-    .hud-hd {
-      display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; flex-shrink: 0;
-    }
-    .hud-hd h3 { margin: 0; }
-    .hud-toggle {
-      border: 1px solid var(--line); background: #fff; border-radius: 8px;
-      padding: 0.18rem 0.5rem; font-size: 0.72rem; font-weight: 700; color: var(--muted);
-    }
-    .hud-toggle:hover { color: var(--ink); border-color: var(--ink); }
-    .hud-right.collapsed { width: auto; max-width: none; padding: 0.4rem 0.55rem; }
-    .hud-right.collapsed .hud-body { display: none; }
-    .fs-btn {
-      position: absolute; right: 10px; bottom: 10px; z-index: 2;
-      border: 1px solid var(--line); background: rgba(255,253,248,0.92); border-radius: 10px;
-      padding: 0.35rem 0.55rem; font-weight: 700; font-size: 0.75rem;
-    }
-    .seg { display: flex; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
-    .seg button { flex: 1; border: 0; background: transparent; border-radius: 8px; padding: 0.38rem 0.2rem; font-weight: 700; font-size: 0.68rem; line-height: 1.2; color: var(--muted); }
-    .seg button.on { background: var(--ink); color: #fff; }
-    .slider-wrap { display: flex; flex-direction: column; gap: 0.12rem; margin: 0.28rem 0; }
-    .slider-head { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; }
-    .slider-head em { font-style: normal; font-family: var(--mono); }
-    .slider-head em.a { color: var(--teal); } .slider-head em.b { color: var(--amber); }
-    input[type=range] { width: 100%; cursor: pointer; }
-    .a-range { accent-color: var(--teal); } .b-range { accent-color: var(--amber); }
-    .btns { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
-    .btn { border: 0; background: var(--ink); color: #fff; border-radius: 12px; padding: 0.62rem 1.05rem; font-weight: 700; font-size: 0.95rem; }
-    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-    .btn.teal { background: var(--teal); }
-    .btn.amber { background: var(--amber); }
-    .btn:hover { filter: brightness(1.08); }
-    .btn[disabled] { opacity: 0.4; cursor: not-allowed; filter: none; }
-    .presets { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-    .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 0.28rem 0.55rem; font-size: 0.72rem; font-weight: 700; color: var(--muted); }
-    .chip:hover { border-color: var(--ink); color: var(--ink); }
-    .readout { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
-    .stat { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.5rem; }
-    .stat span { display: block; font-size: 0.68rem; color: var(--muted); font-weight: 700; }
-    .stat b { font-family: var(--mono); font-size: 0.92rem; }
-    .stat.a b { color: var(--teal); } .stat.b b { color: var(--amber); }
-    .stat.ok b { color: var(--ok); } .stat.bad b { color: var(--danger); }
-    .stat.wide { grid-column: 1 / -1; }
-    .bars { display: flex; flex-direction: column; gap: 0.55rem; margin-top: 0.15rem; }
-    .bar-row { display: grid; grid-template-columns: 108px 1fr 78px; gap: 0.45rem; align-items: center; font-size: 0.92rem; font-weight: 700; }
-    .bar { height: 16px; background: #efe4d2; border-radius: 99px; overflow: hidden; position: relative; }
-    .bar > i { display: block; height: 100%; border-radius: 99px; width: 0; transition: width 0.18s; }
-    .bar > i.p { background: var(--blue); } .bar > i.ke { background: var(--purple); }
-    .bar > i.lost { background: var(--danger); } .bar > i.pe { background: var(--amber); }
-    .bar > i.a { background: var(--teal); } .bar > i.b { background: var(--amber); }
-    .bar-row span:last-child { font-family: var(--mono); font-size: 0.95rem; }
-    .hud-left .bar-row { grid-template-columns: 86px 1fr 64px; font-size: 0.78rem; gap: 0.3rem; }
-    .hud-left .bar { height: 11px; }
-    .hud-left .bar-row span:last-child { font-size: 0.78rem; }
-    .stat.wood b { color: #8a5a2b; }
-    @media (max-width: 860px) {
-      .hud-left, .hud-right { width: calc(50% - 14px); max-height: 46%; }
-      .stage { min-height: 280px; }
-      .tabs button { padding: 0.4rem 0.55rem; font-size: 0.78rem; }
-    }
-  
-    html.s3phy-embed,
-    html.s3phy-embed body {
-      height: 100% !important;
-      min-height: 0 !important;
-      overflow: hidden !important;
-    }
-    html.s3phy-embed .wrap {
-      min-height: 0 !important;
-      height: 100% !important;
-    }
-    html.s3phy-embed .lang-toggle { display: none; }
-    html.s3phy-embed .fs-btn { display: none !important; }
-</style>
+    
+  </style>
 </head>
-<body>
+<body class="n1-lab n1-sim">
+  <div class="deco-blob deco-blob--accent" aria-hidden="true"></div>
+  <div class="deco-blob deco-blob--emerald" aria-hidden="true"></div>
   <div class="wrap" id="labShell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect x="4" y="14" width="10" height="7" rx="2" fill="#0f7a6c"/>
-            <rect x="18" y="14" width="10" height="7" rx="2" fill="#c2410c"/>
-            <circle cx="7" cy="22" r="1.6" fill="#2a2118"/>
-            <circle cx="11" cy="22" r="1.6" fill="#2a2118"/>
-            <circle cx="21" cy="22" r="1.6" fill="#2a2118"/>
-            <circle cx="25" cy="22" r="1.6" fill="#2a2118"/>
-            <path d="M14 10h10" stroke="#1d6fd8" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M22 10l3-2.2M22 10l3 2.2" stroke="#1d6fd8" stroke-width="2.2" stroke-linecap="round"/>
-          </svg>
+    <header class="n1-header">
+      <div class="n1-header__inner">
+        <div class="n1-brand">
+          <div class="n1-icon" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none">
+              <rect x="3" y="12" width="10" height="8" rx="2" fill="#34d399"/>
+              <rect x="15" y="12" width="10" height="8" rx="2" fill="#38bdf8"/>
+            </svg>
+          </div>
+          <div>
+            <div class="n1-title-row">
+              <h1><span class="en">Crash track</span><span class="zh">碰撞軌道</span></h1>
+              <span class="n1-chip">HKDSE Physics</span>
+            </div>
+            <p class="n1-sub"><span class="en">HKDSE Physics · Momentum · p = mv · collisions</span><span class="zh">HKDSE 物理 · 動量 · p = mv · 碰撞</span></p>
+          </div>
         </div>
-        <div>
-          <h1><span class="en">Crash track</span><span class="zh">碰撞軌道</span></h1>
-          <p><span class="en">p = mv · collisions · conservation</span><span class="zh">p = mv · 碰撞 · 守恆</span></p>
-        </div>
-      </div>
-      <div class="top-actions">
-        <div class="lang-toggle" role="group" aria-label="Language">
+        <div class="lang" role="group" aria-label="Language">
           <button type="button" id="btn-en" class="active">EN</button>
-          <button type="button" id="btn-zh">中文</button>
+          <button type="button" id="btn-zh">繁中</button>
         </div>
       </div>
     </header>
-    <section class="card">
+    <main class="n1-main">
+    <section class="card glass-panel">
       <div class="card-hd">
         <div>
           <h2 id="hd-title"></h2>
@@ -270,6 +108,7 @@
         </div>
       </div>
     </section>
+    </main>
   </div>
 <script>
 (function () {
@@ -334,30 +173,10 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     return { ctx, w, h };
   }
-  function roundRect(ctx, x, y, w, h, r) {
-    const rr = Math.min(r, w / 2, h / 2);
-    ctx.beginPath();
-    ctx.moveTo(x + rr, y);
-    ctx.arcTo(x + w, y, x + w, y + h, rr);
-    ctx.arcTo(x + w, y + h, x, y + h, rr);
-    ctx.arcTo(x, y + h, x, y, rr);
-    ctx.arcTo(x, y, x + w, y, rr);
-    ctx.closePath();
-  }
+  const Art = window.N1Art;
+  function roundRect(ctx, x, y, w, h, r) { Art.roundRect(ctx, x, y, w, h, r); }
   function arrow(ctx, x1, y1, x2, y2, color, width) {
-    const dx = x2 - x1, dy = y2 - y1;
-    const len = Math.hypot(dx, dy);
-    if (len < 8) return;
-    const ang = Math.atan2(dy, dx);
-    const head = Math.max(8, (width || 3) * 3.2);
-    ctx.strokeStyle = color; ctx.fillStyle = color;
-    ctx.lineWidth = width || 3; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
-    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
-    ctx.closePath(); ctx.fill();
+    Art.drawArrow(ctx, x1, y1, x2, y2, color, width || 3.2);
   }
   function fmt(n, d) {
     if (!isFinite(n)) return "—";
@@ -377,7 +196,7 @@
         vx: (Math.random() - 0.5) * 180,
         vy: (Math.random() - 0.8) * 140,
         life: 1,
-        c: Math.random() > 0.5 ? "#0f7a6c" : "#c2410c"
+        c: Math.random() > 0.5 ? "#34d399" : "#f97316"
       });
     }
   }
@@ -414,7 +233,7 @@
     sparks: [], flash: 0, stuck: false
   };
   const cv = $("cv");
-  function cartW(m) { return 0.55 + Math.min(1.35, m * 0.09); }
+  function cartW(m) { return 1.2 + Math.min(1.7, m * 0.12); }
   function resetCrash() {
     S.running = false; S.hit = false; S.stuck = false; S.flash = 0; S.sparks = [];
     S.v1 = S.u1; S.v2 = S.u2;
@@ -506,67 +325,44 @@
     const leftMost = Math.min(S.x1, S.x2);
     if (leftMost > TRACK + 1.5 || rightMost < -1.5) S.running = false;
   }
-  function drawCart(ctx, x, ground, w, h, color, label, vel, mass) {
+  function drawCart(ctx, x, ground, w, h, palette, label, vel, mass) {
     ctx.save();
-    ctx.fillStyle = "rgba(42,33,24,0.12)";
-    ctx.beginPath(); ctx.ellipse(x + w / 2, ground + 6, w * 0.42, 5, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = color;
-    roundRect(ctx, x, ground - h, w, h - 8, 8); ctx.fill();
-    ctx.fillStyle = "rgba(255,255,255,0.22)";
-    roundRect(ctx, x + 6, ground - h + 5, w - 12, 10, 4); ctx.fill();
-    ctx.fillStyle = "#2a2118";
-    ctx.beginPath(); ctx.arc(x + w * 0.28, ground - 8, 7, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(x + w * 0.72, ground - 8, 7, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = "#d7c4a3";
-    ctx.beginPath(); ctx.arc(x + w * 0.28, ground - 8, 3, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(x + w * 0.72, ground - 8, 3, 0, Math.PI * 2); ctx.fill();
+    Art.drawGlowingBox(ctx, x, ground - h, w, h, palette.top, palette.bot, palette.stroke);
     ctx.fillStyle = "#fff";
-    ctx.font = "800 13px Bricolage Grotesque, sans-serif";
+    ctx.font = Art.font(800, Math.max(13, Math.min(18, h * 0.32)));
     ctx.textAlign = "center";
-    ctx.fillText(label, x + w / 2, ground - h / 2 - 6);
-    ctx.font = "700 10px Nunito Sans, sans-serif";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, x + w / 2, ground - h / 2 - 8);
+    ctx.font = Art.font(700, Math.max(10, Math.min(13, h * 0.22)));
     ctx.fillText(fmtAbs(mass, 1) + " kg", x + w / 2, ground - h / 2 + 10);
+    ctx.fillStyle = "#334155";
+    ctx.beginPath(); ctx.arc(x + w * 0.28, ground - 6, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + w * 0.72, ground - 6, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#94a3b8";
+    ctx.beginPath(); ctx.arc(x + w * 0.28, ground - 6, 2.4, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + w * 0.72, ground - 6, 2.4, 0, Math.PI * 2); ctx.fill();
     if (Math.abs(vel) > 0.05) {
       const dir = vel > 0 ? 1 : -1;
       const len = 18 + Math.min(54, Math.abs(vel) * 8);
       const y = ground - h - 16;
       const x1 = x + w / 2;
-      arrow(ctx, x1, y, x1 + dir * len, y, color, 3);
-      ctx.fillStyle = color;
-      ctx.font = "600 11px JetBrains Mono, monospace";
+      arrow(ctx, x1, y, x1 + dir * len, y, palette.stroke, 3.2);
+      ctx.fillStyle = palette.stroke;
+      ctx.font = Art.mono(600, 11);
       ctx.textAlign = dir > 0 ? "left" : "right";
+      ctx.textBaseline = "alphabetic";
       ctx.fillText(fmt(vel, 1) + " m/s", x1 + dir * (len + 6), y + 4);
     }
     ctx.restore();
   }
-  function drawPerson(ctx, x, y, shirt) {
-    ctx.save(); ctx.translate(x, y);
-    ctx.strokeStyle = "#2a2118"; ctx.lineWidth = 2; ctx.lineCap = "round";
-    ctx.fillStyle = "#f3d2b3";
-    ctx.beginPath(); ctx.arc(0, -30, 6.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = shirt;
-    ctx.beginPath(); ctx.moveTo(-8, -22); ctx.lineTo(8, -22); ctx.lineTo(6, -4); ctx.lineTo(-6, -4); ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(-6, -4); ctx.lineTo(-5, 8); ctx.moveTo(6, -4); ctx.lineTo(5, 8); ctx.stroke();
-    ctx.restore();
-  }
   function drawScene(dt) {
     const { ctx, w, h } = fitCanvas(cv);
-    ctx.clearRect(0, 0, w, h);
     const ground = h * 0.72;
-    ctx.fillStyle = "#9ccc65"; ctx.fillRect(0, ground + 18, w, h);
-    ctx.fillStyle = "#7cb342"; ctx.fillRect(0, ground + 18, w, 8);
+    Art.drawFloor(ctx, w, h, ground + 8, t("Smooth track", "光滑軌道"));
     const pad = 36; const scale = (w - pad * 2) / TRACK; const X = (m) => pad + m * scale;
-    ctx.fillStyle = "#8d6e4a";
-    roundRect(ctx, pad - 8, ground + 4, w - pad * 2 + 16, 12, 6); ctx.fill();
-    ctx.fillStyle = "#c4a574";
-    roundRect(ctx, pad - 8, ground + 4, w - pad * 2 + 16, 5, 6); ctx.fill();
-    for (let i = 0; i <= 6; i++) {
-      const x = pad + (i / 6) * (w - pad * 2);
-      ctx.fillStyle = "rgba(42,33,24,0.25)"; ctx.fillRect(x, ground + 3, 2, 14);
-    }
     S.flash *= 0.9;
     if (S.flash > 0.04) {
-      ctx.fillStyle = "rgba(255,220,120," + (S.flash * 0.35) + ")";
+      ctx.fillStyle = "rgba(249,115,22," + (S.flash * 0.18) + ")";
       ctx.fillRect(0, 0, w, h);
     }
     S.sparks.forEach((p) => {
@@ -577,23 +373,19 @@
       ctx.globalAlpha = 1;
     });
     S.sparks = S.sparks.filter((p) => p.life > 0);
+    const palA = { top: Art.C.greenTop, bot: Art.C.greenBot, stroke: Art.C.greenStroke };
+    const palB = { top: Art.C.skyTop, bot: Art.C.skyBot, stroke: Art.C.skyStroke };
+    const palAB = { top: "#a78bfa", bot: "#6d28d9", stroke: "#5b21b6" };
     const w1 = cartW(S.m1), w2 = cartW(S.m2);
-    const h1 = 38 + Math.min(22, S.m1 * 1.6);
-    const h2 = 38 + Math.min(22, S.m2 * 1.6);
+    const h1 = 56 + Math.min(28, S.m1 * 2);
+    const h2 = 56 + Math.min(28, S.m2 * 2);
     if (S.stuck && S.hit) {
       const wm = (w1 + w2) * scale; const hm = Math.max(h1, h2);
-      drawCart(ctx, X(S.x1), ground, wm, hm, "#8a5a2b", "A+B", S.v1, S.m1 + S.m2);
-      drawPerson(ctx, X(S.x1) + wm * 0.35, ground - hm + 8, "#148f7e");
-      drawPerson(ctx, X(S.x1) + wm * 0.65, ground - hm + 8, "#d4531c");
+      drawCart(ctx, X(S.x1), ground, wm, hm, palAB, "A+B", S.v1, S.m1 + S.m2);
     } else {
-      drawCart(ctx, X(S.x1), ground, w1 * scale, h1, "#0f7a6c", "A", S.running || S.hit ? S.v1 : S.u1, S.m1);
-      drawPerson(ctx, X(S.x1) + (w1 * scale) / 2, ground - h1 + 8, "#148f7e");
-      drawCart(ctx, X(S.x2), ground, w2 * scale, h2, "#c2410c", "B", S.running || S.hit ? S.v2 : S.u2, S.m2);
-      drawPerson(ctx, X(S.x2) + (w2 * scale) / 2, ground - h2 + 8, "#d4531c");
+      drawCart(ctx, X(S.x1), ground, w1 * scale, h1, palA, "A", S.running || S.hit ? S.v1 : S.u1, S.m1);
+      drawCart(ctx, X(S.x2), ground, w2 * scale, h2, palB, "B", S.running || S.hit ? S.v2 : S.u2, S.m2);
     }
-    ctx.font = "800 14px Bricolage Grotesque, sans-serif";
-    ctx.fillStyle = "#2a2118"; ctx.textAlign = "center";
-    ctx.fillText(t("Smooth track", "光滑軌道"), w / 2, ground + 30);
   }
   let last = performance.now(); let uiAcc = 0;
   function loop(now) {

@@ -6,6 +6,6 @@ export function createSeesawMomentLab(t) {
     slug: 'seesaw-moment',
     titleKey: 'tools.seesawMoment.title',
     className: 'tool-seesaw-moment-lab',
-    extraParams: () => '&v=20260906_seesaw_moment',
+    extraParams: () => '&v=20260913_n1_art2',
   });
 }

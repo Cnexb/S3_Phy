@@ -6,6 +6,6 @@ export function createBulletMomentumLab(t) {
     slug: 'bullet-momentum',
     titleKey: 'tools.bulletMomentum.title',
     className: 'tool-bullet-momentum-lab',
-    extraParams: () => '&v=20260906_bullet_momentum',
+    extraParams: () => '&v=20260913_n1_art2',
   });
 }

@@ -6,6 +6,6 @@ export function createLadderMomentLab(t) {
     slug: 'ladder-moment',
     titleKey: 'tools.ladderMoment.title',
     className: 'tool-ladder-moment-lab',
-    extraParams: () => '&v=20260906_ladder_moment',
+    extraParams: () => '&v=20260913_n1_art2',
   });
 }
