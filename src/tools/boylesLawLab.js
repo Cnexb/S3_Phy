@@ -6,6 +6,6 @@ export function createBoylesLawLab(t) {
     slug: 'boyles-law',
     titleKey: 'tools.boylesLaw.title',
     className: 'tool-boyles-law-lab',
-    extraParams: () => '&v=20260913_zip_labs',
+    extraParams: () => '&v=20260913_n1_skin',
   });
 }

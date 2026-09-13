@@ -6,6 +6,6 @@ export function createDivingEnergyLab(t) {
     slug: 'diving-energy',
     titleKey: 'tools.divingEnergy.title',
     className: 'tool-diving-energy-lab',
-    extraParams: () => '&v=20260913_zip_labs',
+    extraParams: () => '&v=20260913_n1_skin',
   });
 }

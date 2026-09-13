@@ -6,6 +6,6 @@ export function createConicalPendulumLab(t) {
     slug: 'conical-pendulum',
     titleKey: 'tools.conicalPendulum.title',
     className: 'tool-conical-pendulum-lab',
-    extraParams: () => '&v=20260913_zip_labs',
+    extraParams: () => '&v=20260913_n1_skin',
   });
 }

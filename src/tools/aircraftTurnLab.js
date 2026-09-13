@@ -6,6 +6,6 @@ export function createAircraftTurnLab(t) {
     slug: 'aircraft-turn',
     titleKey: 'tools.aircraftTurn.title',
     className: 'tool-aircraft-turn-lab',
-    extraParams: () => '&v=20260913_zip_labs',
+    extraParams: () => '&v=20260913_n1_skin',
   });
 }

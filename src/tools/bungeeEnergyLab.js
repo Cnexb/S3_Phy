@@ -6,6 +6,6 @@ export function createBungeeEnergyLab(t) {
     slug: 'bungee-energy',
     titleKey: 'tools.bungeeEnergy.title',
     className: 'tool-bungee-energy-lab',
-    extraParams: () => '&v=20260913_zip_labs',
+    extraParams: () => '&v=20260913_n1_skin',
   });
 }
