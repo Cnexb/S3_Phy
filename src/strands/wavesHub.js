@@ -182,7 +182,7 @@ export function mountWavesHub(root) {
       <section class="panel">
         <h2>${t('notes.title')}</h2>
         <p class="lead">${t('notes.embedHint')}</p>
-        <div class="grid cols-3" data-notes-grid>
+        <div class="grid cols-3x2" data-notes-grid>
           ${WAVES_TOPICS.map(
             (r) => `
             <div class="card" data-note-card="${r.id}">

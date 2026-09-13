@@ -28,18 +28,6 @@ const RADIOACTIVITY_TOPICS = [
     fileEn: 'radiation-radioactivity-en.pdf',
     fileZh: 'radiation-radioactivity-zhHant.pdf',
   },
-  {
-    id: 'atomicModel',
-    titleKey: 'topic.atomicModel',
-    fileEn: 'atomic-model-en.pdf',
-    fileZh: 'atomic-model-zhHant.pdf',
-  },
-  {
-    id: 'nuclearEnergy',
-    titleKey: 'topic.nuclearEnergy',
-    fileEn: 'nuclear-energy-en.pdf',
-    fileZh: 'nuclear-energy-zhHant.pdf',
-  },
 ];
 
 export function mountRadioactivityHub(root) {
