@@ -169,17 +169,21 @@
     };
   }
 
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
+  function n1() {
+    return window.N1Art;
+  }
+
+  function inkFont(px) {
+    var art = n1();
+    return art ? art.font(800, px) : "800 " + px + "px Plus Jakarta Sans, sans-serif";
   }
 
   function arrow(x1, y1, x2, y2, color, width) {
+    var art = n1();
+    if (art) {
+      art.drawArrow(ctx, x1, y1, x2, y2, color, width || 3.2);
+      return;
+    }
     var ang = Math.atan2(y2 - y1, x2 - x1);
     var head = 11;
     ctx.strokeStyle = color;
@@ -238,55 +242,34 @@
   }
 
   function drawDivePerson(px, py) {
-    ctx.fillStyle = "#f59e0b";
-    ctx.beginPath();
-    ctx.arc(px, py, 16, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#1d4ed8";
-    roundRect(px - 10, py + 10, 20, 28, 5);
-    ctx.fill();
+    var art = n1();
+    var boxW = 44;
+    var boxH = 30;
+    var x = px - boxW / 2;
+    var y = py - boxH / 2;
+    if (art) art.skyBox(ctx, x, y, boxW, boxH);
+    else {
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(x, y, boxW, boxH);
+    }
   }
 
   function drawDiveTower(X, Y) {
+    var art = n1();
     var top = Y(dive.H);
-    var tip = X(4.35);
-    ctx.fillStyle = "#3f3f46";
-    ctx.beginPath();
-    ctx.moveTo(0, cssH);
-    ctx.lineTo(0, top - 8);
-    ctx.lineTo(X(2.4), top - 8);
-    ctx.lineTo(X(2.85), cssH);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = "#52525b";
-    for (var i = 0; i < 7; i++) {
-      ctx.fillRect(X(0.25), top + 18 + i * 28, X(1.9) - X(0.25), 10);
+    var waterY = Y(0);
+    var towerW = 34;
+    var boardX = X(1.55);
+    var boardW = Math.max(48, X(4.35) - boardX);
+    var towerH = Math.max(16, waterY - top);
+    if (art) {
+      art.slateBar(ctx, X(0.2), top, towerW, towerH);
+      art.slateBar(ctx, boardX, top - 10, boardW, 10);
+    } else {
+      ctx.fillStyle = "#475569";
+      ctx.fillRect(X(0.2), top, towerW, towerH);
+      ctx.fillRect(boardX, top - 10, boardW, 10);
     }
-    ctx.strokeStyle = "#a1a1aa";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(X(0.55), cssH - 20);
-    ctx.lineTo(X(1.35), top + 4);
-    ctx.moveTo(X(1.15), cssH - 20);
-    ctx.lineTo(X(1.95), top + 4);
-    ctx.stroke();
-    ctx.lineWidth = 2;
-    for (var r = 0; r < 9; r++) {
-      var t = r / 8;
-      var lx1 = lerp(X(0.55), X(1.35), t);
-      var ly = lerp(cssH - 20, top + 4, t);
-      var lx2 = lerp(X(1.15), X(1.95), t);
-      ctx.beginPath();
-      ctx.moveTo(lx1, ly);
-      ctx.lineTo(lx2, ly);
-      ctx.stroke();
-    }
-    ctx.fillStyle = "#27272a";
-    roundRect(X(1.7), top - 8, tip - X(1.7) + 8, 10, 3);
-    ctx.fill();
-    ctx.fillStyle = "#71717a";
-    roundRect(X(1.7), top - 11, tip - X(1.7) + 8, 5, 2);
-    ctx.fill();
   }
 
   function drawDive() {
@@ -306,33 +289,19 @@
       return oy - y * s;
     }
 
-    var sky = ctx.createLinearGradient(0, 0, 0, Y(0));
-    sky.addColorStop(0, "#c7e4ff");
-    sky.addColorStop(1, "#eef7ff");
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, cssW, cssH);
+    var art = n1();
+    var zh = lang === "zh-HK";
+    if (art) art.drawWater(ctx, cssW, cssH, Y(0), zh ? "水面  GPE = 0" : "water  GPE = 0");
+    else {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#e0f2fe";
+      ctx.fillRect(0, Y(0), cssW, cssH - Y(0));
+    }
 
     drawDiveTower(X, Y);
 
     var xs = divePathXs();
-
-    /* full-width water */
-    var waterGrad = ctx.createLinearGradient(0, Y(0), 0, cssH);
-    waterGrad.addColorStop(0, "#38bdf8");
-    waterGrad.addColorStop(1, "#0369a1");
-    ctx.fillStyle = waterGrad;
-    ctx.fillRect(0, Y(0), cssW, cssH - Y(0));
-    ctx.fillStyle = "rgba(255,255,255,0.28)";
-    ctx.fillRect(0, Y(0), cssW, 7);
-    ctx.strokeStyle = "#0e7490";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, Y(0));
-    ctx.lineTo(cssW, Y(0));
-    ctx.stroke();
-    ctx.fillStyle = "#0e7490";
-    ctx.font = "700 13px sans-serif";
-    ctx.fillText(lang === "zh-HK" ? "水面" : "water", X(xs.downX + 1.4), Y(0) + 20);
 
     /* Photo path: up vertically, U-turn at peak, straight down to Q */
     var upX = X(xs.upX);
@@ -344,8 +313,8 @@
     var turnR = (downX - upX) / 2;
 
     ctx.setLineDash([8, 7]);
-    ctx.strokeStyle = "#0f172a";
-    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = art ? art.C.floorLine : "#94a3b8";
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(upX, yP);
     ctx.lineTo(upX, yPeak + turnR);
@@ -356,23 +325,22 @@
     ctx.setLineDash([]);
 
     var midUp = (dive.H + peak) / 2;
-    arrow(upX, Y(midUp + 0.2), upX, Y(midUp - 0.35), "#0f172a", 3.5);
+    arrow(upX, Y(midUp + 0.2), upX, Y(midUp - 0.35), art ? art.C.orange : "#f97316", 3.2);
     var midDown = Math.max(peak * 0.35, 1.2);
-    arrow(downX, Y(midDown + 0.45), downX, Y(midDown - 0.35), "#0f172a", 3.5);
+    arrow(downX, Y(midDown + 0.45), downX, Y(midDown - 0.35), art ? art.C.orange : "#f97316", 3.2);
 
-    ctx.fillStyle = "#334155";
-    ctx.font = "700 13px sans-serif";
-    ctx.fillText(lang === "zh-HK" ? "跳台" : "platform", X(1.85), Y(dive.H) - 14);
-    ctx.fillStyle = "#0f766e";
-    ctx.font = "800 16px sans-serif";
-    ctx.fillText("P", upX - 22, yP + 5);
+    ctx.fillStyle = art ? art.C.ink : "#0f172a";
+    ctx.font = inkFont(13);
+    ctx.fillText(zh ? "跳台" : "platform", X(0.35), Y(dive.H) - 18);
+    ctx.font = inkFont(16);
+    ctx.fillText("P", X(3.55), yP - 18);
     ctx.fillText("Q", downX + 12, yQ + 5);
 
     var pos = divePersonPos();
     var px = X(pos.x);
     var py = Y(pos.y);
     if (!running && !dive.done && dive.dist < 0.05) {
-      py = Y(dive.H) - 26;
+      py = Y(dive.H) - 15;
       px = upX;
     }
     drawDivePerson(px, py);

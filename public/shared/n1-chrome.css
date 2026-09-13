@@ -292,6 +292,18 @@ body {
   gap: 0.85rem;
 }
 
+.bar > i.pe { background: #0284c7 !important; }
+.bar > i.ke { background: #f97316 !important; }
+.bar > i.epe { background: #7c3aed !important; }
+.bar > i.th { background: #64748b !important; }
+.bar > i.tot { background: #0f172a !important; }
+
+.stage .panel {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.05);
+}
+
 .stage,
 .stage-chamber,
 .stage-graph,

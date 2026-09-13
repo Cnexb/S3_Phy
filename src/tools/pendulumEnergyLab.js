@@ -6,6 +6,6 @@ export function createPendulumEnergyLab(t) {
     slug: 'pendulum-energy',
     titleKey: 'tools.pendulumEnergy.title',
     className: 'tool-pendulum-energy-lab',
-    extraParams: () => '&v=20260913_n1_skin',
+    extraParams: () => '&v=20260913_n1_energy',
   });
 }

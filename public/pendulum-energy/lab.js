@@ -146,91 +146,55 @@
     };
   }
 
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
+  function n1() {
+    return window.N1Art;
   }
 
-  function arrow(x1, y1, x2, y2, color, width) {
-    var ang = Math.atan2(y2 - y1, x2 - x1);
-    var head = 11;
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = width || 3;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
-    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
-    ctx.closePath();
-    ctx.fill();
+  function inkFont(px) {
+    var art = n1();
+    return art ? art.font(800, px) : "800 " + px + "px Plus Jakarta Sans, sans-serif";
   }
-
-
-  function drawSkyGround() {
-    var g = ctx.createLinearGradient(0, 0, 0, cssH * 0.58);
-    g.addColorStop(0, "#b9dcff");
-    g.addColorStop(1, "#eef7ff");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, cssW, cssH);
-    ctx.fillStyle = "#cfe6c4";
-    ctx.fillRect(0, cssH * 0.58, cssW, cssH * 0.42);
-    ctx.fillStyle = "#b7d59f";
-    ctx.fillRect(0, cssH * 0.58, cssW, 8);
-  }
-
 
   function drawPendulum() {
-    drawSkyGround();
+    var art = n1();
+    var zh = lang === "zh-HK";
     var pivotX = cssW * 0.5;
     var pivotY = 48;
-    var bobR = 26;
+    var boxW = 52;
+    var boxH = 36;
     var bottomRoom = 52;
-    var pxPerM = Math.min(cssH - pivotY - bobR - bottomRoom, cssW * 0.42) / Math.max(pen.L, 0.8);
+    var pxPerM = Math.min(cssH - pivotY - boxH / 2 - bottomRoom, cssW * 0.42) / Math.max(pen.L, 0.8);
     var bobX = pivotX + pen.L * Math.sin(pen.th) * pxPerM;
     var bobY = pivotY + pen.L * Math.cos(pen.th) * pxPerM;
-    var botY = pivotY + pen.L * pxPerM + bobR + 1.5;
+    var botY = pivotY + pen.L * pxPerM + boxH / 2 + 1.5;
 
-    ctx.setLineDash([6, 6]);
-    ctx.strokeStyle = "#94a3b8";
-    ctx.beginPath();
-    ctx.moveTo(16, botY);
-    ctx.lineTo(cssW - 16, botY);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(255,254,251,0.92)";
-    roundRect(14, botY - 34, 168, 26, 8);
-    ctx.fill();
-    ctx.fillStyle = "#334155";
-    ctx.font = "700 15px sans-serif";
-    ctx.fillText(lang === "zh-HK" ? "GPE = 0（最低點）" : "GPE = 0  (bottom)", 24, botY - 15);
+    if (art) art.drawFloor(ctx, cssW, cssH, botY, zh ? "GPE = 0（最低點）" : "GPE = 0  (bottom)");
+    else {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#f1f5f9";
+      ctx.fillRect(0, botY, cssW, cssH - botY);
+    }
 
-    ctx.strokeStyle = "#334155";
-    ctx.lineWidth = 5;
+    if (art) art.slateBar(ctx, pivotX - 56, pivotY - 10, 112, 14);
+    else {
+      ctx.fillStyle = "#475569";
+      ctx.fillRect(pivotX - 56, pivotY - 10, 112, 14);
+    }
+
+    ctx.strokeStyle = art ? art.C.floorLine : "#94a3b8";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
     ctx.beginPath();
     ctx.moveTo(pivotX, pivotY);
-    ctx.lineTo(bobX, bobY);
+    ctx.lineTo(bobX, bobY - boxH / 2);
     ctx.stroke();
-    ctx.fillStyle = "#1e293b";
-    ctx.beginPath();
-    ctx.arc(pivotX, pivotY, 9, 0, Math.PI * 2);
-    ctx.fill();
 
-    ctx.fillStyle = "#7c3aed";
-    ctx.beginPath();
-    ctx.arc(bobX, bobY, bobR, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#4c1d95";
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    if (art) art.skyBox(ctx, bobX - boxW / 2, bobY - boxH / 2, boxW, boxH);
+    else {
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(bobX - boxW / 2, bobY - boxH / 2, boxW, boxH);
+    }
   }
 
 

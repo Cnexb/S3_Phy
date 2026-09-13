@@ -214,13 +214,13 @@
       park.paths = [makeRaceA(), makeRaceB()];
       /* Same arc length from matching start heights → identical initial GPE. */
       park.carts = [
-        newCart(park.paths[0], 0, "#0f766e"),
-        newCart(park.paths[1], 0, "#c2410c")
+        newCart(park.paths[0], 0, "sky"),
+        newCart(park.paths[1], 0, "green")
       ];
     } else {
       var path = park.trackName === "valley" ? makeValley() : makeRoller();
       park.paths = [path];
-      park.carts = [newCart(path, 0.45, "#b45309")];
+      park.carts = [newCart(path, 0.45, "sky")];
     }
     parkRecalcE0();
   }
@@ -321,7 +321,7 @@
         closest = path.s[i];
       }
     }
-    park.carts = [newCart(path, closest, "#b45309")];
+    park.carts = [newCart(path, closest, "sky")];
     running = false;
     syncPlayBtn();
   }
@@ -357,6 +357,15 @@
     };
   }
 
+  function n1() {
+    return window.N1Art;
+  }
+
+  function inkFont(px) {
+    var art = n1();
+    return art ? art.font(800, px) : "800 " + px + "px Plus Jakarta Sans, sans-serif";
+  }
+
   function roundRect(x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y);
@@ -367,80 +376,51 @@
     ctx.closePath();
   }
 
-  function arrow(x1, y1, x2, y2, color, width) {
-    var ang = Math.atan2(y2 - y1, x2 - x1);
-    var head = 11;
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = width || 3;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
-    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
-    ctx.closePath();
-    ctx.fill();
-  }
-
-
-  function drawSkyGround() {
-    var g = ctx.createLinearGradient(0, 0, 0, cssH * 0.58);
-    g.addColorStop(0, "#b9dcff");
-    g.addColorStop(1, "#eef7ff");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, cssW, cssH);
-    ctx.fillStyle = "#cfe6c4";
-    ctx.fillRect(0, cssH * 0.58, cssW, cssH * 0.42);
-    ctx.fillStyle = "#b7d59f";
-    ctx.fillRect(0, cssH * 0.58, cssW, 8);
-  }
-
-
-  function drawTrack(path, map, color) {
+  function drawTrack(path, map, accent) {
     ctx.beginPath();
     var p0 = path.pts[0];
     ctx.moveTo(map.X(p0.x), map.Y(p0.y));
     for (var i = 1; i < path.pts.length; i++) {
       ctx.lineTo(map.X(path.pts[i].x), map.Y(path.pts[i].y));
     }
-    ctx.strokeStyle = color || "#6b4f2a";
-    ctx.lineWidth = 10;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
+    ctx.strokeStyle = "#cbd5e1";
+    ctx.lineWidth = 10;
     ctx.stroke();
-    ctx.strokeStyle = "#d6b07a";
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = accent || "#0284c7";
+    ctx.lineWidth = 3;
     ctx.stroke();
   }
 
   function drawCartOn(c, map) {
+    var art = n1();
     var p = samplePath(c.path, c.s);
     var x = map.X(p.x);
     var y = map.Y(p.y);
     var ang = Math.atan2(-p.ty, p.tx);
+    var trailColor = c.color === "green" ? "#059669" : "#0284c7";
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(ang);
-    ctx.fillStyle = c.color;
-    roundRect(-16, -18, 32, 16, 4);
-    ctx.fill();
-    ctx.fillStyle = "#1c2434";
-    ctx.beginPath();
-    ctx.arc(-10, 0, 4, 0, Math.PI * 2);
-    ctx.arc(10, 0, 4, 0, Math.PI * 2);
-    ctx.fill();
+    if (art) {
+      if (c.color === "green") art.greenBox(ctx, -18, -22, 36, 20);
+      else art.skyBox(ctx, -18, -22, 36, 20);
+    } else {
+      ctx.fillStyle = trailColor;
+      roundRect(-18, -22, 36, 20, 6);
+      ctx.fill();
+    }
     ctx.restore();
     if (c.trail.length > 2) {
       ctx.beginPath();
-      ctx.strokeStyle = c.color;
+      ctx.strokeStyle = trailColor;
       ctx.globalAlpha = 0.35;
       ctx.lineWidth = 2;
-      ctx.moveTo(map.X(c.trail[0].x), map.Y(c.trail[0].y) - 10);
+      ctx.lineCap = "round";
+      ctx.moveTo(map.X(c.trail[0].x), map.Y(c.trail[0].y) - 12);
       for (var i = 1; i < c.trail.length; i++) {
-        ctx.lineTo(map.X(c.trail[i].x), map.Y(c.trail[i].y) - 10);
+        ctx.lineTo(map.X(c.trail[i].x), map.Y(c.trail[i].y) - 12);
       }
       ctx.stroke();
       ctx.globalAlpha = 1;
@@ -448,19 +428,28 @@
   }
 
   function drawPark() {
-    drawSkyGround();
+    var art = n1();
     var map = worldMap(17.4, 6.4, 36);
+    var zh = lang === "zh-HK";
+    if (art) art.drawFloor(ctx, cssW, cssH, map.Y(0), zh ? "GPE = 0" : "GPE = 0");
+    else {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#f1f5f9";
+      ctx.fillRect(0, map.Y(0), cssW, cssH - map.Y(0));
+    }
     park.paths.forEach(function (path, idx) {
-      drawTrack(path, map, idx === 1 ? "#9a3412" : "#6b4f2a");
+      drawTrack(path, map, idx === 1 ? "#059669" : "#0284c7");
     });
-    /* height ticks */
-    ctx.fillStyle = "#64748b";
-    ctx.font = "700 10px ui-monospace, monospace";
+    ctx.fillStyle = art ? art.C.muted : "#64748b";
+    ctx.font = art ? art.mono(700, 11) : "700 11px JetBrains Mono, monospace";
+    ctx.textAlign = "left";
     for (var h = 0; h <= 6; h += 2) {
       ctx.fillText(h + " m", 8, map.Y(h) + 4);
-      ctx.strokeStyle = "rgba(100,116,139,0.25)";
+      ctx.strokeStyle = "rgba(148,163,184,0.28)";
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(40, map.Y(h));
+      ctx.moveTo(48, map.Y(h));
       ctx.lineTo(cssW - 10, map.Y(h));
       ctx.stroke();
     }
@@ -468,11 +457,11 @@
       drawCartOn(c, map);
     });
     if (park.mode === "race") {
-      ctx.fillStyle = "#0f766e";
-      ctx.font = "700 12px sans-serif";
-      ctx.fillText(lang === "zh-HK" ? "A 陡坡" : "A  steep", map.X(4.8), map.Y(0.85) + 18);
-      ctx.fillStyle = "#c2410c";
-      ctx.fillText(lang === "zh-HK" ? "B 緩坡" : "B  gentle", map.X(8.5), map.Y(3.2) - 6);
+      ctx.font = inkFont(13);
+      ctx.fillStyle = "#0284c7";
+      ctx.fillText(zh ? "A 陡坡" : "A  steep", map.X(4.8), map.Y(0.85) + 18);
+      ctx.fillStyle = "#059669";
+      ctx.fillText(zh ? "B 緩坡" : "B  gentle", map.X(8.5), map.Y(3.2) - 6);
     }
   }
 

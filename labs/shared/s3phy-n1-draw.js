@@ -108,6 +108,35 @@
     }
   }
 
+  function drawWater(ctx, width, height, waterY, label) {
+    ctx.fillStyle = C.white;
+    ctx.fillRect(0, 0, width, height);
+    ctx.fillStyle = "#e0f2fe";
+    ctx.fillRect(0, waterY, width, Math.max(0, height - waterY));
+    ctx.strokeStyle = C.skyStroke;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, waterY);
+    ctx.lineTo(width, waterY);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(2,132,199,0.28)";
+    ctx.lineWidth = 1.2;
+    var x;
+    for (x = 16; x < width; x += 24) {
+      ctx.beginPath();
+      ctx.moveTo(x, waterY + 9);
+      ctx.lineTo(x + 12, waterY + 9);
+      ctx.stroke();
+    }
+    if (label) {
+      ctx.fillStyle = C.ink;
+      ctx.font = font(800, 14);
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(label, 16, Math.min(height - 10, waterY + 32));
+    }
+  }
+
   function drawArrow(ctx, x1, y1, x2, y2, color, width) {
     const ang = Math.atan2(y2 - y1, x2 - x1);
     const head = Math.max(10, (width || 3.2) * 5.5);
@@ -315,6 +344,7 @@
     greenBox,
     slateBar,
     drawFloor,
+    drawWater,
     drawArrow,
     drawGlowingBall,
     labelBox,

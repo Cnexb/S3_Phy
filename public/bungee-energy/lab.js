@@ -148,122 +148,102 @@
     };
   }
 
-  function roundRect(x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
+  function n1() {
+    return window.N1Art;
   }
 
-  function arrow(x1, y1, x2, y2, color, width) {
-    var ang = Math.atan2(y2 - y1, x2 - x1);
-    var head = 11;
-    ctx.strokeStyle = color;
-    ctx.fillStyle = color;
-    ctx.lineWidth = width || 3;
-    ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
-    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
-    ctx.closePath();
-    ctx.fill();
+  function inkFont(px) {
+    var art = n1();
+    return art ? art.font(800, px) : "800 " + px + "px Plus Jakarta Sans, sans-serif";
   }
-
 
   function drawBungee() {
+    var art = n1();
     var map = worldMap(15.5, 42, 22);
     var riverY = map.Y(0);
-    var g = ctx.createLinearGradient(0, 0, 0, riverY);
-    g.addColorStop(0, "#9fd0ff");
-    g.addColorStop(1, "#e8f4ff");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, cssW, cssH);
+    var zh = lang === "zh-HK";
+    var boxW = 52;
+    var boxH = 36;
 
-    /* cliff */
-    ctx.fillStyle = "#6b7280";
-    ctx.beginPath();
-    ctx.moveTo(0, cssH);
-    ctx.lineTo(0, map.Y(bun.H) - 10);
-    ctx.lineTo(map.X(4.2), map.Y(bun.H) - 10);
-    ctx.lineTo(map.X(5.4), map.Y(18));
-    ctx.lineTo(map.X(5.8), cssH);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = "#4ade80";
-    ctx.fillRect(0, map.Y(bun.H) - 18, map.X(4.2), 12);
+    if (art) art.drawWater(ctx, cssW, cssH, riverY, zh ? "河面  GPE = 0" : "river  GPE = 0");
+    else {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, cssW, cssH);
+      ctx.fillStyle = "#e0f2fe";
+      ctx.fillRect(0, riverY, cssW, cssH - riverY);
+    }
 
-    /* water line */
-    ctx.fillStyle = "rgba(14,116,144,0.45)";
-    ctx.fillRect(0, riverY, cssW, cssH - riverY);
-    ctx.strokeStyle = "#155e75";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, riverY);
-    ctx.lineTo(cssW, riverY);
-    ctx.stroke();
-    ctx.fillStyle = "#0e7490";
-    ctx.font = "700 15px sans-serif";
-    ctx.fillText(lang === "zh-HK" ? "河面  GPE = 0" : "river  GPE = 0", map.X(10.2), riverY + 22);
+    var towerLeft = Math.max(8, map.X(0.35));
+    var towerW = 34;
+    var platY = map.Y(bun.H);
+    var boardX = map.X(1.35);
+    var boardW = Math.max(40, map.X(4.15) - boardX);
+    var towerH = Math.max(16, riverY - platY);
+    if (art) {
+      art.slateBar(ctx, towerLeft, platY, towerW, towerH);
+      art.slateBar(ctx, boardX, platY - 10, boardW, 10);
+    } else {
+      ctx.fillStyle = "#475569";
+      ctx.fillRect(towerLeft, platY, towerW, towerH);
+      ctx.fillRect(boardX, platY - 10, boardW, 10);
+    }
 
-    var attachX = map.X(3.4);
-    var attachY = map.Y(bun.H);
+    ctx.fillStyle = art ? art.C.ink : "#0f172a";
+
+    var attachX = boardX + boardW - 6;
+    var attachY = platY - 6;
     var personX = map.X(8.2);
     var personY = map.Y(bun.y);
     var taut = bunExt() > 0 || bunAtTautHold();
     var yTaut = bunTautY();
+    var tautY = map.Y(yTaut);
+    var boxX = personX - boxW / 2;
+    var boxY = personY - boxH / 2;
+    var cordEndX = personX;
+    var cordEndY = boxY;
 
     ctx.setLineDash([8, 6]);
-    ctx.strokeStyle = "#dc2626";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = art ? art.C.orange : "#f97316";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(map.X(5.6), map.Y(yTaut));
-    ctx.lineTo(cssW - 16, map.Y(yTaut));
+    ctx.moveTo(map.X(5.0), tautY);
+    ctx.lineTo(cssW - 16, tautY);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = "#b91c1c";
-    ctx.font = "700 15px sans-serif";
-    ctx.fillText(
-      lang === "zh-HK" ? "繩開始伸長" : "cord starts stretching",
-      map.X(8.6),
-      map.Y(yTaut) - 8
-    );
+    ctx.fillStyle = art ? art.C.orange : "#f97316";
+    ctx.font = inkFont(13);
+    ctx.fillText(zh ? "繩開始伸長" : "cord starts stretching", map.X(5.0), tautY - 8);
 
-    ctx.strokeStyle = taut ? "#dc2626" : "#64748b";
-    ctx.lineWidth = taut ? 6 : 3;
+    ctx.strokeStyle = taut ? (art ? art.C.orange : "#f97316") : (art ? art.C.floorLine : "#94a3b8");
+    ctx.lineWidth = taut ? 4 : 2.5;
+    ctx.lineCap = "round";
     ctx.beginPath();
     ctx.moveTo(attachX, attachY);
     if (!taut) {
-      ctx.quadraticCurveTo(attachX + 36, (attachY + personY) / 2 + 24, personX, personY - 16);
+      ctx.quadraticCurveTo(attachX + 36, (attachY + cordEndY) / 2 + 24, cordEndX, cordEndY);
     } else {
-      ctx.lineTo(personX, personY - 16);
+      ctx.lineTo(cordEndX, cordEndY);
     }
     ctx.stroke();
 
-    ctx.fillStyle = "#f59e0b";
-    ctx.beginPath();
-    ctx.arc(personX, personY, 18, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#1d4ed8";
-    roundRect(personX - 11, personY + 12, 22, 32, 6);
-    ctx.fill();
-
-    if (bun.splash) {
-      ctx.fillStyle = "#fff";
-      ctx.font = "800 28px Trebuchet MS, sans-serif";
-      ctx.fillText(lang === "zh-HK" ? "濺水！" : "Splash!", cssW * 0.42, map.Y(8));
+    if (art) art.skyBox(ctx, boxX, boxY, boxW, boxH);
+    else {
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(boxX, boxY, boxW, boxH);
     }
 
-    ctx.fillStyle = "#334155";
-    ctx.font = "700 14px ui-monospace, monospace";
-    ctx.fillText("40 m", 10, map.Y(40) + 4);
-    ctx.fillText("0", 18, map.Y(0) - 6);
+    if (bun.splash) {
+      ctx.fillStyle = art ? art.C.orange : "#f97316";
+      ctx.font = inkFont(22);
+      ctx.textAlign = "center";
+      ctx.fillText(zh ? "濺水！" : "Splash!", cssW * 0.52, map.Y(8));
+      ctx.textAlign = "left";
+    }
+
+    ctx.fillStyle = art ? art.C.muted : "#64748b";
+    ctx.font = art ? art.mono(700, 12) : "700 12px JetBrains Mono, monospace";
+    ctx.fillText("40 m", towerLeft, platY - 20);
+    ctx.fillText("0", 16, riverY - 8);
   }
 
 

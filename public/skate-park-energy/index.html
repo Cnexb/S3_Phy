@@ -111,7 +111,7 @@
     .workspace { flex: 1; min-height: 0; position: relative; }
     .stage {
       position: relative; width: 100%; height: 100%; min-height: 0;
-      background: linear-gradient(180deg, #cfe8ff 0%, #eaf4fb 52%, #d8eccf 52%, #cfe6c4 100%);
+      background: #ffffff;
       overflow: hidden;
     }
     canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
@@ -304,7 +304,7 @@
             </div>
             <div id="parkRaceHud" class="race-split hidden">
               <div class="race-card">
-                <h3><i style="background:#0f766e"></i><span class="en">Car A · steep</span><span class="zh">車 A · 陡坡</span></h3>
+                <h3><i style="background:#0284c7"></i><span class="en">Car A · steep</span><span class="zh">車 A · 陡坡</span></h3>
                 <div class="bars">
                   <div class="bar-row"><span class="en">GPE</span><span class="zh">重力勢能</span><div class="bar"><i class="pe" id="barAPE"></i></div><span id="barAPEVal">0 J</span></div>
                   <div class="bar-row"><span class="en">KE</span><span class="zh">動能</span><div class="bar"><i class="ke" id="barAKE"></i></div><span id="barAKEVal">0 J</span></div>
@@ -316,7 +316,7 @@
                 </div>
               </div>
               <div class="race-card">
-                <h3><i style="background:#c2410c"></i><span class="en">Car B · gentle</span><span class="zh">車 B · 緩坡</span></h3>
+                <h3><i style="background:#059669"></i><span class="en">Car B · gentle</span><span class="zh">車 B · 緩坡</span></h3>
                 <div class="bars">
                   <div class="bar-row"><span class="en">GPE</span><span class="zh">重力勢能</span><div class="bar"><i class="pe" id="barBPE"></i></div><span id="barBPEVal">0 J</span></div>
                   <div class="bar-row"><span class="en">KE</span><span class="zh">動能</span><div class="bar"><i class="ke" id="barBKE"></i></div><span id="barBKEVal">0 J</span></div>
@@ -334,6 +334,7 @@
       </div>
     </section>
   </div>
+  <script src="../shared/s3phy-n1-draw.js"></script>
   <script src="./lab.js"></script>
 </body>
 </html>
