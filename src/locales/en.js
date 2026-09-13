@@ -3,7 +3,7 @@ export const en = {
   'app.title': 'Uni+ HKDSE Physics Hub',
   'app.subtitle': 'S3 Physics — Foundations, Optics & Heat',
   'strands.title': 'Choose a strand',
-  'strands.intro': 'Foundations, Optics (light), and Heat are ready. Other strands are coming soon, but you can still open them.',
+  'strands.intro': 'Foundations, Optics (light), Heat, and Radioactivity are ready. Other strands are coming soon, but you can still open them.',
   'strand.optics.title': 'Optics',
   'strand.optics.desc': 'Reflection, refraction, total internal reflection, convex lens, concave lens, electromagnetic waves',
   'strand.optics.subtitle': 'Optics — light and waves',
