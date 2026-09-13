@@ -801,15 +801,16 @@ button.brand-logo-wrap:hover .brand-logo-img {
   width: 100%;
 }
 
-.panel--topic-hub > h2,
-.panel--topic-hub > .lead {
+.panel.panel--topic-hub > h2,
+.panel.panel--topic-hub > p.lead {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
 }
 
-.panel--topic-hub > .lead {
-  max-width: 38rem;
+.panel.panel--topic-hub > p.lead {
+  max-width: none;
+  width: 100%;
 }
 
 .panel--topic-hub .topic-hub-grid {
