@@ -25,6 +25,7 @@ const WAVES_TOPICS = [
     titleKey: 'topic.stationaryWave',
     fileEn: 'stationary-wave-en.pdf',
     fileZh: 'stationary-wave-zhHant.pdf',
+    tool: 'stationaryWave',
   },
   {
     id: 'lightWave',
@@ -48,6 +49,7 @@ const TOOL_ORDER = [
   'longitudinalWave',
   'waveInterference',
   'waveDiffraction',
+  'stationaryWave',
   'thinFilmInterference',
   'diffractionGratingCompare',
   'spectralOverlap',
@@ -63,6 +65,8 @@ const TOOL_LOADERS = {
   waveInterference: () => import('../tools/waveInterferenceLab.js').then((m) => m.createWaveInterferenceLab),
   waveDiffraction: () =>
     import('../tools/waveDiffractionLab.js').then((m) => m.createWaveDiffractionLab),
+  stationaryWave: () =>
+    import('../tools/stationaryWaveLab.js').then((m) => m.createStationaryWaveLab),
   thinFilmInterference: () =>
     import('../tools/thinFilmInterferenceLab.js').then((m) => m.createThinFilmInterferenceLab),
   diffractionGratingCompare: () =>
@@ -82,6 +86,7 @@ function toolLabel(id) {
     longitudinalWave: 'tools.longitudinalWave.title',
     waveInterference: 'tools.waveInterference.title',
     waveDiffraction: 'tools.waveDiffraction.title',
+    stationaryWave: 'tools.stationaryWave.title',
     thinFilmInterference: 'tools.thinFilmInterference.title',
     diffractionGratingCompare: 'tools.diffractionGratingCompare.title',
     spectralOverlap: 'tools.spectralOverlap.title',

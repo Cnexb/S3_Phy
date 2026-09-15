@@ -117,6 +117,7 @@ export const en = {
   'tools.ultrasoundReflection.title': 'Ultrasound Reflection',
   'tools.waveInterference.title': 'Spatial Wave Interference',
   'tools.waveDiffraction.title': 'Wave Diffraction — gap & wavelength',
+  'tools.stationaryWave.title': 'Stationary wave — standing wave on a string',
   'tools.thinFilmInterference.title': 'Thin-film Interference — Soap Film',
   'tools.diffractionGratingCompare.title': 'Double Slit & Diffraction Grating Compare',
   'tools.spectralOverlap.title': 'Spectral Overlap — Diffraction Orders',

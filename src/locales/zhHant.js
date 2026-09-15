@@ -117,6 +117,7 @@ export const zhHant = {
   'tools.ultrasoundReflection.title': '\u8d85\u8072\u6ce2\u53cd\u5c04',
   'tools.waveInterference.title': '\u7a7a\u9593\u6ce2\u7684\u5e72\u6d09',
   'tools.waveDiffraction.title': '\u6ce2\u7684\u885d\u5c04 \u2014 \u7e2b\u5bec\u8207\u6ce2\u9577',
+  'tools.stationaryWave.title': '\u99d0\u6ce2 \u2014 \u5f26\u4e0a\u7684\u99d0\u6ce2',
   'tools.thinFilmInterference.title': '\u8584\u819c\u5e72\u6d89 \u2014 \u80a5\u7682\u6ce1',
   'tools.diffractionGratingCompare.title': '\u96d9\u72f9\u7e2b\u8207\u5149\u6805\u6bd4\u8f03',
   'tools.spectralOverlap.title': '\u5149\u8b5c\u91cd\u758a \u2014 \u7e5e\u5c04\u7d1a\u6b21',
