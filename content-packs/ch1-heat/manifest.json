@@ -116,5 +116,44 @@
       "slug": "heat-ch1",
       "path": "content-packs/ch1-heat/quiz/heat-ch1"
     }
+  ],
+  "summaries": [
+    {
+      "summaryId": "thermometer",
+      "images": {
+        "en": "content-packs/ch1-heat/summaries/thermometer-en.webp",
+        "zhHant": "content-packs/ch1-heat/summaries/thermometer-zhHant.webp"
+      },
+      "pdfs": null
+    },
+    {
+      "summaryId": "heat-internal-energy",
+      "images": {
+        "en": "content-packs/ch1-heat/summaries/heat-internal-energy-en.webp",
+        "zhHant": "content-packs/ch1-heat/summaries/heat-internal-energy-zhHant.webp"
+      },
+      "pdfs": null
+    },
+    {
+      "summaryId": "change-of-state",
+      "images": {
+        "en": "content-packs/ch1-heat/summaries/change-of-state-en.webp",
+        "zhHant": "content-packs/ch1-heat/summaries/change-of-state-zhHant.webp"
+      },
+      "pdfs": null
+    },
+    {
+      "summaryId": "heat-transfer",
+      "images": {
+        "en": "content-packs/ch1-heat/summaries/heat-transfer-en.webp",
+        "zhHant": "content-packs/ch1-heat/summaries/heat-transfer-zhHant.webp"
+      },
+      "pdfs": null
+    }
+  ],
+  "flashcards": [
+    {
+      "file": "content-packs/ch1-heat/flashcards/flashcards-heat-ch1.json"
+    }
   ]
 }

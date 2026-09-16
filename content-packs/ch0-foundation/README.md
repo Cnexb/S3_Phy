@@ -9,6 +9,8 @@ content-packs/ch0-foundation/
   comics/
   tools/          si-units + shared embed CSS
   quiz/           foundations-quantities, foundations-useful-math
+  summaries/      quantities-units, useful-mathematics posters
+  flashcards/     foundations JSON
 ```
 
 ```bash

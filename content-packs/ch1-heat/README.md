@@ -12,6 +12,8 @@ content-packs/ch1-heat/
   tools/          thermometer, boiling-water, change-of-state, heat-flow,
                   heat-transfer, specific-heat, thermal-mixing, shared/
   quiz/           heat-ch1
+  summaries/      thermometer, heat, change-of-state, heat-transfer posters
+  flashcards/     heat JSON and diagram folders
 ```
 
 ```bash

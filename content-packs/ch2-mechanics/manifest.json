@@ -214,5 +214,11 @@
       "path": "content-packs/ch2-mechanics/tools/orbital-forces"
     }
   ],
-  "quiz": []
+  "quiz": [],
+  "summaries": [],
+  "flashcards": [
+    {
+      "file": "content-packs/ch2-mechanics/flashcards/flashcards-mechanics.json"
+    }
+  ]
 }

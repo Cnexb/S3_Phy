@@ -1,5 +1,5 @@
 /**
- * Chapter packs must hold comics, tools, and quizzes next to notes.
+ * Chapter packs must hold comics, tools, quizzes, summaries, and flashcards next to notes.
  * Hub labs/, quizzes/, and public/ are left alone.
  */
 import assert from "node:assert/strict";
@@ -53,7 +53,30 @@ for (const relative of PACKS) {
   assert.equal(isDir(`${chapterDir}/comics`), true, `${chapterDir}/comics`);
   assert.equal(isDir(`${chapterDir}/tools`), true, `${chapterDir}/tools`);
   assert.equal(isDir(`${chapterDir}/quiz`), true, `${chapterDir}/quiz`);
+  assert.equal(isDir(`${chapterDir}/summaries`), true, `${chapterDir}/summaries`);
+  assert.equal(isDir(`${chapterDir}/flashcards`), true, `${chapterDir}/flashcards`);
   assert.equal(isDir(`${chapterDir}/tools/shared`), true, `${chapterDir}/tools/shared`);
+
+  assert.ok(Array.isArray(pack.summaries), `${relative} summaries`);
+  assert.ok(Array.isArray(pack.flashcards), `${relative} flashcards`);
+
+  for (const summary of pack.summaries) {
+    for (const image of Object.values(summary.images)) {
+      assert.ok(String(image).startsWith(`${chapterDir}/summaries/`), image);
+      assert.equal(isFile(image), true, image);
+    }
+    if (summary.pdfs) {
+      for (const pdf of Object.values(summary.pdfs)) {
+        assert.ok(String(pdf).startsWith(`${chapterDir}/summaries/`), pdf);
+        assert.equal(isFile(pdf), true, pdf);
+      }
+    }
+  }
+
+  for (const deck of pack.flashcards) {
+    assert.ok(deck.file.startsWith(`${chapterDir}/flashcards/`), deck.file);
+    assert.equal(isFile(deck.file), true, deck.file);
+  }
 
   for (const comic of pack.comics) {
     for (const page of comic.pages) {
@@ -81,5 +104,12 @@ for (const relative of PACKS) {
 }
 
 assert.equal(exists("content-packs/ch3-optics/comics/initial-d-gutter-run-1.webp"), true);
+assert.equal(exists("content-packs/ch1-heat/summaries/thermometer-en.webp"), true);
+assert.equal(exists("content-packs/ch3-optics/summaries/reflection-en.pdf"), true);
+assert.equal(exists("content-packs/ch3-optics/flashcards/flashcards-light-ch3.json"), true);
+assert.equal(
+  exists("content-packs/ch3-optics/flashcards/optics-definitions/convex1_p2_img2.png"),
+  true,
+);
 assert.equal(PACKS.length, 4);
 console.log("all chapter asset checks passed");

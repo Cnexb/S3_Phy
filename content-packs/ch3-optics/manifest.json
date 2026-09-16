@@ -331,5 +331,81 @@
       "slug": "optics-ch4-em-wave",
       "path": "content-packs/ch3-optics/quiz/optics-ch4-em-wave"
     }
+  ],
+  "summaries": [
+    {
+      "summaryId": "reflection",
+      "images": {
+        "en": "content-packs/ch3-optics/summaries/reflection-en.webp",
+        "zhHant": "content-packs/ch3-optics/summaries/reflection-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-optics/summaries/reflection-en.pdf",
+        "zhHant": "content-packs/ch3-optics/summaries/reflection-zhHant.pdf"
+      }
+    },
+    {
+      "summaryId": "refraction",
+      "images": {
+        "en": "content-packs/ch3-optics/summaries/refraction-en.webp",
+        "zhHant": "content-packs/ch3-optics/summaries/refraction-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-optics/summaries/refraction-en.pdf",
+        "zhHant": "content-packs/ch3-optics/summaries/refraction-zhHant.pdf"
+      }
+    },
+    {
+      "summaryId": "tir",
+      "images": {
+        "en": "content-packs/ch3-optics/summaries/tir-en.webp",
+        "zhHant": "content-packs/ch3-optics/summaries/tir-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-optics/summaries/tir-en.pdf",
+        "zhHant": "content-packs/ch3-optics/summaries/tir-zhHant.pdf"
+      }
+    },
+    {
+      "summaryId": "convex",
+      "images": {
+        "en": "content-packs/ch3-optics/summaries/convex-en.webp",
+        "zhHant": "content-packs/ch3-optics/summaries/convex-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-optics/summaries/convex-en.pdf",
+        "zhHant": "content-packs/ch3-optics/summaries/convex-zhHant.pdf"
+      }
+    },
+    {
+      "summaryId": "concave",
+      "images": {
+        "en": "content-packs/ch3-optics/summaries/concave-en.webp",
+        "zhHant": "content-packs/ch3-optics/summaries/concave-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-optics/summaries/concave-en.pdf",
+        "zhHant": "content-packs/ch3-optics/summaries/concave-zhHant.pdf"
+      }
+    },
+    {
+      "summaryId": "em",
+      "images": {
+        "en": "content-packs/ch3-optics/summaries/em-en.webp",
+        "zhHant": "content-packs/ch3-optics/summaries/em-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-optics/summaries/em-en.pdf",
+        "zhHant": "content-packs/ch3-optics/summaries/em-zhHant.pdf"
+      }
+    }
+  ],
+  "flashcards": [
+    {
+      "file": "content-packs/ch3-optics/flashcards/flashcards-light-ch3.json"
+    },
+    {
+      "file": "content-packs/ch3-optics/flashcards/flashcards-optics-definitions.json"
+    }
   ]
 }

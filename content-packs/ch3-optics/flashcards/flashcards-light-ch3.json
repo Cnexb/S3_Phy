@@ -1,0 +1,807 @@
+[
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "How is a <strong>light ray</strong> drawn?",
+      "a": "A <strong>straight line with an arrow</strong> showing the direction of travel."
+    },
+    "zhHant": {
+      "q": "How is a <strong>light ray</strong> drawn?",
+      "a": "A <strong>straight line with an arrow</strong> showing the direction of travel."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is a <strong>parallel beam</strong>?",
+      "a": "Rays that are <strong>parallel</strong> to each other."
+    },
+    "zhHant": {
+      "q": "What is a <strong>parallel beam</strong>?",
+      "a": "Rays that are <strong>parallel</strong> to each other."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is a <strong>divergent beam</strong>?",
+      "a": "Rays that <strong>spread out</strong> from a source."
+    },
+    "zhHant": {
+      "q": "What is a <strong>divergent beam</strong>?",
+      "a": "Rays that <strong>spread out</strong> from a source."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is a <strong>convergent beam</strong>?",
+      "a": "Rays that <strong>meet at a point</strong>."
+    },
+    "zhHant": {
+      "q": "What is a <strong>convergent beam</strong>?",
+      "a": "Rays that <strong>meet at a point</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Rays from a <strong>nearby</strong> point object reach the eye as…",
+      "a": "<strong>Divergent</strong> rays."
+    },
+    "zhHant": {
+      "q": "Rays from a <strong>nearby</strong> point object reach the eye as…",
+      "a": "<strong>Divergent</strong> rays."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Rays from a <strong>distant</strong> point object are treated as…",
+      "a": "<strong>Parallel</strong> rays."
+    },
+    "zhHant": {
+      "q": "Rays from a <strong>distant</strong> point object are treated as…",
+      "a": "<strong>Parallel</strong> rays."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "State the <strong>law of reflection</strong> regarding angles.",
+      "a": "<strong>Angle of incidence = angle of reflection</strong>."
+    },
+    "zhHant": {
+      "q": "State the <strong>law of reflection</strong> regarding angles.",
+      "a": "<strong>Angle of incidence = angle of reflection</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "State the <strong>law of reflection</strong> regarding the plane of the rays.",
+      "a": "The <strong>normal</strong>, <strong>incident ray</strong>, and <strong>reflected ray</strong> lie in the <strong>same plane</strong>."
+    },
+    "zhHant": {
+      "q": "State the <strong>law of reflection</strong> regarding the plane of the rays.",
+      "a": "The <strong>normal</strong>, <strong>incident ray</strong>, and <strong>reflected ray</strong> lie in the <strong>same plane</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>incident ray</strong>?",
+      "a": "The ray <strong>approaching</strong> the mirror."
+    },
+    "zhHant": {
+      "q": "What is the <strong>incident ray</strong>?",
+      "a": "The ray <strong>approaching</strong> the mirror."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>reflected ray</strong>?",
+      "a": "The ray <strong>leaving</strong> the mirror after reflection."
+    },
+    "zhHant": {
+      "q": "What is the <strong>reflected ray</strong>?",
+      "a": "The ray <strong>leaving</strong> the mirror after reflection."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>normal</strong>?",
+      "a": "An imaginary line <strong>perpendicular</strong> to the mirror at the point of incidence."
+    },
+    "zhHant": {
+      "q": "What is the <strong>normal</strong>?",
+      "a": "An imaginary line <strong>perpendicular</strong> to the mirror at the point of incidence."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Define <strong>angle of incidence</strong>.",
+      "a": "Angle between the <strong>incident ray</strong> and the <strong>normal</strong>."
+    },
+    "zhHant": {
+      "q": "Define <strong>angle of incidence</strong>.",
+      "a": "Angle between the <strong>incident ray</strong> and the <strong>normal</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Define <strong>angle of reflection</strong>.",
+      "a": "Angle between the <strong>reflected ray</strong> and the <strong>normal</strong>."
+    },
+    "zhHant": {
+      "q": "Define <strong>angle of reflection</strong>.",
+      "a": "Angle between the <strong>reflected ray</strong> and the <strong>normal</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>reversibility of light</strong>?",
+      "a": "Light follows the <strong>same path</strong> if its direction is reversed."
+    },
+    "zhHant": {
+      "q": "What is the <strong>reversibility of light</strong>?",
+      "a": "Light follows the <strong>same path</strong> if its direction is reversed."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Is a plane mirror image <strong>laterally inverted</strong>?",
+      "a": "<strong>Yes</strong> — left and right are swapped."
+    },
+    "zhHant": {
+      "q": "Is a plane mirror image <strong>laterally inverted</strong>?",
+      "a": "<strong>Yes</strong> — left and right are swapped."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>size</strong> of a plane mirror image compared with the object?",
+      "a": "<strong>Same size</strong> as the object."
+    },
+    "zhHant": {
+      "q": "What is the <strong>size</strong> of a plane mirror image compared with the object?",
+      "a": "<strong>Same size</strong> as the object."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Is a plane mirror image <strong>erect</strong> or inverted?",
+      "a": "<strong>Erect</strong>."
+    },
+    "zhHant": {
+      "q": "Is a plane mirror image <strong>erect</strong> or inverted?",
+      "a": "<strong>Erect</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Is a plane mirror image <strong>real or virtual</strong>?",
+      "a": "<strong>Virtual</strong> — cannot be projected on a screen."
+    },
+    "zhHant": {
+      "q": "Is a plane mirror image <strong>real or virtual</strong>?",
+      "a": "<strong>Virtual</strong> — cannot be projected on a screen."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "How does <strong>object distance</strong> compare with <strong>image distance</strong> for a plane mirror?",
+      "a": "<strong>Object distance = image distance</strong>."
+    },
+    "zhHant": {
+      "q": "How does <strong>object distance</strong> compare with <strong>image distance</strong> for a plane mirror?",
+      "a": "<strong>Object distance = image distance</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "In a ray diagram, how are <strong>virtual rays</strong> drawn?",
+      "a": "<strong>Dotted lines</strong> behind the mirror."
+    },
+    "zhHant": {
+      "q": "In a ray diagram, how are <strong>virtual rays</strong> drawn?",
+      "a": "<strong>Dotted lines</strong> behind the mirror."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "In a ray diagram, how are <strong>real rays</strong> drawn?",
+      "a": "<strong>Solid lines with arrows</strong>."
+    },
+    "zhHant": {
+      "q": "In a ray diagram, how are <strong>real rays</strong> drawn?",
+      "a": "<strong>Solid lines with arrows</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>visibility condition</strong> for seeing a plane mirror image?",
+      "a": "The line from the <strong>image point to the observer</strong> must pass <strong>through the mirror</strong>."
+    },
+    "zhHant": {
+      "q": "What is the <strong>visibility condition</strong> for seeing a plane mirror image?",
+      "a": "The line from the <strong>image point to the observer</strong> must pass <strong>through the mirror</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Two <strong>applications</strong> of plane mirrors?",
+      "a": "<strong>Dressing mirror</strong> and <strong>rear-view driving mirror</strong>."
+    },
+    "zhHant": {
+      "q": "Two <strong>applications</strong> of plane mirrors?",
+      "a": "<strong>Dressing mirror</strong> and <strong>rear-view driving mirror</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "One <strong>advantage</strong> of a plane mirror?",
+      "a": "Image is the <strong>same size</strong> as the object."
+    },
+    "zhHant": {
+      "q": "One <strong>advantage</strong> of a plane mirror?",
+      "a": "Image is the <strong>same size</strong> as the object."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "One <strong>disadvantage</strong> of a plane mirror?",
+      "a": "Can form <strong>multiple images</strong>."
+    },
+    "zhHant": {
+      "q": "One <strong>disadvantage</strong> of a plane mirror?",
+      "a": "Can form <strong>multiple images</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "Which of the following is <strong>not</strong> a property of an image formed by a plane mirror?<br><br>A. Erect<br>B. Same size as the object<br>C. Real<br>D. Same distance behind the mirror as the object is in front",
+      "a": "<strong>C. Real</strong> — plane mirror images are always <strong>virtual</strong>."
+    },
+    "zhHant": {
+      "q": "Which of the following is <strong>not</strong> a property of an image formed by a plane mirror?<br><br>A. Erect<br>B. Same size as the object<br>C. Real<br>D. Same distance behind the mirror as the object is in front",
+      "a": "<strong>C. Real</strong> — plane mirror images are always <strong>virtual</strong>."
+    },
+    "compactFront": true,
+    "compactBack": true
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "A clock seen in a plane mirror shows <strong>8:30</strong>. What is the actual time?",
+      "a": "<strong>3:30</strong>."
+    },
+    "zhHant": {
+      "q": "A clock seen in a plane mirror shows <strong>8:30</strong>. What is the actual time?",
+      "a": "<strong>3:30</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "A lady holds a plane mirror <strong>20 cm</strong> in front of her eyes. A bird is <strong>150 cm behind</strong> her. What is the distance from her eyes to the image of the bird?",
+      "a": "<strong>190 cm</strong> — the bird is 170 cm in front of the mirror, so its image is 170 cm behind the mirror; add 20 cm from her eyes to the mirror."
+    },
+    "zhHant": {
+      "q": "A lady holds a plane mirror <strong>20 cm</strong> in front of her eyes. A bird is <strong>150 cm behind</strong> her. What is the distance from her eyes to the image of the bird?",
+      "a": "<strong>190 cm</strong> — the bird is 170 cm in front of the mirror, so its image is 170 cm behind the mirror; add 20 cm from her eyes to the mirror."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "A girl stands in front of a plane mirror. The distance between her and her image is <strong>4 m</strong>. How far is she from the mirror?",
+      "a": "<strong>2 m</strong> — object distance equals image distance, so she is half the total separation from the mirror."
+    },
+    "zhHant": {
+      "q": "A girl stands in front of a plane mirror. The distance between her and her image is <strong>4 m</strong>. How far is she from the mirror?",
+      "a": "<strong>2 m</strong> — object distance equals image distance, so she is half the total separation from the mirror."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "A plane mirror is moved <strong>10 cm closer</strong> to an observer. By how much does the image move toward the observer?",
+      "a": "<strong>20 cm</strong>."
+    },
+    "zhHant": {
+      "q": "A plane mirror is moved <strong>10 cm closer</strong> to an observer. By how much does the image move toward the observer?",
+      "a": "<strong>20 cm</strong>."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the <strong>minimum mirror length</strong> needed to see your full body if your height is <strong>h</strong>?",
+      "a": "<strong>h/2</strong> — half the person's height."
+    },
+    "zhHant": {
+      "q": "What is the <strong>minimum mirror length</strong> needed to see your full body if your height is <strong>h</strong>?",
+      "a": "<strong>h/2</strong> — half the person's height."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "What is the distance between an object and its image in a plane mirror?",
+      "a": "<strong>2 × object distance</strong> from the mirror."
+    },
+    "zhHant": {
+      "q": "What is the distance between an object and its image in a plane mirror?",
+      "a": "<strong>2 × object distance</strong> from the mirror."
+    }
+  },
+  {
+    "topic": "reflection",
+    "en": {
+      "q": "A standard periscope uses two plane mirrors at 45°. Is the image seen by the observer <strong>erect</strong>? Is it <strong>laterally inverted</strong>?",
+      "a": "<strong>Erect</strong> — and <strong>not</strong> laterally inverted."
+    },
+    "zhHant": {
+      "q": "A standard periscope uses two plane mirrors at 45°. Is the image seen by the observer <strong>erect</strong>? Is it <strong>laterally inverted</strong>?",
+      "a": "<strong>Erect</strong> — and <strong>not</strong> laterally inverted."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Where does light travel <strong>fastest</strong>?",
+      "a": "In a <strong>vacuum</strong> or <strong>air</strong>."
+    },
+    "zhHant": {
+      "q": "Where does light travel <strong>fastest</strong>?",
+      "a": "In a <strong>vacuum</strong> or <strong>air</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is <strong>refraction</strong>?",
+      "a": "Bending of light when it passes into a medium where light travels at a <strong>different speed</strong>."
+    },
+    "zhHant": {
+      "q": "What is <strong>refraction</strong>?",
+      "a": "Bending of light when it passes into a medium where light travels at a <strong>different speed</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "During refraction, what happens to <strong>frequency</strong>?",
+      "a": "Frequency <strong>remains unchanged</strong>."
+    },
+    "zhHant": {
+      "q": "During refraction, what happens to <strong>frequency</strong>?",
+      "a": "Frequency <strong>remains unchanged</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "When does a refracted ray <strong>not change direction</strong>?",
+      "a": "<strong>Normal incidence</strong> — ray perpendicular to the boundary."
+    },
+    "zhHant": {
+      "q": "When does a refracted ray <strong>not change direction</strong>?",
+      "a": "<strong>Normal incidence</strong> — ray perpendicular to the boundary."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Define <strong>optically denser</strong> medium.",
+      "a": "Medium with a <strong>larger refractive index</strong>."
+    },
+    "zhHant": {
+      "q": "Define <strong>optically denser</strong> medium.",
+      "a": "Medium with a <strong>larger refractive index</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Define <strong>optically less dense</strong> medium.",
+      "a": "Medium with a <strong>smaller refractive index</strong>."
+    },
+    "zhHant": {
+      "q": "Define <strong>optically less dense</strong> medium.",
+      "a": "Medium with a <strong>smaller refractive index</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "State <strong>Snell's law</strong>.",
+      "a": "n<sub>1</sub> sin θ<sub>1</sub> = n<sub>2</sub> sin θ<sub>2</sub>"
+    },
+    "zhHant": {
+      "q": "State <strong>Snell's law</strong>.",
+      "a": "n<sub>1</sub> sin θ<sub>1</sub> = n<sub>2</sub> sin θ<sub>2</sub>"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is the formula for <strong>refractive index</strong> using speed?",
+      "a": "n = c / v."
+    },
+    "zhHant": {
+      "q": "What is the formula for <strong>refractive index</strong> using speed?",
+      "a": "n = c / v."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is the formula for <strong>refractive index</strong> using angles when light enters a medium from air?",
+      "a": "n = sin i / sin r"
+    },
+    "zhHant": {
+      "q": "What is the formula for <strong>refractive index</strong> using angles when light enters a medium from air?",
+      "a": "n = sin i / sin r"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Light travels from an <strong>optically less dense</strong> medium into a <strong>denser</strong> medium. How does the ray bend?",
+      "a": "<strong>Towards the normal</strong>."
+    },
+    "zhHant": {
+      "q": "Light travels from an <strong>optically less dense</strong> medium into a <strong>denser</strong> medium. How does the ray bend?",
+      "a": "<strong>Towards the normal</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Light travels from an <strong>optically denser</strong> medium into a <strong>less dense</strong> medium. How does the ray bend?",
+      "a": "<strong>Away from the normal</strong>."
+    },
+    "zhHant": {
+      "q": "Light travels from an <strong>optically denser</strong> medium into a <strong>less dense</strong> medium. How does the ray bend?",
+      "a": "<strong>Away from the normal</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "If a medium has a <strong>greater refractive index</strong>, is the speed of light in it higher or lower?",
+      "a": "Speed is <strong>lower</strong>."
+    },
+    "zhHant": {
+      "q": "If a medium has a <strong>greater refractive index</strong>, is the speed of light in it higher or lower?",
+      "a": "Speed is <strong>lower</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is the refractive index of <strong>water</strong>?",
+      "a": "<strong>1.33</strong>"
+    },
+    "zhHant": {
+      "q": "What is the refractive index of <strong>water</strong>?",
+      "a": "<strong>1.33</strong>"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is a typical refractive index of <strong>glass</strong>?",
+      "a": "<strong>1.50</strong>"
+    },
+    "zhHant": {
+      "q": "What is a typical refractive index of <strong>glass</strong>?",
+      "a": "<strong>1.50</strong>"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is the refractive index of <strong>diamond</strong>?",
+      "a": "<strong>2.42</strong>"
+    },
+    "zhHant": {
+      "q": "What is the refractive index of <strong>diamond</strong>?",
+      "a": "<strong>2.42</strong>"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "A ray passes through a rectangular glass block. What is the direction of the <strong>emergent ray</strong>?",
+      "a": "<strong>Parallel</strong> to the incident ray."
+    },
+    "zhHant": {
+      "q": "A ray passes through a rectangular glass block. What is the direction of the <strong>emergent ray</strong>?",
+      "a": "<strong>Parallel</strong> to the incident ray."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "If the angle of incidence <strong>i</strong> increases in the same two media, what happens to the angle of refraction <strong>r</strong>?",
+      "a": "<strong>r also increases</strong>."
+    },
+    "zhHant": {
+      "q": "If the angle of incidence <strong>i</strong> increases in the same two media, what happens to the angle of refraction <strong>r</strong>?",
+      "a": "<strong>r also increases</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Light enters a semi-circular block at the <strong>centre of the flat face</strong>. Is there refraction at the curved face?",
+      "a": "<strong>None</strong> — ray along normal."
+    },
+    "zhHant": {
+      "q": "Light enters a semi-circular block at the <strong>centre of the flat face</strong>. Is there refraction at the curved face?",
+      "a": "<strong>None</strong> — ray along normal."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is the formula relating <strong>real depth</strong> and <strong>apparent depth</strong>?",
+      "a": "n = real depth / apparent depth"
+    },
+    "zhHant": {
+      "q": "What is the formula relating <strong>real depth</strong> and <strong>apparent depth</strong>?",
+      "a": "n = real depth / apparent depth"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Why does a swimming pool look <strong>shallower</strong> than it really is?",
+      "a": "Light from the bottom <strong>bends away from the normal</strong> leaving water → image appears higher."
+    },
+    "zhHant": {
+      "q": "Why does a swimming pool look <strong>shallower</strong> than it really is?",
+      "a": "Light from the bottom <strong>bends away from the normal</strong> leaving water → image appears higher."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "What is the nature of the image seen through a glass block placed over print?",
+      "a": "<strong>Virtual</strong> and <strong>erect</strong>."
+    },
+    "zhHant": {
+      "q": "What is the nature of the image seen through a glass block placed over print?",
+      "a": "<strong>Virtual</strong> and <strong>erect</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "A ray passes from water into an <strong>air bubble</strong> at the curved surface. How does it bend?",
+      "a": "Bends <strong>away from normal</strong>."
+    },
+    "zhHant": {
+      "q": "A ray passes from water into an <strong>air bubble</strong> at the curved surface. How does it bend?",
+      "a": "Bends <strong>away from normal</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Why does <strong>white light split</strong> into colours when it passes through a prism?",
+      "a": "Different colours travel at <strong>different speeds</strong> → different n."
+    },
+    "zhHant": {
+      "q": "Why does <strong>white light split</strong> into colours when it passes through a prism?",
+      "a": "Different colours travel at <strong>different speeds</strong> → different n."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "In a prism, which colour of light bends the <strong>most</strong>?",
+      "a": "<strong>Violet</strong>."
+    },
+    "zhHant": {
+      "q": "In a prism, which colour of light bends the <strong>most</strong>?",
+      "a": "<strong>Violet</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "In a prism, which colour of light bends the <strong>least</strong>?",
+      "a": "<strong>Red</strong>."
+    },
+    "zhHant": {
+      "q": "In a prism, which colour of light bends the <strong>least</strong>?",
+      "a": "<strong>Red</strong>."
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Arrange the refractive indices of <strong>orange, green, and blue</strong> light in glass in <strong>descending</strong> order.",
+      "a": "<strong>Blue > Green > Orange</strong>"
+    },
+    "zhHant": {
+      "q": "Arrange the refractive indices of <strong>orange, green, and blue</strong> light in glass in <strong>descending</strong> order.",
+      "a": "<strong>Blue > Green > Orange</strong>"
+    }
+  },
+  {
+    "topic": "refraction",
+    "en": {
+      "q": "Arrange the speeds of <strong>violet, blue, and yellow</strong> light in glass in <strong>ascending</strong> order.",
+      "a": "<strong>Violet < Blue < Yellow</strong>"
+    },
+    "zhHant": {
+      "q": "Arrange the speeds of <strong>violet, blue, and yellow</strong> light in glass in <strong>ascending</strong> order.",
+      "a": "<strong>Violet < Blue < Yellow</strong>"
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "What are the <strong>two conditions</strong> for total internal reflection?",
+      "a": "1) <strong>Denser → less dense</strong> medium<br>2) i <strong>></strong> critical angle c"
+    },
+    "zhHant": {
+      "q": "What are the <strong>two conditions</strong> for total internal reflection?",
+      "a": "1) <strong>Denser → less dense</strong> medium<br>2) i <strong>></strong> critical angle c"
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "What is the <strong>critical angle formula</strong> for light leaving a medium into air?",
+      "a": "sin c = 1/n"
+    },
+    "zhHant": {
+      "q": "What is the <strong>critical angle formula</strong> for light leaving a medium into air?",
+      "a": "sin c = 1/n"
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "At the <strong>critical angle</strong>, what is the angle of refraction?",
+      "a": "<strong>90°</strong>."
+    },
+    "zhHant": {
+      "q": "At the <strong>critical angle</strong>, what is the angle of refraction?",
+      "a": "<strong>90°</strong>."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "When the angle of incidence is <strong>less than the critical angle</strong> at a denser-to-less dense boundary, what happens?",
+      "a": "<strong>Partial reflection</strong> and <strong>refraction</strong>."
+    },
+    "zhHant": {
+      "q": "When the angle of incidence is <strong>less than the critical angle</strong> at a denser-to-less dense boundary, what happens?",
+      "a": "<strong>Partial reflection</strong> and <strong>refraction</strong>."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Which of the following use <strong>total internal reflection</strong>: mirage, optical fibre, or plane mirror?",
+      "a": "<strong>Mirage</strong> and <strong>optical fibre</strong> only."
+    },
+    "zhHant": {
+      "q": "Which of the following use <strong>total internal reflection</strong>: mirage, optical fibre, or plane mirror?",
+      "a": "<strong>Mirage</strong> and <strong>optical fibre</strong> only."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Why do <strong>diamonds sparkle</strong>?",
+      "a": "<strong>Total internal reflection</strong> inside the gem."
+    },
+    "zhHant": {
+      "q": "Why do <strong>diamonds sparkle</strong>?",
+      "a": "<strong>Total internal reflection</strong> inside the gem."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "In a fish-eye view underwater, what does the water surface outside the viewing cone act like?",
+      "a": "A <strong>mirror</strong>."
+    },
+    "zhHant": {
+      "q": "In a fish-eye view underwater, what does the water surface outside the viewing cone act like?",
+      "a": "A <strong>mirror</strong>."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "How does a <strong>mirage</strong> on a hot road form?",
+      "a": "Hot ground → air layers with decreasing n → rays refract then <strong>total internal reflection</strong> → sky image on road."
+    },
+    "zhHant": {
+      "q": "How does a <strong>mirage</strong> on a hot road form?",
+      "a": "Hot ground → air layers with decreasing n → rays refract then <strong>total internal reflection</strong> → sky image on road."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Give one advantage of a <strong>reflecting prism</strong> over a plane mirror.",
+      "a": "<strong>No multiple images</strong>; brighter, clearer image."
+    },
+    "zhHant": {
+      "q": "Give one advantage of a <strong>reflecting prism</strong> over a plane mirror.",
+      "a": "<strong>No multiple images</strong>; brighter, clearer image."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Give two advantages of <strong>optical fibre</strong> over copper cable.",
+      "a": "<strong>Less energy loss</strong>; <strong>lighter/thinner</strong>; carries more data."
+    },
+    "zhHant": {
+      "q": "Give two advantages of <strong>optical fibre</strong> over copper cable.",
+      "a": "<strong>Less energy loss</strong>; <strong>lighter/thinner</strong>; carries more data."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Peanut oil has refractive index <strong>1.47</strong> and water has <strong>1.33</strong>. Which has the <strong>smaller critical angle</strong> to air?",
+      "a": "<strong>Peanut oil</strong>."
+    },
+    "zhHant": {
+      "q": "Peanut oil has refractive index <strong>1.47</strong> and water has <strong>1.33</strong>. Which has the <strong>smaller critical angle</strong> to air?",
+      "a": "<strong>Peanut oil</strong>."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Can <strong>total internal reflection</strong> occur when light travels from <strong>peanut oil into water</strong>?",
+      "a": "<strong>Yes</strong> — oil is denser than water."
+    },
+    "zhHant": {
+      "q": "Can <strong>total internal reflection</strong> occur when light travels from <strong>peanut oil into water</strong>?",
+      "a": "<strong>Yes</strong> — oil is denser than water."
+    }
+  },
+  {
+    "topic": "tir",
+    "en": {
+      "q": "Which of the following use <strong>total internal reflection</strong>: binoculars, periscope, or optical fibre?",
+      "a": "<strong>Binoculars</strong>, <strong>periscope</strong>, <strong>optical fibre</strong> — all use TIR."
+    },
+    "zhHant": {
+      "q": "Which of the following use <strong>total internal reflection</strong>: binoculars, periscope, or optical fibre?",
+      "a": "<strong>Binoculars</strong>, <strong>periscope</strong>, <strong>optical fibre</strong> — all use TIR."
+    }
+  }
+]

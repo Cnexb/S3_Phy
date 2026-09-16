@@ -11,6 +11,8 @@ content-packs/ch3-optics/
   comics/      Initial D: Gutter Run
   tools/       labs for waves + optics, plus shared embed CSS
   quiz/        optics-ch3, optics-ch4-em-wave
+  summaries/   bilingual posters and PDFs
+  flashcards/  light + optics-definitions JSON and diagrams
 ```
 
 PDFs, comics, tools, and quizzes here are **copies**. Hub trees are unchanged.

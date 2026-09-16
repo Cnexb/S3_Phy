@@ -1,0 +1,1278 @@
+[
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What is temperature?",
+      "a": "A measure of the <strong>degree of hotness</strong> of an object."
+    },
+    "zhHant": {
+      "q": "What is temperature?",
+      "a": "A measure of the <strong>degree of hotness</strong> of an object."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What is a thermometer used for?",
+      "a": "To measure the <strong>temperature</strong> of objects."
+    },
+    "zhHant": {
+      "q": "What is a thermometer used for?",
+      "a": "To measure the <strong>temperature</strong> of objects."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What is the common unit of temperature in these notes?",
+      "a": "<strong>Degree Celsius</strong> (°C)."
+    },
+    "zhHant": {
+      "q": "What is the common unit of temperature in these notes?",
+      "a": "<strong>Degree Celsius</strong> (°C)."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What is the ice point (lower fixed point)?",
+      "a": "<strong>0 °C</strong> — temperature of <strong>pure melting ice</strong> at normal atmospheric pressure."
+    },
+    "zhHant": {
+      "q": "What is the ice point (lower fixed point)?",
+      "a": "<strong>0 °C</strong> — temperature of <strong>pure melting ice</strong> at normal atmospheric pressure."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What is the steam point (upper fixed point)?",
+      "a": "<strong>100 °C</strong> — temperature of <strong>steam over pure boiling water</strong> at normal atmospheric pressure."
+    },
+    "zhHant": {
+      "q": "What is the steam point (upper fixed point)?",
+      "a": "<strong>100 °C</strong> — temperature of <strong>steam over pure boiling water</strong> at normal atmospheric pressure."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What are the parts of a liquid-in-glass thermometer?",
+      "a": "<strong>Bulb</strong>, <strong>stem</strong>, <strong>capillary tube</strong>, and <strong>constriction</strong> (clinical thermometer)."
+    },
+    "zhHant": {
+      "q": "What are the parts of a liquid-in-glass thermometer?",
+      "a": "<strong>Bulb</strong>, <strong>stem</strong>, <strong>capillary tube</strong>, and <strong>constriction</strong> (clinical thermometer)."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "How can you increase the sensitivity of a liquid-in-glass thermometer?",
+      "a": "Use a <strong>narrower capillary tube</strong> — liquid column length increases more per °C."
+    },
+    "zhHant": {
+      "q": "How can you increase the sensitivity of a liquid-in-glass thermometer?",
+      "a": "Use a <strong>narrower capillary tube</strong> — liquid column length increases more per °C."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "How can you increase the response (speed) of a thermometer?",
+      "a": "Use a <strong>thinner glass wall</strong>."
+    },
+    "zhHant": {
+      "q": "How can you increase the response (speed) of a thermometer?",
+      "a": "Use a <strong>thinner glass wall</strong>."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "How can you increase the range of a liquid-in-glass thermometer?",
+      "a": "Use a <strong>smaller bulb</strong>."
+    },
+    "zhHant": {
+      "q": "How can you increase the range of a liquid-in-glass thermometer?",
+      "a": "Use a <strong>smaller bulb</strong>."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Why is the stem of a mercury thermometer made thin?",
+      "a": "Thinner stem → greater length change per °C → <strong>more sensitive</strong>."
+    },
+    "zhHant": {
+      "q": "Why is the stem of a mercury thermometer made thin?",
+      "a": "Thinner stem → greater length change per °C → <strong>more sensitive</strong>."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Which changes increase sensitivity?\n(i) longer tube\n(ii) narrower tube\n(iii) larger bulb",
+      "a": "<strong>(ii) and (iii)</strong> only."
+    },
+    "zhHant": {
+      "q": "Which changes increase sensitivity?\n(i) longer tube\n(ii) narrower tube\n(iii) larger bulb",
+      "a": "<strong>(ii) and (iii)</strong> only."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Why does a clinical thermometer keep reading after removal from the mouth?",
+      "a": "It has a <strong>constriction</strong> near the bulb."
+    },
+    "zhHant": {
+      "q": "Why does a clinical thermometer keep reading after removal from the mouth?",
+      "a": "It has a <strong>constriction</strong> near the bulb."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What are the steps to calibrate an unmarked thermometer?",
+      "a": "Ice point (0 °C) → steam point (100 °C) → mark levels → divide into <strong>100 equal divisions</strong> (1 °C each)."
+    },
+    "zhHant": {
+      "q": "What are the steps to calibrate an unmarked thermometer?",
+      "a": "Ice point (0 °C) → steam point (100 °C) → mark levels → divide into <strong>100 equal divisions</strong> (1 °C each)."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For mercury vs alcohol thermometers, what is the difference in temperature range?",
+      "a": "Mercury: <strong>high</strong> temperatures; Alcohol: <strong>low</strong> temperatures."
+    },
+    "zhHant": {
+      "q": "For mercury vs alcohol thermometers, what is the difference in temperature range?",
+      "a": "Mercury: <strong>high</strong> temperatures; Alcohol: <strong>low</strong> temperatures."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For mercury vs alcohol thermometers, what is the difference in response?",
+      "a": "Mercury: <strong>quick</strong>; Alcohol: <strong>slow</strong>."
+    },
+    "zhHant": {
+      "q": "For mercury vs alcohol thermometers, what is the difference in response?",
+      "a": "Mercury: <strong>quick</strong>; Alcohol: <strong>slow</strong>."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For mercury vs alcohol thermometers, what is the difference in toxicity?",
+      "a": "Mercury: <strong>toxic</strong>; Alcohol: <strong>non-toxic</strong>."
+    },
+    "zhHant": {
+      "q": "For mercury vs alcohol thermometers, what is the difference in toxicity?",
+      "a": "Mercury: <strong>toxic</strong>; Alcohol: <strong>non-toxic</strong>."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For a liquid-in-glass thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Volume of liquid</strong> increases as temperature increases."
+    },
+    "zhHant": {
+      "q": "For a liquid-in-glass thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Volume of liquid</strong> increases as temperature increases."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For an infra-red thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Intensity of infra-red radiation</strong> increases as temperature increases."
+    },
+    "zhHant": {
+      "q": "For an infra-red thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Intensity of infra-red radiation</strong> increases as temperature increases."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For a rotary (bimetallic) thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Curvature of bimetallic strip</strong> — metals expand by different amounts when heated."
+    },
+    "zhHant": {
+      "q": "For a rotary (bimetallic) thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Curvature of bimetallic strip</strong> — metals expand by different amounts when heated."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Thermistor thermometer — how does resistance change with temperature?",
+      "a": "Resistance <strong>decreases</strong> as temperature increases."
+    },
+    "zhHant": {
+      "q": "Thermistor thermometer — how does resistance change with temperature?",
+      "a": "Resistance <strong>decreases</strong> as temperature increases."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Resistance thermometer — how does resistance change with temperature?",
+      "a": "Resistance <strong>increases</strong> as temperature increases."
+    },
+    "zhHant": {
+      "q": "Resistance thermometer — how does resistance change with temperature?",
+      "a": "Resistance <strong>increases</strong> as temperature increases."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "For a liquid crystal thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Colour</strong> of liquid crystal changes with temperature."
+    },
+    "zhHant": {
+      "q": "For a liquid crystal thermometer, what is the temperature-dependent property?",
+      "a": "<strong>Colour</strong> of liquid crystal changes with temperature."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Which type of thermometer should you use for body temperature (~37 °C)?",
+      "a": "<strong>Clinical thermometer</strong>"
+    },
+    "zhHant": {
+      "q": "Which type of thermometer should you use for body temperature (~37 °C)?",
+      "a": "<strong>Clinical thermometer</strong>"
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Which type of thermometer should you use for a furnace at ~1000 °C?",
+      "a": "<strong>Resistance thermometer</strong>"
+    },
+    "zhHant": {
+      "q": "Which type of thermometer should you use for a furnace at ~1000 °C?",
+      "a": "<strong>Resistance thermometer</strong>"
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Which type of thermometer should you use for dry ice at ~−80 °C?",
+      "a": "<strong>Alcohol-in-glass thermometer</strong>"
+    },
+    "zhHant": {
+      "q": "Which type of thermometer should you use for dry ice at ~−80 °C?",
+      "a": "<strong>Alcohol-in-glass thermometer</strong>"
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Celsius scale — which statements are correct?\nI: 0–100 fixed points\nII: only 0–100 measurable\nIII: 100 equal divisions",
+      "a": "<strong>I and III only</strong>"
+    },
+    "zhHant": {
+      "q": "Celsius scale — which statements are correct?\nI: 0–100 fixed points\nII: only 0–100 measurable\nIII: 100 equal divisions",
+      "a": "<strong>I and III only</strong>"
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "If mercury is replaced with alcohol in a liquid-in-glass thermometer, which statements are correct?\n(1) It can measure a higher temperature\n(2) It becomes less sensitive to temperature change\n(3) It is safer to use",
+      "a": "<strong>Less sensitive</strong> to temperature change, and <strong>safer to use</strong> (non-toxic). It <strong>cannot</strong> measure higher temperatures than mercury."
+    },
+    "zhHant": {
+      "q": "If mercury is replaced with alcohol in a liquid-in-glass thermometer, which statements are correct?\n(1) It can measure a higher temperature\n(2) It becomes less sensitive to temperature change\n(3) It is safer to use",
+      "a": "<strong>Less sensitive</strong> to temperature change, and <strong>safer to use</strong> (non-toxic). It <strong>cannot</strong> measure higher temperatures than mercury."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "What is the formula to find temperature T (°C) from mercury column lengths?",
+      "a": "<strong>T/100 = (L<sub>T</sub> − L<sub>0</sub>) / (L<sub>100</sub> − L<sub>0</sub>)</strong><br><br>L<sub>T</sub> = length at unknown temperature<br>L<sub>0</sub> = length at 0°C (ice point)<br>L<sub>100</sub> = length at 100°C (steam point)"
+    },
+    "zhHant": {
+      "q": "What is the formula to find temperature T (°C) from mercury column lengths?",
+      "a": "<strong>T/100 = (L<sub>T</sub> − L<sub>0</sub>) / (L<sub>100</sub> − L<sub>0</sub>)</strong><br><br>L<sub>T</sub> = length at unknown temperature<br>L<sub>0</sub> = length at 0°C (ice point)<br>L<sub>100</sub> = length at 100°C (steam point)"
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "After heater switched off, why does liquid temperature still rise briefly?",
+      "a": "Heater is still <strong>hotter than the liquid</strong> → heat still flows in → temperature rises, then falls."
+    },
+    "zhHant": {
+      "q": "After heater switched off, why does liquid temperature still rise briefly?",
+      "a": "Heater is still <strong>hotter than the liquid</strong> → heat still flows in → temperature rises, then falls."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "More powerful heater, same water — effect on temperature-time graph?",
+      "a": "Reaches same final temperature in <strong>shorter time</strong> (steeper slope)."
+    },
+    "zhHant": {
+      "q": "More powerful heater, same water — effect on temperature-time graph?",
+      "a": "Reaches same final temperature in <strong>shorter time</strong> (steeper slope)."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "Resistance thermometer: linear assumption gives 46.2 °C; actual curve is concave up. Actual temperature?",
+      "a": "<strong>Higher</strong> than 46.2 °C."
+    },
+    "zhHant": {
+      "q": "Resistance thermometer: linear assumption gives 46.2 °C; actual curve is concave up. Actual temperature?",
+      "a": "<strong>Higher</strong> than 46.2 °C."
+    }
+  },
+  {
+    "topic": "thermometry",
+    "en": {
+      "q": "When is a resistance thermometer more sensitive?",
+      "a": "At <strong>high temperatures</strong> — resistance changes more per °C (steeper slope)."
+    },
+    "zhHant": {
+      "q": "When is a resistance thermometer more sensitive?",
+      "a": "At <strong>high temperatures</strong> — resistance changes more per °C (steeper slope)."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is the formula linking energy, power and time?",
+      "a": "<strong>E = Pt</strong> (J = W × s)."
+    },
+    "zhHant": {
+      "q": "What is the formula linking energy, power and time?",
+      "a": "<strong>E = Pt</strong> (J = W × s)."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is specific heat capacity?",
+      "a": "Heat energy needed to raise <strong>1 kg</strong> of a material by <strong>1 °C</strong>."
+    },
+    "zhHant": {
+      "q": "What is specific heat capacity?",
+      "a": "Heat energy needed to raise <strong>1 kg</strong> of a material by <strong>1 °C</strong>."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is the formula for specific heat capacity calculations?",
+      "a": "<strong>E = mcΔT</strong> or <strong>Pt = mcΔT</strong>."
+    },
+    "zhHant": {
+      "q": "What is the formula for specific heat capacity calculations?",
+      "a": "<strong>E = mcΔT</strong> or <strong>Pt = mcΔT</strong>."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is the unit of specific heat capacity?",
+      "a": "<strong>J kg⁻¹ °C⁻¹</strong>"
+    },
+    "zhHant": {
+      "q": "What is the unit of specific heat capacity?",
+      "a": "<strong>J kg⁻¹ °C⁻¹</strong>"
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is ΔT?",
+      "a": "<strong>Final temperature − initial temperature</strong>."
+    },
+    "zhHant": {
+      "q": "What is ΔT?",
+      "a": "<strong>Final temperature − initial temperature</strong>."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "Same energy to 5 g copper vs glass — which has greater ΔT?",
+      "a": "<strong>Copper</strong> — smaller specific heat capacity."
+    },
+    "zhHant": {
+      "q": "Same energy to 5 g copper vs glass — which has greater ΔT?",
+      "a": "<strong>Copper</strong> — smaller specific heat capacity."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is heat in energy transfer?",
+      "a": "Energy transferred from one body to another due to a <strong>temperature difference</strong>."
+    },
+    "zhHant": {
+      "q": "What is heat in energy transfer?",
+      "a": "Energy transferred from one body to another due to a <strong>temperature difference</strong>."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is the law of conservation of energy (heat exchange)?",
+      "a": "Energy can neither be created nor destroyed — only changes form."
+    },
+    "zhHant": {
+      "q": "What is the law of conservation of energy (heat exchange)?",
+      "a": "Energy can neither be created nor destroyed — only changes form."
+    }
+  },
+  {
+    "topic": "heatInternalEnergy",
+    "en": {
+      "q": "What is the principle when hot and cold bodies mix (no heat loss)?",
+      "a": "<strong>Heat loss from hot object = heat gain by cold object</strong>."
+    },
+    "zhHant": {
+      "q": "What is the principle when hot and cold bodies mix (no heat loss)?",
+      "a": "<strong>Heat loss from hot object = heat gain by cold object</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "When heating a substance, what happens during: solid → liquid at melting point?",
+      "a": "<strong>Melting</strong> — absorbs energy."
+    },
+    "zhHant": {
+      "q": "When heating a substance, what happens during: solid → liquid at melting point?",
+      "a": "<strong>Melting</strong> — absorbs energy."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "When heating a substance, what happens during: liquid → gas at boiling point?",
+      "a": "<strong>Vaporization</strong> (boiling) — absorbs energy."
+    },
+    "zhHant": {
+      "q": "When heating a substance, what happens during: liquid → gas at boiling point?",
+      "a": "<strong>Vaporization</strong> (boiling) — absorbs energy."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "When cooling a substance, what happens during: gas → liquid?",
+      "a": "<strong>Condensation</strong> — releases energy."
+    },
+    "zhHant": {
+      "q": "When cooling a substance, what happens during: gas → liquid?",
+      "a": "<strong>Condensation</strong> — releases energy."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "When cooling a substance, what happens during: liquid → solid at melting point?",
+      "a": "<strong>Freezing / solidification</strong> — releases energy."
+    },
+    "zhHant": {
+      "q": "When cooling a substance, what happens during: liquid → solid at melting point?",
+      "a": "<strong>Freezing / solidification</strong> — releases energy."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "During melting or boiling, what happens to temperature?",
+      "a": "Temperature <strong>stays constant</strong> while state changes."
+    },
+    "zhHant": {
+      "q": "During melting or boiling, what happens to temperature?",
+      "a": "Temperature <strong>stays constant</strong> while state changes."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What is latent heat?",
+      "a": "Energy absorbed or released during a <strong>change of state</strong>."
+    },
+    "zhHant": {
+      "q": "What is latent heat?",
+      "a": "Energy absorbed or released during a <strong>change of state</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What is the specific latent heat of fusion of ice (l<sub>f</sub>)?",
+      "a": "<strong>334,000 J kg⁻¹</strong> — energy to melt 1 kg ice at 0 °C to water at 0 °C."
+    },
+    "zhHant": {
+      "q": "What is the specific latent heat of fusion of ice (l<sub>f</sub>)?",
+      "a": "<strong>334,000 J kg⁻¹</strong> — energy to melt 1 kg ice at 0 °C to water at 0 °C."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What is the specific latent heat of vaporization of water (l<sub>v</sub>)?",
+      "a": "<strong>2,260,000 J kg⁻¹</strong> — energy to vaporize 1 kg water at 100 °C to steam at 100 °C."
+    },
+    "zhHant": {
+      "q": "What is the specific latent heat of vaporization of water (l<sub>v</sub>)?",
+      "a": "<strong>2,260,000 J kg⁻¹</strong> — energy to vaporize 1 kg water at 100 °C to steam at 100 °C."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What is the formula for latent heat energy?",
+      "a": "<strong>E = ml</strong> or <strong>Pt = ml</strong>."
+    },
+    "zhHant": {
+      "q": "What is the formula for latent heat energy?",
+      "a": "<strong>E = ml</strong> or <strong>Pt = ml</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What is internal energy?",
+      "a": "Sum of <strong>kinetic energy + potential energy</strong> of all molecules in a body."
+    },
+    "zhHant": {
+      "q": "What is internal energy?",
+      "a": "Sum of <strong>kinetic energy + potential energy</strong> of all molecules in a body."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What does internal energy depend on?",
+      "a": "<strong>Temperature</strong>, <strong>state</strong>, and <strong>mass</strong>."
+    },
+    "zhHant": {
+      "q": "What does internal energy depend on?",
+      "a": "<strong>Temperature</strong>, <strong>state</strong>, and <strong>mass</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Solid → liquid or liquid → gas: molecular potential energy?",
+      "a": "<strong>Increases</strong> (molecules move further apart)."
+    },
+    "zhHant": {
+      "q": "Solid → liquid or liquid → gas: molecular potential energy?",
+      "a": "<strong>Increases</strong> (molecules move further apart)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "On a heating curve, what does a horizontal plateau mean?",
+      "a": "Change of state at <strong>constant temperature</strong> (melting or boiling)."
+    },
+    "zhHant": {
+      "q": "On a heating curve, what does a horizontal plateau mean?",
+      "a": "Change of state at <strong>constant temperature</strong> (melting or boiling)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "On a heating curve, if slope = P/(mc). If slope increases, specific heat capacity?",
+      "a": "<strong>Decreases</strong> (inverse relationship)."
+    },
+    "zhHant": {
+      "q": "On a heating curve, if slope = P/(mc). If slope increases, specific heat capacity?",
+      "a": "<strong>Decreases</strong> (inverse relationship)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "On a heating curve, if longer plateau at melting/boiling means?",
+      "a": "<strong>Larger latent heat</strong> (more energy for same time at constant P)."
+    },
+    "zhHant": {
+      "q": "On a heating curve, if longer plateau at melting/boiling means?",
+      "a": "<strong>Larger latent heat</strong> (more energy for same time at constant P)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "How does evaporation differ from boiling in terms of temperature?",
+      "a": "Evaporation: <strong>any temperature below boiling point</strong>; Boiling: <strong>at boiling point only</strong>."
+    },
+    "zhHant": {
+      "q": "How does evaporation differ from boiling in terms of temperature?",
+      "a": "Evaporation: <strong>any temperature below boiling point</strong>; Boiling: <strong>at boiling point only</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "How does evaporation differ from boiling in terms of location?",
+      "a": "Evaporation: <strong>surface only</strong>; Boiling: <strong>throughout liquid</strong>."
+    },
+    "zhHant": {
+      "q": "How does evaporation differ from boiling in terms of location?",
+      "a": "Evaporation: <strong>surface only</strong>; Boiling: <strong>throughout liquid</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "How does evaporation differ from boiling in terms of bubbles?",
+      "a": "Evaporation: <strong>no bubbles</strong>; Boiling: <strong>bubbles form inside</strong>."
+    },
+    "zhHant": {
+      "q": "How does evaporation differ from boiling in terms of bubbles?",
+      "a": "Evaporation: <strong>no bubbles</strong>; Boiling: <strong>bubbles form inside</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Why does evaporation cool the liquid?",
+      "a": "Highest-KE molecules escape → <strong>average KE of remaining liquid decreases</strong> → temperature drops."
+    },
+    "zhHant": {
+      "q": "Why does evaporation cool the liquid?",
+      "a": "Highest-KE molecules escape → <strong>average KE of remaining liquid decreases</strong> → temperature drops."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Three factors increasing evaporation rate?",
+      "a": "<strong>Higher temperature</strong>, <strong>larger surface area</strong>, <strong>lower vapour density</strong> above liquid."
+    },
+    "zhHant": {
+      "q": "Three factors increasing evaporation rate?",
+      "a": "<strong>Higher temperature</strong>, <strong>larger surface area</strong>, <strong>lower vapour density</strong> above liquid."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "When measuring l<sub>f</sub> of ice, what is formula using joulemeter?",
+      "a": "<strong>l<sub>f</sub> = E / m</strong> where m = mass of water melted by heater only."
+    },
+    "zhHant": {
+      "q": "When measuring l<sub>f</sub> of ice, what is formula using joulemeter?",
+      "a": "<strong>l<sub>f</sub> = E / m</strong> where m = mass of water melted by heater only."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Why use crushed ice at melting point in l<sub>f</sub> experiment?",
+      "a": "Crushed ice → <strong>good thermal contact</strong>; at 0 °C → energy goes to <strong>melting</strong>, not warming."
+    },
+    "zhHant": {
+      "q": "Why use crushed ice at melting point in l<sub>f</sub> experiment?",
+      "a": "Crushed ice → <strong>good thermal contact</strong>; at 0 °C → energy goes to <strong>melting</strong>, not warming."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Why use a control funnel (no heater) in l<sub>f</sub> experiment?",
+      "a": "Measures ice melted by <strong>surroundings</strong> — subtract from experimental result."
+    },
+    "zhHant": {
+      "q": "Why use a control funnel (no heater) in l<sub>f</sub> experiment?",
+      "a": "Measures ice melted by <strong>surroundings</strong> — subtract from experimental result."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Ice below 0 °C in l<sub>f</sub> experiment — effect on measured l<sub>f</sub>?",
+      "a": "Measured l<sub>f</sub> is <strong>greater than</strong> actual (extra energy warms ice first)."
+    },
+    "zhHant": {
+      "q": "Ice below 0 °C in l<sub>f</sub> experiment — effect on measured l<sub>f</sub>?",
+      "a": "Measured l<sub>f</sub> is <strong>greater than</strong> actual (extra energy warms ice first)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Heat gained from surroundings in l<sub>f</sub> experiment — effect on measured l<sub>f</sub>?",
+      "a": "Measured l<sub>f</sub> is <strong>smaller than</strong> actual (extra mass melted)."
+    },
+    "zhHant": {
+      "q": "Heat gained from surroundings in l<sub>f</sub> experiment — effect on measured l<sub>f</sub>?",
+      "a": "Measured l<sub>f</sub> is <strong>smaller than</strong> actual (extra mass melted)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "When measuring l<sub>v</sub>, what is key formula and readings?",
+      "a": "<strong>l<sub>v</sub> = Pt / m</strong> — record balance mass loss while water boils."
+    },
+    "zhHant": {
+      "q": "When measuring l<sub>v</sub>, what is key formula and readings?",
+      "a": "<strong>l<sub>v</sub> = Pt / m</strong> — record balance mass loss while water boils."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "What is the formula when ice melts then water warms when a substance melts and then warms up?",
+      "a": "<strong>Pt = ml + mcΔT</strong>."
+    },
+    "zhHant": {
+      "q": "What is the formula when ice melts then water warms when a substance melts and then warms up?",
+      "a": "<strong>Pt = ml + mcΔT</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "0.5 kg ice −10 °C → water 25 °C: energy formula?",
+      "a": "<strong>E = mc_ice·ΔT + ml_f + mc_water·ΔT</strong>."
+    },
+    "zhHant": {
+      "q": "0.5 kg ice −10 °C → water 25 °C: energy formula?",
+      "a": "<strong>E = mc_ice·ΔT + ml_f + mc_water·ΔT</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "0.5 kg water 25 °C frozen to ice at −8 °C — three energy steps?",
+      "a": "Cool water (mcΔT) + freeze (ml_f) + cool ice (mcΔT) = <strong>2.28×10⁵ J</strong> removed."
+    },
+    "zhHant": {
+      "q": "0.5 kg water 25 °C frozen to ice at −8 °C — three energy steps?",
+      "a": "Cool water (mcΔT) + freeze (ml_f) + cool ice (mcΔT) = <strong>2.28×10⁵ J</strong> removed."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "1 kg ice at 0 °C + 1 kg steam at 100 °C in insulated chamber — final state?",
+      "a": "<strong>100 °C</strong>, mixture of <strong>liquid and gas</strong> (partial condensation)."
+    },
+    "zhHant": {
+      "q": "1 kg ice at 0 °C + 1 kg steam at 100 °C in insulated chamber — final state?",
+      "a": "<strong>100 °C</strong>, mixture of <strong>liquid and gas</strong> (partial condensation)."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Why is ice good for cooling drinks? (give two reasons)",
+      "a": "Large <strong>latent heat of fusion</strong>; melts at <strong>room temperature</strong>."
+    },
+    "zhHant": {
+      "q": "Why is ice good for cooling drinks? (give two reasons)",
+      "a": "Large <strong>latent heat of fusion</strong>; melts at <strong>room temperature</strong>."
+    }
+  },
+  {
+    "topic": "changeOfState",
+    "en": {
+      "q": "Should you cover the beaker with a lid when measuring l<sub>v</sub>?",
+      "a": "<strong>No</strong> — vapour condenses on lid and drips back, underestimating mass loss."
+    },
+    "zhHant": {
+      "q": "Should you cover the beaker with a lid when measuring l<sub>v</sub>?",
+      "a": "<strong>No</strong> — vapour condenses on lid and drips back, underestimating mass loss."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "What are the three heat transfer processes?",
+      "a": "<strong>Conduction</strong>, <strong>convection</strong>, <strong>radiation</strong>."
+    },
+    "zhHant": {
+      "q": "What are the three heat transfer processes?",
+      "a": "<strong>Conduction</strong>, <strong>convection</strong>, <strong>radiation</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "How does conduction work in solids?",
+      "a": "Heated molecules vibrate more → collide with neighbours → energy passed along; metals also use <strong>free electrons</strong>."
+    },
+    "zhHant": {
+      "q": "How does conduction work in solids?",
+      "a": "Heated molecules vibrate more → collide with neighbours → energy passed along; metals also use <strong>free electrons</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Can conduction occur in a vacuum?",
+      "a": "<strong>No</strong> — needs a material medium."
+    },
+    "zhHant": {
+      "q": "Can conduction occur in a vacuum?",
+      "a": "<strong>No</strong> — needs a material medium."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "How does the rate of conduction compare for solid vs liquid vs gas?",
+      "a": "<strong>Solid > liquid > gas</strong>."
+    },
+    "zhHant": {
+      "q": "How does the rate of conduction compare for solid vs liquid vs gas?",
+      "a": "<strong>Solid > liquid > gas</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Which solids are good conductors of heat?",
+      "a": "<strong>Metals</strong> (e.g. copper, aluminium)."
+    },
+    "zhHant": {
+      "q": "Which solids are good conductors of heat?",
+      "a": "<strong>Metals</strong> (e.g. copper, aluminium)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Which solids are good heat insulators?",
+      "a": "<strong>Plastic, glass, wood</strong>."
+    },
+    "zhHant": {
+      "q": "Which solids are good heat insulators?",
+      "a": "<strong>Plastic, glass, wood</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "What is convection?",
+      "a": "Heat transfer through a <strong>fluid</strong> by movement of the fluid itself."
+    },
+    "zhHant": {
+      "q": "What is convection?",
+      "a": "Heat transfer through a <strong>fluid</strong> by movement of the fluid itself."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Why are air conditioners placed high on the wall?",
+      "a": "Cold air is <strong>denser</strong> → sinks → pushes warm air up → <strong>convection current</strong> cools room."
+    },
+    "zhHant": {
+      "q": "Why are air conditioners placed high on the wall?",
+      "a": "Cold air is <strong>denser</strong> → sinks → pushes warm air up → <strong>convection current</strong> cools room."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Why are convection heaters placed on the floor?",
+      "a": "Warm air <strong>rises</strong>, cold air <strong>sinks</strong> → convection current."
+    },
+    "zhHant": {
+      "q": "Why are convection heaters placed on the floor?",
+      "a": "Warm air <strong>rises</strong>, cold air <strong>sinks</strong> → convection current."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "During a daytime sea breeze, what is the direction of wind?",
+      "a": "From <strong>sea to land</strong> — land heats faster, warm air rises, cool sea air replaces it."
+    },
+    "zhHant": {
+      "q": "During a daytime sea breeze, what is the direction of wind?",
+      "a": "From <strong>sea to land</strong> — land heats faster, warm air rises, cool sea air replaces it."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "What do all hot/warm objects emit?",
+      "a": "<strong>Infra-red radiation</strong> — hotter objects emit more."
+    },
+    "zhHant": {
+      "q": "What do all hot/warm objects emit?",
+      "a": "<strong>Infra-red radiation</strong> — hotter objects emit more."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Can radiation travel through a vacuum?",
+      "a": "<strong>Yes</strong> — no medium needed."
+    },
+    "zhHant": {
+      "q": "Can radiation travel through a vacuum?",
+      "a": "<strong>Yes</strong> — no medium needed."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Good absorbers and radiators of radiation?",
+      "a": "<strong>Black, dull</strong> surfaces."
+    },
+    "zhHant": {
+      "q": "Good absorbers and radiators of radiation?",
+      "a": "<strong>Black, dull</strong> surfaces."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Poor absorbers and radiators of radiation?",
+      "a": "<strong>White, shiny</strong> surfaces."
+    },
+    "zhHant": {
+      "q": "Poor absorbers and radiators of radiation?",
+      "a": "<strong>White, shiny</strong> surfaces."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "In a vacuum flask, what does the vacuum between walls prevents?",
+      "a": "<strong>Conduction and convection</strong>."
+    },
+    "zhHant": {
+      "q": "In a vacuum flask, what does the vacuum between walls prevents?",
+      "a": "<strong>Conduction and convection</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "In a vacuum flask, what does the silvery walls reduce?",
+      "a": "<strong>Radiation</strong> (reflect IR back)."
+    },
+    "zhHant": {
+      "q": "In a vacuum flask, what does the silvery walls reduce?",
+      "a": "<strong>Radiation</strong> (reflect IR back)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "In a vacuum flask, what does the plastic/cork stopper reduces?",
+      "a": "<strong>Conduction and convection</strong> at the top."
+    },
+    "zhHant": {
+      "q": "In a vacuum flask, what does the plastic/cork stopper reduces?",
+      "a": "<strong>Conduction and convection</strong> at the top."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Why does the greenhouse effect mean why is it warm inside?",
+      "a": "Sunlight enters → objects warm → emit <strong>IR</strong> → <strong>glass traps IR</strong> → energy trapped."
+    },
+    "zhHant": {
+      "q": "Why does the greenhouse effect mean why is it warm inside?",
+      "a": "Sunlight enters → objects warm → emit <strong>IR</strong> → <strong>glass traps IR</strong> → energy trapped."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Heat from Sun to Earth — which process?",
+      "a": "<strong>Radiation only</strong> (through vacuum of space)."
+    },
+    "zhHant": {
+      "q": "Heat from Sun to Earth — which process?",
+      "a": "<strong>Radiation only</strong> (through vacuum of space)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Which statement is correct?\n(1) Conduction except vacuum\n(2) Convection except vacuum\n(3) Radiation only in vacuum",
+      "a": "<strong>(1) only</strong> — convection needs fluid; radiation works with or without medium."
+    },
+    "zhHant": {
+      "q": "Which statement is correct?\n(1) Conduction except vacuum\n(2) Convection except vacuum\n(3) Radiation only in vacuum",
+      "a": "<strong>(1) only</strong> — convection needs fluid; radiation works with or without medium."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Which does NOT affect rate of conduction?",
+      "a": "<strong>Orientation of the conductor</strong>"
+    },
+    "zhHant": {
+      "q": "Which does NOT affect rate of conduction?",
+      "a": "<strong>Orientation of the conductor</strong>"
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "About dull black surfaces and radiation, which statement is correct?\n(1) They are poor absorbers of radiation\n(2) They are good absorbers of radiation\n(3) They cannot emit radiation\n(4) They only reflect radiation",
+      "a": "Dull black surfaces are <strong>good absorbers</strong> of radiation (and good radiators)."
+    },
+    "zhHant": {
+      "q": "About dull black surfaces and radiation, which statement is correct?\n(1) They are poor absorbers of radiation\n(2) They are good absorbers of radiation\n(3) They cannot emit radiation\n(4) They only reflect radiation",
+      "a": "Dull black surfaces are <strong>good absorbers</strong> of radiation (and good radiators)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "All objects emit and absorb radiation?",
+      "a": "<strong>Yes</strong> — at all temperatures, simultaneously."
+    },
+    "zhHant": {
+      "q": "All objects emit and absorb radiation?",
+      "a": "<strong>Yes</strong> — at all temperatures, simultaneously."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "About heat and internal energy, which statements are correct?\n(1) Heat and internal energy mean the same thing\n(2) Heat is energy transferred due to a temperature difference\n(3) Heating a body increases its internal energy\n(4) Internal energy never changes when heated",
+      "a": "<strong>Heat</strong> is energy transferred due to a <strong>temperature difference</strong>. <strong>Heating</strong> increases a body's <strong>internal energy</strong>."
+    },
+    "zhHant": {
+      "q": "About heat and internal energy, which statements are correct?\n(1) Heat and internal energy mean the same thing\n(2) Heat is energy transferred due to a temperature difference\n(3) Heating a body increases its internal energy\n(4) Internal energy never changes when heated",
+      "a": "<strong>Heat</strong> is energy transferred due to a <strong>temperature difference</strong>. <strong>Heating</strong> increases a body's <strong>internal energy</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "No net heat flow between bodies in contact → same?",
+      "a": "<strong>Temperature</strong> (thermal equilibrium)."
+    },
+    "zhHant": {
+      "q": "No net heat flow between bodies in contact → same?",
+      "a": "<strong>Temperature</strong> (thermal equilibrium)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Temperature rises from 250 K to 300 K. Change in °C?",
+      "a": "<strong>50 °C</strong> (ΔK = Δ°C)."
+    },
+    "zhHant": {
+      "q": "Temperature rises from 250 K to 300 K. Change in °C?",
+      "a": "<strong>50 °C</strong> (ΔK = Δ°C)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Why wear white clothes in summer?",
+      "a": "White is a <strong>poor absorber</strong> of infra-red radiation."
+    },
+    "zhHant": {
+      "q": "Why wear white clothes in summer?",
+      "a": "White is a <strong>poor absorber</strong> of infra-red radiation."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Open refrigerator — why do feet feel cold air first?",
+      "a": "Cold air is <strong>denser</strong> → <strong>sinks</strong>."
+    },
+    "zhHant": {
+      "q": "Open refrigerator — why do feet feel cold air first?",
+      "a": "Cold air is <strong>denser</strong> → <strong>sinks</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Kettle: how is water heated by immersion heater?",
+      "a": "<strong>Conduction</strong> near heater, then <strong>convection</strong> to rest of water."
+    },
+    "zhHant": {
+      "q": "Kettle: how is water heated by immersion heater?",
+      "a": "<strong>Conduction</strong> near heater, then <strong>convection</strong> to rest of water."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Why is a kettle surface chromed silvery?",
+      "a": "To <strong>reduce heat loss by radiation</strong>."
+    },
+    "zhHant": {
+      "q": "Why is a kettle surface chromed silvery?",
+      "a": "To <strong>reduce heat loss by radiation</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "You can barbecue sausages on a fork in two ways. Way A: sausages threaded along the tines (parallel). Way B: sausages pierced across the tines (perpendicular). Which cooks the inside more evenly?",
+      "a": "<strong>Way A</strong> — sausages lie along the metal tines, giving <strong>larger contact area</strong> and better <strong>conduction</strong> to the centre."
+    },
+    "zhHant": {
+      "q": "You can barbecue sausages on a fork in two ways. Way A: sausages threaded along the tines (parallel). Way B: sausages pierced across the tines (perpendicular). Which cooks the inside more evenly?",
+      "a": "<strong>Way A</strong> — sausages lie along the metal tines, giving <strong>larger contact area</strong> and better <strong>conduction</strong> to the centre."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Potatoes are wrapped in aluminium foil and cooked beside a charcoal fire. How is heat transferred (a) from the fire to the foil, and (b) from the foil to the potato?",
+      "a": "Fire → foil: <strong>radiation</strong>; foil → potato: <strong>conduction</strong>."
+    },
+    "zhHant": {
+      "q": "Potatoes are wrapped in aluminium foil and cooked beside a charcoal fire. How is heat transferred (a) from the fire to the foil, and (b) from the foil to the potato?",
+      "a": "Fire → foil: <strong>radiation</strong>; foil → potato: <strong>conduction</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Which side of aluminium foil should face outward?",
+      "a": "<strong>Shiny side</strong> — better reflector of radiation."
+    },
+    "zhHant": {
+      "q": "Which side of aluminium foil should face outward?",
+      "a": "<strong>Shiny side</strong> — better reflector of radiation."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Tile vs wood floor at 20 °C — which feels cooler barefoot?",
+      "a": "<strong>Tile</strong> — better conductor removes heat from feet faster."
+    },
+    "zhHant": {
+      "q": "Tile vs wood floor at 20 °C — which feels cooler barefoot?",
+      "a": "<strong>Tile</strong> — better conductor removes heat from feet faster."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "How does a defrost tray work?",
+      "a": "Metal is a <strong>good conductor</strong> → conducts heat from surroundings to frozen food quickly."
+    },
+    "zhHant": {
+      "q": "How does a defrost tray work?",
+      "a": "Metal is a <strong>good conductor</strong> → conducts heat from surroundings to frozen food quickly."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Conduction demo: pins on rod drop A→B→C. Why same amount of wax?",
+      "a": "Fair test — <strong>same energy</strong> needed to melt each wax blob."
+    },
+    "zhHant": {
+      "q": "Conduction demo: pins on rod drop A→B→C. Why same amount of wax?",
+      "a": "Fair test — <strong>same energy</strong> needed to melt each wax blob."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Copper rod instead of iron in pin-drop experiment?",
+      "a": "Pins drop in <strong>shorter time</strong> (same order) — copper conducts faster."
+    },
+    "zhHant": {
+      "q": "Copper rod instead of iron in pin-drop experiment?",
+      "a": "Pins drop in <strong>shorter time</strong> (same order) — copper conducts faster."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "CPU heat sink fan function?",
+      "a": "Increases <strong>airflow</strong> → removes warm air by <strong>convection</strong>."
+    },
+    "zhHant": {
+      "q": "CPU heat sink fan function?",
+      "a": "Increases <strong>airflow</strong> → removes warm air by <strong>convection</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Why paint heat sink fins black?",
+      "a": "Black surfaces are <strong>good radiators</strong> — extra heat loss by radiation."
+    },
+    "zhHant": {
+      "q": "Why paint heat sink fins black?",
+      "a": "Black surfaces are <strong>good radiators</strong> — extra heat loss by radiation."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Plastic instead of metal heat sink strips — effect on CPU cooling?",
+      "a": "Temperature decreases at a <strong>lower rate</strong> (plastic insulates)."
+    },
+    "zhHant": {
+      "q": "Plastic instead of metal heat sink strips — effect on CPU cooling?",
+      "a": "Temperature decreases at a <strong>lower rate</strong> (plastic insulates)."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Speed of heat transmission: conduction vs convection vs radiation?",
+      "a": "Conduction <strong>very slow</strong>; convection <strong>slow</strong>; radiation <strong>fastest</strong>."
+    },
+    "zhHant": {
+      "q": "Speed of heat transmission: conduction vs convection vs radiation?",
+      "a": "Conduction <strong>very slow</strong>; convection <strong>slow</strong>; radiation <strong>fastest</strong>."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Glass house + home openings — type of air transfer between rooms?",
+      "a": "<strong>Convection</strong> — warm air rises through top, cool air returns through bottom."
+    },
+    "zhHant": {
+      "q": "Glass house + home openings — type of air transfer between rooms?",
+      "a": "<strong>Convection</strong> — warm air rises through top, cool air returns through bottom."
+    }
+  },
+  {
+    "topic": "heatTransfer",
+    "en": {
+      "q": "Best colour for wall between glass house and home (solar heating)?",
+      "a": "<strong>Black</strong> — good absorber of radiation."
+    },
+    "zhHant": {
+      "q": "Best colour for wall between glass house and home (solar heating)?",
+      "a": "<strong>Black</strong> — good absorber of radiation."
+    }
+  }
+]

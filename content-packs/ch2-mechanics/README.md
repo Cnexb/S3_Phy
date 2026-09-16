@@ -11,6 +11,8 @@ content-packs/ch2-mechanics/
   comics/
   tools/          vector-tool, newton, moments, momentum, projectile, orbital, shared/
   quiz/
+  summaries/
+  flashcards/     mechanics JSON
 ```
 
 ```bash

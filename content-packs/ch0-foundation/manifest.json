@@ -49,5 +49,28 @@
       "slug": "foundations-useful-math",
       "path": "content-packs/ch0-foundation/quiz/foundations-useful-math"
     }
+  ],
+  "summaries": [
+    {
+      "summaryId": "quantities-units",
+      "images": {
+        "en": "content-packs/ch0-foundation/summaries/quantities-units-en.webp",
+        "zhHant": "content-packs/ch0-foundation/summaries/quantities-units-zhHant.webp"
+      },
+      "pdfs": null
+    },
+    {
+      "summaryId": "useful-mathematics",
+      "images": {
+        "en": "content-packs/ch0-foundation/summaries/useful-mathematics-en.webp",
+        "zhHant": "content-packs/ch0-foundation/summaries/useful-mathematics-zhHant.webp"
+      },
+      "pdfs": null
+    }
+  ],
+  "flashcards": [
+    {
+      "file": "content-packs/ch0-foundation/flashcards/flashcards-foundations.json"
+    }
   ]
 }
