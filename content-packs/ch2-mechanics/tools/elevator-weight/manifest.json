@@ -1,0 +1,5 @@
+{
+  "slug": "elevator-weight",
+  "syncAll": true,
+  "exclude": ["manifest.json", "README.md"]
+}

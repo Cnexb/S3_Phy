@@ -1,0 +1,218 @@
+{
+  "packId": "phy-ch2-mechanics-notes-v1",
+  "subject": "PHY",
+  "chapter": "CH2 Force and Motion",
+  "chapterCode": "CH2",
+  "scope": "mechanics",
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "notes": [
+    {
+      "topicCode": "JPFM01",
+      "symbol": "FM01",
+      "title": {
+        "en": "Position and movement",
+        "zhHant": "位置與運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM01-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM01-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM02",
+      "symbol": "FM02",
+      "title": {
+        "en": "Linear motion",
+        "zhHant": "勻加速直線運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM02-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM02-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM03",
+      "symbol": "FM03",
+      "title": {
+        "en": "Vertical motion",
+        "zhHant": "垂直運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM03-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM03-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM04",
+      "symbol": "FM04",
+      "title": {
+        "en": "Motion graph",
+        "zhHant": "運動圖像"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM04-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM04-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM05",
+      "symbol": "FM05",
+      "title": {
+        "en": "Force (I)",
+        "zhHant": "力 (I)"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM05-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM05-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM06",
+      "symbol": "FM06",
+      "title": {
+        "en": "Force (II)",
+        "zhHant": "力 (II)"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM06-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM06-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM07",
+      "symbol": "FM07",
+      "title": {
+        "en": "Force (III)",
+        "zhHant": "力 (III)"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM07-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM07-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM08",
+      "symbol": "FM08",
+      "title": {
+        "en": "Moment of force",
+        "zhHant": "力矩"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/JPFM08-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/JPFM08-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM09",
+      "symbol": "FM09",
+      "title": {
+        "en": "Work, energy and power",
+        "zhHant": "功、能量與功率"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/SPFM09-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/SPFM09-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM10",
+      "symbol": "FM10",
+      "title": {
+        "en": "Momentum",
+        "zhHant": "動量"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/SPFM10-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/SPFM10-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM11",
+      "symbol": "FM11",
+      "title": {
+        "en": "Projectile motion",
+        "zhHant": "拋體運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/SPFM11-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/SPFM11-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM12",
+      "symbol": "FM12",
+      "title": {
+        "en": "Circular motion",
+        "zhHant": "圓周運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/SPFM12-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/SPFM12-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM13",
+      "symbol": "FM13",
+      "title": {
+        "en": "Gravitation",
+        "zhHant": "萬有引力"
+      },
+      "files": {
+        "en": "content-packs/ch2-mechanics/notes/SPFM13-en.pdf",
+        "zhHant": "content-packs/ch2-mechanics/notes/SPFM13-zhHant.pdf"
+      }
+    }
+  ],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "vector-tool",
+      "path": "content-packs/ch2-mechanics/tools/vector-tool"
+    },
+    {
+      "slug": "newton-first-law",
+      "path": "content-packs/ch2-mechanics/tools/newton-first-law"
+    },
+    {
+      "slug": "elevator-weight",
+      "path": "content-packs/ch2-mechanics/tools/elevator-weight"
+    },
+    {
+      "slug": "stacked-boxes",
+      "path": "content-packs/ch2-mechanics/tools/stacked-boxes"
+    },
+    {
+      "slug": "seesaw-moment",
+      "path": "content-packs/ch2-mechanics/tools/seesaw-moment"
+    },
+    {
+      "slug": "ladder-moment",
+      "path": "content-packs/ch2-mechanics/tools/ladder-moment"
+    },
+    {
+      "slug": "supports-moment",
+      "path": "content-packs/ch2-mechanics/tools/supports-moment"
+    },
+    {
+      "slug": "impulse-momentum",
+      "path": "content-packs/ch2-mechanics/tools/impulse-momentum"
+    },
+    {
+      "slug": "crash-track-momentum",
+      "path": "content-packs/ch2-mechanics/tools/crash-track-momentum"
+    },
+    {
+      "slug": "bullet-momentum",
+      "path": "content-packs/ch2-mechanics/tools/bullet-momentum"
+    },
+    {
+      "slug": "projectile-motion",
+      "path": "content-packs/ch2-mechanics/tools/projectile-motion"
+    },
+    {
+      "slug": "orbital-forces",
+      "path": "content-packs/ch2-mechanics/tools/orbital-forces"
+    }
+  ],
+  "quiz": []
+}

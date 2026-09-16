@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+<title>Ripple Tank — Source Vibration & Wave Properties</title>
+<style>
+    :root {
+        --bg:#ffffff; --panel:#ffffff; --text:#0f172a; --muted:#64748b;
+        --accent:#059669; --wave-hi:#0284c7; --barrier:#e11d48;
+        --shallow:#d97706; --grid:#e2e8f0; --wood:#b45309;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text);
+        font-family:'Segoe UI',Tahoma,sans-serif; height:100vh;
+        display:flex; flex-direction:column; overflow:hidden; }
+    header { background:#ffffff; padding:12px 24px; border-bottom:1px solid var(--grid);
+        display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
+    header h1 { margin:0; font-size:20px; }
+    header p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    #main { flex:1; display:flex; gap:14px; padding:14px; min-height:0; background:#f8fafc; }
+    .view-panel { background:var(--panel); border:1px solid var(--grid);
+        border-radius:12px; position:relative; overflow:hidden;
+        box-shadow:0 8px 24px rgba(15,23,42,0.06); display:flex; flex-direction:column; }
+    .panel-label { position:absolute; top:10px; left:14px; z-index:5;
+        font-size:13px; font-weight:bold; background:rgba(255,255,255,0.92); color:var(--text);
+        padding:4px 10px; border-radius:6px; border:1px solid var(--grid); backdrop-filter:blur(4px); }
+    canvas { display:block; width:100%; flex:1; min-height:0; }
+    #side-panel { flex:0.85; min-width:220px; }
+    #tank-panel { flex:1.6; }
+    #right-col { flex:0.9; display:flex; flex-direction:column; gap:14px; min-width:200px; }
+    #mode-panel { flex:0 0 auto; }
+    #controls-panel { flex:1; min-height:0; }
+    .mode-btns { display:flex; flex-wrap:wrap; gap:7px; padding:38px 12px 10px; }
+    .mode-btn { flex:1; min-width:calc(50% - 7px); padding:11px 6px; border-radius:8px;
+        border:2px solid var(--grid); background:#f8fafc; color:#334155;
+        font-size:12px; font-weight:bold; cursor:pointer; transition:all .15s; }
+    .mode-btn.active { border-color:var(--accent); background:rgba(5,150,105,.12); color:#047857; }
+    .sub-toggle { display:flex; gap:6px; padding:0; flex-wrap:wrap; width:100%; }
+    .sub-toggle button { flex:1; min-width:calc(50% - 6px); padding:7px; border-radius:6px;
+        border:1px solid var(--grid); background:#f8fafc; color:var(--muted);
+        font-size:11px; font-weight:bold; cursor:pointer; }
+    .sub-toggle button.active { background:rgba(2,132,199,.12); color:#0369a1; border-color:var(--wave-hi); }
+    #controls { padding:38px 14px 14px; display:flex; flex-direction:column; gap:12px;
+        overflow-y:auto; min-height:0; flex:1; }
+    .ctrl-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .ctrl-row .btn { flex:1; }
+    .btn { background:var(--accent); color:#fff; border:none; padding:9px 14px;
+        border-radius:8px; font-size:12px; font-weight:bold; cursor:pointer; min-width:72px; }
+    .btn:hover { filter:brightness(1.08); }
+    .btn-sec { background:#e2e8f0; color:#334155; }
+    .btn-sec.on { background:var(--accent); color:#fff; }
+    .slider-wrap { display:flex; flex-direction:column; gap:3px; width:100%; min-width:0; }
+    .slider-head { display:flex; justify-content:space-between; font-size:11px; font-weight:bold; }
+    .slider-head span:last-child { color:var(--shallow); }
+    input[type=range] { width:100%; accent-color:var(--accent); cursor:pointer; }
+    .ctrl-hidden { display:none !important; }
+    .stat { text-align:center; font-size:11px; color:var(--muted); min-width:42px; }
+    .stat b { display:block; color:var(--shallow); font-size:15px; }
+    #wrap-fronts, #wrap-rays { display:none; align-items:center; gap:6px; width:100%; }
+    #wrap-fronts.show, #wrap-rays.show { display:flex; }
+    #wrap-fronts .btn, #wrap-rays .btn { min-width:72px; white-space:nowrap; font-size:11px; padding:6px 9px; }
+    .vib-indicator { position:absolute; bottom:10px; right:12px; z-index:5;
+        background:rgba(255,255,255,.9); color:var(--text); border:1px solid var(--grid);
+        padding:6px 10px; border-radius:6px; font-size:11px; }
+    .vib-dot { display:inline-block; width:8px; height:8px; border-radius:50%;
+        background:var(--accent); margin-right:5px; vertical-align:middle;
+        animation:pulse 0.5s ease-in-out infinite alternate; }
+    @keyframes pulse { from{opacity:.4;transform:scale(.8)} to{opacity:1;transform:scale(1.2)} }
+    #tank-wrap { flex:1; position:relative; min-height:0; display:flex; flex-direction:column; }
+    #tank-wrap canvas { flex:1; cursor:default; }
+    #tank-wrap canvas.intf-drag { cursor:grab; }
+    #tank-wrap canvas.intf-dragging { cursor:grabbing; }
+    .src-toggle { display:flex; gap:6px; padding:0; flex-wrap:wrap; width:100%; }
+    .src-toggle button { flex:1; min-width:calc(50% - 6px); padding:7px; border-radius:6px;
+        border:1px solid var(--grid); background:#f8fafc; color:var(--muted);
+        font-size:11px; font-weight:bold; cursor:pointer; }
+    .src-toggle button.active { background:rgba(5,150,105,.12); color:#047857; border-color:var(--accent); }
+    .src-toggle button.off { opacity:.45; text-decoration:line-through; }
+    .tank-tools { position:absolute; top:10px; right:12px; z-index:6; display:flex; gap:6px; }
+    .tank-tools .btn { min-width:auto; padding:6px 11px; font-size:11px; }
+    .tank-tools .btn.on { background:var(--wave-hi); color:#fff; }
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+        background:rgba(5,150,105,.92); color:#fff; padding:10px 20px; border-radius:8px;
+        font-size:13px; font-weight:bold; z-index:99; opacity:0; transition:opacity .3s; pointer-events:none; }
+    .toast.show { opacity:1; }
+
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    html.s3phy-embed #btn-lang { display: none; }
+    html.s3phy-embed header { padding: 8px 14px; }
+    html.s3phy-embed #main { padding: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1 id="h-title">🌊 Ripple Tank — Source Vibration & Wave Properties</h1>
+        <p id="h-sub">v = fλ · Eccentric motor → plane/circular waves · Reflection · Refraction · Diffraction · Interference</p>
+    </div>
+    <button class="btn btn-sec" id="btn-lang">中文</button>
+</header>
+
+<div id="main">
+    <div class="view-panel" id="side-panel">
+        <div class="panel-label" id="lbl-side">Side View — Vibrating Source (Fig 5.1d/e)</div>
+        <canvas id="sideCanvas"></canvas>
+        <div class="vib-indicator"><span class="vib-dot"></span><span id="vib-text">Vibrating ↑↓</span></div>
+    </div>
+
+    <div class="view-panel" id="tank-panel">
+        <div class="panel-label" id="lbl-tank">Top View — Projected Wave Pattern</div>
+        <div class="tank-tools">
+            <button class="btn btn-sec" id="btn-shot">📷 Save</button>
+        </div>
+        <div id="tank-wrap"><canvas id="tankCanvas"></canvas></div>
+    </div>
+
+    <div id="right-col">
+        <div class="view-panel" id="mode-panel">
+            <div class="panel-label" id="lbl-mode">Select Phenomenon</div>
+            <div class="mode-btns">
+                <button class="mode-btn active" data-mode="basic" id="mb-basic">Basic Waves</button>
+                <button class="mode-btn" data-mode="reflection" id="mb-refl">Reflection</button>
+                <button class="mode-btn" data-mode="refraction" id="mb-refr">Refraction</button>
+                <button class="mode-btn" data-mode="diffraction" id="mb-diff">Diffraction</button>
+                <button class="mode-btn" data-mode="interference" id="mb-intf">Interference</button>
+            </div>
+        </div>
+        <div class="view-panel" id="controls-panel">
+            <div class="panel-label" id="lbl-ctrl">Controls</div>
+            <div id="controls">
+                <div class="ctrl-row">
+                    <button class="btn" id="btn-play" style="background:var(--accent)">Pause ⏸</button>
+                    <button class="btn btn-sec ctrl-hidden" id="btn-lines">N/A Lines</button>
+                    <div class="stat">λ<br><b id="val-lambda">18</b></div>
+                </div>
+                <div class="sub-toggle" id="sub-toggle"></div>
+                <div class="slider-wrap">
+                    <div class="slider-head"><span id="lbl-freq">Frequency f</span><span id="val-freq">5 Hz</span></div>
+                    <input type="range" id="sl-freq" min="2" max="12" step="0.5" value="5">
+                </div>
+                <div class="slider-wrap">
+                    <div class="slider-head"><span id="lbl-amp">Vibration amp.</span><span id="val-amp">Med</span></div>
+                    <input type="range" id="sl-amp" min="1" max="3" step="1" value="2">
+                </div>
+                <div class="slider-wrap ctrl-hidden" id="wrap-wavedir">
+                    <div class="slider-head"><span id="lbl-wavedir">Travel dir.</span><span id="val-wavedir">90° ↓</span></div>
+                    <input type="range" id="sl-wavedir" min="0" max="359" step="1" value="90">
+                </div>
+                <div class="slider-wrap ctrl-hidden" id="wrap-angle">
+                    <div class="slider-head"><span id="lbl-angle">Barrier angle</span><span id="val-angle">315°</span></div>
+                    <input type="range" id="sl-angle" min="0" max="359" step="1" value="315">
+                </div>
+                <div class="slider-wrap ctrl-hidden" id="wrap-shallow">
+                    <div class="slider-head"><span id="lbl-shallow">Shallow speed</span><span id="val-shallow">0.6×</span></div>
+                    <input type="range" id="sl-shallow" min="0.3" max="0.85" step="0.05" value="0.6">
+                </div>
+                <div class="slider-wrap ctrl-hidden" id="wrap-gap">
+                    <div class="slider-head"><span id="lbl-gap">Gap width</span><span id="val-gap">40 px</span></div>
+                    <input type="range" id="sl-gap" min="12" max="130" step="4" value="40">
+                </div>
+                <div class="slider-wrap ctrl-hidden" id="wrap-sep">
+                    <div class="slider-head"><span id="lbl-sep">Source sep. D (λ)</span><span id="val-sep">6.0 λ</span></div>
+                    <input type="range" id="sl-sep" min="2" max="16" step="0.5" value="6">
+                </div>
+                <div id="wrap-fronts">
+                    <button class="btn btn-sec on" id="btn-fronts-inc">inc. fronts</button>
+                    <button class="btn btn-sec on" id="btn-fronts-ref">refl. fronts</button>
+                </div>
+                <div id="wrap-rays">
+                    <button class="btn btn-sec" id="btn-rays">Travel dir.</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// i18n
+// ============================================================
+const i18n = {
+    zh: {
+        title:"🌊 水波槽模擬 — 振動源與波動性質",
+        sub:"v = fλ · 馬達偏心振動 → 直線波 / 圓形波 · 反射 · 折射 · 繞射 · 干涉",
+        side:"側視圖 — 振動源 (Fig 5.1d/e)", tank:"俯視圖 — 投影波紋圖案",
+        mode:"選擇波動現象", ctrl:"控制", vib:"振動中 ↑↓", lang:"English",
+        basic:"基本波", refl:"反射", refr:"折射", diff:"繞射", intf:"干涉",
+        play:"播放 ▶", pause:"暫停 ⏸", lines:"節線/腹線",
+        shot:"📷 截圖", shotOk:"截圖已儲存！",
+        frontsInc:"入射波前", frontsIncHide:"隱藏入射波前",
+        frontsRef:"反射波前", frontsRefHide:"隱藏反射波前",
+        rays:"傳播方向", raysHide:"隱藏方向",
+        freq:"頻率 f", amp:"振動幅度", wavedir:"傳播方向", angle:"障礙物角度",
+        shallow:"淺水速度", gap:"縫寬", sep:"波源間距 D (λ)",
+        dirLabels:["→","↘","↓","↙","←","↖","↑","↗"],
+        rayInc:"入射", rayRefl:"反射", rayRefr:"折射", rayDiff:"繞射",
+        normalLbl:"法線", wfIncLbl:"入射波", wfReflLbl:"反射波",
+        gapRatio:"gap/λ", spreadAngle:"繞射角 θ", diffStrong:"強繞射", diffMed:"中等繞射", diffWeak:"弱繞射",
+        incAngle:"入射角 i", refrAngle:"折射角 r", reflAngle:"反射角 r", lambda1:"λ₁", lambda2:"λ₂",
+        ampVals:["小","中","大"],
+        subSrc:["直線波源 (木棒)","圓形波源 (dipper)"],
+        subRefl:["直線波反射","圓形波反射"],
+        subIntf:["同相","反相"],
+        src1Lbl:"S₁", src2Lbl:"S₂", dragHint:"拖曳波源調整 D",
+        barrierLbl:"直線障礙物",
+        flatHint:"按播放開始振動",
+        planeBarLbl:"木棒 → 直線波", motorLbl:"馬達", eccLbl:"偏心輪", vibArrow:"振動",
+        fastLbl:"FAST", slowLbl:"SLOW",
+        fastHint:"深水  v₁, λ₁", slowHint:"淺水  v₂, λ₂",
+        snellLbl:"sin i / sin r = v₁ / v₂",
+        rayIncFull:"入射線", rayRefrFull:"折射線"
+    },
+    en: {
+        title:"🌊 Ripple Tank — Source Vibration & Wave Properties",
+        sub:"v = fλ · Eccentric motor → plane/circular waves · Reflection · Refraction · Diffraction · Interference",
+        side:"Side View — Vibrating Source (Fig 5.1d/e)", tank:"Top View — Projected Wave Pattern",
+        mode:"Select Phenomenon", ctrl:"Controls", vib:"Vibrating ↑↓", lang:"中文",
+        basic:"Basic Waves", refl:"Reflection", refr:"Refraction", diff:"Diffraction", intf:"Interference",
+        play:"Play ▶", pause:"Pause ⏸", lines:"N/A Lines",
+        shot:"📷 Save", shotOk:"Screenshot saved!",
+        frontsInc:"inc. fronts", frontsIncHide:"hide inc. fronts",
+        frontsRef:"refl. fronts", frontsRefHide:"hide refl. fronts",
+        rays:"Travel dir.", raysHide:"Hide dir.",
+        freq:"Frequency f", amp:"Vibration amp.", wavedir:"Travel dir.", angle:"Barrier angle",
+        shallow:"Shallow speed", gap:"Gap width", sep:"Source sep. D (λ)",
+        dirLabels:["→","↘","↓","↙","←","↖","↑","↗"],
+        rayInc:"incident", rayRefl:"reflected", rayRefr:"refracted", rayDiff:"diffracted",
+        normalLbl:"normal", wfIncLbl:"incident wave", wfReflLbl:"reflected wave",
+        gapRatio:"gap/λ", spreadAngle:"Spread θ", diffStrong:"Strong diffraction", diffMed:"Moderate", diffWeak:"Weak diffraction",
+        incAngle:"Angle i", refrAngle:"Angle r", reflAngle:"Reflection r", lambda1:"λ₁", lambda2:"λ₂",
+        ampVals:["Low","Med","High"],
+        subSrc:["Plane source (bar)","Circular source (dipper)"],
+        subRefl:["Plane reflection","Circular reflection"],
+        subIntf:["In phase","Anti phase"],
+        src1Lbl:"S₁", src2Lbl:"S₂", dragHint:"Drag sources to adjust D",
+        barrierLbl:"straight barrier",
+        flatHint:"Press Play to start vibration",
+        planeBarLbl:"bar → plane waves", motorLbl:"motor", eccLbl:"eccentric", vibArrow:"vibration",
+        fastLbl:"FAST", slowLbl:"SLOW",
+        fastHint:"deep  v₁, λ₁", slowHint:"shallow  v₂, λ₂",
+        snellLbl:"sin i / sin r = v₁ / v₂",
+        rayIncFull:"incident ray", rayRefrFull:"refracted ray"
+    }
+};
+let lang = 'en';
+const t = k => i18n[lang][k];
+
+// ============================================================
+// State
+// ============================================================
+let mode = 'basic', sourceType = 'plane'; // plane | dipper
+let reflType = 'straight', intfPhase = 'in';
+let freq = 5, ampLevel = 2, barrierAngle = 315, waveDir = 90, shallowSpeed = 0.6;
+let gapWidth = 40, sourceSepLambda = 6;
+let src1On = true, src2On = true, dragSrc = null;
+let isPlaying = true, showLines = false, showIncWF = true, showRefWF = true, showRays = false;
+const REFR_INC_DEG = 40;
+let phase = 0, motorAngle = 0, basicEmit = 0, basicFront = 0;
+const baseSpeed = 90;
+const getLambda = () => baseSpeed / freq;
+const getSourceSepPx = () => sourceSepLambda * getLambda();
+const getAmp = () => [6, 10, 16][ampLevel - 1];
+const getPlaneSourceY = () => Math.max(72, Math.round(H * 0.16));
+const getWaveTime = () => phase;
+const isFlatWater = () => !isPlaying && phase === 0;
+
+function getSourceBarAngle() {
+    if (mode === 'refraction') return -REFR_INC_DEG * Math.PI / 180;
+    if (mode === 'reflection' && reflType === 'straight') return (waveDir - 90) * Math.PI / 180;
+    return 0;
+}
+
+function getSourceBarPose() {
+    const angle = getSourceBarAngle();
+    const vib = isPlaying ? Math.sin(phase) * Math.min(6, getAmp() * 0.35) : 0;
+    const barH = Math.max(22, Math.round((H || 400) * 0.045));
+    const travel = { x: -Math.sin(angle), y: Math.cos(angle) };
+    const along = { x: Math.cos(angle), y: Math.sin(angle) };
+    let cx, cy, barW;
+    if (Math.abs(angle) < 0.05) {
+        barW = Math.max(80, (W || 400) - 8);
+        cx = (W || 400) * 0.5;
+        cy = getPlaneSourceY() - barH / 2;
+    } else {
+        cx = W * 0.38;
+        cy = H * 0.22;
+        const clip = clipLineToTank(cx, cy, along.x, along.y);
+        if (clip) {
+            barW = Math.hypot(clip.x2 - clip.x1, clip.y2 - clip.y1);
+            cx = (clip.x1 + clip.x2) / 2;
+            cy = (clip.y1 + clip.y2) / 2;
+        } else {
+            barW = Math.hypot(W, H);
+        }
+    }
+    if (mode === 'reflection' && reflType === 'straight' && W && H) {
+        const g = getBarrierGeom();
+        if (g) {
+            const extra = Math.abs((barH / 2) * (travel.x * g.nx + travel.y * g.ny));
+            const clip = clipLineByPlanes(cx, cy, along.x, along.y, [
+                { nx: g.nx, ny: g.ny, px: g.cx, py: g.cy, m: BARRIER_HALF + extra + 10 }
+            ]);
+            if (clip) {
+                barW = Math.hypot(clip.x2 - clip.x1, clip.y2 - clip.y1);
+                cx = (clip.x1 + clip.x2) / 2;
+                cy = (clip.y1 + clip.y2) / 2;
+            }
+        }
+    }
+    cx += travel.x * vib;
+    cy += travel.y * vib;
+    return {
+        angle, cx, cy, barW, barH, travel, along, vib,
+        contact: { x: cx + travel.x * (barH / 2), y: cy + travel.y * (barH / 2) }
+    };
+}
+
+function behindSourceBar(x, y) {
+    const p = getSourceBarPose();
+    return (x - p.contact.x) * p.travel.x + (y - p.contact.y) * p.travel.y < 0;
+}
+
+function rayStartAtSource(vx, vy, di) {
+    const p = getSourceBarPose();
+    const t = (vx - p.contact.x) * di.x + (vy - p.contact.y) * di.y;
+    const d = Math.max(0, t);
+    return { x: vx - di.x * d, y: vy - di.y * d };
+}
+
+function resetOutgoingWaves() {
+    basicEmit = 0;
+    basicFront = 0;
+}
+
+function causalAmp(dist, k, emit, front, fadeW, decay = 0) {
+    if (dist < 0 || dist > front) return 0;
+    const fade = dist > front - fadeW ? (front - dist) / fadeW : 1;
+    const a = Math.sin(k * dist - emit) * fade;
+    return decay ? a / (1 + dist * decay) : a;
+}
+
+function interiorDegFromDot(dot) {
+    return Math.min(90, Math.max(0,
+        Math.acos(Math.max(-1, Math.min(1, Math.abs(dot)))) * 180 / Math.PI));
+}
+function interiorDegFromDirs(ax, ay, bx, by) {
+    const l1 = Math.hypot(ax, ay) || 1;
+    const l2 = Math.hypot(bx, by) || 1;
+    return interiorDegFromDot((ax * bx + ay * by) / (l1 * l2));
+}
+function formatInteriorDeg(deg, decimals = 0) {
+    const d = Math.min(90, Math.max(0, deg));
+    return decimals > 0 ? d.toFixed(decimals) : String(Math.round(d));
+}
+
+function getIntfSources() {
+    const sy = H * 0.85;
+    const sep = getSourceSepPx();
+    return { s1x: W * 0.5 - sep / 2, s2x: W * 0.5 + sep / 2, sy };
+}
+
+function setSepFromHalfWidth(halfSep) {
+    const lambda = getLambda();
+    const clamped = Math.max(2, Math.min(16, (2 * halfSep) / lambda));
+    sourceSepLambda = Math.round(clamped * 2) / 2;
+    document.getElementById('sl-sep').value = sourceSepLambda;
+    updateSepDisplay();
+}
+
+// ============================================================
+// Canvases
+// ============================================================
+const sideCanvas = document.getElementById('sideCanvas');
+const sideCtx = sideCanvas.getContext('2d');
+const tankCanvas = document.getElementById('tankCanvas');
+const tankCtx = tankCanvas.getContext('2d');
+let W = 0, H = 0, sW = 0, sH = 0, imgData = null;
+
+function resize() {
+    const tr = document.getElementById('tank-wrap').getBoundingClientRect();
+    tankCanvas.width = tr.width; tankCanvas.height = tr.height;
+    W = tankCanvas.width; H = tankCanvas.height;
+    imgData = tankCtx.createImageData(W, H);
+    const sr = sideCanvas.parentElement.getBoundingClientRect();
+    sideCanvas.width = sr.width; sideCanvas.height = sr.height;
+    sW = sideCanvas.width; sH = sideCanvas.height;
+    draw();
+}
+window.addEventListener('resize', resize);
+
+// ============================================================
+// Side view — motor, strings, bar/dipper
+// ============================================================
+function drawSideView() {
+    sideCtx.clearRect(0, 0, sW, sH);
+    const vibY = isPlaying ? Math.sin(phase) * getAmp() : 0;
+    motorAngle += isPlaying ? 0.22 : 0;
+
+    // Background
+    sideCtx.fillStyle = '#f4f8fc';
+    sideCtx.fillRect(0, 0, sW, sH);
+
+    const tankL = sW * 0.06, tankR = sW * 0.94;
+    const tankTop = sH * 0.58, tankBot = sH * 0.88;
+    const waterY = tankTop + 8;
+
+    // Lamp hint (top)
+    sideCtx.fillStyle = 'rgba(251,191,36,0.15)';
+    sideCtx.beginPath();
+    sideCtx.ellipse(sW * 0.5, sH * 0.06, 28, 10, 0, 0, Math.PI * 2);
+    sideCtx.fill();
+    sideCtx.fillStyle = '#fbbf24';
+    sideCtx.font = '10px sans-serif';
+    sideCtx.fillText('💡 Lamp', sW * 0.5 - 22, sH * 0.04);
+
+    // Support frame
+    sideCtx.strokeStyle = '#94a3b8'; sideCtx.lineWidth = 3;
+    sideCtx.beginPath();
+    sideCtx.moveTo(tankL - 8, sH * 0.12); sideCtx.lineTo(tankL - 8, tankBot + 10);
+    sideCtx.moveTo(tankR + 8, sH * 0.12); sideCtx.lineTo(tankR + 8, tankBot + 10);
+    sideCtx.stroke();
+
+    // Tank glass
+    sideCtx.strokeStyle = 'rgba(100,116,139,0.55)'; sideCtx.lineWidth = 2;
+    sideCtx.strokeRect(tankL, tankTop, tankR - tankL, tankBot - tankTop);
+
+    // Water
+    const grad = sideCtx.createLinearGradient(0, waterY, 0, tankBot);
+    grad.addColorStop(0, 'rgba(186,230,253,0.85)');
+    grad.addColorStop(1, 'rgba(125,211,252,0.75)');
+    sideCtx.fillStyle = grad;
+    sideCtx.fillRect(tankL + 2, waterY, tankR - tankL - 4, tankBot - waterY - 2);
+
+    // Animated water surface ripples (only when vibrating)
+    if (isPlaying) {
+        sideCtx.strokeStyle = 'rgba(2,132,199,0.7)'; sideCtx.lineWidth = 1.5;
+        sideCtx.beginPath();
+        for (let x = tankL + 4; x < tankR - 4; x += 2) {
+            const rel = (x - tankL) / (tankR - tankL);
+            const ripple = Math.sin(rel * 18 + phase * 2) * (1.5 + getAmp() * 0.15);
+            const y = waterY + ripple;
+            x === tankL + 4 ? sideCtx.moveTo(x, y) : sideCtx.lineTo(x, y);
+        }
+        sideCtx.stroke();
+    } else {
+        sideCtx.strokeStyle = 'rgba(2,132,199,0.45)'; sideCtx.lineWidth = 1.5;
+        sideCtx.beginPath();
+        sideCtx.moveTo(tankL + 4, waterY); sideCtx.lineTo(tankR - 4, waterY);
+        sideCtx.stroke();
+    }
+
+    // Shallow region (refraction mode)
+    if (mode === 'refraction') {
+        sideCtx.fillStyle = 'rgba(251,191,36,0.25)';
+        sideCtx.fillRect(tankL + 2, waterY + (tankBot - waterY) * 0.45, tankR - tankL - 4, (tankBot - waterY) * 0.55);
+        sideCtx.fillStyle = '#fbbf24'; sideCtx.font = '9px sans-serif';
+        sideCtx.fillText('glass sheet (shallow)', tankL + 8, tankBot - 8);
+    }
+
+    // Barrier (reflection / diffraction)
+    const isCircRefl = mode === 'reflection' && reflType !== 'straight';
+    if (mode === 'reflection' && !isCircRefl) {
+        sideCtx.strokeStyle = 'rgba(100,116,139,0.85)'; sideCtx.lineWidth = 5;
+        const waterH = tankBot - waterY;
+        const x0 = tankL + (tankR - tankL) * 0.15, y0 = waterY + waterH * 0.55;
+        const x1 = tankR - (tankR - tankL) * 0.1, y1 = waterY + waterH * 0.15;
+        const slope = (y1 - y0) / (x1 - x0);
+        const bx1 = tankL, bx2 = tankR;
+        const by1 = y0 + slope * (bx1 - x0);
+        const by2 = y0 + slope * (bx2 - x0);
+        sideCtx.beginPath(); sideCtx.moveTo(bx1, by1); sideCtx.lineTo(bx2, by2); sideCtx.stroke();
+    } else if (isCircRefl) {
+        const thick = 7;
+        const by = waterY - thick / 2;
+        const wood = sideCtx.createLinearGradient(tankL, by, tankL, by + thick);
+        wood.addColorStop(0, '#e8d5b5');
+        wood.addColorStop(0.45, '#c4a574');
+        wood.addColorStop(1, '#8b6914');
+        sideCtx.fillStyle = wood;
+        sideCtx.fillRect(tankL, by, tankR - tankL, thick);
+        sideCtx.strokeStyle = '#6b4f1d';
+        sideCtx.lineWidth = 1.2;
+        sideCtx.strokeRect(tankL, by, tankR - tankL, thick);
+        sideCtx.fillStyle = '#5c4033';
+        sideCtx.font = '9px sans-serif';
+        sideCtx.fillText(t('barrierLbl'), tankR - 88, by - 4);
+    } else if (mode === 'diffraction') {
+        const waterH = tankBot - waterY;
+        const by = waterY + waterH * 0.42;
+        const thick = 6;
+        const innerL = tankL + 2, innerR = tankR - 2;
+        const innerW = innerR - innerL;
+        const gap = Math.max(14, Math.min(innerW * 0.48, innerW * (gapWidth / Math.max(H, 1))));
+        const slitCX = (innerL + innerR) / 2;
+        const leftW = slitCX - gap / 2 - innerL;
+        const rightX = slitCX + gap / 2;
+        sideCtx.fillStyle = 'rgba(244,63,94,0.7)';
+        sideCtx.fillRect(innerL, by, leftW, thick);
+        sideCtx.fillRect(rightX, by, innerR - rightX, thick);
+    }
+
+    // --- Vibrating apparatus (bottom edge / dipper sits on the water) ---
+    const barW = sW * 0.72, barH = Math.max(22, Math.round(sH * 0.05));
+    const motW = Math.max(40, Math.round(sW * 0.1)), motH = Math.max(26, Math.round(sH * 0.045));
+    const eccR = Math.max(12, motW * 0.3), eccBall = Math.max(6, eccR * 0.5);
+    const dipR = Math.max(11, Math.round(sH * 0.022));
+    const rodLen = Math.max(14, Math.round(sH * 0.03));
+    const usePlane = (mode === 'basic' || mode === 'refraction' || mode === 'diffraction') ? sourceType === 'plane'
+        : (mode === 'reflection' ? reflType === 'straight' : false);
+    const isInterference = mode === 'interference';
+    const hang = (usePlane ? 0 : rodLen + dipR);
+    const barCX = sW * 0.5;
+    const barCY = waterY - hang - barH / 2 + vibY;
+    const anchorY = sH * 0.1;
+    const anchorL = barCX - barW / 2 + 14, anchorR = barCX + barW / 2 - 14;
+
+    const srcAng = usePlane ? getSourceBarAngle() : 0;
+    const contactY = barCY + barH / 2;
+    const ca = Math.cos(srcAng), sa = Math.sin(srcAng);
+    const sideLocal = (lx, ly) => ({
+        x: barCX + lx * ca - ly * sa,
+        y: contactY + lx * sa + ly * ca
+    });
+    const topL = sideLocal(-barW / 2, -barH);
+    const topR = sideLocal(barW / 2, -barH);
+    const motLocal = sideLocal(0, -barH - motH / 2 - 8);
+
+    // Elastic strings (stretch when bar moves down)
+    sideCtx.strokeStyle = '#64748b'; sideCtx.lineWidth = 2.5;
+    sideCtx.setLineDash([]);
+    sideCtx.beginPath();
+    sideCtx.moveTo(anchorL, anchorY); sideCtx.lineTo(topL.x, topL.y);
+    sideCtx.moveTo(anchorR, anchorY); sideCtx.lineTo(topR.x, topR.y);
+    sideCtx.stroke();
+    sideCtx.fillStyle = '#64748b'; sideCtx.font = '9px sans-serif';
+    sideCtx.fillText('elastic string', anchorL - 10, anchorY - 4);
+
+    sideCtx.save();
+    sideCtx.translate(barCX, contactY);
+    sideCtx.rotate(srcAng);
+    sideCtx.translate(-barCX, -contactY);
+
+    // Wooden bar
+    sideCtx.fillStyle = '#92400e';
+    sideCtx.fillRect(barCX - barW / 2, barCY - barH / 2, barW, barH);
+    sideCtx.fillStyle = '#b45309';
+    sideCtx.fillRect(barCX - barW / 2, barCY + barH / 2 - 5, barW, 5);
+
+    // Motor on top
+    const motX = barCX, motY = barCY - barH / 2 - motH / 2 - 8;
+    sideCtx.fillStyle = '#64748b';
+    sideCtx.fillRect(motX - motW / 2, motY - motH / 2, motW, motH);
+
+    const ex = motX + Math.cos(motorAngle) * eccR;
+    const ey = motY + Math.sin(motorAngle) * eccR;
+    sideCtx.strokeStyle = 'rgba(248,113,113,0.45)'; sideCtx.lineWidth = 1.5;
+    sideCtx.beginPath(); sideCtx.arc(motX, motY, eccR, 0, Math.PI * 2); sideCtx.stroke();
+    sideCtx.fillStyle = '#ef4444';
+    sideCtx.beginPath(); sideCtx.arc(ex, ey, eccBall, 0, Math.PI * 2); sideCtx.fill();
+
+    if (usePlane) {
+        sideCtx.strokeStyle = '#0284c7'; sideCtx.lineWidth = 4;
+        sideCtx.beginPath();
+        sideCtx.moveTo(barCX - barW / 2 + 4, contactY);
+        sideCtx.lineTo(barCX + barW / 2 - 4, contactY);
+        sideCtx.stroke();
+        if (isPlaying && Math.abs(Math.sin(phase)) > 0.7) {
+            sideCtx.strokeStyle = 'rgba(2,132,199,0.55)';
+            for (let i = -3; i <= 3; i++) {
+                sideCtx.beginPath();
+                sideCtx.arc(barCX + i * (barW / 8), contactY + 3, 5 + Math.random() * 3, 0, Math.PI);
+                sideCtx.stroke();
+            }
+        }
+    }
+    sideCtx.restore();
+
+    sideCtx.fillStyle = '#334155'; sideCtx.font = '9px sans-serif';
+    sideCtx.textAlign = 'center';
+    sideCtx.fillText('motor', motLocal.x, motLocal.y - motH / 2 - 6);
+    sideCtx.textAlign = 'left';
+    sideCtx.fillStyle = '#dc2626';
+    sideCtx.fillText('eccentric', motLocal.x + motW / 2 + 6, motLocal.y + 4);
+
+    sideCtx.strokeStyle = '#64748b'; sideCtx.lineWidth = 1.5;
+    sideCtx.beginPath();
+    sideCtx.moveTo(motLocal.x + motW / 2, motLocal.y); sideCtx.lineTo(sW * 0.82, sH * 0.08);
+    sideCtx.stroke();
+    sideCtx.fillStyle = '#64748b'; sideCtx.font = '9px sans-serif';
+    sideCtx.fillText('power supply', sW * 0.78, sH * 0.06);
+
+    if (isInterference) {
+        const sepPx = Math.max(dipR + 8, getSourceSepPx() * 0.16);
+        const phOff = intfPhase === 'anti' ? Math.PI : 0;
+        [
+            { dx: barCX - sepPx, lbl: 'S₁', on: src1On, ph: 0 },
+            { dx: barCX + sepPx, lbl: 'S₂', on: src2On, ph: phOff }
+        ].forEach(({ dx, lbl, on, ph }) => {
+            const dipVib = Math.sin(phase + ph) * getAmp() * 0.45;
+            const dy = barCY + barH / 2 + rodLen + dipVib;
+            sideCtx.strokeStyle = '#94a3b8'; sideCtx.lineWidth = 2.5;
+            sideCtx.beginPath(); sideCtx.moveTo(dx, barCY + barH / 2); sideCtx.lineTo(dx, dy - dipR);
+            sideCtx.stroke();
+            sideCtx.fillStyle = on ? '#334155' : '#94a3b8';
+            sideCtx.beginPath(); sideCtx.arc(dx, dy, dipR, 0, Math.PI * 2); sideCtx.fill();
+            sideCtx.strokeStyle = on ? '#0284c7' : '#94a3b8'; sideCtx.lineWidth = 2; sideCtx.stroke();
+            sideCtx.fillStyle = '#d97706'; sideCtx.font = 'bold 11px sans-serif';
+            sideCtx.fillText(lbl + (on ? '' : ' ✕'), dx - 12, dy + dipR + 14);
+            if (isPlaying && on) {
+                sideCtx.strokeStyle = ph === 0 ? '#10b981' : '#f59e0b';
+                sideCtx.lineWidth = 1.5;
+                const arr = dipVib > 0 ? 1 : -1;
+                sideCtx.beginPath();
+                sideCtx.moveTo(dx + dipR + 8, dy); sideCtx.lineTo(dx + dipR + 8, dy - arr * 12); sideCtx.stroke();
+            }
+        });
+        sideCtx.fillStyle = intfPhase === 'anti' ? '#f59e0b' : '#10b981';
+        sideCtx.font = '10px sans-serif';
+        sideCtx.fillText(intfPhase === 'anti' ? '↕ anti-phase' : '↕ in-phase', barCX - 34, barCY - barH / 2 - motH - 22);
+    } else if (usePlane) {
+        sideCtx.fillStyle = '#0284c7'; sideCtx.font = '11px sans-serif';
+        sideCtx.fillText('bar → plane waves', tankL + 8, tankTop - 8);
+    } else {
+        // Dipper sphere kissing the water surface (in front of the barrier for circular reflection)
+        const dipX = barCX;
+        const dipY = barCY + barH / 2 + rodLen;
+        sideCtx.strokeStyle = '#94a3b8'; sideCtx.lineWidth = 2.5;
+        sideCtx.beginPath(); sideCtx.moveTo(dipX, barCY + barH / 2); sideCtx.lineTo(dipX, dipY - dipR);
+        sideCtx.stroke();
+        sideCtx.fillStyle = '#334155';
+        sideCtx.beginPath(); sideCtx.arc(dipX, dipY, dipR, 0, Math.PI * 2); sideCtx.fill();
+        sideCtx.strokeStyle = '#0284c7'; sideCtx.lineWidth = 2.5; sideCtx.stroke();
+        sideCtx.fillStyle = '#0284c7'; sideCtx.font = '11px sans-serif';
+        sideCtx.fillText('dipper → circular waves', tankL + 8, tankTop - 8);
+    }
+
+    // Vibration arrow
+    sideCtx.strokeStyle = '#10b981'; sideCtx.lineWidth = 2.5;
+    sideCtx.fillStyle = '#10b981';
+    const ax = Math.max(14, Math.min(topL.x, topR.x) - 22), ay = (topL.y + topR.y) / 2 + barH / 2;
+    sideCtx.beginPath();
+    sideCtx.moveTo(ax, ay - 22); sideCtx.lineTo(ax, ay + 22);
+    sideCtx.stroke();
+    sideCtx.beginPath();
+    sideCtx.moveTo(ax, ay - 22); sideCtx.lineTo(ax - 6, ay - 12);
+    sideCtx.moveTo(ax, ay - 22); sideCtx.lineTo(ax + 6, ay - 12);
+    sideCtx.moveTo(ax, ay + 22); sideCtx.lineTo(ax - 6, ay + 12);
+    sideCtx.moveTo(ax, ay + 22); sideCtx.lineTo(ax + 6, ay + 12);
+    sideCtx.stroke();
+    sideCtx.font = 'bold 10px sans-serif';
+    sideCtx.fillText('vibration', ax - 10, ay - 28);
+
+    // Projected pattern hint (bottom)
+    sideCtx.fillStyle = 'rgba(226,232,240,0.9)';
+    sideCtx.fillRect(tankL, tankBot + 14, tankR - tankL, sH * 0.06);
+    sideCtx.fillStyle = '#475569'; sideCtx.font = '9px sans-serif';
+    sideCtx.textAlign = 'center';
+    sideCtx.fillText('↓ projected wave pattern on screen below', sW * 0.5, tankBot + 10);
+    sideCtx.textAlign = 'left';
+}
+
+// ============================================================
+// Top view — wave field
+// ============================================================
+function waterRgb(a, y, inc, refl) {
+    if (a === null) return [226, 232, 240];
+    const v = Math.max(0, Math.min(1, (a + 1) / 2));
+    if (inc != null && refl != null) {
+        const magI = Math.abs(inc), magR = Math.abs(refl);
+        const tInc = magI / (magI + magR + 0.0001);
+        const rI = 10 + v * 75, gI = 55 + v * 115, bI = 130 + v * 105;
+        const rR = 170 + v * 70, gR = 210 + v * 35, bR = 230 + v * 22;
+        return [
+            Math.round(rI * tInc + rR * (1 - tInc)),
+            Math.round(gI * tInc + gR * (1 - tInc)),
+            Math.round(bI * tInc + bR * (1 - tInc))
+        ];
+    }
+    const shallow = mode === 'refraction' && y >= H * 0.5;
+    if (shallow) {
+        return [Math.round(148 + v * 58), Math.round(186 + v * 30), Math.round(195 + v * 18)];
+    }
+    return [Math.round(170 + v * 70), Math.round(210 + v * 35), Math.round(230 + v * 22)];
+}
+
+function amplitudeAt(x, y, k, tt) {
+    if (!isPlaying && phase === 0) return { a: 0 };
+    const wt = getWaveTime();
+    switch (mode) {
+        case 'basic': {
+            const front = basicFront, emit = basicEmit;
+            const fadeW = Math.max(10, (2 * Math.PI / k) * 0.3);
+            if (sourceType === 'plane') {
+                const dist = y - getPlaneSourceY();
+                return { a: causalAmp(dist, k, emit, front, fadeW) };
+            }
+            const d = Math.hypot(x - W * 0.5, y - H * 0.5);
+            return { a: causalAmp(d, k, emit, front, fadeW, 0.008) };
+        }
+        case 'reflection': {
+            const front = basicFront, emit = basicEmit;
+            const fadeW = Math.max(10, (2 * Math.PI / k) * 0.3);
+            if (reflType === 'straight') {
+                const g = getBarrierGeom();
+                if (g === null) return { a: 0 };
+                const { di, dr, nx, ny, cx, cy } = g;
+                const side = (x - cx) * nx + (y - cy) * ny;
+                if (Math.abs(side) < BARRIER_HALF) return { a: null };
+                if (side < 0) return { a: 0 };
+                const pose = getSourceBarPose();
+                const cpx = pose.contact.x, cpy = pose.contact.y;
+                if ((x - cpx) * pose.travel.x + (y - cpy) * pose.travel.y < 0) return { a: 0 };
+                const sI = (x - cpx) * di.x + (y - cpy) * di.y;
+                const inc = causalAmp(sI, k, emit, front, fadeW);
+                let refl = 0;
+                const ndr = dr.x * nx + dr.y * ny;
+                if (ndr > 1e-6) {
+                    const tBounce = side / ndr;
+                    const sToQ = (x - dr.x * tBounce - cpx) * di.x + (y - dr.y * tBounce - cpy) * di.y;
+                    refl = causalAmp(sToQ + tBounce, k, emit, front, fadeW);
+                }
+                return { a: (inc + refl) * 0.5, inc, refl };
+            }
+            const barrierX = W * 0.68;
+            if (x > barrierX - BARRIER_HALF && x < barrierX + BARRIER_HALF) return { a: null };
+            if (x >= barrierX) return { a: 0 };
+            const sx = W * 0.32, sy = H * 0.5, ix = 2 * barrierX - sx;
+            const inc = causalAmp(Math.hypot(x - sx, y - sy), k, emit, front, fadeW, 0.01);
+            const refl = causalAmp(Math.hypot(x - ix, y - sy), k, emit, front, fadeW, 0.01);
+            return { a: (inc + refl) * 0.5, inc, refl };
+        }
+        case 'refraction': {
+            const boundary = H * 0.5;
+            const ang1 = Math.min(90, REFR_INC_DEG) * Math.PI / 180;
+            const ang2 = Math.asin(Math.max(-1, Math.min(1, Math.sin(ang1) * shallowSpeed)));
+            const k2 = k / shallowSpeed;
+            const kx = k * Math.sin(ang1);
+            if (behindSourceBar(x, y)) return { a: 0 };
+            if (y < boundary) return { a: Math.sin(kx * x + k * Math.cos(ang1) * y - wt) };
+            return { a: Math.sin(kx * x + k * Math.cos(ang1) * boundary + k2 * Math.cos(ang2) * (y - boundary) - wt) };
+        }
+        case 'diffraction': {
+            const bx = W * 0.40, gy = H * 0.5;
+            if (x < bx) return { a: Math.sin(k * x - wt) };
+            const dy = y - gy;
+            if (Math.abs(dy) < gapWidth / 2 && x < bx + 3) return { a: null };
+            const d = Math.hypot(x - bx, dy);
+            return { a: Math.sin(k * d - wt) / (1 + d * 0.009) };
+        }
+        case 'interference': {
+            const { s1x, s2x, sy } = getIntfSources();
+            const ph2 = intfPhase === 'anti' ? Math.PI : 0;
+            let sum = 0, n = 0;
+            if (src1On) {
+                const d1 = Math.hypot(x - s1x, y - sy);
+                sum += Math.sin(k * d1 - wt) / (1 + d1 * 0.007); n++;
+            }
+            if (src2On) {
+                const d2 = Math.hypot(x - s2x, y - sy);
+                sum += Math.sin(k * d2 - wt + ph2) / (1 + d2 * 0.007); n++;
+            }
+            return { a: n ? sum / n : 0 };
+        }
+    }
+    return { a: 0 };
+}
+
+function drawTank() {
+    if (!W || !H) return;
+    if (!imgData) return;
+    const data = imgData.data, k = 2 * Math.PI / getLambda(), step = 2;
+    const wt = getWaveTime();
+
+    if (isFlatWater() || mode === 'reflection') {
+        tankCtx.fillStyle = '#d7eef8';
+        tankCtx.fillRect(0, 0, W, H);
+        if (mode === 'refraction') {
+            tankCtx.fillStyle = 'rgba(146,120,70,0.14)';
+            tankCtx.fillRect(0, H * 0.5, W, H * 0.5);
+        }
+        drawOverlay(k);
+        return;
+    }
+
+    for (let y = 0; y < H; y += step) {
+        for (let x = 0; x < W; x += step) {
+            const f = amplitudeAt(x, y, k, wt);
+            const [r, g, b] = waterRgb(f.a, y, f.inc, f.refl);
+            for (let dy = 0; dy < step && y + dy < H; dy++)
+                for (let dx = 0; dx < step && x + dx < W; dx++) {
+                    const i = ((y + dy) * W + (x + dx)) * 4;
+                    data[i] = r; data[i + 1] = g; data[i + 2] = b; data[i + 3] = 255;
+                }
+        }
+    }
+    tankCtx.putImageData(imgData, 0, 0);
+    drawOverlay(k);
+}
+
+// ---- Fig 5.2 wavefront reflection style (wave 5) ----
+function waveDirLabel(deg) {
+    const idx = Math.round(((deg % 360) + 360) % 360 / 45) % 8;
+    return `${deg}° ${t('dirLabels')[idx]}`;
+}
+
+const BARRIER_HALF = 11;
+
+function getBarrierGeom() {
+    if (!W || !H) return null;
+    const midX = W * 0.5, midY = H * 0.5;
+    const barAng = barrierAngle * Math.PI / 180;
+    const dx = Math.cos(barAng), dy = Math.sin(barAng);
+    const clip = clipLineToTank(midX, midY, dx, dy);
+    const extend = BARRIER_HALF + 8;
+    let bx1, by1, bx2, by2;
+    if (clip) {
+        bx1 = clip.x1 - dx * extend; by1 = clip.y1 - dy * extend;
+        bx2 = clip.x2 + dx * extend; by2 = clip.y2 + dy * extend;
+    } else {
+        const half = Math.hypot(W, H) / 2 + extend;
+        bx1 = midX - dx * half; by1 = midY - dy * half;
+        bx2 = midX + dx * half; by2 = midY + dy * half;
+    }
+    const wRad = waveDir * Math.PI / 180;
+    const di = { x: Math.cos(wRad), y: Math.sin(wRad) };
+    let nx = -Math.sin(barAng), ny = Math.cos(barAng);
+    const probeX = midX - di.x * 80, probeY = midY - di.y * 80;
+    if ((probeX - midX) * nx + (probeY - midY) * ny < 0) { nx = -nx; ny = -ny; }
+    const hitPt = lineSegIntersect(midX - di.x * 900, midY - di.y * 900, di.x, di.y, bx1, by1, bx2, by2);
+    const cx = hitPt ? hitPt.x : midX, cy = hitPt ? hitPt.y : midY;
+    const dot = di.x * nx + di.y * ny;
+    const dr = { x: di.x - 2 * dot * nx, y: di.y - 2 * dot * ny };
+    const iDeg = Math.round(interiorDegFromDirs(nx, ny, di.x, di.y));
+    const rDeg = Math.round(interiorDegFromDirs(-nx, -ny, dr.x, dr.y));
+    const k = 2 * Math.PI / getLambda();
+    return { bx1, by1, bx2, by2, nx, ny, di, dr, iDeg, rDeg, cx, cy, k };
+}
+
+function lineSegIntersect(px, py, dx, dy, x3, y3, x4, y4) {
+    const d = dx * (y3 - y4) - dy * (x3 - x4);
+    if (Math.abs(d) < 1e-9) return null;
+    const t = ((x3 - px) * (y3 - y4) - (y3 - py) * (x3 - x4)) / d;
+    const u = (dx * (y3 - py) - dy * (x3 - px)) / d;
+    if (u < -1e-6 || u > 1 + 1e-6) return null;
+    return { x: px + t * dx, y: py + t * dy, t };
+}
+
+function clipLineToTank(px, py, dx, dy) {
+    const hits = [];
+    const edges = [[0, 0, W, 0], [W, 0, W, H], [W, H, 0, H], [0, H, 0, 0]];
+    for (const [x1, y1, x2, y2] of edges) {
+        const h = lineSegIntersect(px, py, dx, dy, x1, y1, x2, y2);
+        if (h) hits.push(h);
+    }
+    hits.sort((a, b) => a.t - b.t);
+    const uniq = [];
+    for (const p of hits) {
+        if (!uniq.length || Math.hypot(p.x - uniq[uniq.length - 1].x, p.y - uniq[uniq.length - 1].y) > 1.5) {
+            uniq.push(p);
+        }
+    }
+    if (uniq.length < 2) return null;
+    return { x1: uniq[0].x, y1: uniq[0].y, x2: uniq[uniq.length - 1].x, y2: uniq[uniq.length - 1].y };
+}
+
+function clipLineByPlanes(ox, oy, dx, dy, planes) {
+    const len = Math.hypot(dx, dy) || 1;
+    dx /= len; dy /= len;
+    let t0 = -1e5, t1 = 1e5;
+    const all = planes.concat([
+        { nx: 1, ny: 0, px: 0, py: 0, m: 3 },
+        { nx: -1, ny: 0, px: W, py: 0, m: 3 },
+        { nx: 0, ny: 1, px: 0, py: 0, m: 3 },
+        { nx: 0, ny: -1, px: 0, py: H, m: 3 }
+    ]);
+    for (const pl of all) {
+        const denom = dx * pl.nx + dy * pl.ny;
+        const bound = (pl.m || 0) - ((ox - pl.px) * pl.nx + (oy - pl.py) * pl.ny);
+        if (Math.abs(denom) < 1e-9) {
+            if (bound > 1e-6) return null;
+            continue;
+        }
+        const t = bound / denom;
+        if (denom > 0) t0 = Math.max(t0, t);
+        else t1 = Math.min(t1, t);
+    }
+    if (t1 - t0 < 4) return null;
+    return { x1: ox + t0 * dx, y1: oy + t0 * dy, x2: ox + t1 * dx, y2: oy + t1 * dy };
+}
+
+function crestDistances(front, k, emit) {
+    const ds = [];
+    const n0 = Math.ceil((-emit - Math.PI / 2) / (2 * Math.PI) - 1e-9);
+    for (let n = n0; n < n0 + 60; n++) {
+        const d = (emit + Math.PI / 2 + 2 * Math.PI * n) / k;
+        if (d > 2 && d <= front) ds.push(d);
+        if (d > front) break;
+    }
+    return ds;
+}
+
+function strokeSeg(seg, color, lw) {
+    tankCtx.strokeStyle = color;
+    tankCtx.lineWidth = lw;
+    tankCtx.lineCap = 'round';
+    tankCtx.beginPath();
+    tankCtx.moveTo(seg.x1, seg.y1);
+    tankCtx.lineTo(seg.x2, seg.y2);
+    tankCtx.stroke();
+}
+
+function drawStraightReflectionLines(g) {
+    const pose = getSourceBarPose();
+    const cpx = pose.contact.x, cpy = pose.contact.y;
+    const { di, dr, nx, ny, cx, cy, bx1, by1, bx2, by2 } = g;
+    const k = 2 * Math.PI / getLambda();
+    const front = basicFront, emit = basicEmit;
+    const ds = crestDistances(front, k, emit);
+    const frontPlanes = [
+        { nx, ny, px: cx, py: cy, m: BARRIER_HALF + 2 },
+        { nx: pose.travel.x, ny: pose.travel.y, px: cpx, py: cpy, m: 0 }
+    ];
+    const reflPlanes = [
+        { nx, ny, px: cx, py: cy, m: BARRIER_HALF + 2 }
+    ];
+    let sHit = Infinity, qx = cx, qy = cy;
+    for (let i = 0; i <= 24; i++) {
+        const u = i / 24;
+        const x = bx1 + (bx2 - bx1) * u, y = by1 + (by2 - by1) * u;
+        if (x < -8 || x > W + 8 || y < -8 || y > H + 8) continue;
+        const s = (x - cpx) * di.x + (y - cpy) * di.y;
+        if (s < sHit) { sHit = s; qx = x; qy = y; }
+    }
+
+    if (showIncWF) {
+        for (const d of ds) {
+            const ox = cpx + di.x * d, oy = cpy + di.y * d;
+            const seg = clipLineByPlanes(ox, oy, -di.y, di.x, frontPlanes);
+            if (seg) strokeSeg(seg, '#7c3aed', 2.2);
+        }
+    }
+    if (showRefWF && sHit < Infinity) {
+        for (const d of ds) {
+            if (d < sHit + 2) continue;
+            const ox = qx + dr.x * (d - sHit);
+            const oy = qy + dr.y * (d - sHit);
+            const seg = clipLineByPlanes(ox, oy, -dr.y, dr.x, reflPlanes);
+            if (seg) strokeSeg(seg, '#0284c7', 2.2);
+        }
+    }
+}
+
+function getCircularReflectionGeom() {
+    const bx = W * 0.68;
+    const sx = W * 0.32, sy = H * 0.5;
+    const faceX = bx - BARRIER_HALF;
+    return {
+        bx, sx, sy, faceX,
+        ix: 2 * faceX - sx,
+        xClip: faceX - 1
+    };
+}
+
+function drawCircularReflectionLines() {
+    const k = 2 * Math.PI / getLambda();
+    const front = basicFront, emit = basicEmit;
+    const ds = crestDistances(front, k, emit);
+    const { bx, sx, sy, ix, xClip } = getCircularReflectionGeom();
+    tankCtx.save();
+    tankCtx.beginPath();
+    tankCtx.rect(0, 0, xClip, H);
+    tankCtx.clip();
+    if (showIncWF) {
+        tankCtx.strokeStyle = '#7c3aed';
+        tankCtx.lineWidth = 2.2;
+        for (const d of ds) {
+            tankCtx.beginPath();
+            tankCtx.arc(sx, sy, d, 0, Math.PI * 2);
+            tankCtx.stroke();
+        }
+    }
+    if (showRefWF) {
+        tankCtx.strokeStyle = '#0284c7';
+        tankCtx.lineWidth = 2.2;
+        for (const d of ds) {
+            tankCtx.beginPath();
+            tankCtx.arc(ix, sy, d, 0, Math.PI * 2);
+            tankCtx.stroke();
+        }
+    }
+    tankCtx.restore();
+
+    if (showRefWF) {
+        tankCtx.save();
+        tankCtx.beginPath();
+        tankCtx.rect(bx + BARRIER_HALF + 1, 0, Math.max(0, W - bx), H);
+        tankCtx.clip();
+        tankCtx.strokeStyle = '#0284c7';
+        tankCtx.lineWidth = 1.8;
+        tankCtx.setLineDash([6, 5]);
+        for (const d of ds) {
+            tankCtx.beginPath();
+            tankCtx.arc(ix, sy, d, 0, Math.PI * 2);
+            tankCtx.stroke();
+        }
+        tankCtx.setLineDash([]);
+        tankCtx.restore();
+    }
+}
+
+function strokeDashed(x1, y1, x2, y2, color, lw = 1.5) {
+    tankCtx.save();
+    tankCtx.strokeStyle = color;
+    tankCtx.lineWidth = lw;
+    tankCtx.setLineDash([6, 5]);
+    tankCtx.beginPath();
+    tankCtx.moveTo(x1, y1);
+    tankCtx.lineTo(x2, y2);
+    tankCtx.stroke();
+    tankCtx.restore();
+}
+
+function drawCircularReflectionDiagram() {
+    const { sx, sy, ix, faceX } = getCircularReflectionGeom();
+    const rayColor = '#d97706';
+    const dashColor = '#334155';
+    const nLen = Math.min(W, H) * 0.16;
+    const hits = [
+        { py: sy - H * 0.18, i: 'i', r: 'r', label: true },
+        { py: sy + H * 0.22, i: "i'", r: "r'", label: false }
+    ];
+
+    hits.forEach(({ py, i, r, label }) => {
+        const toO = { x: sx - faceX, y: sy - py };
+        const toI = { x: ix - faceX, y: sy - py };
+        const refl = { x: -toI.x, y: -toI.y };
+        const reflLen = Math.hypot(refl.x, refl.y) || 1;
+        const reach = Math.min(Math.max(48, faceX - 18), Math.min(W, H) * 0.4);
+        const rx = faceX + refl.x / reflLen * reach;
+        const ry = py + refl.y / reflLen * reach;
+
+        strokeDashed(faceX, py, ix, sy, dashColor, 1.5);
+        strokeDashed(faceX - nLen, py, faceX + 12, py, dashColor, 1.4);
+        if (label) {
+            tankCtx.font = 'italic 11px sans-serif';
+            tankCtx.fillStyle = dashColor;
+            tankCtx.fillText(t('normalLbl'), faceX - nLen + 2, py - 8);
+        }
+
+        drawRayArrow(sx, sy, faceX, py, rayColor, label ? t('rayInc') : null, {
+            lineWidth: 2.2, headAt: 'mid', labelPos: 'mid', labelDist: 16, endGap: 8
+        });
+        drawRayArrow(faceX, py, rx, ry, rayColor, label ? t('rayRefl') : null, {
+            lineWidth: 2.2, headAt: 'mid', labelPos: 'mid', labelDist: 16, startGap: 8
+        });
+
+        drawInteriorAngle(faceX, py, toO.x, toO.y, -1, 0, i, rayColor, 26);
+        drawInteriorAngle(faceX, py, refl.x, refl.y, -1, 0, r, rayColor, 26);
+    });
+}
+
+function drawNormalRightAngle(g) {
+    const { cx, cy, nx, ny, bx1, by1, bx2, by2 } = g;
+    const tx = bx2 - bx1, ty = by2 - by1;
+    const tl = Math.hypot(tx, ty) || 1;
+    const along = nx * tx + ny * ty >= 0 ? 1 : -1;
+    const vx = along * tx / tl, vy = along * ty / tl;
+    const sz = 11;
+    tankCtx.strokeStyle = '#475569';
+    tankCtx.lineWidth = 1.2;
+    tankCtx.beginPath();
+    tankCtx.moveTo(cx + nx * sz, cy + ny * sz);
+    tankCtx.lineTo(cx + nx * sz + vx * sz, cy + ny * sz + vy * sz);
+    tankCtx.lineTo(cx + vx * sz, cy + vy * sz);
+    tankCtx.stroke();
+}
+
+function angleDiff(a, b) {
+    let d = b - a;
+    while (d <= -Math.PI) d += 2 * Math.PI;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    return d;
+}
+
+function drawFixedArc(cx, cy, start, end, ccw, label, color, radius = 36) {
+    let diff = end - start;
+    if (ccw) { while (diff <= 0) diff += 2 * Math.PI; }
+    else { while (diff >= 0) diff -= 2 * Math.PI; }
+    if (Math.abs(diff) > Math.PI / 2 + 0.05) return;
+
+    tankCtx.strokeStyle = color;
+    tankCtx.fillStyle = color;
+    tankCtx.lineWidth = 1.5;
+    tankCtx.beginPath();
+    tankCtx.arc(cx, cy, radius, start, end, ccw);
+    tankCtx.stroke();
+
+    const mid = start + diff / 2;
+    tankCtx.font = 'bold 11px sans-serif';
+    tankCtx.fillText(label, cx + Math.cos(mid) * (radius + 14), cy + Math.sin(mid) * (radius + 14));
+}
+
+function drawInteriorAngle(cx, cy, arm1x, arm1y, arm2x, arm2y, label, color, radius = 32) {
+    const len1 = Math.hypot(arm1x, arm1y) || 1;
+    const len2 = Math.hypot(arm2x, arm2y) || 1;
+    const dot = (arm1x * arm2x + arm1y * arm2y) / (len1 * len2);
+    const interiorRad = Math.min(Math.PI / 2,
+        Math.acos(Math.max(-1, Math.min(1, Math.abs(dot)))));
+    if (interiorRad < 0.03) return;
+
+    const a1 = Math.atan2(arm1y, arm1x);
+    const a2 = Math.atan2(arm2y, arm2x);
+    let diff = angleDiff(a2, a1);
+    if (Math.abs(diff) > interiorRad + 0.12) {
+        diff = diff > 0 ? diff - 2 * Math.PI : diff + 2 * Math.PI;
+    }
+    if (Math.abs(diff) > Math.PI / 2 + 0.05) return;
+
+    drawFixedArc(cx, cy, a1, a1 + diff, diff > 0, label, color, radius);
+}
+
+function sideOfBarrier(x, y, nx, ny, cx, cy) {
+    return (x - cx) * nx + (y - cy) * ny;
+}
+
+function drawWoodenBarrier(x1, y1, x2, y2, nx, ny, half) {
+    tankCtx.beginPath();
+    tankCtx.moveTo(x1 + nx * half, y1 + ny * half);
+    tankCtx.lineTo(x2 + nx * half, y2 + ny * half);
+    tankCtx.lineTo(x2 - nx * half, y2 - ny * half);
+    tankCtx.lineTo(x1 - nx * half, y1 - ny * half);
+    tankCtx.closePath();
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const wood = tankCtx.createLinearGradient(mx - nx * half, my - ny * half, mx + nx * half, my + ny * half);
+    wood.addColorStop(0, '#e8d5b5');
+    wood.addColorStop(0.35, '#c4a574');
+    wood.addColorStop(0.7, '#a67c52');
+    wood.addColorStop(1, '#8b6914');
+    tankCtx.fillStyle = wood;
+    tankCtx.fill();
+    tankCtx.strokeStyle = '#6b4f1d';
+    tankCtx.lineWidth = 1.8;
+    tankCtx.stroke();
+}
+
+function drawStraightBarrier(g) {
+    drawWoodenBarrier(g.bx1, g.by1, g.bx2, g.by2, g.nx, g.ny, BARRIER_HALF);
+    tankCtx.font = 'bold 12px sans-serif';
+    tankCtx.fillStyle = '#5c4033';
+    tankCtx.fillText(t('barrierLbl'), (g.bx1 + g.bx2) / 2 - 48, (g.by1 + g.by2) / 2 - BARRIER_HALF - 10);
+}
+
+function drawCircularBarrier() {
+    const bx = W * 0.68, half = BARRIER_HALF;
+    const wood = tankCtx.createLinearGradient(bx - half, 0, bx + half, 0);
+    wood.addColorStop(0, '#e8d5b5');
+    wood.addColorStop(0.4, '#c4a574');
+    wood.addColorStop(1, '#8b6914');
+    tankCtx.fillStyle = wood;
+    tankCtx.fillRect(bx - half, 0, half * 2, H);
+    tankCtx.strokeStyle = '#6b4f1d';
+    tankCtx.lineWidth = 1.8;
+    tankCtx.strokeRect(bx - half, 0, half * 2, H);
+    tankCtx.fillStyle = '#5c4033';
+    tankCtx.font = 'bold 12px sans-serif';
+    tankCtx.fillText(t('barrierLbl'), bx + half + 8, 18);
+}
+
+function drawReflectionDiagram(g) {
+    const { cx, cy, nx, ny, di, dr, iDeg, rDeg } = g;
+    const rayLen = Math.min(W, H) * 0.36;
+    const nLen = Math.min(W, H) * 0.22;
+    const rayColor = '#d97706';
+
+    tankCtx.strokeStyle = '#334155';
+    tankCtx.lineWidth = 1.6;
+    tankCtx.setLineDash([6, 5]);
+    tankCtx.beginPath();
+    tankCtx.moveTo(cx - nx * nLen, cy - ny * nLen);
+    tankCtx.lineTo(cx + nx * nLen, cy + ny * nLen);
+    tankCtx.stroke();
+    tankCtx.setLineDash([]);
+    drawNormalRightAngle(g);
+    tankCtx.font = 'italic 12px sans-serif';
+    tankCtx.fillStyle = '#334155';
+    tankCtx.fillText(t('normalLbl'), cx + nx * (nLen * 0.68) + 8, cy + ny * (nLen * 0.68) - 4);
+
+    const start = rayStartAtSource(cx, cy, di);
+    drawRayArrow(start.x, start.y, cx, cy, rayColor, t('rayInc'), {
+        lineWidth: 3, headAt: 'mid', labelPos: 'mid', labelDist: 26, endGap: 14
+    });
+    drawRayArrow(cx, cy, cx + dr.x * rayLen, cy + dr.y * rayLen, rayColor, t('rayRefl'), {
+        lineWidth: 3, headAt: 'mid', labelPos: 'mid', labelDist: 24, startGap: 14
+    });
+    drawInteriorAngle(cx, cy, nx, ny, -di.x, -di.y, 'i', rayColor, 36);
+    drawInteriorAngle(cx, cy, -nx, -ny, dr.x, dr.y, 'r', rayColor, 36);
+
+    tankCtx.font = 'bold 12px sans-serif';
+    tankCtx.fillStyle = '#0f172a';
+    tankCtx.fillText(`${t('incAngle')} = ${formatInteriorDeg(iDeg)}°`, W - 168, 22);
+    tankCtx.fillText(`${t('reflAngle')} = ${formatInteriorDeg(rDeg)}°`, W - 168, 40);
+    tankCtx.fillText(`λ ≈ ${getLambda().toFixed(0)} px`, 14, 24);
+}
+
+// ---- Screenshot ----
+function saveScreenshot() {
+    const pad = 14;
+    const out = document.createElement('canvas');
+    out.width = sW + W + pad * 3;
+    out.height = Math.max(sH, H) + pad * 2;
+    const octx = out.getContext('2d');
+    octx.fillStyle = '#ffffff';
+    octx.fillRect(0, 0, out.width, out.height);
+    octx.drawImage(sideCanvas, pad, pad);
+    octx.drawImage(tankCanvas, sW + pad * 2, pad);
+    octx.fillStyle = 'rgba(15,23,42,0.7)'; octx.font = '11px sans-serif';
+    octx.fillText(t('side'), pad, pad - 4);
+    octx.fillText(t('tank'), sW + pad * 2, pad - 4);
+    const link = document.createElement('a');
+    link.download = `ripple-tank-${mode}-${Date.now()}.png`;
+    link.href = out.toDataURL('image/png');
+    link.click();
+    showToast(t('shotOk'));
+}
+
+function showToast(msg) {
+    const el = document.getElementById('toast');
+    el.innerText = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+function getRefrAngles() {
+    const iDeg = Math.min(90, REFR_INC_DEG);
+    const ang1 = iDeg * Math.PI / 180;
+    const ang2 = Math.asin(Math.max(-1, Math.min(1, Math.sin(ang1) * shallowSpeed)));
+    const rDeg = interiorDegFromDirs(0, 1, Math.sin(ang2), Math.cos(ang2));
+    return { ang1, ang2, iDeg, rDeg };
+}
+
+function getDiffractionSpread(lambda) {
+    const ratio = gapWidth / lambda;
+    const thetaRad = Math.asin(Math.min(1, lambda / gapWidth));
+    const strength = ratio < 1 ? t('diffStrong') : ratio < 2.5 ? t('diffMed') : t('diffWeak');
+    return { ratio, thetaRad, thetaDeg: thetaRad * 180 / Math.PI, strength };
+}
+
+function drawRayArrow(x1, y1, x2, y2, color = '#0f172a', label = null, opts = {}) {
+    const lineWidth = opts.lineWidth ?? 2;
+    const endGap = opts.endGap ?? 0;
+    const startGap = opts.startGap ?? 0;
+    const headAt = opts.headAt ?? 'end';
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len, uy = dy / len;
+    let ex = x2, ey = y2, sx = x1, sy = y1;
+    if (endGap > 0) { ex = x2 - ux * endGap; ey = y2 - uy * endGap; }
+    if (startGap > 0) { sx = x1 + ux * startGap; sy = y1 + uy * startGap; }
+    if (Math.hypot(ex - sx, ey - sy) < 2) return;
+
+    tankCtx.strokeStyle = color;
+    tankCtx.fillStyle = color;
+    tankCtx.lineWidth = lineWidth;
+    tankCtx.setLineDash([]);
+    tankCtx.beginPath();
+    tankCtx.moveTo(sx, sy);
+    tankCtx.lineTo(ex, ey);
+    tankCtx.stroke();
+
+    if (headAt !== 'none') {
+        let hx, hy, ang;
+        if (headAt === 'mid') {
+            hx = (sx + ex) / 2;
+            hy = (sy + ey) / 2;
+            ang = Math.atan2(ey - sy, ex - sx);
+        } else if (headAt === 'start') {
+            hx = sx; hy = sy;
+            ang = Math.atan2(ey - sy, ex - sx);
+        } else {
+            hx = ex; hy = ey;
+            ang = Math.atan2(ey - sy, ex - sx);
+        }
+        const head = opts.headSize ?? (lineWidth >= 3 ? 11 : 9);
+        tankCtx.beginPath();
+        tankCtx.moveTo(hx, hy);
+        tankCtx.lineTo(hx - head * Math.cos(ang - 0.38), hy - head * Math.sin(ang - 0.38));
+        tankCtx.lineTo(hx - head * Math.cos(ang + 0.38), hy - head * Math.sin(ang + 0.38));
+        tankCtx.closePath();
+        tankCtx.fill();
+    }
+
+    if (typeof label === 'string' && label) {
+        tankCtx.font = opts.labelFont ?? 'bold 10px sans-serif';
+        tankCtx.fillStyle = color;
+        if (opts.labelPos === 'mid') {
+            const mx = (sx + ex) / 2, my = (sy + ey) / 2;
+            let px = -uy, py = ux;
+            const side = opts.labelSide ?? (py > 0 ? -1 : 1);
+            px *= side; py *= side;
+            const dist = opts.labelDist ?? 22;
+            const prevAlign = tankCtx.textAlign;
+            const prevBase = tankCtx.textBaseline;
+            tankCtx.textAlign = opts.labelAlign ?? 'center';
+            tankCtx.textBaseline = 'middle';
+            tankCtx.fillText(label,
+                mx + px * dist + (opts.labelOffsetX ?? 0),
+                my + py * dist + (opts.labelOffsetY ?? 0));
+            tankCtx.textAlign = prevAlign;
+            tankCtx.textBaseline = prevBase;
+        } else {
+            const lx = headAt === 'start' ? sx + 5 : ex + 5;
+            const ly = headAt === 'start' ? sy - 5 : ey - 5;
+            tankCtx.fillText(label, lx, ly);
+        }
+    }
+}
+
+function getRefractionVertex() {
+    return { cx: W * 0.42, cy: H * 0.5 };
+}
+
+function getRefrGeom() {
+    const boundary = H * 0.5;
+    const ang1 = Math.min(90, REFR_INC_DEG) * Math.PI / 180;
+    const ang2 = Math.asin(Math.max(-1, Math.min(1, Math.sin(ang1) * shallowSpeed)));
+    const { cx, cy } = getRefractionVertex();
+    return {
+        boundary, ang1, ang2, cx, cy,
+        lambda1: getLambda(),
+        lambda2: getLambda() * shallowSpeed,
+        di: { x: Math.sin(ang1), y: Math.cos(ang1) },
+        dr: { x: Math.sin(ang2), y: Math.cos(ang2) }
+    };
+}
+
+function drawSmallAngleMark(cx, cy, ax, ay, bx, by, label, color, radius) {
+    const a1 = Math.atan2(ay, ax);
+    const a2 = Math.atan2(by, bx);
+    let d = a2 - a1;
+    while (d <= -Math.PI) d += 2 * Math.PI;
+    while (d > Math.PI) d -= 2 * Math.PI;
+    tankCtx.strokeStyle = color;
+    tankCtx.fillStyle = color;
+    tankCtx.lineWidth = 1.6;
+    tankCtx.beginPath();
+    tankCtx.arc(cx, cy, radius, a1, a1 + d, d < 0);
+    tankCtx.stroke();
+    const mid = a1 + d / 2;
+    tankCtx.font = 'bold 12px sans-serif';
+    tankCtx.fillText(label, cx + Math.cos(mid) * (radius + 14), cy + Math.sin(mid) * (radius + 14));
+}
+
+function drawRefractionDiagram() {
+    const { cx, cy, di, dr, lambda1, lambda2 } = getRefrGeom();
+    const { iDeg, rDeg } = getRefrAngles();
+    const rayColor = '#d97706';
+    const rayLen = Math.min(W, H) * 0.36;
+    const nLen = Math.min(W, H) * 0.22;
+
+    tankCtx.strokeStyle = '#334155';
+    tankCtx.lineWidth = 1.6;
+    tankCtx.setLineDash([6, 5]);
+    tankCtx.beginPath();
+    tankCtx.moveTo(cx, Math.max(8, cy - nLen));
+    tankCtx.lineTo(cx, Math.min(H - 8, cy + nLen));
+    tankCtx.stroke();
+    tankCtx.setLineDash([]);
+    tankCtx.font = 'italic 12px sans-serif';
+    tankCtx.fillStyle = '#334155';
+    tankCtx.fillText(t('normalLbl'), cx + 8, cy - nLen + 4);
+
+    const start = rayStartAtSource(cx, cy, di);
+    drawRayArrow(start.x, start.y, cx, cy, rayColor, t('rayInc'), {
+        lineWidth: 3, headAt: 'mid', labelPos: 'mid', labelDist: 28
+    });
+    drawRayArrow(cx, cy, cx + dr.x * rayLen, cy + dr.y * rayLen, rayColor, t('rayRefr'), {
+        lineWidth: 3, headAt: 'mid', labelPos: 'mid', labelDist: 24
+    });
+    tankCtx.fillStyle = rayColor;
+    tankCtx.beginPath();
+    tankCtx.arc(cx, cy, 2, 0, Math.PI * 2);
+    tankCtx.fill();
+    drawSmallAngleMark(cx, cy, 0, -1, -di.x, -di.y, 'i', rayColor, 36);
+    drawSmallAngleMark(cx, cy, 0, 1, dr.x, dr.y, 'r', rayColor, 36);
+
+    tankCtx.font = 'bold 12px sans-serif';
+    tankCtx.fillStyle = '#0f172a';
+    tankCtx.fillText(`${t('incAngle')} = ${formatInteriorDeg(iDeg)}°`, W - 168, 22);
+    tankCtx.fillText(`${t('refrAngle')} = ${formatInteriorDeg(rDeg, 1)}°`, W - 168, 40);
+    tankCtx.fillStyle = '#0369a1';
+    tankCtx.fillText(`${t('lambda1')} ≈ ${lambda1.toFixed(0)} px`, 14, getPlaneSourceY() + 22);
+    tankCtx.fillStyle = '#d97706';
+    tankCtx.fillText(`${t('lambda2')} ≈ ${lambda2.toFixed(0)} px`, 14, H * 0.5 + 40);
+}
+
+function drawRefractionAngles() {
+    const { cx, cy } = getRefractionVertex();
+    const len = Math.min(W, H) * 0.22;
+    tankCtx.strokeStyle = 'rgba(15,23,42,0.4)';
+    tankCtx.lineWidth = 1.5;
+    tankCtx.setLineDash([4, 4]);
+    tankCtx.beginPath();
+    tankCtx.moveTo(cx, cy - len - 20);
+    tankCtx.lineTo(cx, cy + len + 20);
+    tankCtx.stroke();
+    tankCtx.setLineDash([]);
+}
+
+function drawDiffractionSpreadZone(bx, gy, spread) {
+    const reach = Math.min(W - bx, H * 0.45);
+    tankCtx.fillStyle = 'rgba(251,191,36,0.1)';
+    tankCtx.beginPath();
+    tankCtx.moveTo(bx, gy);
+    tankCtx.arc(bx, gy, reach, -spread, spread);
+    tankCtx.closePath();
+    tankCtx.fill();
+    tankCtx.strokeStyle = 'rgba(251,191,36,0.55)';
+    tankCtx.lineWidth = 1.5;
+    tankCtx.setLineDash([6, 5]);
+    [-spread, spread].forEach(a => {
+        tankCtx.beginPath();
+        tankCtx.moveTo(bx, gy);
+        tankCtx.lineTo(bx + Math.cos(a) * reach, gy + Math.sin(a) * reach);
+        tankCtx.stroke();
+    });
+    tankCtx.setLineDash([]);
+}
+
+function drawDiffractionRays(lambda) {
+    const bx = W * 0.40, gy = H * 0.5;
+    const { thetaRad } = getDiffractionSpread(lambda);
+    drawRayArrow(bx - 130, gy, bx - 12, gy, 'rgba(15,23,42,0.75)');
+    const reach = Math.min(W - bx - 20, H * 0.48);
+    [-thetaRad, 0, thetaRad].forEach((a, idx) => {
+        const col = idx === 1 ? '#d97706' : 'rgba(15,23,42,0.7)';
+        drawRayArrow(bx, gy, bx + Math.cos(a) * reach, gy + Math.sin(a) * reach, col,
+            idx === 1 ? t('rayDiff') : null);
+    });
+}
+
+function roundRectPath(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+}
+
+function drawPlaneSourceBar() {
+    tankCtx.save();
+    const pose = getSourceBarPose();
+    const { angle, cx, cy, barW, barH } = pose;
+    const hw = barW / 2, hh = barH / 2;
+
+    const toWorld = (lx, ly) => ({
+        x: cx + lx * Math.cos(angle) - ly * Math.sin(angle),
+        y: cy + lx * Math.sin(angle) + ly * Math.cos(angle)
+    });
+    const topL = toWorld(-hw + 16, -hh);
+    const topR = toWorld(hw - 16, -hh);
+
+    tankCtx.strokeStyle = '#64748b';
+    tankCtx.lineWidth = 1.6;
+    tankCtx.beginPath();
+    tankCtx.moveTo(topL.x, Math.max(0, topL.y - 48)); tankCtx.lineTo(topL.x, topL.y);
+    tankCtx.moveTo(topR.x, Math.max(0, topR.y - 48)); tankCtx.lineTo(topR.x, topR.y);
+    tankCtx.stroke();
+
+    tankCtx.translate(cx, cy);
+    tankCtx.rotate(angle);
+
+    tankCtx.fillStyle = 'rgba(15,23,42,0.14)';
+    tankCtx.fillRect(-hw + 4, hh, barW - 8, 5);
+
+    const wood = tankCtx.createLinearGradient(0, -hh, 0, hh);
+    wood.addColorStop(0, '#d97706');
+    wood.addColorStop(0.28, '#b45309');
+    wood.addColorStop(0.72, '#92400e');
+    wood.addColorStop(1, '#78350f');
+    tankCtx.fillStyle = wood;
+    roundRectPath(tankCtx, -hw, -hh, barW, barH, 3);
+    tankCtx.fill();
+    tankCtx.strokeStyle = '#78350f';
+    tankCtx.lineWidth = 1;
+    tankCtx.stroke();
+
+    tankCtx.strokeStyle = 'rgba(120,53,15,0.38)';
+    tankCtx.lineWidth = 1;
+    for (let i = 1; i <= 2; i++) {
+        const gy = -hh + barH * (i / 3);
+        tankCtx.beginPath();
+        tankCtx.moveTo(-hw + 10, gy);
+        tankCtx.lineTo(hw - 10, gy);
+        tankCtx.stroke();
+    }
+
+    tankCtx.strokeStyle = '#0284c7';
+    tankCtx.lineWidth = 3.5;
+    tankCtx.lineCap = 'round';
+    tankCtx.beginPath();
+    tankCtx.moveTo(-hw, hh);
+    tankCtx.lineTo(hw, hh);
+    tankCtx.stroke();
+    tankCtx.lineCap = 'butt';
+
+    const motW = Math.max(30, Math.round(W * 0.06));
+    const motH = Math.max(20, Math.round(H * 0.03));
+    const motY = -hh - motH / 2 - 5;
+    tankCtx.fillStyle = '#475569';
+    roundRectPath(tankCtx, -motW / 2, motY - motH / 2, motW, motH, 3);
+    tankCtx.fill();
+    tankCtx.strokeStyle = '#334155';
+    tankCtx.lineWidth = 1;
+    tankCtx.stroke();
+
+    const eccR = Math.max(6.5, motH * 0.34);
+    const ex = Math.cos(motorAngle) * eccR;
+    const ey = motY + Math.sin(motorAngle) * eccR;
+    tankCtx.strokeStyle = 'rgba(248,113,113,0.75)';
+    tankCtx.lineWidth = 1.3;
+    tankCtx.beginPath();
+    tankCtx.arc(0, motY, eccR, 0, Math.PI * 2);
+    tankCtx.stroke();
+    tankCtx.fillStyle = '#ef4444';
+    tankCtx.beginPath();
+    tankCtx.arc(ex, ey, Math.max(3.2, eccR * 0.48), 0, Math.PI * 2);
+    tankCtx.fill();
+
+    const ax = -hw - 16;
+    tankCtx.strokeStyle = '#10b981';
+    tankCtx.lineWidth = 2.2;
+    tankCtx.beginPath();
+    tankCtx.moveTo(ax, -13); tankCtx.lineTo(ax, 13);
+    tankCtx.moveTo(ax, -13); tankCtx.lineTo(ax - 5, -6);
+    tankCtx.moveTo(ax, -13); tankCtx.lineTo(ax + 5, -6);
+    tankCtx.moveTo(ax, 13); tankCtx.lineTo(ax - 5, 6);
+    tankCtx.moveTo(ax, 13); tankCtx.lineTo(ax + 5, 6);
+    tankCtx.stroke();
+
+    if (isPlaying && Math.sin(phase) > 0.55) {
+        tankCtx.strokeStyle = 'rgba(2,132,199,0.5)';
+        tankCtx.lineWidth = 1.4;
+        for (let i = -5; i <= 5; i++) {
+            tankCtx.beginPath();
+            tankCtx.arc(i * (barW / 12), hh + 4, 3.5 + (i % 2), Math.PI, 0, true);
+            tankCtx.stroke();
+        }
+    }
+    tankCtx.restore();
+
+    const motWorld = toWorld(0, -hh - motH / 2 - 5);
+    tankCtx.font = 'bold 10px sans-serif';
+    tankCtx.fillStyle = '#334155';
+    tankCtx.textAlign = 'center';
+    tankCtx.fillText(t('motorLbl'), motWorld.x, motWorld.y - motH / 2 - 4);
+    tankCtx.textAlign = 'left';
+    tankCtx.fillStyle = '#dc2626';
+    tankCtx.font = '9px sans-serif';
+    tankCtx.fillText(t('eccLbl'), motWorld.x + motW / 2 + 5, motWorld.y + 3);
+
+    const vibWorld = toWorld(-hw - 16, -hh - 18);
+    tankCtx.fillStyle = '#10b981';
+    tankCtx.font = 'bold 9px sans-serif';
+    tankCtx.fillText(t('vibArrow'), vibWorld.x - 6, vibWorld.y);
+
+    const cap = toWorld(-hw + 8, hh + 16);
+    tankCtx.fillStyle = '#0284c7';
+    tankCtx.font = 'bold 11px sans-serif';
+    tankCtx.fillText(t('planeBarLbl'), cap.x, cap.y);
+}
+
+function drawOverlay(k) {
+    const lambda = getLambda();
+    tankCtx.save();
+    tankCtx.font = 'bold 12px sans-serif';
+
+    if (mode === 'basic') {
+        if (sourceType === 'plane') {
+            drawPlaneSourceBar();
+        } else {
+            tankCtx.beginPath(); tankCtx.arc(W * 0.5, H * 0.5, 5, 0, 7);
+            tankCtx.fillStyle = '#0f172a'; tankCtx.fill();
+            tankCtx.fillStyle = '#d97706'; tankCtx.fillText('source', W * 0.5 + 10, H * 0.5 + 4);
+        }
+        tankCtx.fillStyle = '#0f172a';
+        const lambdaY = sourceType === 'plane' ? getPlaneSourceY() + 22 : 22;
+        tankCtx.fillText(`λ ≈ ${lambda.toFixed(0)} px`, W - 90, lambdaY);
+    }
+    else if (mode === 'reflection') {
+        if (reflType === 'straight') {
+            const g = getBarrierGeom();
+            if (g) {
+                drawStraightReflectionLines(g);
+                drawPlaneSourceBar();
+                drawStraightBarrier(g);
+                if (showRays) drawReflectionDiagram(g);
+            }
+        } else {
+            const { sx, sy, ix } = getCircularReflectionGeom();
+            drawCircularReflectionLines();
+            drawCircularBarrier();
+            if (showRays) drawCircularReflectionDiagram();
+            tankCtx.beginPath(); tankCtx.arc(sx, sy, 5, 0, 7); tankCtx.fillStyle = '#0f172a'; tankCtx.fill();
+            tankCtx.fillStyle = '#d97706'; tankCtx.fillText('O', sx - 16, sy + 4);
+            tankCtx.setLineDash([5, 5]); tankCtx.strokeStyle = 'rgba(15,23,42,0.45)';
+            tankCtx.beginPath(); tankCtx.arc(ix, sy, 4, 0, 7); tankCtx.stroke();
+            tankCtx.setLineDash([]);
+            tankCtx.fillStyle = '#0369a1'; tankCtx.fillText('I (virtual)', ix - 22, sy - 10);
+        }
+    }
+    else if (mode === 'refraction') {
+        drawPlaneSourceBar();
+        tankCtx.strokeStyle = 'rgba(15,23,42,0.5)';
+        tankCtx.lineWidth = 2;
+        tankCtx.setLineDash([6, 4]);
+        tankCtx.beginPath();
+        tankCtx.moveTo(0, H * 0.5);
+        tankCtx.lineTo(W, H * 0.5);
+        tankCtx.stroke();
+        tankCtx.setLineDash([]);
+        tankCtx.fillStyle = '#0369a1';
+        tankCtx.fillText(`${t('fastLbl')}  ·  ${t('fastHint')}`, 12, H * 0.5 - 10);
+        tankCtx.fillStyle = '#d97706';
+        tankCtx.fillText(`${t('slowLbl')}  ·  ${t('slowHint')}  ·  v₂ = ${shallowSpeed} v₁`, 12, H * 0.5 + 22);
+        if (showRays) {
+            drawRefractionDiagram();
+        } else {
+            drawRefractionAngles();
+        }
+    }
+    else if (mode === 'diffraction') {
+        const bx = W * 0.40, gy = H * 0.5;
+        const spread = getDiffractionSpread(lambda);
+        tankCtx.fillStyle = 'rgba(244,63,94,0.85)';
+        tankCtx.fillRect(bx - 4, 0, 8, gy - gapWidth / 2);
+        tankCtx.fillRect(bx - 4, gy + gapWidth / 2, 8, H - (gy + gapWidth / 2));
+        drawDiffractionSpreadZone(bx, gy, spread.thetaRad);
+        tankCtx.font = 'bold 12px sans-serif';
+        tankCtx.fillStyle = '#d97706'; tankCtx.fillText(`gap = ${gapWidth}px`, bx + 12, gy);
+        tankCtx.fillStyle = '#0f172a';
+        tankCtx.fillText(`λ = ${lambda.toFixed(0)}px`, 16, 26);
+        tankCtx.fillStyle = spread.ratio < 1.5 ? '#059669' : spread.ratio < 3 ? '#d97706' : '#64748b';
+        tankCtx.fillText(`${t('gapRatio')} = ${spread.ratio.toFixed(1)}  ·  ${t('spreadAngle')} ≈ ${spread.thetaDeg.toFixed(0)}°`, 16, 44);
+        tankCtx.fillStyle = spread.ratio < 1.5 ? '#059669' : spread.ratio < 3 ? '#d97706' : '#64748b';
+        tankCtx.font = '11px sans-serif';
+        tankCtx.fillText(`→ ${spread.strength}`, 16, 60);
+        if (showRays) drawDiffractionRays(lambda);
+    }
+    else if (mode === 'interference') {
+        const { s1x, s2x, sy } = getIntfSources();
+        [[s1x, 'S₁', src1On], [s2x, 'S₂', src2On]].forEach(([sx, lbl, on]) => {
+            tankCtx.beginPath(); tankCtx.arc(sx, sy, on ? 8 : 6, 0, 7);
+            tankCtx.fillStyle = on ? '#0f172a' : 'rgba(100,116,139,0.6)'; tankCtx.fill();
+            if (!on) {
+                tankCtx.strokeStyle = '#ef4444'; tankCtx.lineWidth = 2;
+                tankCtx.beginPath(); tankCtx.moveTo(sx - 5, sy - 5); tankCtx.lineTo(sx + 5, sy + 5);
+                tankCtx.moveTo(sx + 5, sy - 5); tankCtx.lineTo(sx - 5, sy + 5); tankCtx.stroke();
+            }
+            tankCtx.fillStyle = on ? '#d97706' : '#64748b';
+            tankCtx.fillText(lbl, sx - 8, sy + 24);
+            if (on && mode === 'interference') {
+                tankCtx.fillStyle = 'rgba(15,23,42,0.45)'; tankCtx.font = '9px sans-serif';
+                tankCtx.fillText('⇔', sx - 4, sy - 12);
+            }
+        });
+        if (src1On && src2On) {
+            tankCtx.strokeStyle = 'rgba(15,23,42,0.45)';
+            tankCtx.beginPath(); tankCtx.moveTo(s1x, sy + 30); tankCtx.lineTo(s2x, sy + 30); tankCtx.stroke();
+            tankCtx.textAlign = 'center'; tankCtx.fillStyle = '#0f172a';
+            tankCtx.fillText(`D = ${sourceSepLambda}λ`, (s1x + s2x) / 2, sy + 46);
+        }
+        tankCtx.textAlign = 'left';
+        if (isFlatWater()) {
+            tankCtx.fillStyle = 'rgba(15,23,42,0.7)'; tankCtx.font = '12px sans-serif';
+            tankCtx.textAlign = 'center';
+            tankCtx.fillText(t('flatHint'), W / 2, H * 0.45);
+            tankCtx.textAlign = 'left';
+        } else if (!dragSrc) {
+            tankCtx.fillStyle = 'rgba(15,23,42,0.45)'; tankCtx.font = '10px sans-serif';
+            tankCtx.fillText(t('dragHint'), 12, H - 10);
+        }
+        if (showLines && src1On && src2On) drawNALines(s1x, s2x, sy, lambda);
+    }
+    tankCtx.restore();
+}
+
+function formatPathDiffLambda(ratio) {
+    if (Math.abs(ratio) < 0.05) return '0λ';
+    const r2 = Math.round(ratio * 2) / 2;
+    return (r2 % 1 === 0 ? r2.toFixed(0) : r2.toFixed(1)) + 'λ';
+}
+
+function pathDiffAt(x, y, s1x, s2x, sy) {
+    return Math.hypot(x - s1x, y - sy) - Math.hypot(x - s2x, y - sy);
+}
+
+function solveXForPathDiff(s1x, s2x, sy, y, target, xLo, xHi) {
+    const f = x => pathDiffAt(x, y, s1x, s2x, sy) - target;
+    let lo = xLo, hi = xHi;
+    if (f(lo) * f(hi) > 0) return null;
+    for (let i = 0; i < 55; i++) {
+        const mid = (lo + hi) / 2;
+        if (f(lo) * f(mid) <= 0) hi = mid; else lo = mid;
+    }
+    return (lo + hi) / 2;
+}
+
+function traceHyperbolaBranch(s1x, s2x, sy, targetDiff, xLo, xHi) {
+    const yTop = 16, yBot = sy - 14;
+    const steps = Math.max(120, Math.floor((yBot - yTop) * 1.2));
+    const pts = [];
+    for (let i = 0; i <= steps; i++) {
+        const y = yTop + (yBot - yTop) * i / steps;
+        const x = solveXForPathDiff(s1x, s2x, sy, y, targetDiff, xLo, xHi);
+        if (x !== null && x > 2 && x < W - 2) pts.push({ x, y });
+    }
+    return pts;
+}
+
+function drawSmoothCurve(pts, color, lw) {
+    if (pts.length < 2) return;
+    tankCtx.strokeStyle = color;
+    tankCtx.lineWidth = lw;
+    tankCtx.lineCap = 'round';
+    tankCtx.lineJoin = 'round';
+    tankCtx.beginPath();
+    tankCtx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length - 1; i++) {
+        const mx = (pts[i].x + pts[i + 1].x) / 2;
+        const my = (pts[i].y + pts[i + 1].y) / 2;
+        tankCtx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+    }
+    const last = pts[pts.length - 1];
+    tankCtx.lineTo(last.x, last.y);
+    tankCtx.stroke();
+}
+
+function drawPathDiffLabel(x, y, label, color) {
+    tankCtx.font = 'bold 10px sans-serif';
+    tankCtx.fillStyle = color;
+    tankCtx.textAlign = 'center';
+    tankCtx.fillText('Δ=' + label, x, y);
+    tankCtx.textAlign = 'left';
+}
+
+function drawHyperbolaPair(s1x, s2x, sy, deltaPx, lambdaRatio, color, lw) {
+    const midX = (s1x + s2x) / 2;
+    const label = formatPathDiffLambda(Math.abs(lambdaRatio));
+    const mag = Math.abs(deltaPx);
+
+    if (mag < 0.4) {
+        tankCtx.strokeStyle = color;
+        tankCtx.lineWidth = lw;
+        tankCtx.beginPath();
+        tankCtx.moveTo(midX, 12);
+        tankCtx.lineTo(midX, sy);
+        tankCtx.stroke();
+        drawPathDiffLabel(midX, 10, label, color === '#ec4899' ? '#ec4899' : '#334155');
+        return;
+    }
+
+    const leftPts = traceHyperbolaBranch(s1x, s2x, sy, -mag, 4, midX - 1);
+    const rightPts = traceHyperbolaBranch(s1x, s2x, sy, mag, midX + 1, W - 4);
+    drawSmoothCurve(leftPts, color, lw);
+    drawSmoothCurve(rightPts, color, lw);
+    if (leftPts.length) drawPathDiffLabel(leftPts[0].x, 10, label, color === '#ec4899' ? '#ec4899' : '#334155');
+    if (rightPts.length) drawPathDiffLabel(rightPts[0].x, 10, label, color === '#ec4899' ? '#ec4899' : '#334155');
+}
+
+function drawNALines(s1x, s2x, sy, lambda) {
+    const off = intfPhase === 'anti' ? 0.5 : 0;
+    const drawn = new Set();
+    for (let n = -4; n <= 4; n++) {
+        const aRatio = n + off;
+        const aKey = 'A' + aRatio;
+        if (!drawn.has(aKey)) {
+            drawn.add(aKey);
+            drawHyperbolaPair(s1x, s2x, sy, aRatio * lambda, aRatio, '#ec4899', 2.5);
+        }
+        const nRatio = n + 0.5 + off;
+        const nKey = 'N' + nRatio;
+        if (!drawn.has(nKey)) {
+            drawn.add(nKey);
+            drawHyperbolaPair(s1x, s2x, sy, nRatio * lambda, nRatio, 'rgba(0,0,0,0.88)', 2);
+        }
+    }
+    tankCtx.fillStyle = '#ec4899'; tankCtx.fillRect(W - 115, 10, 14, 4);
+    tankCtx.fillStyle = '#0f172a'; tankCtx.font = '10px sans-serif'; tankCtx.fillText('A', W - 96, 16);
+    tankCtx.fillStyle = '#000'; tankCtx.fillRect(W - 115, 24, 14, 4);
+    tankCtx.fillStyle = '#0f172a'; tankCtx.fillText('N', W - 96, 30);
+}
+
+function draw() { drawSideView(); drawTank(); }
+
+function animate() {
+    if (isPlaying) {
+        phase += 0.055 * freq;
+        if (mode === 'basic' || mode === 'reflection') {
+            basicEmit += 0.055 * freq;
+            basicFront += 0.055 * baseSpeed / (2 * Math.PI);
+        }
+    }
+    draw();
+    requestAnimationFrame(animate);
+}
+
+// ============================================================
+// UI
+// ============================================================
+function buildSubToggle() {
+    const st = document.getElementById('sub-toggle');
+    st.innerHTML = '';
+    if (mode === 'basic') {
+        const [p, d] = t('subSrc');
+        st.innerHTML = `<button data-v="plane" class="${sourceType === 'plane' ? 'active' : ''}">${p}</button>
+                        <button data-v="dipper" class="${sourceType === 'dipper' ? 'active' : ''}">${d}</button>`;
+        st.querySelectorAll('button').forEach(b => b.onclick = () => {
+            sourceType = b.dataset.v;
+            resetOutgoingWaves();
+            buildSubToggle();
+            draw();
+        });
+    } else if (mode === 'reflection') {
+        const [s, c] = t('subRefl');
+        st.innerHTML = `<button data-v="straight" class="${reflType === 'straight' ? 'active' : ''}">${s}</button>
+                        <button data-v="circular" class="${reflType === 'circular' ? 'active' : ''}">${c}</button>`;
+        st.querySelectorAll('button').forEach(b => b.onclick = () => {
+            reflType = b.dataset.v;
+            resetOutgoingWaves();
+            buildSubToggle();
+            updateSliders();
+            draw();
+        });
+    } else if (mode === 'interference') {
+        const [i, a] = t('subIntf');
+        st.innerHTML = `<button data-v="in" class="${intfPhase === 'in' ? 'active' : ''}">${i}</button>
+                        <button data-v="anti" class="${intfPhase === 'anti' ? 'active' : ''}">${a}</button>`;
+        st.querySelectorAll('button').forEach(b => b.onclick = () => { intfPhase = b.dataset.v; buildSubToggle(); draw(); });
+        const srcDiv = document.createElement('div');
+        srcDiv.className = 'src-toggle';
+        srcDiv.innerHTML = `<button data-src="1" class="${src1On ? 'active' : 'off'}">${t('src1Lbl')}</button>
+                            <button data-src="2" class="${src2On ? 'active' : 'off'}">${t('src2Lbl')}</button>`;
+        srcDiv.querySelectorAll('button').forEach(b => b.onclick = () => {
+            if (b.dataset.src === '1') src1On = !src1On; else src2On = !src2On;
+            if (!src1On && !src2On) { if (b.dataset.src === '1') src2On = true; else src1On = true; }
+            buildSubToggle(); draw();
+        });
+        st.appendChild(srcDiv);
+    }
+    tankCanvas.classList.toggle('intf-drag', mode === 'interference');
+}
+
+function updateSliders() {
+    const reflStraight = mode === 'reflection' && reflType === 'straight';
+    const show = (id, on) => document.getElementById(id).classList.toggle('ctrl-hidden', !on);
+    show('btn-lines', mode === 'interference');
+    show('sub-toggle', mode === 'basic' || mode === 'reflection' || mode === 'interference');
+    show('wrap-wavedir', reflStraight);
+    show('wrap-angle', reflStraight);
+    show('wrap-shallow', mode === 'refraction');
+    show('wrap-gap', mode === 'diffraction');
+    show('wrap-sep', mode === 'interference');
+    document.getElementById('wrap-fronts').classList.toggle('show', mode === 'reflection');
+    document.getElementById('wrap-rays').classList.toggle('show',
+        mode === 'diffraction' || mode === 'refraction' || mode === 'reflection');
+}
+
+function updateDOM() {
+    document.getElementById('h-title').innerText = t('title');
+    document.getElementById('h-sub').innerText = t('sub');
+    document.getElementById('lbl-side').innerText = t('side');
+    document.getElementById('lbl-tank').innerText = t('tank');
+    document.getElementById('lbl-mode').innerText = t('mode');
+    document.getElementById('lbl-ctrl').innerText = t('ctrl');
+    document.getElementById('vib-text').innerText = isPlaying ? t('vib') : (phase > 0 ? t('vib') : t('flatHint'));
+    document.getElementById('btn-lang').innerText = t('lang');
+    document.getElementById('mb-basic').innerText = t('basic');
+    document.getElementById('mb-refl').innerText = t('refl');
+    document.getElementById('mb-refr').innerText = t('refr');
+    document.getElementById('mb-diff').innerText = t('diff');
+    document.getElementById('mb-intf').innerText = t('intf');
+    document.getElementById('btn-play').innerText = isPlaying ? t('pause') : t('play');
+    document.getElementById('btn-lines').innerText = t('lines');
+    document.getElementById('btn-fronts-inc').innerText = showIncWF ? t('frontsInc') : t('frontsIncHide');
+    document.getElementById('btn-fronts-inc').classList.toggle('on', showIncWF);
+    document.getElementById('btn-fronts-ref').innerText = showRefWF ? t('frontsRef') : t('frontsRefHide');
+    document.getElementById('btn-fronts-ref').classList.toggle('on', showRefWF);
+    document.getElementById('btn-rays').innerText = showRays ? t('raysHide') : t('rays');
+    document.getElementById('btn-rays').classList.toggle('on', showRays);
+    document.getElementById('btn-shot').innerText = t('shot');
+    document.getElementById('lbl-freq').innerText = t('freq');
+    document.getElementById('lbl-amp').innerText = t('amp');
+    document.getElementById('lbl-wavedir').innerText = t('wavedir');
+    document.getElementById('lbl-angle').innerText = t('angle');
+    document.getElementById('val-wavedir').innerText = waveDirLabel(waveDir);
+    document.getElementById('lbl-shallow').innerText = t('shallow');
+    document.getElementById('lbl-gap').innerText = t('gap');
+    document.getElementById('lbl-sep').innerText = t('sep');
+    document.getElementById('val-lambda').innerText = getLambda().toFixed(0);
+    updateSepDisplay();
+    buildSubToggle();
+}
+
+document.getElementById('btn-play').onclick = () => {
+    isPlaying = !isPlaying;
+    document.getElementById('btn-play').innerText = isPlaying ? t('pause') : t('play');
+    document.getElementById('btn-play').style.background = isPlaying ? 'var(--accent)' : '#f59e0b';
+    document.getElementById('vib-text').innerText = isPlaying ? t('vib') : (phase > 0 ? t('vib') : t('flatHint'));
+    draw();
+};
+document.getElementById('btn-lines').onclick = () => {
+    showLines = !showLines;
+    document.getElementById('btn-lines').classList.toggle('on', showLines);
+    draw();
+};
+document.getElementById('btn-fronts-inc').onclick = () => {
+    showIncWF = !showIncWF;
+    document.getElementById('btn-fronts-inc').classList.toggle('on', showIncWF);
+    updateDOM();
+    draw();
+};
+document.getElementById('btn-fronts-ref').onclick = () => {
+    showRefWF = !showRefWF;
+    document.getElementById('btn-fronts-ref').classList.toggle('on', showRefWF);
+    updateDOM();
+    draw();
+};
+document.getElementById('btn-rays').onclick = () => {
+    showRays = !showRays;
+    document.getElementById('btn-rays').classList.toggle('on', showRays);
+    updateDOM();
+    draw();
+};
+document.querySelectorAll('.mode-btn').forEach(b => {
+    b.onclick = () => {
+        document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        mode = b.dataset.mode;
+        if (mode === 'basic' || mode === 'reflection') resetOutgoingWaves();
+        if (mode === 'reflection' || mode === 'refraction') showRays = true;
+        updateSliders(); updateDOM(); draw();
+    };
+});
+document.getElementById('sl-freq').oninput = e => {
+    freq = +e.target.value;
+    document.getElementById('val-freq').innerText = freq + ' Hz';
+    document.getElementById('val-lambda').innerText = getLambda().toFixed(0);
+    updateSepDisplay();
+    draw();
+};
+document.getElementById('sl-amp').oninput = e => {
+    ampLevel = +e.target.value;
+    document.getElementById('val-amp').innerText = t('ampVals')[ampLevel - 1];
+    draw();
+};
+document.getElementById('sl-angle').oninput = e => {
+    barrierAngle = +e.target.value;
+    document.getElementById('val-angle').innerText = barrierAngle + '°';
+    resetOutgoingWaves();
+    draw();
+};
+document.getElementById('sl-wavedir').oninput = e => {
+    waveDir = +e.target.value;
+    document.getElementById('val-wavedir').innerText = waveDirLabel(waveDir);
+    resetOutgoingWaves();
+    draw();
+};
+document.getElementById('sl-shallow').oninput = e => {
+    shallowSpeed = +e.target.value;
+    document.getElementById('val-shallow').innerText = shallowSpeed.toFixed(2) + '×'; draw();
+};
+document.getElementById('sl-gap').oninput = e => {
+    gapWidth = +e.target.value;
+    document.getElementById('val-gap').innerText = gapWidth + ' px'; draw();
+};
+document.getElementById('sl-sep').oninput = e => {
+    sourceSepLambda = +e.target.value;
+    document.getElementById('val-sep').innerText = sourceSepLambda.toFixed(1) + ' λ';
+    draw();
+};
+
+function updateSepDisplay() {
+    document.getElementById('val-sep').innerText = sourceSepLambda.toFixed(1) + ' λ';
+}
+document.getElementById('btn-lang').onclick = () => {
+    lang = lang === 'zh' ? 'en' : 'zh';
+    document.documentElement.lang = lang === 'zh' ? 'zh-HK' : 'en';
+    updateDOM();
+};
+
+function applyLangFromHub(raw) {
+    lang = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    document.documentElement.lang = lang === "zh" ? "zh-HK" : "en";
+    if (typeof updateDOM === "function") updateDOM();
+}
+try {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q) applyLangFromHub(q);
+} catch (e) { /* ignore */ }
+window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+});
+
+
+document.getElementById('btn-shot').onclick = () => { draw(); saveScreenshot(); };
+
+function canvasCoords(e) {
+    const rect = tankCanvas.getBoundingClientRect();
+    return {
+        x: (e.clientX - rect.left) * (W / rect.width),
+        y: (e.clientY - rect.top) * (H / rect.height)
+    };
+}
+
+function hitIntfSource(x, y) {
+    if (mode !== 'interference') return 0;
+    const { s1x, s2x, sy } = getIntfSources();
+    if (src2On && Math.hypot(x - s2x, y - sy) < 22) return 2;
+    if (src1On && Math.hypot(x - s1x, y - sy) < 22) return 1;
+    return 0;
+}
+
+tankCanvas.addEventListener('mousedown', e => {
+    if (mode !== 'interference') return;
+    dragSrc = hitIntfSource(canvasCoords(e).x, canvasCoords(e).y);
+    if (dragSrc) tankCanvas.classList.add('intf-dragging');
+});
+
+window.addEventListener('mousemove', e => {
+    if (!dragSrc) return;
+    const { x } = canvasCoords(e);
+    setSepFromHalfWidth(Math.abs(x - W / 2));
+    draw();
+});
+
+window.addEventListener('mouseup', () => {
+    if (dragSrc) {
+        dragSrc = null;
+        tankCanvas.classList.remove('intf-dragging');
+        draw();
+    }
+});
+
+setTimeout(() => { updateSliders(); updateDOM(); resize(); animate(); }, 80);
+</script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Supports Lab | Moment Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6efe4; --bg2: #efe4d2; --surface: #fffdf8; --surface2: #f7f0e4;
+      --ink: #2a2118; --muted: #6b5b4a; --line: #e0d0b6; --wood: #b45309;
+      --teal: #0f7a6c; --ccw: #0f7a6c; --cw: #c2410c; --ok: #168a56; --danger: #c2410c;
+      --radius: 16px; --shadow: 0 12px 36px rgba(42, 33, 24, 0.08);
+      --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh; min-height: 100dvh; line-height: 1.5;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .wrap {
+      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
+      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
+      display: flex; flex-direction: column;
+    }
+    .wrap:fullscreen, .wrap:-webkit-full-screen {
+      width: 100%; height: 100%; padding: 0.7rem 0.8rem 0.8rem;
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-mark {
+      width: 54px; height: 54px; border-radius: 14px;
+      background: linear-gradient(145deg, #fff, #f3e6d2);
+      border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow);
+    }
+    .brand h1 { margin: 0; font-family: var(--display); font-size: clamp(1.3rem, 2.6vw, 1.85rem); letter-spacing: -0.02em; line-height: 1.15; }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.92rem; }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; }
+    .lang-toggle { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
+    .lang-toggle button { border: 0; background: transparent; padding: 0.42rem 0.85rem; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.85rem; }
+    .lang-toggle button.active { background: var(--ink); color: #fff; }
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+    .card-hd { padding: 0.75rem 1rem 0.55rem; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.15rem; }
+    .card-hd p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.9rem; }
+    .card-bd { padding: 0.8rem; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+    .stage {
+      position: relative; flex: 1; min-height: 0; height: 100%;
+      background: linear-gradient(180deg, #eaf4fb 0%, #eaf4fb 62%, #d8eccf 62%, #cfe6c4 100%);
+      border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+    canvas.dragging { cursor: grabbing; }
+    .hint-chip { position: absolute; left: 10px; top: 10px; z-index: 2; background: rgba(255,253,248,0.92); border: 1px solid var(--line); border-radius: 999px; padding: 0.28rem 0.7rem; font-size: 0.78rem; font-weight: 700; color: var(--muted); }
+    .side {
+      position: absolute; top: 10px; right: 10px; z-index: 3;
+      width: min(260px, calc(100% - 24px));
+      display: flex; flex-direction: column; align-items: flex-end; gap: 0.45rem;
+      pointer-events: none;
+    }
+    .side > * { pointer-events: auto; }
+    @media (max-width: 700px) {
+      .side { top: auto; bottom: 10px; left: 10px; right: 10px; width: auto; }
+    }
+    .fs-btn { border: 1px solid var(--line); background: rgba(255,253,248,0.92); border-radius: 10px; padding: 0.35rem 0.55rem; font-weight: 700; font-size: 0.75rem; }
+    .box {
+      width: 100%; background: rgba(255,253,248,0.94); border: 1px solid var(--line);
+      border-radius: 12px; padding: 0.75rem; box-shadow: var(--shadow);
+    }
+    .box h3 { margin: 0 0 0.45rem; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.18rem; margin: 0.45rem 0; }
+    .slider-head { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; }
+    .slider-head em { font-style: normal; font-family: var(--mono); color: var(--wood); }
+    input[type=range] { width: 100%; accent-color: var(--wood); cursor: pointer; }
+    .btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .btn { border: 0; background: var(--ink); color: #fff; border-radius: 10px; padding: 0.48rem 0.75rem; font-weight: 700; font-size: 0.82rem; }
+    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn.teal { background: var(--teal); }
+    .btn:hover { filter: brightness(1.08); }
+
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    html.s3phy-embed .wrap {
+      min-height: 0 !important;
+      height: 100% !important;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    html.s3phy-embed .fs-btn { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="wrap" id="labShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M6 24h20" stroke="#7c3f12" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M16 24V8" stroke="#b45309" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="16" cy="8" r="3.2" fill="#0f7a6c"/>
+            <path d="M16 8c7 1 11 6 12 12" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1><span class="en">Supports Lab</span><span class="zh">支架實驗</span></h1>
+          <p><span class="en">Two trestles · reactions · tipping</span><span class="zh">雙支架 · 反力 · 傾側</span></p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="btn-en" class="active">EN</button>
+          <button type="button" id="btn-zh">中文</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="card">
+      <div class="card-hd">
+        <h2><span class="en">Two supports & tipping</span><span class="zh">雙支架與傾側</span></h2>
+        <p>
+          <span class="en">A plank rests on two trestles. Walk the worker along. When one reaction falls to 0 N, that support lifts and the plank tips.</span>
+          <span class="zh">木板擱在兩張支架上。讓工人沿木板走動。當某一反作用力降至 0 N，該支架離地，木板傾側。</span>
+        </p>
+      </div>
+      <div class="card-bd">
+        <div class="stage">
+          <div class="hint-chip"><span class="en">Drag the worker · find the tipping point</span><span class="zh">拖曳工人 · 找出傾側位置</span></div>
+          <div class="side">
+            <button class="fs-btn" type="button" data-fs="labShell"><span class="en">Full screen</span><span class="zh">全螢幕</span></button>
+            <div class="box">
+              <h3><span class="en">Load</span><span class="zh">負載</span></h3>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Worker weight</span><span class="zh">工人重量</span><em id="val-WW">540 N</em></div>
+                <input type="range" id="sl-WW" min="200" max="900" step="10" value="540" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Walk position</span><span class="zh">步行位置</span><em id="val-WX">1.20 m</em></div>
+                <input type="range" id="sl-WX" min="0.05" max="3.95" step="0.01" value="1.20" />
+              </div>
+              <div class="btns">
+                <button class="btn sec" type="button" id="btn-plank-mid"><span class="en">Stand in middle</span><span class="zh">站在中間</span></button>
+                <button class="btn sec" type="button" id="btn-plank-reset"><span class="en">Reset</span><span class="zh">重設</span></button>
+              </div>
+            </div>
+          </div>
+          <canvas id="cv-plank" width="900" height="460"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </div>
+<script>
+(function () {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  let lang = "en";
+  function setLang(next) {
+    lang = next;
+    document.documentElement.lang = next === "zh" ? "zh-HK" : "en";
+    $("btn-en").classList.toggle("active", next === "en");
+    $("btn-zh").classList.toggle("active", next === "zh");
+    if (typeof updateUI === "function") updateUI();
+  }
+  $("btn-en").onclick = () => setLang("en");
+  $("btn-zh").onclick = () => setLang("zh");
+  function applyLangFromHub(raw) {
+    const next = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    setLang(next);
+  }
+  try {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q) applyLangFromHub(q);
+  } catch (e) { /* ignore */ }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+  });
+
+  document.querySelectorAll("[data-fs]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const el = $(btn.dataset.fs);
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      } else {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      }
+    });
+  });
+  const canvasCache = new WeakMap();
+  function fitCanvas(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(320, rect.width || 320);
+    const h = Math.max(300, rect.height || 460);
+    const prev = canvasCache.get(canvas);
+    const ctx = canvas.getContext("2d");
+    if (!prev || prev.w !== w || prev.h !== h || prev.dpr !== dpr) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvasCache.set(canvas, { w, h, dpr });
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function drawPerson(ctx, x, y, scale, shirt, flip) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(flip ? -1 : 1, 1);
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    ctx.strokeStyle = "#2a2118"; ctx.lineWidth = 2;
+    ctx.fillStyle = "#f3d2b3";
+    ctx.beginPath(); ctx.arc(0, -38 * scale, 8 * scale, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = shirt;
+    ctx.beginPath();
+    ctx.moveTo(-10 * scale, -28 * scale); ctx.lineTo(10 * scale, -28 * scale);
+    ctx.lineTo(8 * scale, -6 * scale); ctx.lineTo(-8 * scale, -6 * scale);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-8 * scale, -6 * scale); ctx.lineTo(-6 * scale, 8 * scale);
+    ctx.moveTo(8 * scale, -6 * scale); ctx.lineTo(6 * scale, 8 * scale);
+    ctx.stroke();
+    ctx.restore();
+  }
+  function arrow(ctx, x1, y1, x2, y2, color, width) {
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    const head = Math.max(8, (width || 3) * 3.4);
+    ctx.strokeStyle = color; ctx.fillStyle = color;
+    ctx.lineWidth = width || 3; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
+    ctx.closePath(); ctx.fill();
+  }
+  function forceLen(F, ref) {
+    return 28 + Math.min(70, (Math.max(0, F) / (ref || 700)) * 70);
+  }
+  function labeledForce(ctx, x1, y1, x2, y2, color, label, align) {
+    arrow(ctx, x1, y1, x2, y2, color, 3);
+    ctx.fillStyle = color;
+    ctx.font = "700 12px Nunito Sans, sans-serif";
+    ctx.textAlign = align || "left";
+    ctx.textBaseline = "middle";
+    const pad = 8;
+    const lx = align === "right" ? Math.min(x1, x2) - pad : Math.max(x1, x2) + pad;
+    ctx.fillText(label, lx, (y1 + y2) / 2);
+    ctx.textBaseline = "alphabetic";
+  }
+
+
+  const plank = { L: 4.0, W: 180, a: 0.75, b: 3.25, WW: 540, x: 1.2, drag: false, tip: 0 };
+  const cvP = $("cv-plank");
+  function plankReactions() {
+    const { L, W, a, b, WW, x } = plank;
+    let Rb = (W * (L / 2 - a) + WW * (x - a)) / (b - a);
+    let Ra = W + WW - Rb;
+    let status = "stable";
+    if (Ra < -1) { status = "tipR"; Ra = 0; Rb = W + WW; }
+    if (Rb < -1) { status = "tipL"; Rb = 0; Ra = W + WW; }
+    if (Ra < 0) Ra = 0;
+    if (Rb < 0) Rb = 0;
+    return { Ra, Rb, status };
+  }
+  function updateUI() {
+    $("val-WW").textContent = plank.WW + " N";
+    $("val-WX").textContent = plank.x.toFixed(2) + " m";
+    $("sl-WX").value = String(plank.x);
+  }
+  function plankLayout(w, h) {
+    const left = Math.max(48, w * 0.07);
+    const right = w - Math.max(48, w < 700 ? 48 : 292);
+    const y = h * 0.58;
+    const xToPx = (m) => left + (m / plank.L) * (right - left);
+    return { left, right, y, xToPx };
+  }
+  function drawPlank() {
+    const { ctx, w, h } = fitCanvas(cvP);
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#c8e6c9"; ctx.fillRect(0, h * 0.8, w, h);
+    const r = plankReactions();
+    const target = r.status === "stable" ? 0 : r.status === "tipL" ? -0.16 : 0.16;
+    plank.tip += (target - plank.tip) * 0.14;
+    const L = plankLayout(w, h);
+    const pivotX = r.status === "tipL" ? L.xToPx(plank.a) : r.status === "tipR" ? L.xToPx(plank.b) : (L.left + L.right) / 2;
+    const pivotY = L.y;
+    function trestle(xm, label, reaction) {
+      const x = L.xToPx(xm);
+      ctx.fillStyle = reaction < 8 ? "rgba(194,65,12,0.25)" : "#8d6e63";
+      ctx.beginPath(); ctx.moveTo(x, L.y + 6); ctx.lineTo(x - 16, h * 0.8); ctx.lineTo(x + 16, h * 0.8); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = "#2a2118"; ctx.font = "700 13px Nunito Sans, sans-serif"; ctx.textAlign = "center";
+      ctx.fillText(label, x, h * 0.9);
+      ctx.fillStyle = reaction < 8 ? "#c2410c" : "#0f7a6c";
+      ctx.font = "700 12px JetBrains Mono, monospace";
+      ctx.fillText(reaction.toFixed(0) + " N", x, h * 0.955);
+    }
+    trestle(plank.a, "X", r.Ra); trestle(plank.b, "Y", r.Rb);
+    ctx.save();
+    ctx.strokeStyle = "rgba(42,33,24,0.28)";
+    ctx.fillStyle = "#6b5b4a";
+    ctx.font = "600 11px JetBrains Mono, monospace";
+    ctx.textAlign = "center";
+    for (let m = 0; m <= plank.L; m += 1) {
+      const px = L.xToPx(m);
+      ctx.beginPath(); ctx.moveTo(px, L.y + 10); ctx.lineTo(px, L.y + 18); ctx.stroke();
+      ctx.fillText(m + " m", px, L.y + 30);
+    }
+    ctx.restore();
+    ctx.save(); ctx.translate(pivotX, pivotY); ctx.rotate(plank.tip);
+    const p0 = L.left - pivotX, p1 = L.right - pivotX;
+    ctx.fillStyle = "#c48a3a"; roundRect(ctx, p0, -9, p1 - p0, 16, 5); ctx.fill();
+    ctx.fillStyle = "#e0b56a"; roundRect(ctx, p0, -9, p1 - p0, 6, 5); ctx.fill();
+    ctx.restore();
+    const c = Math.cos(plank.tip), s = Math.sin(plank.tip);
+    const wx = L.xToPx(plank.x);
+    const person = { x: pivotX + (wx - pivotX) * c, y: pivotY + (wx - pivotX) * s - 2 };
+    drawPerson(ctx, person.x, person.y, 1.15, "#1565c0", false);
+    const mid0 = (L.left + L.right) / 2;
+    const mid = { x: pivotX + (mid0 - pivotX) * c, y: pivotY + (mid0 - pivotX) * s };
+    const workerLen = forceLen(plank.WW, 900);
+    const plankLen = forceLen(plank.W, 900);
+    const footY = person.y + 8 * 1.15;
+    const plankFootY = mid.y + 7;
+    const roomW = Math.max(28, h * 0.79 - footY - 8);
+    const roomP = Math.max(28, h * 0.79 - plankFootY - 8);
+    labeledForce(ctx, person.x, footY, person.x, footY + Math.min(workerLen, roomW), "#1565c0",
+      plank.WW + " N", person.x > mid.x ? "left" : "right");
+    labeledForce(ctx, mid.x, plankFootY, mid.x, plankFootY + Math.min(plankLen, roomP), "#c2410c",
+      plank.W + " N", "right");
+    function reactionArrow(xm, reaction) {
+      const px0 = L.xToPx(xm);
+      const px = pivotX + (px0 - pivotX) * c;
+      const py = pivotY + (px0 - pivotX) * s;
+      const dead = reaction < 8;
+      const col = dead ? "#c2410c" : "#0f7a6c";
+      const len = dead ? 22 : forceLen(reaction, 900);
+      labeledForce(ctx, px, py, px, py - len, col,
+        reaction.toFixed(0) + " N", "left");
+      ctx.fillStyle = "#2a2118";
+      ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+    }
+    reactionArrow(plank.a, r.Ra);
+    reactionArrow(plank.b, r.Rb);
+    ctx.font = "700 11px Nunito Sans, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#1565c0"; ctx.fillText(lang === "zh" ? "↓ 工人重量" : "↓ worker weight", 16, 48);
+    ctx.fillStyle = "#c2410c"; ctx.fillText(lang === "zh" ? "↓ 木板重量" : "↓ plank weight", 16, 64);
+    ctx.fillStyle = "#0f7a6c"; ctx.fillText(lang === "zh" ? "↑ 支架反力" : "↑ support reactions", 16, 80);
+  }
+  function plankFromPointer(ev) {
+    const rect = cvP.getBoundingClientRect();
+    const L = plankLayout(rect.width, rect.height);
+    const x = ev.clientX - rect.left;
+    plank.x = Math.max(0.05, Math.min(plank.L - 0.05, ((x - L.left) / (L.right - L.left)) * plank.L));
+    updateUI();
+  }
+  cvP.addEventListener("pointerdown", (ev) => { plank.drag = true; cvP.classList.add("dragging"); cvP.setPointerCapture(ev.pointerId); plankFromPointer(ev); });
+  cvP.addEventListener("pointermove", (ev) => { if (plank.drag) plankFromPointer(ev); });
+  cvP.addEventListener("pointerup", () => { plank.drag = false; cvP.classList.remove("dragging"); });
+  $("sl-WW").addEventListener("input", () => { plank.WW = +$("sl-WW").value; updateUI(); });
+  $("sl-WX").addEventListener("input", () => { plank.x = +$("sl-WX").value; updateUI(); });
+  $("btn-plank-mid").onclick = () => { plank.x = plank.L / 2; updateUI(); };
+  $("btn-plank-reset").onclick = () => {
+    plank.WW = 540; plank.x = 1.2;
+    $("sl-WW").value = "540"; updateUI();
+  };
+  updateUI();
+  function loop() { drawPlank(); requestAnimationFrame(loop); }
+  window.addEventListener("resize", drawPlank);
+  requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

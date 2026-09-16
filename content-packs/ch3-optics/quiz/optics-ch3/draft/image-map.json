@@ -1,0 +1,236 @@
+{
+  "ch31-r01": {
+    "file": "ch31-r01-fig.png",
+    "alt": "Diagram for ch31-r01",
+    "caption": "Fig · ch31-r01"
+  },
+  "ch31-r02": {
+    "file": "ch31-r02-fig.png",
+    "alt": "Diagram for ch31-r02",
+    "caption": "Fig · ch31-r02"
+  },
+  "ch31-r03": {
+    "file": "ch31-r03-fig.png",
+    "alt": "Diagram for ch31-r03",
+    "caption": "Fig · ch31-r03"
+  },
+  "ch31-r04": {
+    "file": "ch31-r04-fig.png",
+    "alt": "Diagram for ch31-r04",
+    "caption": "Fig · ch31-r04"
+  },
+  "ch31-r05": {
+    "images": [
+      {
+        "file": "ch31-r05-fig-1.png",
+        "src": "./assets/ch31-r05-fig-1.png",
+        "alt": "Diagram for ch31-r05",
+        "caption": "Fig · ch31-r05 (1/2)",
+        "source": "Ch.3.1 - Q5-1.png"
+      },
+      {
+        "file": "ch31-r05-fig-2.png",
+        "src": "./assets/ch31-r05-fig-2.png",
+        "alt": "Diagram for ch31-r05",
+        "caption": "Fig · ch31-r05 (2/2)",
+        "source": "Ch.3.1 - Q5-2.png"
+      }
+    ]
+  },
+  "ch31-r06": {
+    "file": "ch31-r06-fig.png",
+    "alt": "Diagram for ch31-r06",
+    "caption": "Fig · ch31-r06"
+  },
+  "ch31-r08": {
+    "file": "ch31-r08-fig.png",
+    "alt": "Diagram for ch31-r08",
+    "caption": "Fig · ch31-r08"
+  },
+  "ch31-r10": {
+    "file": "ch31-r10-fig.png",
+    "alt": "Diagram for ch31-r10",
+    "caption": "Fig · ch31-r10"
+  },
+  "ch32-f01": {
+    "file": "ch32-f01-fig.png",
+    "alt": "Diagram for ch32-f01",
+    "caption": "Fig · ch32-f01"
+  },
+  "ch32-f02": {
+    "file": "ch32-f02-fig.png",
+    "alt": "Diagram for ch32-f02",
+    "caption": "Fig · ch32-f02"
+  },
+  "ch32-f04": {
+    "file": "ch32-f04-fig.png",
+    "alt": "Diagram for ch32-f04",
+    "caption": "Fig · ch32-f04"
+  },
+  "ch32-f05": {
+    "file": "ch32-f05-fig.png",
+    "alt": "Diagram for ch32-f05",
+    "caption": "Fig · ch32-f05"
+  },
+  "ch32-f06": {
+    "file": "ch32-f06-fig.png",
+    "alt": "Diagram for ch32-f06",
+    "caption": "Fig · ch32-f06"
+  },
+  "ch32-f08": {
+    "file": "ch32-f08-fig.png",
+    "alt": "Diagram for ch32-f08",
+    "caption": "Fig · ch32-f08"
+  },
+  "ch32-f09": {
+    "file": "ch32-f09-fig.png",
+    "alt": "Diagram for ch32-f09",
+    "caption": "Fig · ch32-f09"
+  },
+  "ch33-t01": {
+    "file": "ch33-t01-fig.png",
+    "alt": "Diagram for ch33-t01",
+    "caption": "Fig · ch33-t01"
+  },
+  "ch33-t02": {
+    "file": "ch33-t02-fig.png",
+    "alt": "Diagram for ch33-t02",
+    "caption": "Fig · ch33-t02"
+  },
+  "ch33-t05": {
+    "file": "ch33-t05-fig.png",
+    "alt": "Diagram for ch33-t05",
+    "caption": "Fig · ch33-t05"
+  },
+  "ch33-t07": {
+    "file": "ch33-t07-fig.png",
+    "alt": "Diagram for ch33-t07",
+    "caption": "Fig · ch33-t07"
+  },
+  "ch33-t08": {
+    "images": [
+      {
+        "file": "ch33-t08-fig-1.png",
+        "src": "./assets/ch33-t08-fig-1.png",
+        "alt": "Diagram for ch33-t08",
+        "caption": "Fig · ch33-t08 (1/2)",
+        "source": "Ch.3.3 - Q8-1.png"
+      },
+      {
+        "file": "ch33-t08-fig-2.png",
+        "src": "./assets/ch33-t08-fig-2.png",
+        "alt": "Diagram for ch33-t08",
+        "caption": "Fig · ch33-t08 (2/2)",
+        "source": "Ch.3.3 - Q8-2.png"
+      }
+    ]
+  },
+  "ch33-t10": {
+    "file": "ch33-t10-fig.png",
+    "alt": "Diagram for ch33-t10",
+    "caption": "Fig · ch33-t10"
+  },
+  "ch34-c01": {
+    "file": "ch34-c01-fig.png",
+    "alt": "Diagram for ch34-c01",
+    "caption": "Fig · ch34-c01"
+  },
+  "ch34-c02": {
+    "file": "ch34-c02-fig.png",
+    "alt": "Diagram for ch34-c02",
+    "caption": "Fig · ch34-c02"
+  },
+  "ch34-c03": {
+    "file": "ch34-c03-fig.png",
+    "alt": "Diagram for ch34-c03",
+    "caption": "Fig · ch34-c03"
+  },
+  "ch34-c04": {
+    "file": "ch34-c04-fig.png",
+    "alt": "Diagram for ch34-c04",
+    "caption": "Fig · ch34-c04"
+  },
+  "ch34-c07": {
+    "file": "ch34-c07-fig.png",
+    "alt": "Diagram for ch34-c07",
+    "caption": "Fig · ch34-c07"
+  },
+  "ch34-c08": {
+    "file": "ch34-c08-fig.png",
+    "alt": "Diagram for ch34-c08",
+    "caption": "Fig · ch34-c08"
+  },
+  "ch34-c09": {
+    "file": "ch34-c09-fig.png",
+    "alt": "Diagram for ch34-c09",
+    "caption": "Fig · ch34-c09"
+  },
+  "ch35-m01": {
+    "file": "ch35-m01-fig.png",
+    "alt": "Diagram for ch35-m01",
+    "caption": "Fig · ch35-m01"
+  },
+  "ch35-m02": {
+    "images": [
+      {
+        "file": "ch35-m02-fig-1.png",
+        "src": "./assets/ch35-m02-fig-1.png",
+        "alt": "Diagram for ch35-m02",
+        "caption": "Fig · ch35-m02 (1/2)",
+        "source": "Ch.3.5 - Q2-1.png"
+      },
+      {
+        "file": "ch35-m02-fig-2.png",
+        "src": "./assets/ch35-m02-fig-2.png",
+        "alt": "Diagram for ch35-m02",
+        "caption": "Fig · ch35-m02 (2/2)",
+        "source": "Ch.3.5 - Q2-2.png"
+      }
+    ]
+  },
+  "ch35-m05": {
+    "file": "ch35-m05-fig.png",
+    "alt": "Diagram for ch35-m05",
+    "caption": "Fig · ch35-m05"
+  },
+  "ch35-m07": {
+    "file": "ch35-m07-fig.png",
+    "alt": "Diagram for ch35-m07",
+    "caption": "Fig · ch35-m07"
+  },
+  "ch35-m09": {
+    "file": "ch35-m09-fig.png",
+    "alt": "Diagram for ch35-m09",
+    "caption": "Fig · ch35-m09"
+  },
+  "ch36-v02": {
+    "file": "ch36-v02-fig.png",
+    "alt": "Diagram for ch36-v02",
+    "caption": "Fig · ch36-v02"
+  },
+  "ch36-v05": {
+    "file": "ch36-v05-fig.png",
+    "alt": "Diagram for ch36-v05",
+    "caption": "Fig · ch36-v05"
+  },
+  "ch36-v06": {
+    "file": "ch36-v06-fig.png",
+    "alt": "Diagram for ch36-v06",
+    "caption": "Fig · ch36-v06"
+  },
+  "ch36-v07": {
+    "file": "ch36-v07-fig.png",
+    "alt": "Diagram for ch36-v07",
+    "caption": "Fig · ch36-v07"
+  },
+  "ch36-v09": {
+    "file": "ch36-v09-fig.png",
+    "alt": "Diagram for ch36-v09",
+    "caption": "Fig · ch36-v09"
+  },
+  "ch36-v10": {
+    "file": "ch36-v10-fig.png",
+    "alt": "Diagram for ch36-v10",
+    "caption": "Fig · ch36-v10"
+  }
+}

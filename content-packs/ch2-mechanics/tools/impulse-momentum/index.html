@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <title>Impulse | Momentum Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6efe4; --bg2: #efe4d2; --surface: #fffdf8; --surface2: #f7f0e4;
+      --ink: #2a2118; --muted: #6b5b4a; --line: #e0d0b6;
+      --teal: #0f7a6c; --amber: #c2410c; --ok: #168a56; --danger: #c2410c;
+      --blue: #1d6fd8; --purple: #6a1b9a;
+      --radius: 16px; --shadow: 0 12px 36px rgba(42, 33, 24, 0.08);
+      --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+    }
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: var(--font); color: var(--ink);
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height: 100vh; min-height: 100dvh; line-height: 1.5;
+    }
+    button, input { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    .wrap {
+      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
+      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
+      display: flex; flex-direction: column;
+    }
+    .wrap:fullscreen, .wrap:-webkit-full-screen {
+      width: 100%; height: 100%; padding: 0.7rem 0.8rem 0.8rem;
+      background:
+        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
+        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; margin-bottom: 0.55rem; flex-shrink: 0; }
+    .brand { display: flex; align-items: center; gap: 0.9rem; }
+    .brand-mark {
+      width: 54px; height: 54px; border-radius: 14px;
+      background: linear-gradient(145deg, #fff, #f3e6d2);
+      border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow);
+    }
+    .brand h1 { margin: 0; font-family: var(--display); font-size: clamp(1.25rem, 2.5vw, 1.8rem); letter-spacing: -0.02em; line-height: 1.15; }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.9rem; }
+    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+    .lang-toggle, .tabs { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; flex-wrap: wrap; }
+    .lang-toggle button, .tabs button {
+      border: 0; background: transparent; padding: 0.42rem 0.85rem; border-radius: 999px;
+      color: var(--muted); font-weight: 700; font-size: 0.85rem;
+    }
+    .lang-toggle button.active, .tabs button.active { background: var(--ink); color: #fff; }
+    html[lang="en"] .zh { display: none !important; }
+    html[lang="zh-HK"] .en { display: none !important; }
+    .card {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
+      display: flex; flex-direction: column;
+    }
+    .card-hd { padding: 0.65rem 1rem 0.5rem; border-bottom: 1px solid var(--line); flex-shrink: 0; display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .card-hd > div:first-child { min-width: 0; flex: 1; }
+    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.12rem; }
+    .card-hd p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.88rem; }
+    .hd-crash {
+      min-width: 0;
+    }
+    .hd-crash h3 { margin: 0 0 0.3rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+    .hd-actions { display: flex; flex-wrap: nowrap; align-items: center; gap: 0.65rem; flex-shrink: 0; }
+    .hd-crash-row { display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 0.7rem; }
+    .hd-run { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+    .workspace {
+      flex: 1; min-height: 0; display: flex;
+    }
+    .stage {
+      position: relative; flex: 1; min-height: 0;
+      background: linear-gradient(180deg, #eaf4fb 0%, #eaf4fb 58%, #d8eccf 58%, #cfe6c4 100%);
+      overflow: hidden;
+    }
+    canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    .hint-chip { display: none; }
+    .hud {
+      position: absolute; top: 10px; z-index: 3;
+      background: rgba(255, 253, 248, 0.94);
+      border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+      padding: 0.55rem 0.65rem 0.6rem;
+      max-height: calc(100% - 20px); overflow: auto;
+      display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .hud-left { left: 10px; width: min(300px, calc(50% - 18px)); }
+    .hud-right { right: 10px; width: min(270px, calc(50% - 18px)); }
+    .hud h3 { margin: 0 0 0.28rem; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+    .hud .slider-wrap { margin: 0.16rem 0; }
+    .hud-hd {
+      display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; flex-shrink: 0;
+    }
+    .hud-hd h3 { margin: 0; }
+    .hud-toggle {
+      border: 1px solid var(--line); background: #fff; border-radius: 8px;
+      padding: 0.18rem 0.5rem; font-size: 0.72rem; font-weight: 700; color: var(--muted);
+    }
+    .hud-toggle:hover { color: var(--ink); border-color: var(--ink); }
+    .hud-right.collapsed { width: auto; max-width: none; padding: 0.4rem 0.55rem; }
+    .hud-right.collapsed .hud-body { display: none; }
+    .fs-btn {
+      position: absolute; right: 10px; bottom: 10px; z-index: 2;
+      border: 1px solid var(--line); background: rgba(255,253,248,0.92); border-radius: 10px;
+      padding: 0.35rem 0.55rem; font-weight: 700; font-size: 0.75rem;
+    }
+    .seg { display: flex; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
+    .seg button { flex: 1; border: 0; background: transparent; border-radius: 8px; padding: 0.38rem 0.2rem; font-weight: 700; font-size: 0.68rem; line-height: 1.2; color: var(--muted); }
+    .seg button.on { background: var(--ink); color: #fff; }
+    .slider-wrap { display: flex; flex-direction: column; gap: 0.12rem; margin: 0.28rem 0; }
+    .slider-head { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; }
+    .slider-head em { font-style: normal; font-family: var(--mono); }
+    .slider-head em.a { color: var(--teal); } .slider-head em.b { color: var(--amber); }
+    input[type=range] { width: 100%; cursor: pointer; }
+    .a-range { accent-color: var(--teal); } .b-range { accent-color: var(--amber); }
+    .btns { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+    .btn { border: 0; background: var(--ink); color: #fff; border-radius: 10px; padding: 0.48rem 0.72rem; font-weight: 700; font-size: 0.82rem; }
+    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+    .btn.teal { background: var(--teal); }
+    .btn.amber { background: var(--amber); }
+    .btn:hover { filter: brightness(1.08); }
+    .btn[disabled] { opacity: 0.4; cursor: not-allowed; filter: none; }
+    .presets { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .chip { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 0.28rem 0.55rem; font-size: 0.72rem; font-weight: 700; color: var(--muted); }
+    .chip:hover { border-color: var(--ink); color: var(--ink); }
+    .readout { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
+    .stat { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.4rem 0.5rem; }
+    .stat span { display: block; font-size: 0.68rem; color: var(--muted); font-weight: 700; }
+    .stat b { font-family: var(--mono); font-size: 0.92rem; }
+    .stat.a b { color: var(--teal); } .stat.b b { color: var(--amber); }
+    .stat.ok b { color: var(--ok); } .stat.bad b { color: var(--danger); }
+    .stat.wide { grid-column: 1 / -1; }
+    .stat.wood b { color: #8a5a2b; }
+    @media (max-width: 860px) {
+      .hud-left, .hud-right { width: calc(50% - 14px); max-height: 46%; }
+      .stage { min-height: 280px; }
+      .tabs button { padding: 0.4rem 0.55rem; font-size: 0.78rem; }
+    }
+  
+    html.s3phy-embed,
+    html.s3phy-embed body {
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+    html.s3phy-embed .wrap {
+      min-height: 0 !important;
+      height: 100% !important;
+    }
+    html.s3phy-embed .lang-toggle { display: none; }
+    html.s3phy-embed .fs-btn { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="wrap" id="labShell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="4" y="14" width="10" height="7" rx="2" fill="#0f7a6c"/>
+            <rect x="18" y="14" width="10" height="7" rx="2" fill="#c2410c"/>
+            <circle cx="7" cy="22" r="1.6" fill="#2a2118"/>
+            <circle cx="11" cy="22" r="1.6" fill="#2a2118"/>
+            <circle cx="21" cy="22" r="1.6" fill="#2a2118"/>
+            <circle cx="25" cy="22" r="1.6" fill="#2a2118"/>
+            <path d="M14 10h10" stroke="#1d6fd8" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M22 10l3-2.2M22 10l3 2.2" stroke="#1d6fd8" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1><span class="en">Impulse</span><span class="zh">衝量</span></h1>
+          <p><span class="en">J = F Δt = Δp</span><span class="zh">J = F Δt = Δp</span></p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" id="btn-en" class="active">EN</button>
+          <button type="button" id="btn-zh">中文</button>
+        </div>
+      </div>
+    </header>
+    <section class="card">
+      <div class="card-hd">
+        <div>
+          <h2 id="hd-title"></h2>
+          <p id="hd-sub"></p>
+        </div>
+        <div class="hd-actions">
+          <div class="hd-run">
+            <button class="btn teal" type="button" id="btn-play"><span class="en">Play bounce</span><span class="zh">播放反彈</span></button>
+            <button class="btn sec" type="button" id="btn-reset"><span class="en">Reset</span><span class="zh">重設</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="workspace">
+        <div class="stage">
+
+          <div class="hint-chip" id="hint"></div>
+          <aside class="hud hud-left">
+            <div>
+              <h3><span class="en">Live numbers</span><span class="zh">即時數據</span></h3>
+              <div class="readout" id="stats"></div>
+            </div>
+          </aside>
+          <aside class="hud hud-right" id="hud-controls">
+            <div class="hud-hd">
+              <h3><span class="en">Control bar</span><span class="zh">控制列</span></h3>
+              <button class="hud-toggle" type="button" id="btn-hide-controls"><span class="en">Hide</span><span class="zh">隱藏</span></button>
+            </div>
+            <div class="hud-body">
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Ball mass</span><span class="zh">球的質量</span><em class="a" id="val-im">0.80 kg</em></div>
+                <input class="a-range" type="range" id="sl-im" min="0.2" max="4" step="0.1" value="0.8" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Approach speed</span><span class="zh">接近速率</span><em class="a" id="val-iu">3.5 m/s</em></div>
+                <input class="a-range" type="range" id="sl-iu" min="0.5" max="8" step="0.1" value="3.5" />
+              </div>
+            </div>
+          </aside>
+          <button class="fs-btn" type="button" data-fs="labShell"><span class="en">Full screen</span><span class="zh">全螢幕</span></button>
+          <canvas id="cv" width="900" height="460"></canvas>
+
+        </div>
+      </div>
+    </section>
+  </div>
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  let lang = "en";
+  const t = (en, zh) => (lang === "zh" ? zh : en);
+  function setLang(next) {
+    lang = next;
+    document.documentElement.lang = next === "zh" ? "zh-HK" : "en";
+    $("btn-en").classList.toggle("active", next === "en");
+    $("btn-zh").classList.toggle("active", next === "zh");
+    updateUI();
+  }
+  $("btn-en").onclick = () => setLang("en");
+  $("btn-zh").onclick = () => setLang("zh");
+  function applyLangFromHub(raw) {
+    const next = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    setLang(next);
+  }
+  try {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q) applyLangFromHub(q);
+  } catch (e) { /* ignore */ }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+  });
+
+  function syncHideControls() {
+    const hidden = $("hud-controls").classList.contains("collapsed");
+    $("btn-hide-controls").innerHTML = hidden
+      ? '<span class="en">Show</span><span class="zh">顯示</span>'
+      : '<span class="en">Hide</span><span class="zh">隱藏</span>';
+  }
+  $("btn-hide-controls").onclick = () => {
+    $("hud-controls").classList.toggle("collapsed");
+    syncHideControls();
+  };
+  document.querySelectorAll("[data-fs]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const el = $(btn.dataset.fs);
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      } else {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      }
+    });
+  });
+  const canvasCache = new WeakMap();
+  function fitCanvas(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(320, rect.width || 320);
+    const h = Math.max(260, rect.height || 460);
+    const prev = canvasCache.get(canvas);
+    const ctx = canvas.getContext("2d");
+    if (!prev || prev.w !== w || prev.h !== h || prev.dpr !== dpr) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvasCache.set(canvas, { w, h, dpr });
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+  function roundRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+  function arrow(ctx, x1, y1, x2, y2, color, width) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy);
+    if (len < 8) return;
+    const ang = Math.atan2(dy, dx);
+    const head = Math.max(8, (width || 3) * 3.2);
+    ctx.strokeStyle = color; ctx.fillStyle = color;
+    ctx.lineWidth = width || 3; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
+    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
+    ctx.closePath(); ctx.fill();
+  }
+  function fmt(n, d) {
+    if (!isFinite(n)) return "—";
+    const s = Number(n).toFixed(d == null ? 2 : d);
+    return (n > 0 && d !== 0 ? "+" : "") + s;
+  }
+  function fmtAbs(n, d) {
+    if (!isFinite(n)) return "—";
+    return Number(n).toFixed(d == null ? 2 : d);
+  }
+  const pOf = (m, v) => m * v;
+  const keOf = (m, v) => 0.5 * m * v * v;
+  function spawnSparks(x, y) {
+    for (let i = 0; i < 14; i++) {
+      S.sparks.push({
+        x, y,
+        vx: (Math.random() - 0.5) * 180,
+        vy: (Math.random() - 0.8) * 140,
+        life: 1,
+        c: Math.random() > 0.5 ? "#0f7a6c" : "#c2410c"
+      });
+    }
+  }
+  function stat(label, value, cls) {
+    const d = document.createElement("div");
+    d.className = "stat" + (cls ? " " + cls : "");
+    d.innerHTML = "<span></span><b></b>";
+    d.querySelector("span").textContent = label;
+    d.querySelector("b").textContent = value;
+    $("stats").appendChild(d);
+  }
+  const TRACK = 12;
+  const S = {
+    running: false, speed: 1,
+    im: 0.8, iu: 3.5, iv: 1.5, dt: 0.009,
+    iball: 2.2, iphase: "idle", it: 0,
+    sparks: [], flash: 0
+  };
+  const cv = $("cv");
+  function resetImpulse() {
+    S.iphase = "idle"; S.it = 0; S.iball = 2.4; S.flash = 0; S.sparks = [];
+  }
+  function restoreImpulseControls() {
+    S.im = 0.8; S.iu = 3.5; S.iv = 1.5;
+    $("sl-im").value = "0.8"; $("sl-iu").value = "3.5";
+    S.running = false; resetImpulse();
+  }
+  function bindSlider(id, key) {
+    $(id).addEventListener("input", () => {
+      if (S.running) return;
+      S[key] = Number($(id).value);
+      resetImpulse(); updateUI();
+    });
+  }
+  bindSlider("sl-im", "im"); bindSlider("sl-iu", "iu");
+  $("btn-play").onclick = () => { resetImpulse(); S.iphase = "approach"; S.running = true; updateUI(); };
+  $("btn-reset").onclick = () => { restoreImpulseControls(); updateUI(); };
+  function liveImpulse() {
+    const u = S.iu, v = -S.iv, m = S.im;
+    const dp = m * (v - u);
+    const F = S.dt > 0 ? dp / S.dt : 0;
+    return { u, v, m, pu: m * u, pv: m * v, dp, F, k0: keOf(m, u), k1: keOf(m, v) };
+  }
+  function updateUI() {
+    $("hd-title").textContent = t("Impulse studio", "衝量工作室");
+    $("hd-sub").textContent = t("Impulse J = F Δt equals the change in momentum. Reversing direction makes Δp large.", "衝量 J = F Δt 等於動量變化。方向相反會令 Δp 變大。");
+    $("hint").style.display = "none";
+    $("val-im").textContent = fmtAbs(S.im, 2) + " kg";
+    $("val-iu").textContent = fmtAbs(S.iu, 1) + " m/s";
+    $("stats").innerHTML = "";
+    const I = liveImpulse();
+    stat(t("p before", "碰撞前 p"), fmtAbs(I.pu, 2) + " kg m/s", "a");
+    stat(t("p after", "碰撞後 p"), fmt(I.pv, 2) + " kg m/s", "b");
+    ["sl-im","sl-iu"].forEach((id) => { $(id).disabled = S.running; });
+  }
+  function stepImpulse(dt) {
+    if (!S.running) return;
+    const wall = 10.4;
+    const r = 0.28 + Math.min(0.22, S.im * 0.04);
+    const rate = S.speed;
+    if (S.iphase === "approach") {
+      S.iball += S.iu * dt * rate * 1.15;
+      if (S.iball + r >= wall) {
+        S.iball = wall - r; S.iphase = "contact"; S.it = 0; S.flash = 1; spawnSparks(wall, 0);
+      }
+    } else if (S.iphase === "contact") {
+      S.it += dt;
+      const vis = 0.62 / Math.max(0.25, S.speed);
+      const frac = Math.min(1, S.it / vis);
+      S.iball = wall - r + Math.sin(frac * Math.PI) * 0.07;
+      if (frac >= 1) S.iphase = "rebound";
+    } else if (S.iphase === "rebound") {
+      S.iball -= S.iv * dt * rate * 1.15;
+      if (S.iball < 1.2) S.running = false;
+    }
+  }
+  function drawScene(dt) {
+    const { ctx, w, h } = fitCanvas(cv);
+    ctx.clearRect(0, 0, w, h);
+    const ground = h * 0.72;
+    ctx.fillStyle = "#9ccc65"; ctx.fillRect(0, ground + 18, w, h);
+    ctx.fillStyle = "#7cb342"; ctx.fillRect(0, ground + 18, w, 8);
+    const pad = 36; const scale = (w - pad * 2) / TRACK; const X = (m) => pad + m * scale;
+    ctx.fillStyle = "#8d6e4a";
+    roundRect(ctx, pad - 8, ground + 4, w - pad * 2 + 16, 12, 6); ctx.fill();
+    ctx.fillStyle = "#c4a574";
+    roundRect(ctx, pad - 8, ground + 4, w - pad * 2 + 16, 5, 6); ctx.fill();
+    for (let i = 0; i <= 6; i++) {
+      const x = pad + (i / 6) * (w - pad * 2);
+      ctx.fillStyle = "rgba(42,33,24,0.25)"; ctx.fillRect(x, ground + 3, 2, 14);
+    }
+    S.flash *= 0.9;
+    if (S.flash > 0.04) {
+      ctx.fillStyle = "rgba(255,220,120," + (S.flash * 0.35) + ")";
+      ctx.fillRect(0, 0, w, h);
+    }
+    S.sparks.forEach((p) => {
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 220 * dt; p.life -= dt * 1.8;
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.c;
+      ctx.beginPath(); ctx.arc(X(p.x), ground - 40 + p.y, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+    });
+    S.sparks = S.sparks.filter((p) => p.life > 0);
+    ctx.fillStyle = "#6d4c41"; ctx.fillRect(X(10.55), ground - 150, 28, 168);
+    ctx.fillStyle = "#8d6e4a"; ctx.fillRect(X(10.55), ground - 150, 10, 168);
+    const r = (0.28 + Math.min(0.22, S.im * 0.04)) * scale;
+    const bx = X(S.iball); const by = ground - r - 8;
+    ctx.fillStyle = "#0f7a6c";
+    ctx.beginPath(); ctx.arc(bx, by, r, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.28)";
+    ctx.beginPath(); ctx.arc(bx - r * 0.3, by - r * 0.3, r * 0.28, 0, Math.PI * 2); ctx.fill();
+    const vel = S.iphase === "rebound" ? -S.iv : S.iphase === "contact" ? 0 : S.iu;
+    if (Math.abs(vel) > 0.02) {
+      const dir = vel > 0 ? 1 : -1;
+      arrow(ctx, bx, by - r - 18, bx + dir * (24 + Math.abs(vel) * 8), by - r - 18, "#0f7a6c", 3);
+    }
+    if (S.iphase === "contact") {
+      const I = liveImpulse();
+      arrow(ctx, X(10.5), by, X(10.5) - 70, by, "#6a1b9a", 4);
+      ctx.fillStyle = "#6a1b9a";
+      ctx.font = "700 12px Nunito Sans, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText("F_avg " + fmt(I.F, 0) + " N", X(10.4) - 76, by - 8);
+    }
+    ctx.font = "800 14px Bricolage Grotesque, sans-serif";
+    ctx.fillStyle = "#2a2118"; ctx.textAlign = "center";
+    ctx.fillText(t("Smooth floor", "光滑地面"), w / 2, ground + 30);
+  }
+  let last = performance.now(); let uiAcc = 0;
+  function loop(now) {
+    const dt = Math.min(0.033, (now - last) / 1000); last = now;
+    stepImpulse(dt); drawScene(dt);
+    uiAcc += dt;
+    if (!S.running || uiAcc > 0.12) { if (S.running) updateUI(); uiAcc = 0; }
+    requestAnimationFrame(loop);
+  }
+  resetImpulse(); updateUI(); requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

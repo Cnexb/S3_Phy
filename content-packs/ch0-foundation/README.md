@@ -1,21 +1,17 @@
-# CH0 Foundation notes pack (side branch)
+# CH0 Foundation chapter pack (side branch)
 
-**Do not merge this branch into `main`.**
-
-One **chapter** pack (CH0 Foundation). Topics `JPF01` and `JPF02`. Hub `public/notes/` is unchanged.
+**Do not merge this branch into `main`.** Hub `labs/`, `quizzes/`, and `public/` stay for vendor Pages.
 
 ```
 content-packs/ch0-foundation/
   manifest.json
-  notes/JPF01-en.pdf
-  notes/JPF01-zhHant.pdf
-  notes/JPF02-en.pdf
-  notes/JPF02-zhHant.pdf
+  notes/
   comics/
-  tools/
-  quiz/
+  tools/          si-units + shared embed CSS
+  quiz/           foundations-quantities, foundations-useful-math
 ```
 
 ```bash
 node scripts/test-ch0-content-pack.mjs
+node scripts/test-chapter-assets.mjs
 ```

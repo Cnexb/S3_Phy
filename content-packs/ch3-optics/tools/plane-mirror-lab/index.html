@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-HK" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="HKDSE 平面鏡光學互動模擬：像的形成、最小鏡長／鏡高、夾角鏡、光線作圖與即時公式。">
+  <meta name="theme-color" content="#f8f9fa">
+  <title>平面鏡反射實驗室 · Plane Mirror Lab</title>
+
+  <!-- KaTeX：即時渲染 LaTeX 公式；離線時 app 會自動退回純文字 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    (function () {
+      if (new URLSearchParams(location.search).get('embed') === '1') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- 頂部：品牌 + 語言切換（固定於右上角，小螢幕改為置中） -->
+  <header class="app-header" role="banner">
+    <div class="header-brand">
+      <svg class="header-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+        <defs>
+          <linearGradient id="mirrorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4db8ff"/>
+            <stop offset="100%" stop-color="#00e676"/>
+          </linearGradient>
+        </defs>
+        <rect x="18" y="4" width="4" height="32" rx="2" fill="url(#mirrorGrad)" opacity="0.9"/>
+        <line x1="6" y1="28" x2="17" y2="14" stroke="#00e676" stroke-width="2" stroke-linecap="round"/>
+        <line x1="6" y1="28" x2="17" y2="22" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="3 3" stroke-linecap="round"/>
+        <circle cx="6" cy="28" r="3" fill="#e4e4e7"/>
+        <circle cx="28" cy="18" r="3" fill="#818cf8" opacity="0.85"/>
+      </svg>
+      <div>
+        <h1 data-i18n-title>平面鏡反射實驗室</h1>
+        <p class="subtitle" data-i18n="subtitle">HKDSE 光學互動模擬</p>
+      </div>
+    </div>
+    <button type="button" class="lang-toggle" id="langToggle" data-i18n="langBtn" aria-label="Switch language">English</button>
+  </header>
+
+  <!-- 場景分頁：六個 HKDSE 常見課題 -->
+  <nav class="tab-bar" id="tabBar" aria-label="Scenarios" role="tablist"></nav>
+
+  <main class="dashboard" role="main">
+    <!-- 左：互動畫布 + 場景徽章（標示當前物理主題） -->
+    <section class="viz-panel" id="vizPanel" aria-label="Simulation canvas">
+      <div class="viz-chrome">
+        <span class="scene-badge" id="sceneBadge" aria-live="polite"></span>
+        <span class="viz-hint" id="vizHint" data-i18n="vizHint">拖曳元素或調整滑桿，公式會即時更新</span>
+      </div>
+      <!-- canvas 由 app.js 動態插入 -->
+      <div class="viz-canvas-wrap" id="vizCanvasWrap">
+        <canvas id="simCanvas" width="700" height="440" aria-label="Optics simulation"></canvas>
+      </div>
+
+      <!-- 圖例：畫布正下方，分組對齊畫布 COLORS -->
+      <div class="legend-panel viz-legend" id="legendPanel" aria-label="Legend">
+        <span class="legend-panel-title" data-i18n="legend">圖例</span>
+        <div class="legend-groups">
+          <div class="legend-group" role="list" aria-label="Rays">
+            <span class="legend-item" role="listitem">
+              <svg class="legend-icon" viewBox="0 0 28 28" aria-hidden="true">
+                <line id="legendRealStroke" x1="4" y1="14" x2="20" y2="14" stroke="#00e676" stroke-width="2.5" stroke-linecap="round"/>
+                <polygon id="legendRealFill" points="20,14 15,11 15,17" fill="#00e676"/>
+              </svg>
+              <span class="legend-text" data-i18n="legendReal">實際光線</span>
+            </span>
+            <span class="legend-item" role="listitem">
+              <svg class="legend-icon" viewBox="0 0 28 28" aria-hidden="true">
+                <line id="legendVirtualStroke" x1="4" y1="14" x2="18" y2="14" stroke="#a78bfa" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+                <circle cx="22" cy="14" r="3.5" fill="#818cf8"/>
+              </svg>
+              <span class="legend-text" data-i18n="legendVirtual">虛線／虛像</span>
+            </span>
+          </div>
+          <span class="legend-divider" aria-hidden="true"></span>
+          <div class="legend-group" role="list" aria-label="Mirrors">
+            <span class="legend-item" role="listitem">
+              <svg class="legend-icon" viewBox="0 0 28 28" aria-hidden="true">
+                <line x1="6" y1="22" x2="22" y2="6" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+              <span class="legend-text" data-i18n="legendMirror">平面鏡</span>
+            </span>
+            <span class="legend-item" role="listitem">
+              <svg class="legend-icon" viewBox="0 0 28 28" aria-hidden="true">
+                <rect x="7" y="8" width="14" height="12" rx="2" fill="none" stroke="#ffcc00" stroke-width="2"/>
+              </svg>
+              <span class="legend-text" data-i18n="legendNeed">所需鏡段</span>
+            </span>
+          </div>
+          <span class="legend-divider" aria-hidden="true"></span>
+          <div class="legend-group" role="list" aria-label="Points">
+            <span class="legend-item" role="listitem">
+              <svg class="legend-icon" viewBox="0 0 28 28" aria-hidden="true">
+                <circle cx="14" cy="14" r="5" fill="#e4e4e7"/>
+              </svg>
+              <span class="legend-text" data-i18n="legendObject">實物 O</span>
+            </span>
+            <span class="legend-item" role="listitem">
+              <svg class="legend-icon" viewBox="0 0 28 28" aria-hidden="true">
+                <circle cx="14" cy="14" r="4.5" fill="#f472b6"/>
+              </svg>
+              <span class="legend-text" data-i18n="legendEye">觀察者 E</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右：說明、參數、動畫、結果、圖例 -->
+    <aside class="controls-panel" aria-label="Controls and results">
+      <div class="panel-section panel-desc">
+        <h2 class="panel-title" data-i18n="description">說明</h2>
+        <p class="desc-text" id="desc"></p>
+      </div>
+
+      <div class="sub-tab-bar" id="subTabs" style="display:none" role="tablist"></div>
+
+      <div class="panel-section">
+        <h2 class="panel-title" data-i18n="controls">參數</h2>
+        <div id="controls"></div>
+        <div class="btn-row btn-row-reset">
+          <button type="button" class="btn btn-reset" id="btnReset" data-i18n="reset">重設</button>
+        </div>
+      </div>
+
+      <div class="panel-section" id="animPanel">
+        <h2 class="panel-title" data-i18n="anim.play">逐步繪製光線</h2>
+        <div class="btn-row btn-row-anim">
+          <button type="button" class="btn btn-primary" id="btnPlay" data-i18n="anim.play">逐步繪製光線</button>
+          <button type="button" class="btn" id="btnPause" data-i18n="anim.pause">暫停</button>
+          <button type="button" class="btn" id="btnStep" data-i18n="anim.step">下一步</button>
+          <button type="button" class="btn" id="btnShowAll" data-i18n="anim.showAll">顯示全部</button>
+          <button type="button" class="btn" id="btnReplay" data-i18n="anim.replay">重播</button>
+        </div>
+      </div>
+
+      <div class="panel-section panel-formula">
+        <h2 class="panel-title" id="resultsTitle" data-i18n="results">計算結果</h2>
+        <div class="stats-box" id="stats" role="list"></div>
+
+        <!-- LaTeX 公式區：參數變化時由 formulaLatex.js 即時重繪 -->
+        <div class="formula-card" aria-label="Formula">
+          <div class="formula-card-label" data-i18n="formulaLive">即時公式</div>
+          <div class="formula-latex" id="formulaLatex" hidden></div>
+          <pre class="formula-box" id="formula"></pre>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="app-footer" role="contentinfo">
+    <span data-i18n="footerNote">拖曳畫布元素 · 滑桿調參 · 公式同步更新</span>
+  </footer>
+
+  <script src="js/bundle.js?v=20260714" defer></script>
+</body>
+</html>

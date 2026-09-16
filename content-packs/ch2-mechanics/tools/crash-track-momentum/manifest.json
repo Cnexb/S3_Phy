@@ -1,0 +1,8 @@
+{
+  "slug": "crash-track-momentum",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

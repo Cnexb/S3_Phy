@@ -23,10 +23,10 @@ check("pack is PHY CH3 optics, not a per-topic pack", () => {
   assert.equal(pack.scope, "optics");
 });
 
-check("notes keys are CSV Topic codes JPWM06–11 plus hub JPWM04", () => {
+check("notes keys are CSV Topic codes JPWM01–11 plus hub JPWM04, without JPWM10", () => {
   assert.deepEqual(
     pack.notes.map((note) => note.topicCode),
-    ["JPWM06", "JPWM07", "JPWM08", "JPWM09", "JPWM11", "JPWM04"],
+    ["JPWM01", "JPWM02", "JPWM03", "JPWM04", "JPWM05", "JPWM06", "JPWM07", "JPWM08", "JPWM09", "JPWM11"],
   );
 });
 

@@ -1,0 +1,11 @@
+{
+  "counts": {
+    "reflection": 10,
+    "refraction-snells-law": 10,
+    "total-internal-reflection": 10,
+    "convex-lens": 10,
+    "magnification-lens-formula": 10,
+    "concave-lens": 10
+  },
+  "total": 60
+}

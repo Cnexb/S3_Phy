@@ -1,0 +1,23 @@
+{
+  "chapter": "S3 Optics Ch.4 - Electromagnetic Waves",
+  "uiLangs": [
+    "en",
+    "zh-Hant"
+  ],
+  "sources": [
+    {
+      "id": "ch4",
+      "label": "Chapter 4 Electromagnetic waves",
+      "question": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Notes\\EM wave\\Chapter 4 Electromagnetic waves\\Chapter 4 Electromagnetic waves.pdf",
+      "answer": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Notes\\EM wave\\Chapter 4 Electromagnetic waves\\Chapter 4 Electromagnetic waves (Ans).pdf",
+      "cropDir": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Notes\\EM wave\\Chapter 4 Electromagnetic waves"
+    },
+    {
+      "id": "ex",
+      "label": "EM Waves Exercise",
+      "question": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Notes\\EM wave\\EM Waves Exercise\\EM Waves Exercise.pdf",
+      "answer": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Notes\\EM wave\\EM Waves Exercise\\EM Waves Exercise (Ans).pdf",
+      "cropDir": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Notes\\EM wave\\EM Waves Exercise"
+    }
+  ]
+}

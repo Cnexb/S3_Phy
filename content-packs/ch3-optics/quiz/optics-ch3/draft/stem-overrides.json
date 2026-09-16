@@ -1,0 +1,117 @@
+{
+  "ch31-r02": {
+    "stem": "Simon stands in front of a plane mirror as shown. There is an opaque obstacle between Simon and the mirror. Which of the following statements is/are correct? (1)When he stands at the position shown, he cannot see the image of his shoes in the mirror. (2)If he walks closer to the obstacle, he may see the image of his shoes in the mirror. (3)If he walks away from the obstacle, he may see the image of his shoes in the mirror.",
+    "hint": "As long as the obstacle is between him and the mirror, light from his shoes is always blocked by the obstacle and cannot reach the mirror. Therefore (1) is correct; (2) and (3) are incorrect."
+  },
+  "ch31-r03": {
+    "stem": "The figure shows a student standing in front of a wall mirror. What is the minimum height of the mirror above the floor so that she can see her full image in the mirror?",
+    "hint": "The bottom edge of the mirror must be at half the height of her eyes above the floor."
+  },
+  "ch31-r04": {
+    "stem": "Heidi is standing between two parallel mirrors, M1 and M2, with their reflective surfaces facing each other as shown below. When Heidi looks at M1, she sees multiple images in the mirror. Which of the following is/are the image(s) of Heidi seen in M1?",
+    "hint": "I1 is the image of Heidi formed by mirror M1. There is also an image I' of Heidi 1 m behind M2 formed by mirror M2."
+  },
+  "ch32-f01": {
+    "stem": "The figure shows a light ray passing through three media X, Y and Z. Which of the following statements about the three media are correct? (1)Z is optically denser than X. (2)Light travels the fastest in X. (3)Y has the greatest refractive index."
+  },
+  "ch32-f02": {
+    "stem": "The figure shows a light ray refracted at the boundary between medium X and medium Y. The refractive index of X is 1.77. What is the refractive index of Y?"
+  },
+  "ch32-f04": {
+    "stem": "The following figure shows a light ray travelling from medium X to a vacuum. What is the refractive index of medium X?"
+  },
+  "ch32-f07": {
+    "stem": "Which of the following statements about the laws of refraction is/are correct? (1)The angle of refraction r is always equal to the angle of incidence i. (2)The ratio of the sine of the angle of incidence i to the sine of the angle of refraction r is always equal to 1, i.e. sin i / sin r = 1. (3)The incident ray, the refracted ray and the normal all lie in the same plane."
+  },
+  "ch32-f05": {
+    "stem": "The figure shows a light ray travelling from medium Y to medium X. What is the angle of refraction?"
+  },
+  "ch32-f06": {
+    "stem": "A ray of light travels from medium X to medium Y as shown. The speed of light in air and medium X are 3 × 10⁸ m s⁻¹ and 2.5 × 10⁸ m s⁻¹ respectively. Find the refractive index of medium Y."
+  },
+  "ch32-f08": {
+    "stem": "Three light rays enter an air bubble in water. C is the centre of the bubble. Which of the paths shown below is/are correct?"
+  },
+  "ch32-f09": {
+    "stem": "The figure below shows the apparent position of a goldfish as seen by an observer above water. Where is the actual position of the goldfish?"
+  },
+  "ch33-t01": {
+    "stem": "The figure shows light refracted at a boundary between water and air. What is β?",
+    "hint": "Use Snell's law and the geometry of the triangle formed by the refracted ray and the boundaries."
+  },
+  "ch33-t02": {
+    "stem": "Why does the air bubble appear silvery?"
+  },
+  "ch33-t03": {
+    "stem": "The figure shows a light ray incident on a semicircular glass block. Which of the following correctly describes what happens to the light ray at the curved surface?"
+  },
+  "ch33-t05": {
+    "stem": "The figure shows a light ray travelling from medium X to medium Y. Which of the following statements is/are correct? (1)Medium X is optically denser than medium Y. (2)Light travels faster in medium Y than in medium X. (3)Medium Y is air."
+  },
+  "ch33-t07": {
+    "stem": "Which of the diagrams are correct? (1) (2) (3)"
+  },
+  "ch33-t08": {
+    "stem": "Which of the following ray diagrams is correct?"
+  },
+  "ch34-c01": {
+    "stem": "Which of the following statements about lens L shown in the figure below is/are correct? (1)Lens L is a convex lens. (2)Lens L has only one principal focus. (3)The focal length of lens L equals distance d."
+  },
+  "ch34-c02": {
+    "stem": "In the figure below, lens L is a convex lens and F is its principal focus. Which of the rays is wrongly drawn?"
+  },
+  "ch34-c03": {
+    "stem": "An object is 10 cm away from a convex lens. The focal length of the lens is 15 cm. The image formed is"
+  },
+  "ch34-c04": {
+    "stem": "P is an emergent ray from a lens as shown below. F and F' are the principal foci of the lens. Which of the following rays is a possible incident ray?"
+  },
+  "ch35-m01": {
+    "stem": "The graph shows the variation of image distance v with object distance u for a convex lens. Which of the following statements is/are correct? (1)The focal length of the lens is 5 cm. (2)The value of x is 5. (3)The slope of the graph is 1."
+  },
+  "ch35-m02": {
+    "stem": "Fig. a and Fig. b show the experimental set-up and the m–v graph for a convex lens. If another convex lens of greater refractive index is used, which of the following graphs (in dotted line) best shows the new m–v graph?"
+  },
+  "ch35-m06": {
+    "stem": "The magnification of an image is 2, and the distance between the image and the lens is 8 cm. Which of the following may be the distance between the image and the object? (1)4 cm (2)8 cm (3)12 cm"
+  },
+  "ch35-m07": {
+    "stem": "In the figure below, the positions of an object and its image formed by a convex lens are shown. The focal length of the lens is"
+  },
+  "ch35-m08": {
+    "stem": "An object is placed 10 cm in front of a lens and an erect image is formed 6 cm from the lens. Which of the following is the correct description of the lens?"
+  },
+  "ch35-m10": {
+    "stem": "A luminous point object is placed 3 cm above the principal axis of a converging lens of focal length 10 cm. Its image is 5 cm below the axis. How far is the object from the lens?"
+  },
+  "ch35-m09": {
+    "stem": "The figure shows a lens used in a Physics at Work experiment. Find the image distance and the focal length of the lens."
+  },
+  "ch36-v02": {
+    "stem": "In the figure below, lens L is a concave lens and F' is its principal focus. Which of the rays is wrongly drawn?"
+  },
+  "ch36-v05": {
+    "stem": "An object is put in front of a lens and a virtual image is formed. The figure below shows the positions of the object and the image. What is the focal length of the lens?"
+  },
+  "ch36-v07": {
+    "stem": "In the following diagram, intervals AB, BC, CD, DE and EF are of equal length. An object is placed at O. When a lens is put in front of the object, an image is formed at I. Which of the following show(s) the possible position(s), type(s) and focal length(s) of the lens? (1)convex lens, about 1 interval (2)concave lens, about 2 intervals (3)convex lens, about 1 interval"
+  },
+  "ch36-v09": {
+    "stem": "An object is placed in front of a concave lens and an image is formed. The positions of the image and the lens are shown below. The focal length of the concave lens is 9 cm. The object distance is"
+  },
+  "ch36-v10": {
+    "stem": "In the following diagram, lenses X and Y are made of the same material but have different shapes, while lenses X and Z are made of different materials but have the same shape. Which of the following statements is/are correct? (1)X, Y and Z are diverging lenses. (2)Y has a shorter focal length than X. (3)Z has a shorter focal length than X."
+  },
+  "ch34-c07": {
+    "stem": "If F and F' are the principal foci of a convex lens, which of the following ray diagrams is/are incorrect? (1) (2) (3)"
+  },
+  "ch35-m03": {
+    "stem": "An object is placed 5 cm in front of a convex lens with a focal length of 3 cm. In applying the lens formula to find the position of the image, which of the following statements is/are correct? (1)f is 3 cm. (2)u is +5 cm. (3)The image is 1.875 cm from the lens on the same side as the object."
+  },
+  "ch35-m04": {
+    "stem": "An object 7 cm tall is placed in front of a lens and the image formed is 5 cm tall. Which of the following may be the lens used? (1)Convex lens of focal length 2.92 cm (2)Convex lens of focal length 17.5 cm (3)Concave lens of focal length 2.92 cm (4)Concave lens of focal length 17.5 cm"
+  },
+  "ch36-v06": {
+    "stem": "F and F' are the principal foci of a concave lens. Which of the following ray diagrams is/are incorrect? (1) (2) (3)"
+  }
+}

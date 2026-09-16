@@ -1,0 +1,62 @@
+{
+  "ch32-f04": {
+    "options": [
+      {
+        "key": "A",
+        "text": "sin β / cos θ"
+      },
+      {
+        "key": "B",
+        "text": "cos θ / sin β"
+      },
+      {
+        "key": "C",
+        "text": "sin θ / sin β"
+      },
+      {
+        "key": "D",
+        "text": "cos β / sin θ"
+      }
+    ]
+  },
+  "ch35-m08": {
+    "options": [
+      {
+        "key": "A",
+        "text": "3.75 cm, diverging lens"
+      },
+      {
+        "key": "B",
+        "text": "3.75 cm, converging lens"
+      },
+      {
+        "key": "C",
+        "text": "15 cm, diverging lens"
+      },
+      {
+        "key": "D",
+        "text": "15 cm, converging lens"
+      }
+    ]
+  },
+  "ch36-v09": {
+    "options": [
+      {
+        "key": "A",
+        "text": "6 cm"
+      },
+      {
+        "key": "B",
+        "text": "12 cm"
+      },
+      {
+        "key": "C",
+        "text": "18 cm"
+      },
+      {
+        "key": "D",
+        "text": "24 cm"
+      }
+    ]
+  }
+}

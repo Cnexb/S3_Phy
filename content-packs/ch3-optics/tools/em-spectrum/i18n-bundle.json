@@ -1,0 +1,531 @@
+{
+  "strings": {
+    "en": {
+      "pageTitle": "Electromagnetic Spectrum Explorer (v2)",
+      "headerTitle": "Electromagnetic Spectrum Explorer",
+      "headerSubtitle": "Explore wavelength, frequency, and what each band of EM radiation can do.",
+      "ariaLanguage": "Language",
+      "emSpectrum": "EM Spectrum",
+      "ariaSpectrumDiagram": "Electromagnetic spectrum diagram",
+      "tuneWave": "Tune the wave",
+      "wavelengthLog": "Wavelength",
+      "ariaWavelengthSlider": "Wavelength logarithmic slider",
+      "wavelength": "Wavelength",
+      "frequency": "Frequency",
+      "photonEnergy": "Photon energy",
+      "bandLabel": "Band",
+      "ariaSineWave": "Schematic sine wave",
+      "schematicWaveNote": "Wave drawing is schematic (not to scale with the full EM range).",
+      "simLab": "Simulation Lab",
+      "simLabIntro": "Interactive demos of how EM waves behave. Tied to your current wavelength above.",
+      "ariaLabTopics": "Simulation lab topics",
+      "labTransverse": "Transverse",
+      "labMedia": "Speed in media",
+      "labPhenomena": "Wave phenomena",
+      "labPenetration": "Penetration",
+      "labTransCaption": "EM waves are <strong>transverse</strong>: E and B oscillate perpendicular to each other and to propagation <strong>k</strong>. Drag the 3D view to rotate.",
+      "yaw": "Yaw",
+      "ariaRotateH": "Rotate view horizontally",
+      "pitch": "Pitch",
+      "ariaRotateV": "Rotate view vertically",
+      "zoom": "Zoom",
+      "ariaZoom": "Zoom 3D view",
+      "resetView": "Reset view",
+      "labMediaCaption": "In matter, light slows to <em>v = c/n</em>. Frequency stays the same, so wavelength shrinks: <em>&lambda;<sub>medium</sub> = &lambda;/n</em>.",
+      "ariaWavePhenomena": "Wave phenomena",
+      "reflection": "Reflection",
+      "refraction": "Refraction",
+      "diffraction": "Diffraction",
+      "interference": "Interference",
+      "labReflectCaption": "At a boundary, the incident angle equals the reflected angle (law of reflection).",
+      "incidentAngle": "Incident angle",
+      "labRefractCaption": "Crossing into a denser medium, the ray bends <em>toward</em> the normal (Snell&rsquo;s law).",
+      "medium1": "Medium 1",
+      "medium2": "Medium 2",
+      "labDiffractionCaption": "Waves spread after passing through narrow opening(s). With fixed slit width <em>a</em> (nm), longer <em>&lambda;</em> diffracts more (sin&nbsp;&theta;&nbsp;&asymp;&nbsp;&lambda;/a).",
+      "setup": "Setup",
+      "slitWidth": "Slit width (nm)",
+      "slitSeparation": "Slit separation (nm)",
+      "labInterferenceCaption": "Two coherent sources produce bright and dark fringes where waves arrive in or out of phase.",
+      "sourceSep": "Source separation (&times;&lambda;)",
+      "phasePi": "Phase difference &pi; (destructive at center)",
+      "labPenCaption": "Different bands penetrate materials differently — from radio passing through walls to gamma rays needing thick shielding.",
+      "barrierPreset": "Barrier preset",
+      "labSchematicNote": "Lab animations are schematic (correct relationships, compressed scales).",
+      "physicalImplications": "Physical implications",
+      "applications": "Applications",
+      "formulaConstants": "c &asymp; 3.00&times;10<sup>8</sup> m/s in vacuum | h &asymp; 6.626&times;10<sup>-34</sup> J&middot;s",
+      "ariaCloseFull": "Close full image",
+      "ariaClose": "Close",
+      "optVacuum": "Vacuum",
+      "optVacuumN1": "Vacuum (n=1)",
+      "optAir": "Air",
+      "optWater": "Water (1.33)",
+      "optGlass": "Glass (1.5)",
+      "optPenTissue": "Human tissue",
+      "optPenWall": "Building wall",
+      "optPenLead": "Lead shielding",
+      "optSingleSlit": "Single slit",
+      "optDoubleSlit": "Double slit",
+      "bandRange": "Typical range: {min} to {max} | f: {fMax} to {fMin}",
+      "inverseNote": "c = f*lambda: if wavelength halves, frequency doubles (c fixed in vacuum). Shorter lambda means higher f and higher photon energy E = hf.",
+      "formulaSub": "At your setting: f = c/lambda = {freq} Hz,  E = hf = {energy}",
+      "noAppImages": "No application images for this band.",
+      "transverseReadout": "<strong>{lambda}</strong> | f = {freq} | 3D: E along y, B along z, k along x | E ⊥ B ⊥ k; |E|/|B| = c in vacuum.",
+      "penTableMedium": "Medium",
+      "penTableN": "n",
+      "penTableV": "v=c/n",
+      "penTableLambda": "λ=v/f",
+      "penTableFixed": "f = {freq} fixed in all media",
+      "penReadout": "<strong>{band}:</strong> {note} | Beer-Lambert exit transmission ≈ {tx}%",
+      "penBarIncident": "incident",
+      "snellLabel": "Snell:",
+      "bendToward": "toward",
+      "bendAwayFrom": "away from",
+      "snellLine": "n₁ sinθ₁ = n₂ sinθ₂ &rarr; θ₂ = {theta2}° ({bend} normal) | λ₁ = {lambda1}, λ₂ = {lambda2}",
+      "snellCritical": " | critical angle (n₁→n₂) = {crit}°",
+      "tirTitle": "Total internal reflection",
+      "tirLine": "(n₁ > n₂, θ₁ > critical). θᵣ = θ₁ = {angle}°",
+      "snellInvalidTitle": "Invalid",
+      "snellInvalidLine": ": sinθ₂ > 1 (check n₁, n₂, θ₁)",
+      "svgTitle": "EM spectrum",
+      "svgFrequency": "Frequency (Hz)",
+      "svgWavelength": "Wavelength",
+      "svgVisibleSpectrum": "VISIBLE SPECTRUM",
+      "svgNm700": "~700 nm",
+      "svgNm400": "~400 nm",
+      "canvasWavePeaksLong": "longer λ (fewer peaks)",
+      "canvasWavePeaksShort": "shorter λ (more peaks)",
+      "canvasEy": "E (y)",
+      "canvasBz": "B (z)",
+      "canvasKx": "k (x)",
+      "canvasTransPhase": "E ⊥ B ⊥ k — same phase in vacuum",
+      "canvasTransDrag": "Drag to rotate · scroll to zoom · double-click reset",
+      "canvasTransSliders": "Or use Yaw / Pitch / Zoom sliders above the view",
+      "canvasMediaFooter": "f fixed = {freq} across media; λ/n and v = c/n",
+      "canvasBoundary": "Boundary",
+      "canvasNormal": "normal",
+      "canvasReflectLaw": "θᵢ = θᵣ (law of reflection)",
+      "canvasScreen": "Screen",
+      "canvasDiffSingle": "Single slit",
+      "canvasDiffDouble": "Double slit",
+      "canvasDiffFooter": "{mode} | a = {a} nm | λ = {lambda} | sinθ ≈ λ/a = {ratio}",
+      "canvasInterferenceFooter": "d = {d}λ | Δφ = k(r₂−r₁) + φ | I ∝ |E₁+E₂|²",
+      "canvasBeerLambertExit": " (Beer-Lambert) | exit ≈ {exit}%",
+      "penLayerAir": "Air",
+      "penLayerSkin": "Skin",
+      "penLayerMuscle": "Muscle",
+      "penLayerBone": "Bone",
+      "penLayerDrywall": "Drywall",
+      "penLayerConcrete": "Concrete",
+      "penLayerRebar": "Rebar",
+      "penLayerAluminum": "Aluminum",
+      "penLayerSteel": "Steel",
+      "penLayerLead": "Lead",
+      "mediaVacuum": "Vacuum",
+      "mediaAir": "Air",
+      "mediaWater": "Water",
+      "mediaGlass": "Glass",
+      "lightboxViewTitle": "View full image: {caption}"
+    },
+    "zh": {
+      "pageTitle": "電磁波譜探索器 (v2)",
+      "headerTitle": "電磁波譜探索器",
+      "headerSubtitle": "探索波長、頻率，以及各電磁波段可做的事。",
+      "ariaLanguage": "語言",
+      "emSpectrum": "電磁波譜",
+      "ariaSpectrumDiagram": "電磁波譜示意圖",
+      "tuneWave": "調節波長",
+      "wavelengthLog": "波長",
+      "ariaWavelengthSlider": "波長對數滑桿",
+      "wavelength": "波長",
+      "frequency": "頻率",
+      "photonEnergy": "光子能量",
+      "bandLabel": "波段",
+      "ariaSineWave": "示意正弦波",
+      "schematicWaveNote": "波形圖僅為示意（與全譜比例不符）。",
+      "simLab": "模擬實驗室",
+      "simLabIntro": "互動示範電磁波行為，與上方目前波長同步。",
+      "ariaLabTopics": "模擬實驗主題",
+      "labTransverse": "橫波",
+      "labMedia": "介質中的速度",
+      "labPhenomena": "波動現象",
+      "labPenetration": "穿透",
+      "labTransCaption": "電磁波為<strong>橫波</strong>：E 與 B 互相垂直，且均垂直於傳播方向 <strong>k</strong>。可拖曳 3D 視圖旋轉。",
+      "yaw": "偏航",
+      "ariaRotateH": "水平旋轉視圖",
+      "pitch": "俯仰",
+      "ariaRotateV": "垂直旋轉視圖",
+      "zoom": "縮放",
+      "ariaZoom": "縮放 3D 視圖",
+      "resetView": "重設視圖",
+      "labMediaCaption": "在物質中，光速變為 <em>v = c/n</em>。頻率不變，波長縮短：<em>&lambda;<sub>medium</sub> = &lambda;/n</em>。",
+      "ariaWavePhenomena": "波動現象",
+      "reflection": "反射",
+      "refraction": "折射",
+      "diffraction": "繞射",
+      "interference": "干涉",
+      "labReflectCaption": "在界面，入射角等於反射角（反射定律）。",
+      "incidentAngle": "入射角",
+      "labRefractCaption": "光進入較密介質時，折射線向法線偏折（<em>司乃耳定律</em>）。",
+      "medium1": "介質 1",
+      "medium2": "介質 2",
+      "labDiffractionCaption": "波經窄縫後會擴散。縫寬 <em>a</em>（nm）固定時，波長 <em>&lambda;</em> 愈長，繞射愈明顯（sin&nbsp;&theta;&nbsp;&asymp;&nbsp;&lambda;/a）。",
+      "setup": "裝置",
+      "slitWidth": "縫寬 (nm)",
+      "slitSeparation": "縫距 (nm)",
+      "labInterferenceCaption": "兩相干源在疊加處形成亮暗紋（同相或反相）。",
+      "sourceSep": "源距離 (&times;&lambda;)",
+      "phasePi": "相位差 &pi;（中央相消）",
+      "labPenCaption": "不同波段穿透物質的能力不同——無線電可穿牆，伽馬射線需厚鉛屏蔽。",
+      "barrierPreset": "屏障預設",
+      "labSchematicNote": "實驗室動畫為示意（關係正確，比例壓縮）。",
+      "physicalImplications": "物理意義",
+      "applications": "應用",
+      "formulaConstants": "c &asymp; 3.00&times;10<sup>8</sup> m/s（真空）| h &asymp; 6.626&times;10<sup>-34</sup> J&middot;s",
+      "ariaCloseFull": "關閉全圖",
+      "ariaClose": "關閉",
+      "optVacuum": "真空",
+      "optVacuumN1": "真空 (n=1)",
+      "optAir": "空氣",
+      "optWater": "水 (1.33)",
+      "optGlass": "玻璃 (1.5)",
+      "optPenTissue": "人體組織",
+      "optPenWall": "建築牆壁",
+      "optPenLead": "鉛屏蔽",
+      "optSingleSlit": "單縫",
+      "optDoubleSlit": "雙縫",
+      "bandRange": "典型範圍：{min} 至 {max} | f：{fMax} 至 {fMin}",
+      "inverseNote": "c = fλ：波長減半則頻率加倍（真空中 c 固定）。λ 愈短，f 與光子能量 E = hf 愈高。",
+      "formulaSub": "目前設定：f = c/λ = {freq} Hz，E = hf = {energy}",
+      "noAppImages": "此波段暫無應用圖片。",
+      "transverseReadout": "<strong>{lambda}</strong> | f = {freq} | 3D：E 沿 y，B 沿 z，k 沿 x | E ⊥ B ⊥ k；真空中 |E|/|B| = c。",
+      "penTableMedium": "介質",
+      "penTableN": "n",
+      "penTableV": "v=c/n",
+      "penTableLambda": "λ=v/f",
+      "penTableFixed": "各介質中 f = {freq} 固定",
+      "penReadout": "<strong>{band}：</strong>{note} | 比爾定律透射率 ≈ {tx}%",
+      "penBarIncident": "入射",
+      "snellLabel": "司乃耳：",
+      "bendToward": "向法線",
+      "bendAwayFrom": "離開法線",
+      "snellLine": "n₁ sinθ₁ = n₂ sinθ₂ &rarr; θ₂ = {theta2}°（{bend}）| λ₁ = {lambda1}，λ₂ = {lambda2}",
+      "snellCritical": " | 臨界角 (n₁→n₂) = {crit}°",
+      "tirTitle": "全內反射",
+      "tirLine": "（n₁ > n₂，θ₁ > 臨界角）。θᵣ = θ₁ = {angle}°",
+      "snellInvalidTitle": "無效",
+      "snellInvalidLine": "：sinθ₂ > 1（請檢查 n₁、n₂、θ₁）",
+      "svgTitle": "電磁波譜",
+      "svgFrequency": "頻率 (Hz)",
+      "svgWavelength": "波長",
+      "svgVisibleSpectrum": "可見光譜",
+      "svgNm700": "~700 nm",
+      "svgNm400": "~400 nm",
+      "canvasWavePeaksLong": "較長 λ（波峰較少）",
+      "canvasWavePeaksShort": "較短 λ（波峰較多）",
+      "canvasEy": "E (y)",
+      "canvasBz": "B (z)",
+      "canvasKx": "k (x)",
+      "canvasTransPhase": "E ⊥ B ⊥ k — 真空中同相位",
+      "canvasTransDrag": "拖曳旋轉 · 滾輪縮放 · 雙擊重設",
+      "canvasTransSliders": "或使用上方偏航／俯仰／縮放滑桿",
+      "canvasMediaFooter": "各介質 f 固定 = {freq}；λ/n 與 v = c/n",
+      "canvasBoundary": "界面",
+      "canvasNormal": "法線",
+      "canvasReflectLaw": "θᵢ = θᵣ（反射定律）",
+      "canvasScreen": "螢幕",
+      "canvasDiffSingle": "單縫",
+      "canvasDiffDouble": "雙縫",
+      "canvasDiffFooter": "{mode} | a = {a} nm | λ = {lambda} | sinθ ≈ λ/a = {ratio}",
+      "canvasInterferenceFooter": "d = {d}λ | Δφ = k(r₂−r₁) + φ | I ∝ |E₁+E₂|²",
+      "canvasBeerLambertExit": "（比爾定律）| 透射 ≈ {exit}%",
+      "penLayerAir": "空氣",
+      "penLayerSkin": "皮膚",
+      "penLayerMuscle": "肌肉",
+      "penLayerBone": "骨骼",
+      "penLayerDrywall": "石膏板",
+      "penLayerConcrete": "混凝土",
+      "penLayerRebar": "鋼筋",
+      "penLayerAluminum": "鋁",
+      "penLayerSteel": "鋼",
+      "penLayerLead": "鉛",
+      "mediaVacuum": "真空",
+      "mediaAir": "空氣",
+      "mediaWater": "水",
+      "mediaGlass": "玻璃",
+      "lightboxViewTitle": "查看全圖：{caption}"
+    }
+  },
+  "bands": {
+    "radio": {
+      "en": {
+        "name": "Radio waves",
+        "examples": [
+          "AM/FM broadcasting",
+          "TV signals",
+          "Long-wavelength radar"
+        ],
+        "implications": "Longest wavelengths, lowest frequencies. Non-ionizing. Good diffraction around obstacles. Low photon energy."
+      },
+      "zh": {
+        "name": "無線電波",
+        "examples": [
+          "調幅／調頻廣播",
+          "電視訊號",
+          "長波雷達"
+        ],
+        "implications": "波長最長、頻率最低。非電離輻射。繞射能力強。光子能量低。"
+      }
+    },
+    "microwave": {
+      "en": {
+        "name": "Microwaves",
+        "examples": [
+          "Microwave ovens (heating water)",
+          "Wi-Fi and Bluetooth",
+          "Satellite communication"
+        ],
+        "implications": "Absorbed by water molecules, causing heating. Still non-ionizing. Used for radar and wireless data."
+      },
+      "zh": {
+        "name": "微波",
+        "examples": [
+          "微波爐（加熱水分）",
+          "Wi-Fi 與藍牙",
+          "衛星通訊"
+        ],
+        "implications": "被水分子吸收而產生熱。仍屬非電離。用於雷達與無線數據。"
+      }
+    },
+    "infrared": {
+      "en": {
+        "name": "Infrared",
+        "examples": [
+          "Thermal imaging",
+          "TV remote controls",
+          "Night-vision heat signatures"
+        ],
+        "implications": "Felt as heat. Emitted by warm objects. Higher frequency than microwaves, but still non-ionizing."
+      },
+      "zh": {
+        "name": "紅外線",
+        "examples": [
+          "熱成像",
+          "電視遙控",
+          "夜視熱影像"
+        ],
+        "implications": "以熱能形式感受。溫暖物體會輻射。頻率高於微波，仍非電離。"
+      }
+    },
+    "visible": {
+      "en": {
+        "name": "Visible light",
+        "examples": [
+          "Human vision (~400-700 nm)",
+          "Fiber-optic communications",
+          "Photosynthesis"
+        ],
+        "implications": "The narrow band our eyes detect. Each color is a different wavelength and frequency."
+      },
+      "zh": {
+        "name": "可見光",
+        "examples": [
+          "人眼視覺（約 400–700 nm）",
+          "光纖通訊",
+          "光合作用"
+        ],
+        "implications": "人眼可感應的窄波段。不同顏色對應不同波長與頻率。"
+      }
+    },
+    "uv": {
+      "en": {
+        "name": "Ultraviolet",
+        "examples": [
+          "Sun tanning and sunburn",
+          "Sterilization lamps",
+          "Fluorescent black lights"
+        ],
+        "implications": "Higher frequency means more energetic photons. Can damage skin. Ionizing with prolonged exposure."
+      },
+      "zh": {
+        "name": "紫外線",
+        "examples": [
+          "曬黑與曬傷",
+          "紫外消毒燈",
+          "螢光黑光燈"
+        ],
+        "implications": "頻率較高，光子能量較大。可損傷皮膚。長時間暴露具電離性。"
+      }
+    },
+    "xray": {
+      "en": {
+        "name": "X-rays",
+        "examples": [
+          "Medical and dental imaging",
+          "Airport security scanners",
+          "Crystallography"
+        ],
+        "implications": "Short wavelength, penetrates soft tissue but absorbed by bone. Ionizing at high doses."
+      },
+      "zh": {
+        "name": "X 射線",
+        "examples": [
+          "醫學與牙科造影",
+          "機場安檢掃描",
+          "晶體學"
+        ],
+        "implications": "波長短，可穿透軟組織但被骨骼吸收。高劑量具電離性。"
+      }
+    },
+    "gamma": {
+      "en": {
+        "name": "Gamma rays",
+        "examples": [
+          "Nuclear decay",
+          "Cancer radiotherapy",
+          "Gamma-ray bursts in space"
+        ],
+        "implications": "Shortest wavelength, highest frequency, most energetic photons. Highly ionizing and penetrating."
+      },
+      "zh": {
+        "name": "伽馬射線",
+        "examples": [
+          "核衰變",
+          "癌症放射治療",
+          "宇宙伽馬暴"
+        ],
+        "implications": "波長最短、頻率最高、光子能量最大。高度電離且穿透力強。"
+      }
+    }
+  },
+  "appCaptions": {
+    "en": {
+      "Radio waves/AM_FM Broadcasting - Simple.webp": "AM/FM Broadcasting",
+      "Radio waves/Mobile Phone Communication - Simple.webp": "Mobile Phone Communication",
+      "Radio waves/TV Signals - Simple.webp": "TV Signals",
+      "Microwaves/Microwave Ovens - Simple.webp": "Microwave Ovens",
+      "Microwaves/Radar - Simple.webp": "Radar",
+      "Microwaves/Satellite Communication - Simple.webp": "Satellite Communication",
+      "Microwaves/Wi-Fi and Bluetooth - Simple.webp": "Wi-Fi and Bluetooth",
+      "Infrared/Auto-focus of Camera - Simple.webp": "Auto-focus of Camera",
+      "Infrared/Infra-red Thermometer - Simple.webp": "Infra-red Thermometer",
+      "Infrared/Night-vision Heat Signatures - Simple.webp": "Night-vision Heat Signatures",
+      "Infrared/Radiant Heater - Simple.webp": "Radiant Heater",
+      "Infrared/TV Remote Controls - Simple.webp": "TV Remote Controls",
+      "Visible/Fiber-optic Communications - Simple.webp": "Fiber-optic Communications",
+      "Visible/Lighting - Simple.webp": "Lighting",
+      "Visible/Photosynthesis - Simple.webp": "Photosynthesis",
+      "Ultraviolet/Checking Banknotes - Simple.webp": "Checking Banknotes",
+      "Ultraviolet/Produce Vitamin D (Skin) - Simple.webp": "Produce Vitamin D (Skin)",
+      "Ultraviolet/Sterilization Lamps - Simple.webp": "Sterilization Lamps",
+      "Ultraviolet/Sterilizing Drinking Water - Simple.webp": "Sterilizing Drinking Water",
+      "X-rays/Airport Security Scanners - Simple.webp": "Airport Security Scanners",
+      "X-rays/CT Scan - Simple.webp": "CT Scan",
+      "X-rays/See-through Images - Simple.webp": "See-through Images",
+      "X-rays/X-ray Scan - Simple.webp": "X-ray Scan",
+      "Gamma-rays/Cancer Radiotherapy - Simple.webp": "Cancer Radiotherapy",
+      "Gamma-rays/Sterilization (Food) - Simple.webp": "Sterilization (Food)"
+    },
+    "zh": {
+      "Radio waves/AM_FM Broadcasting - Simple.webp": "調幅／調頻廣播",
+      "Radio waves/Mobile Phone Communication - Simple.webp": "流動電話通訊",
+      "Radio waves/TV Signals - Simple.webp": "電視訊號",
+      "Microwaves/Microwave Ovens - Simple.webp": "微波爐",
+      "Microwaves/Radar - Simple.webp": "雷達",
+      "Microwaves/Satellite Communication - Simple.webp": "衛星通訊",
+      "Microwaves/Wi-Fi and Bluetooth - Simple.webp": "Wi-Fi 與藍牙",
+      "Infrared/Auto-focus of Camera - Simple.webp": "相機自動對焦",
+      "Infrared/Infra-red Thermometer - Simple.webp": "紅外線溫度計",
+      "Infrared/Night-vision Heat Signatures - Simple.webp": "夜視熱影像",
+      "Infrared/Radiant Heater - Simple.webp": "輻射暖爐",
+      "Infrared/TV Remote Controls - Simple.webp": "電視遙控",
+      "Visible/Fiber-optic Communications - Simple.webp": "光纖通訊",
+      "Visible/Lighting - Simple.webp": "照明",
+      "Visible/Photosynthesis - Simple.webp": "光合作用",
+      "Ultraviolet/Checking Banknotes - Simple.webp": "驗鈔",
+      "Ultraviolet/Produce Vitamin D (Skin) - Simple.webp": "皮膚製造維他命 D",
+      "Ultraviolet/Sterilization Lamps - Simple.webp": "紫外消毒燈",
+      "Ultraviolet/Sterilizing Drinking Water - Simple.webp": "紫外消毒食水",
+      "X-rays/Airport Security Scanners - Simple.webp": "機場安檢掃描",
+      "X-rays/CT Scan - Simple.webp": "電腦斷層掃描",
+      "X-rays/See-through Images - Simple.webp": "透視影像",
+      "X-rays/X-ray Scan - Simple.webp": "X 光掃描",
+      "Gamma-rays/Cancer Radiotherapy - Simple.webp": "癌症放射治療",
+      "Gamma-rays/Sterilization (Food) - Simple.webp": "食物滅菌"
+    }
+  },
+  "bandPenNotes": {
+    "radio": {
+      "en": "Long radio waves pass through most barriers with little attenuation.",
+      "zh": "長波無線電可穿過大部分障礙，衰減很小。"
+    },
+    "microwave": {
+      "en": "Microwaves are partially absorbed by water-rich layers.",
+      "zh": "微波會被含水層部分吸收。"
+    },
+    "infrared": {
+      "en": "Infrared is strongly absorbed near surfaces.",
+      "zh": "紅外線在表面附近被強烈吸收。"
+    },
+    "visible": {
+      "en": "Visible light is blocked by opaque solids (e.g. bone, concrete).",
+      "zh": "可見光被不透明固體阻擋（如骨骼、混凝土）。"
+    },
+    "uv": {
+      "en": "UV is largely blocked by skin, glass, and coatings.",
+      "zh": "紫外線多被皮膚、玻璃及塗層阻擋。"
+    },
+    "xray": {
+      "en": "X-rays penetrate soft tissue but are absorbed by dense bone.",
+      "zh": "X 射線可穿透軟組織，但被致密骨骼吸收。"
+    },
+    "gamma": {
+      "en": "Gamma rays are highly penetrating; thick lead greatly reduces intensity.",
+      "zh": "伽馬射線穿透力極強；厚鉛可大幅減弱強度。"
+    }
+  },
+  "penLayerKeys": {
+    "tissue": [
+      "penLayerAir",
+      "penLayerSkin",
+      "penLayerMuscle",
+      "penLayerBone"
+    ],
+    "wall": [
+      "penLayerAir",
+      "penLayerDrywall",
+      "penLayerConcrete",
+      "penLayerRebar"
+    ],
+    "lead": [
+      "penLayerAir",
+      "penLayerAluminum",
+      "penLayerSteel",
+      "penLayerLead"
+    ]
+  },
+  "selectOptionI18n": {
+    "labRefractN1": {
+      "1": "optVacuumN1",
+      "1.0003": "optAir",
+      "1.33": "optWater",
+      "1.5": "optGlass"
+    },
+    "labRefractN2": {
+      "1": "optVacuum",
+      "1.0003": "optAir",
+      "1.33": "optWater",
+      "1.5": "optGlass"
+    },
+    "labPenPreset": {
+      "tissue": "optPenTissue",
+      "wall": "optPenWall",
+      "lead": "optPenLead"
+    },
+    "labDiffractionMode": {
+      "single": "optSingleSlit",
+      "double": "optDoubleSlit"
+    }
+  }
+}

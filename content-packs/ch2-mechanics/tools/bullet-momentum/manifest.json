@@ -1,0 +1,8 @@
+{
+  "slug": "bullet-momentum",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

@@ -4,12 +4,15 @@
   "chapter": "CH0 Foundation",
   "chapterCode": "CH0",
   "scope": "foundation",
-  "source": "Copies of hub PDFs. public/notes/ is unchanged for vendor Pages.",
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
   "notes": [
     {
       "topicCode": "JPF01",
       "symbol": "F01",
-      "title": { "en": "Quantities and units", "zhHant": "物理量與單位" },
+      "title": {
+        "en": "Quantities and units",
+        "zhHant": "物理量與單位"
+      },
       "subtopics": [],
       "files": {
         "en": "content-packs/ch0-foundation/notes/JPF01-en.pdf",
@@ -19,12 +22,32 @@
     {
       "topicCode": "JPF02",
       "symbol": "F02",
-      "title": { "en": "Useful mathematics in physics", "zhHant": "物理中常用的數學" },
+      "title": {
+        "en": "Useful mathematics in physics",
+        "zhHant": "物理中常用的數學"
+      },
       "subtopics": [],
       "files": {
         "en": "content-packs/ch0-foundation/notes/JPF02-en.pdf",
         "zhHant": "content-packs/ch0-foundation/notes/JPF02-zhHant.pdf"
       }
+    }
+  ],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "si-units",
+      "path": "content-packs/ch0-foundation/tools/si-units"
+    }
+  ],
+  "quiz": [
+    {
+      "slug": "foundations-quantities",
+      "path": "content-packs/ch0-foundation/quiz/foundations-quantities"
+    },
+    {
+      "slug": "foundations-useful-math",
+      "path": "content-packs/ch0-foundation/quiz/foundations-useful-math"
     }
   ]
 }

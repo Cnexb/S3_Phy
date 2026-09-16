@@ -1,0 +1,120 @@
+{
+  "packId": "phy-ch1-heat-notes-v1",
+  "subject": "PHY",
+  "chapter": "CH1 Heat and Gases",
+  "chapterCode": "CH1",
+  "scope": "heat",
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "notes": [
+    {
+      "topicCode": "JPHG01",
+      "symbol": "HG01",
+      "title": {
+        "en": "Temperature and thermometer",
+        "zhHant": "溫度與溫度計"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat/notes/JPHG01-en.pdf",
+        "zhHant": "content-packs/ch1-heat/notes/JPHG01-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPHG02",
+      "symbol": "HG02",
+      "title": {
+        "en": "Heat and internal energy",
+        "zhHant": "熱與內能"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat/notes/JPHG02-en.pdf",
+        "zhHant": "content-packs/ch1-heat/notes/JPHG02-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPHG03",
+      "symbol": "HG03",
+      "title": {
+        "en": "Change of state",
+        "zhHant": "物態變化"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat/notes/JPHG03-en.pdf",
+        "zhHant": "content-packs/ch1-heat/notes/JPHG03-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPHG04",
+      "symbol": "HG04",
+      "title": {
+        "en": "Transfer process",
+        "zhHant": "傳熱過程"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat/notes/JPHG04-en.pdf",
+        "zhHant": "content-packs/ch1-heat/notes/JPHG04-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPHG05",
+      "symbol": "HG05",
+      "title": {
+        "en": "Gases",
+        "zhHant": "氣體"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat/notes/SPHG05-en.pdf",
+        "zhHant": "content-packs/ch1-heat/notes/SPHG05-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPHG05.5",
+      "symbol": "HG05",
+      "title": {
+        "en": "Kinetic theory",
+        "zhHant": "動理學理論"
+      },
+      "includedBecause": "Hub ships kinetic-theory as a second PDF under CSV Topic SPHG05 Gases.",
+      "files": {
+        "en": "content-packs/ch1-heat/notes/SPHG05.5-en.pdf",
+        "zhHant": "content-packs/ch1-heat/notes/SPHG05.5-zhHant.pdf"
+      }
+    }
+  ],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "thermometer",
+      "path": "content-packs/ch1-heat/tools/thermometer"
+    },
+    {
+      "slug": "boiling-water",
+      "path": "content-packs/ch1-heat/tools/boiling-water"
+    },
+    {
+      "slug": "change-of-state",
+      "path": "content-packs/ch1-heat/tools/change-of-state"
+    },
+    {
+      "slug": "heat-flow",
+      "path": "content-packs/ch1-heat/tools/heat-flow"
+    },
+    {
+      "slug": "heat-transfer",
+      "path": "content-packs/ch1-heat/tools/heat-transfer"
+    },
+    {
+      "slug": "specific-heat",
+      "path": "content-packs/ch1-heat/tools/specific-heat"
+    },
+    {
+      "slug": "thermal-mixing",
+      "path": "content-packs/ch1-heat/tools/thermal-mixing"
+    }
+  ],
+  "quiz": [
+    {
+      "slug": "heat-ch1",
+      "path": "content-packs/ch1-heat/quiz/heat-ch1"
+    }
+  ]
+}

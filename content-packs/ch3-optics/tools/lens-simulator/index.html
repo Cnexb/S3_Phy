@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-TW" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>透鏡光學模擬器 | Lens Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../shared/s3phy-tokens.css">
+    <link rel="stylesheet" href="../shared/s3phy-embed.css">
+    <script src="../shared/s3phy-embed-init.js"></script>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>
+                <span class="title-zh">透鏡光學模擬器</span>
+                <span class="title-en">Lens Simulator</span>
+            </h1>
+            <div class="instruction-box">
+                <span class="zh"><i class="fas fa-info-circle"></i> 指導說明：</span>
+                <span class="en"><i class="fas fa-info-circle"></i> Instructions:</span>
+                <p class="zh">選擇透鏡類型（凸透鏡/凹透鏡），物體並設置物距，選擇精確光線規則以觀察像的形成。</p>
+                <p class="en">Select lens type (convex/concave), an object and set the object distance, choose light ray rules to observe image formation.</p>
+            </div>
+        </header>
+
+        <!-- 顶部滑块区域 -->
+        <div class="top-sliders-container">
+            <div class="slider-control">
+                <h3 class="slider-title">
+                    <i class="fas fa-arrows-alt-h"></i> <span class="zh">物距</span><span class="en">Object Distance</span>
+                </h3>
+                <div class="slider-container">
+                    <div class="slider-input-group">
+                        <input type="range" id="objectDistanceSlider" min="-30" max="30" value="10.0" step="0.1">
+                        <div class="number-input-with-buttons">
+                            <button class="value-adjust-btn decrease" data-target="objectDistance">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="number-input">
+                                <input type="number" id="objectDistanceInput" value="10.0" min="-30" max="30" step="0.1">
+                                <span>cm</span>
+                            </div>
+                            <button class="value-adjust-btn increase" data-target="objectDistance">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="slider-labels">
+                        <span>-30 cm</span>
+                        <span id="objectDistanceValue">10.0 cm</span>
+                        <span>30 cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-control">
+                <h3 class="slider-title">
+                    <i class="fas fa-arrows-alt-v"></i> <span class="zh">物高</span><span class="en">Object Height</span>
+                </h3>
+                <div class="slider-container">
+                    <div class="slider-input-group">
+                        <input type="range" id="objectHeightSlider" min="0.1" max="9" value="6.0" step="0.1">
+                        <div class="number-input-with-buttons">
+                            <button class="value-adjust-btn decrease" data-target="objectHeight">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="number-input">
+                                <input type="number" id="objectHeightInput" value="6.0" min="0.1" max="9" step="0.1">
+                                <span>cm</span>
+                            </div>
+                            <button class="value-adjust-btn increase" data-target="objectHeight">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="slider-labels">
+                        <span>0.1 cm</span>
+                        <span id="objectHeightValue">6.0 cm</span>
+                        <span>9 cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-control">
+                <h3 class="slider-title">
+                    <i class="fas fa-search"></i> <span class="zh">焦距</span><span class="en">Focal Length</span>
+                </h3>
+                <div class="slider-container">
+                    <div class="slider-input-group">
+                        <input type="range" id="focalLengthSlider" min="3" max="15" value="5.0" step="0.1">
+                        <div class="number-input-with-buttons">
+                            <button class="value-adjust-btn decrease" data-target="focalLength">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="number-input">
+                                <input type="number" id="focalLengthInput" value="5.0" min="3" max="15" step="0.1">
+                                <span>cm</span>
+                            </div>
+                            <button class="value-adjust-btn increase" data-target="focalLength">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="slider-labels">
+                        <span>3 cm</span>
+                        <span id="currentFocalLength">5.0 cm</span>
+                        <span>15 cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slider-control">
+                <h3 class="slider-title">
+                    <i class="fas fa-bullseye"></i> <span class="zh">透鏡位置</span><span class="en">Lens Position</span>
+                </h3>
+                <div class="slider-container">
+                    <div class="slider-input-group">
+                        <input type="range" id="lensPositionSlider" min="-15" max="15" value="-0.4" step="0.1">
+                        <div class="number-input-with-buttons">
+                            <button class="value-adjust-btn decrease" data-target="lensPosition">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="number-input">
+                                <input type="number" id="lensPositionInput" value="-0.4" min="-15" max="15" step="0.1">
+                                <span>cm</span>
+                            </div>
+                            <button class="value-adjust-btn increase" data-target="lensPosition">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="slider-labels">
+                        <span>-15 cm</span>
+                        <span id="lensPositionValue">-0.4 cm</span>
+                        <span>+15 cm</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulator-container">
+            <!-- 主要光路图显示区 -->
+            <div class="main-view">
+                <div class="canvas-container" id="real-time-diagram">
+                    <div class="preset-btn-group">
+                        <button class="preset-btn" id="presetBtn1" aria-label="預設值1">1</button>
+                        <button class="preset-btn" id="presetBtn2" aria-label="預設值2">2</button>
+                    </div>
+                    <canvas id="lensCanvas"></canvas>
+                    <div class="scale-bar">
+                        <span>0</span>
+                        <span>5</span>
+                        <span>10</span>
+                        <span>15</span>
+                        <span>cm</span>
+                    </div>
+                    <div class="focal-info">
+                        <i class="fas fa-ruler-horizontal"></i> <span class="zh">焦距</span> <span class="en">Focal Length</span> = <span id="focalLengthValue">5.0 cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 可拖動浮動控制面板 -->
+            <div class="control-panel collapsible" id="ray-rules-container">
+                <div class="control-panel-drag-handle" title="拖動面板 Drag panel">
+                    <i class="fas fa-grip-lines"></i>
+                    <span class="zh">拖動</span><span class="en">Drag</span>
+                    <button type="button" class="toggle-panel" aria-expanded="true" title="折叠/展开控制面板 Collapse/expand panel">
+                        <i class="fas fa-chevron-up"></i>
+                    </button>
+                </div>
+                
+                <div class="panel-content">
+                    <!-- 透鏡类型切换 -->
+                    <div class="control-section">
+                        <h3 class="panel-title">
+                            <span class="zh"><i class="fas fa-glasses"></i> 透鏡類型</span>
+                            <span class="en">Lens Type</span>
+                        </h3>
+                        <div class="lens-toggle-container">
+                            <button id="lensTypeToggle" class="lens-toggle" aria-label="Switch lens type">
+                                <i class="fas fa-exchange-alt"></i> <span id="lensTypeText">⛶ 凸透鏡</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 物体选择区块 -->
+                    <div class="control-section">
+                        <h3 class="panel-title">
+                            <span class="zh"><i class="fas fa-cube"></i> 物體選擇</span>
+                            <span class="en">Object Selection</span>
+                        </h3>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="object" value="student">
+                                <span class="icon-label"><i class="fas fa-user-graduate"></i> <span class="zh">學生</span><span class="en">Student</span></span>
+                            </label>
+                            <label>
+                                <input type="radio" name="object" value="arrow" checked>
+                                <span class="icon-label"><i class="fas fa-arrows-alt-v"></i> <span class="zh">箭頭</span><span class="en">Arrow</span></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 光线规则区块 -->
+                    <div class="control-section">
+                        <h3 class="panel-title">
+                            <span class="zh"><i class="fas fa-lightbulb"></i> 光線作圖規則</span>
+                            <span class="en">Ray Tracing Rules</span>
+                        </h3>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="rule1" checked>
+                                <div class="ray-rule-item">
+                                    <div class="ray-indicator" data-rule="1"></div>
+                                    <span class="rule-text">
+                                        <span class="zh">規則1: 平行光線→經過焦點</span>
+                                        <span class="en">Rule 1: Parallel Ray→Through Focus</span>
+                                    </span>
+                                </div>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="rule2" checked>
+                                <div class="ray-rule-item">
+                                    <div class="ray-indicator" data-rule="2"></div>
+                                    <span class="rule-text">
+                                        <span class="zh">規則2: 通過中心的光線</span>
+                                        <span class="en">Rule 2: Ray Through Center</span>
+                                    </span>
+                                </div>
+                            </label>
+                            <label>
+                                <input type="checkbox" id="rule3" checked>
+                                <div class="ray-rule-item">
+                                    <div class="ray-indicator" data-rule="3"></div>
+                                    <span class="rule-text">
+                                        <span class="zh">規則3: 經過焦點→平行光線</span>
+                                        <span class="en">Rule 3: Through Focus→Parallel Ray</span>
+                                    </span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- 显示选项区块 -->
+                    <div class="control-section">
+                        <h3 class="panel-title">
+                            <span class="zh"><i class="fas fa-eye"></i> 顯示選項</span>
+                            <span class="en">Display Options</span>
+                        </h3>
+                        <div class="display-options">
+                            <label class="icon-switch">
+                                <input type="checkbox" id="showGrid" checked>
+                                <span class="switch-icon"><i class="fas fa-th"></i></span>
+                                <span class="switch-label"><span class="zh">網格</span><span class="en">Grid</span></span>
+                            </label>
+                            <label class="icon-switch">
+                                <input type="checkbox" id="showMeasurements" checked>
+                                <span class="switch-icon"><i class="fas fa-ruler-combined"></i></span>
+                                <span class="switch-label"><span class="zh">測量</span><span class="en">Measurements</span></span>
+                            </label>
+                            <label class="icon-switch">
+                                <input type="checkbox" id="showImage" checked>
+                                <span class="switch-icon"><i class="fas fa-image"></i></span>
+                                <span class="switch-label"><span class="zh">像</span><span class="en">Image</span></span>
+                            </label>
+                            <label class="icon-switch">
+                                <input type="checkbox" id="showScreen" checked>
+                                <span class="switch-icon"><i class="fas fa-desktop"></i></span>
+                                <span class="switch-label"><span class="zh">螢幕</span><span class="en">Screen</span></span>
+                            </label>
+                            <label class="icon-switch">
+                                <input type="checkbox" id="showBundleRays">
+                                <span class="switch-icon"><i class="fas fa-search-plus"></i></span>
+                                <span class="switch-label"><span class="zh">光束</span><span class="en">Bundle of Light Rays</span></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 浮动数据卡片 -->
+            <div class="data-card expanded" id="image-type-indicator">
+                <div class="data-card-header">
+                    <span class="data-card-header-title">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="data-card-header-label">
+                            <span class="zh">測量數據</span>
+                            <span class="en">Measurements</span>
+                        </span>
+                    </span>
+                    <div class="data-card-header-actions">
+                        <button type="button" class="collapse-card" aria-expanded="true" title="折叠/展开测量面板 Collapse/expand measurements">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                        <button type="button" class="expand-card" title="收起图表 Collapse chart"><i class="fas fa-compress-alt"></i></button>
+                    </div>
+                </div>
+                <div class="data-card-content">
+                    <div class="measurement-item">
+                        <span><i class="fas fa-ruler"></i> <span class="zh">物距</span><span class="en">Object Distance</span>:</span>
+                        <span id="objectDistance" class="measurement-value">10.0 cm</span>
+                    </div>
+                    <div class="measurement-item">
+                        <span><i class="fas fa-ruler-vertical"></i> <span class="zh">像距</span><span class="en">Image Distance</span>:</span>
+                        <span id="imageDistance" class="measurement-value">7.5 cm</span>
+                    </div>
+                    <div class="measurement-item">
+                        <span><i class="fas fa-search-plus"></i> <span class="zh">放大率</span><span class="en">Magnification</span>:</span>
+                        <span id="magnification" class="measurement-value">0.50x</span>
+                    </div>
+                    <div class="measurement-item">
+                        <span><i class="fas fa-arrows-alt-h"></i> <span class="zh">物距+像距</span><span class="en">Object+Image Distance</span>:</span>
+                        <span id="totalDistance" class="measurement-value">17.5 cm</span>
+                    </div>
+                    <div class="measurement-item">
+                        <span><i class="fas fa-question-circle"></i> <span class="zh">像的特性</span><span class="en">Image Nature</span>:</span>
+                        <span id="imageType" class="measurement-value"></span>
+                    </div>
+                </div>
+                <div class="image-type-indicator">
+                    <div id="virtualImageIndicator" style="display: none;">
+                        <span class="indicator-dot virtual"><i class="fas fa-circle"></i></span>
+                        <span class="zh">虛像</span><span class="en">Virtual Image</span>
+                    </div>
+                    <div id="realImageIndicator">
+                        <span class="indicator-dot real"><i class="fas fa-circle"></i></span>
+                        <span class="zh">實像</span><span class="en">Real Image</span> 
+                    </div>
+                </div>
+                <div class="uv-graph-container">
+                    <canvas id="uvGraphCanvas" width="280" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function () {
+      var p = new URLSearchParams(location.search);
+      if (p.get('embed') === '1') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+      var dl = (p.get('defaultLens') || '').toLowerCase();
+      window.__S3PHY_DEFAULT_LENS__ =
+        dl === 'concave' || dl === 'convex' ? dl : null;
+    })();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html> 

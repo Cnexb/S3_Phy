@@ -1,0 +1,8 @@
+{
+  "slug": "longitudinal-wave",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

@@ -1,0 +1,857 @@
+[
+  {
+    "qnum": null,
+    "stem": "Object O is placed in front of two plane mirrors as shown in the following diagram.\n\nAt which position(s) is/are the image(s) of the object formed?",
+    "options": {
+      "A": "At P only",
+      "B": "At Q only",
+      "C": "At P and Q only",
+      "D": "At P and R only"
+    },
+    "answer": "D",
+    "hint": "Note that the position R of the image can be located by extending the mirror surface.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch31-r01",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "Simon stands in front of a plane mirror as shown. There is an opaque obstacle between Simon and the mirror.\n\nSimon\n\nobstacle\n\nmirror\n\nSimon\n\nobstacle\n\nmirror\n\nWhich of the following statements is/are correct?\n\n(1)When he stands at the position shown, he cannot see the image of his shoes in the mirror.\n\n(2)If he walks closer to the obstacle, he may see the image of his shoes in the mirror.\n\n(3)If he walks away from the obstacle, he may see the image of his shoes in the mirror.",
+    "options": {
+      "A": "(1) only",
+      "B": "(2) only",
+      "C": "(3) only",
+      "D": "(1) and (2) only"
+    },
+    "answer": "A",
+    "hint": "As long as the obstacle is between him and the mirror, light from his shoes is always blocked by the obstacle and cannot reach the mirror and be reflected to his eyes. Simon obstacle mirror Simon obstacle mirror ∴ (1) is correct. (2) and (3) are incorrect.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch31-r02",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "A 158-cm-tall girl stands 1.5 m from a wall mirror as shown below. Her eyes are 148 cm above the floor. The girl can just see the bottom of her skirt, which is 40 cm above the floor, in the mirror. What is the height of the bottom edge of the mirror above the floor?\n\n158 cm148 cm40 cm1.5 mwall mirror158 cm148 cm40 cm1.5 mwall mirror\n\n158 cm\n\n148 cm\n\n40 cm\n\n1.5 m\n\nwall mirror\n\n158 cm\n\n148 cm\n\n40 cm\n\n1.5 m\n\nwall mirror",
+    "options": {
+      "A": "40 cm",
+      "B": "54 cm",
+      "C": "80 cm",
+      "D": "94 cm"
+    },
+    "answer": "D",
+    "hint": "Height of her eyes above the bottom of her skirt = 148 - 40 = 108 cm Height of the bottom edge of the mirror above the bottom of her skirt = = 54 cm Height of the bottom edge of the mirror above the floor = 40 + 54 = 94 cm",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch31-r03",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "Heidi is standing between two parallel mirrors, M1 and M2, with their reflective surfaces facing each other as shown below. When Heidi looks at M1, she sees multiple images in the mirror.\n\nM2M1Heidi1 m1 mI1I2I3I3I41 m1 m1 m1 mM2M1Heidi1 m1 mI1I2I3I3I41 m1 m1 m1 m\n\nM2\n\nM1\n\nHeidi\n\n1 m\n\n1 m\n\nI1\n\nI2\n\nI3\n\nI3\n\nI4\n\n1 m\n\n1 m\n\n1 m\n\n1 m\n\nM2\n\nM1\n\nHeidi\n\n1 m\n\n1 m\n\nI1\n\nI2\n\nI3\n\nI3\n\nI4\n\n1 m\n\n1 m\n\n1 m\n\n1 m\n\nWhich of the following is/are the image(s) of Heidi seen in M1?",
+    "options": {
+      "A": "I1 only",
+      "B": "I1 and I2 only",
+      "C": "I1 and I3 only",
+      "D": "I1, I3 and I4 only"
+    },
+    "answer": "C",
+    "hint": "I1 is the image of Heidi formed by mirror M1.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch31-r04",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "There is also an image I' of Heidi 1 m behind M2 formed by mirror M2. The image I' is 3 m away from mirror M1. Since image distance is the same as object distance, I3 is the image of I'.\n\nAs shown in the figure below, a letter ‘P’ is placed in front of a plane mirror.\n\nWhich of the following correctly shows the image of the letter ‘P’ as seen in the mirror?",
+    "options": {
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "answer": "C",
+    "hint": "An image formed by a plane mirror is laterally inverted.",
+    "imageCount": 5,
+    "diagramRequired": true,
+    "id": "ch31-r05",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "A clock is facing a plane mirror on a wall. The figure below shows the image of the clock in the mirror.\n\nWhat is the actual time at this instant?",
+    "options": {
+      "A": "2:58",
+      "B": "3:02",
+      "C": "8:58",
+      "D": "12:13"
+    },
+    "answer": "B",
+    "hint": "An image formed by a plane mirror is laterally inverted. The clock looks like this:",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch31-r06",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 7,
+    "stem": "Which of the following statements about the image formed by a plane mirror is/are correct?\n\n(1)The image cannot be projected on a screen.\n\n(2)Light rays entering the eyes do not come from the image.\n\n(3)The image is behind the mirror.",
+    "options": {
+      "A": "(1) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "An image formed by a plane mirror is virtual. It cannot be projected on a screen. ∴ (1) is correct. Light rays entering the eyes are emitted or reflected from the object. They do not come from the image. ∴ (2) is correct. An image formed by a plane mirror is behind the mirror. (3) is correct.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch31-r07",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 8,
+    "stem": "In the figure below, what is the angle of reflection of the ray after being reflected by mirror M2?\n\nM2M130100M2M130100\n\nM2\n\nM1\n\n30\n\n100\n\nM2\n\nM1\n\n30\n\n100",
+    "options": {
+      "A": "40",
+      "B": "45",
+      "C": "50",
+      "D": "55"
+    },
+    "answer": "A",
+    "hint": "M2M13010060°60°30°θirM2M13010060°60°30°θir M2 M1 30 100 60° 60° 30° θ i r M2 M1 30 100 60° 60° 30° θ i r By the laws of reflection, r = i = 40° The angle of reflection is 40°.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch31-r08",
+    "section": "reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 9,
+    "stem": "John is in front of a plane mirror. If the mirror moves away from him at a speed of 2 m s1, at what speed does his image move away from him?",
+    "options": {
+      "A": "1 m s1",
+      "B": "2 m s1",
+      "C": "4 m s1",
+      "D": "8 m s1"
+    },
+    "answer": "C",
+    "hint": "A1.50 m above the ground B1.63 m above the ground C1.75 m above the ground D1.83 m above the ground",
+    "imageCount": 0,
+    "diagramRequired": false,
+    "id": "ch31-r09",
+    "section": "reflection",
+    "difficulty": "Foundation",
+    "sourceFile": "Ch.3.1 Light reflection.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": null,
+    "stem": "A ray of light passes through media X, Y and Z as shown.\n\nWhich of the following statements about the three media are correct?\n\n(1)Z is optically denser than X.\n\n(2)Light travels the fastest in X.\n\n(3)Y has the greatest refractive index.",
+    "options": {
+      "A": "(1) and (2) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "Let i1, i2 and r1, r2 be the angles of incidence and angles of refractions in the 1st and the 2nd refraction. r1 = i2 Apply Snell’s law. 1st refraction: nX sin i1 = nY sin r1 2nd refraction: nZ sin r2 = nY sin i2 = nY sin r1 = nX sin i1 i1 r2 sin i1 sin r2 nX nZ ∴ (1) is correct. Consider nX sin i1 = nY sin r1. i1 r1 sin i1 sin r1 nX nY The refractive index of X is the smallest. Therefore, light travels the fastest in X. ∴ (2) is correct. Consider nZ sin r2 = nY sin i2. i2 r2 sin i2 sin r2 nY nZ The refractive index of Y is the greatest. ∴ (3) is correct. 2. A ray of light travels from medi…",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch32-f01",
+    "section": "refraction-snells-law",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "The refractive index of X is 1.77. What is the refractive index of Y?",
+    "options": {
+      "A": "1.16",
+      "B": "1.53",
+      "C": "1.70",
+      "D": "2.05"
+    },
+    "answer": "B",
+    "hint": "By Snell’s law, nX sin X = nY sin Y 1.77 sin 36 = nY sin 42.8 nY = 1.53",
+    "imageCount": 0,
+    "diagramRequired": false,
+    "id": "ch32-f02",
+    "section": "refraction-snells-law",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 3,
+    "stem": "Which of the following are examples of refraction?\n\n(1)A chopstick appears bent when dipped in water.\n\n(2)A distorted image of a tree is observed on a ruffled water surface.\n\n(3)A goldfish in a tank appears nearer and bigger than it really is.",
+    "options": {
+      "A": "(1) and (2) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "The image of a tree observed on the water surface is formed by reflection of light. 4.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch32-f03",
+    "section": "refraction-snells-law",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "The following figure shows a light ray travelling from medium X to a vacuum. What is the refractive index of medium X?",
+    "options": {
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "answer": "A",
+    "hint": "5.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch32-f04",
+    "section": "refraction-snells-law",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "A light ray travels from medium X to medium Y as shown. The refractive indices of media X and Y are 1.7 and 1.2 respectively.\n\n15medium Ymedium X15medium Ymedium X\n\n15\n\nmedium Y\n\nmedium X\n\n15\n\nmedium Y\n\nmedium X\n\nWhat is the angle of refraction?",
+    "options": {
+      "A": "10.5",
+      "B": "18.1",
+      "C": "21.5",
+      "D": "26.1"
+    },
+    "answer": "C",
+    "hint": "Since ,",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch32-f05",
+    "section": "refraction-snells-law",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 6,
+    "stem": "A ray of light travels from medium X to medium Y as shown. The speed of light in air and medium X are 3 108 m s1 and 2.5 108 m s1 respectively. Find the refractive index of medium Y.\n\n4025medium Xmedium Y4025medium Xmedium Y\n\n40\n\n25\n\nmedium X\n\nmedium Y\n\n40\n\n25\n\nmedium X\n\nmedium Y",
+    "options": {
+      "A": "1.27",
+      "B": "1.29",
+      "C": "1.52",
+      "D": "1.83"
+    },
+    "answer": "D",
+    "hint": "nX = = = 1.2 By Snell’s law, nX sin X= nY sin Y 1.2 sin 40 = nY sin 25 nY= 1.83",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch32-f06",
+    "section": "refraction-snells-law",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 7,
+    "stem": "Which of the following statements about the laws of refraction is/are correct?\n\n(1)The angle of refraction r is always equal to the angle of incidence i.\n\n(2)The ratio of the sine of the angle of incidence i to the sine of the angle of refraction r is always equal to 1, i.e. .\n\n(3)The incident ray, the refracted ray and the normal all lie in the same plane.",
+    "options": {
+      "A": "(3) only",
+      "B": "(1) and (2) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "A",
+    "hint": "1the incident ray, the refracted ray and the normal all lie in the same plane. 2 = constant ∴ (1) and (2) are incorrect, (3) is correct. 8.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch32-f07",
+    "section": "refraction-snells-law",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "Three light rays enter an air bubble in water. C is the centre of the bubble. Which of the paths shown below is/are correct?\n\nwaterairwaterair\n\nwater\n\nair\n\nwater\n\nair",
+    "options": {
+      "A": "(2) only",
+      "B": "(1) and (2) only",
+      "C": "(1) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "When a light ray travels from water to air, its speed increases and hence it bends away from the normal. ∴ (3) is incorrect. When a light ray travels from air to water, its speed decreases and hence it bends towards the normal. ∴ (1) is correct. When the angle of incidence of a light ray is 0°, it does not bend. ∴ (2) is correct.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch32-f08",
+    "section": "refraction-snells-law",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 10,
+    "stem": "When a beam of white light passes through a glass prism, a colour spectrum is formed. Which of the following statements about this phenomenon is/are correct?\n\n(1)White light is composed of a mixture of colours.\n\n(2)Different colours of light travel at different speeds in glass.\n\n(3)Green light is refracted more than red light in passing through the prism.",
+    "options": {
+      "A": "(1) only",
+      "B": "(1) and (2) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "∴ (1) and (2) are correct. Green light is refracted more than red light in passing through the prism. ∴ (3) is correct.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch32-f09",
+    "section": "refraction-snells-law",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.2 Light refraction.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": null,
+    "stem": "A ray of light is incident from air to an equilateral triangular glass prism at an angle . Its consequent path is shown below. The refractive index of the glass is 1.6.\n\nWhat is ?",
+    "options": {
+      "A": "14.4",
+      "B": "21.3",
+      "C": "35.6",
+      "D": "42.0"
+    },
+    "answer": "C",
+    "hint": "Φβ60°Φβ60° β 60° β 60° Apply . 1.6 sin = 1 sin 90 = 38.68 60 + (90 ) + (90 38.68) = 180 (∠ sum of △) = 21.32 Apply . 1.6 sin 21.32 = 1 sin = 35.6 Angela is looking at an air bubble in water. She finds that the air bubble appears silvery. water air Angela light rays water air Angela light rays",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch33-t01",
+    "section": "total-internal-reflection",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "Which of the following instruments make(s) use of total internal reflection of light?\n\n(1)Optical fibre\n\n(2)Plane mirror\n\n(3)Prisms in a periscope",
+    "options": {
+      "A": "(1) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "(3):",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch33-t02",
+    "section": "total-internal-reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 5,
+    "stem": "A ray of light travels from medium X to medium Y and total internal reflection occurs as shown.\n\nmedium Xmedium Y50medium Xmedium Y50\n\nmedium X\n\nmedium Y\n\n50\n\nmedium X\n\nmedium Y\n\n50\n\nWhich of the following statements must be correct?\n\n(1)The critical angle for the interface between medium X and medium Y is 40.\n\n(2)Light travels faster in medium Y than in medium X.\n\n(3)Medium Y is air.",
+    "options": {
+      "A": "(2) only",
+      "B": "(1) and (2) only",
+      "C": "(1) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "A",
+    "hint": "Angle of incidence = 90° - 50° = 40°",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch33-t03",
+    "section": "total-internal-reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 6,
+    "stem": "Since total internal reflection occurs, the critical angle for the interface between medium X and medium Y is smaller than 40°.\n\n∴ (1) is incorrect.\n\nSince total internal reflection occurs, medium X is optically denser than Y. Therefore, light travels faster in medium Y than in medium X.\n\n∴ (2) is correct.\n\nWe cannot conclude that medium Y is air.\n\n∴ (3) is incorrect.\n\nWhat is/are the advantage(s) of right-angled prisms over plane glass mirrors in making periscopes?\n\n(1)The image is erect.\n\n(2)Multiple images are not formed.\n\n(3)The image is of the same size as the object.",
+    "options": {
+      "A": "(2) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "A",
+    "hint": "∴ (2) is correct. Images formed by a plane glass mirror and a prism are both erect and of the same size as the object. ∴ (1) and (3) are incorrect. 7.",
+    "imageCount": 0,
+    "diagramRequired": false,
+    "id": "ch33-t04",
+    "section": "total-internal-reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 8,
+    "stem": "When a light ray travels from glass to an optically less dense medium (air), and the angle of incidence is larger than the critical angle, total internal reflection occurs.\n\n∴ (3) is correct.\n\nA ray of light enters a 306090 plastic prism from air. The critical angle of the plastic-air interface is 42.\n\n60306030\n\n60\n\n30\n\n60\n\n30\n\nWhich of the following ray diagrams is correct?",
+    "options": {
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "answer": "C",
+    "hint": "Angle of incidence i at P = 90 (180 60 90) = 60 As i is larger than the critical angle, total internal reflection occurs at P. r = i = 60 Angle of incidence at Q = 180 30 90 (90 60) = 30",
+    "imageCount": 5,
+    "diagramRequired": true,
+    "id": "ch33-t05",
+    "section": "total-internal-reflection",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 9,
+    "stem": "As is smaller than the critical angle, total internal reflection does not occur at Q. The ray bends away from the normal when it travels from plastic to an optically less dense medium (air).\n\nWhich of the following statements about total internal reflection of light is/are correct?\n\n(1)It occurs only when light travels from glass to air.\n\n(2)It will never occur if light travels from air to glass.\n\n(3)It will occur if light travels from a medium with a refractive index of 1.6 to air at an angle of incidence of 35.",
+    "options": {
+      "A": "(1) only",
+      "B": "(2) only",
+      "C": "(1) and (3) only",
+      "D": "(2) and (3) only"
+    },
+    "answer": "B",
+    "hint": "∴ (1) is incorrect while (2) is correct. For (3), nm sin m = na sin a 1.6 sin C = 1 sin 90 C = 38.7 As the angle of incidence is smaller than the critical angle, total internal reflection will not occur. ∴ (3) is incorrect. 50.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch33-t06",
+    "section": "total-internal-reflection",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 10,
+    "stem": "As shown below, a small fish hides under the centre of a floating circular dish with a diameter of 2 m. If the fish moves vertically downwards from the water surface, how far can it move down the water before somebody above the water can see it?\n\nGiven: refractive index of water = 1.33",
+    "options": {
+      "A": "0.53 m",
+      "B": "0.66 m",
+      "C": "0.88 m",
+      "D": "1.14 m"
+    },
+    "answer": "C",
+    "hint": "Light from the fish is totally internally reflected when the angle of incidence is larger than the critical angle. nw sin w= na sin a 1.33 sin C = 1 sin 90 C= 48.8 Let d be the maximum distance that the fish can move down before somebody above the water can see it. tan 48.8 = d = 0.88 m",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch33-t07",
+    "section": "total-internal-reflection",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.3 Total internal reflection.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "Which of the following statements about lens L shown in the figure below is/are correct?\n\nprincipal axis\n\nd\n\nprincipal axis\n\nd\n\n(1)Lens L is a convex lens.\n\n(2)Lens L has only one principal focus.\n\n(3)The focal length of lens L equals distance d.",
+    "options": {
+      "A": "(1) only",
+      "B": "(3) only",
+      "C": "(1) and (2) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "A",
+    "hint": "Convex lens converges parallel rays. ∴ (1) is correct. Each lens has two principal foci, one on each side of it. ∴ (2) is incorrect. Focal length is the distance of the focus from the optical centre but not from the edge of the lens. ∴ (3) is incorrect.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch34-c01",
+    "section": "convex-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.4 Convex lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 5,
+    "stem": "Rays emerged after rays y and z pass through the lens should be above that for ray x. Rays emerged after ray w passes through the lens should be below that for ray x.\n\n∴ C and D are incorrect. A is correct.\n\nWhich of the following statements about the image formed by a convex lens is/are correct?\n\n(1)If the image is virtual, it must be erect.\n\n(2)If the image is real, it can be either erect or inverted.\n\n(3)If the image is real, it can be either magnified or diminished.",
+    "options": {
+      "A": "(1) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "A real image formed by a convex lens is always inverted. ∴ (2) is incorrect.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch34-c02",
+    "section": "convex-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.4 Convex lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 6,
+    "stem": "An object is put in front of a lens and a magnified image is captured on a screen. Which of the following statements is/are correct?\n\n(1)The lens is a convex lens.\n\n(2)If the lens is moved further away from the object, the image will become smaller.\n\n(3)If the lens is replaced by the same type of lens with a shorter focal length, the image will become smaller.",
+    "options": {
+      "A": "(1) only",
+      "B": "(1) and (2) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "As the object distance increases, the image becomes smaller as shown. ∴ (1) and (2) are correct.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch34-c03",
+    "section": "convex-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.4 Convex lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 7,
+    "stem": "Replacing the lens with one of a smaller focal length is effectively the same as increasing the object distance u as u increases relatively to f.\n\n∴ (3) is correct.\n\nIf F and F' are the principal foci of a convex lens, which of the following ray diagrams is/are incorrect?\n\n(1)\n\n(2)\n\n(3)",
+    "options": {
+      "A": "(3) only",
+      "B": "(1) and (2) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "∴ (1) is incorrect. Parallel incident rays should converge on the focal plane of the lens after passing through the lens. ∴ (2) and (3) are incorrect.",
+    "imageCount": 3,
+    "diagramRequired": true,
+    "id": "ch34-c04",
+    "section": "convex-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.4 Convex lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 9,
+    "stem": "When the object distance becomes larger than f, the image becomes magnified and inverted.\n\nWhen the object distance becomes larger than 2f, the image becomes diminished and inverted.\n\nThe figure below shows an experiment set-up. A clear image is formed on the screen when the convex lens and the plane mirror are placed at the right position.\n\nWhich of the following statements about the experiment is/are correct?\n\n(1)The focal length of the convex lens is equal to the distance between the convex lens and the lamp-housing.\n\n(2)The brightness and shape of the image will not change if the plane mirror is moved a little bit backwards.\n\n(3)The image will be larger if the experiment is repeated by using another convex lens with a shorter focal length.",
+    "options": {
+      "A": "(1) and (2) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "Parallel incident rays converge only after passing through a convex lens. ∴ (1) is correct. When rays from a distant object pass through a convex lens, a real image is formed on the focal plane. ∴ (2) and (3) are correct.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch34-c05",
+    "section": "convex-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.4 Convex lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "An object is placed in front of a convex lens and a real image is formed. The object distance u is varied, and the corresponding image distance v is measured. The graph below shows how u and v are related.\n\nu-1 / m-1v-1 / m-150xu-1 / m-1v-1 / m-150x\n\nu-1 / m-1\n\nv-1 / m-1\n\n5\n\n0\n\nx\n\nu-1 / m-1\n\nv-1 / m-1\n\n5\n\n0\n\nx\n\nWhich of the following statements is/are correct?\n\n(1)The focal length of the lens is 5 cm.\n\n(2)The value of x is 5.\n\n(3)The slope of the graph is 1.",
+    "options": {
+      "A": "(1) only",
+      "B": "(2) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "By + = , = + ……(*) ∴ (3) is incorrect. From the graph, when = 0, = 5 m1. Substitute the values into (*), 5 = 0 + f = 0.2 m ∴ (1) is incorrect. From the graph, when = 0, = x m1. Substitute the values into (*), 0 = x + x = 5 ∴ (2) is correct.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch35-m01",
+    "section": "magnification-lens-formula",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": null,
+    "stem": "A student sets up the following apparatus (Fig a) to study the relationship between the linear magnification m of the image produced by the convex lens and the image distance v. A graph of m against v is obtained (Fig b).\n\nconvex lens\n\ntranslucent screen\n\nconvex lens\n\ntranslucent screen\n\nmvmv\n\nm\n\nv\n\nm\n\nv\n\nFig a\n\nFig b\n\nIf another convex lens of greater refractive index is used, which of the following graphs (in dotted line) best shows the new m-v graph?",
+    "options": {
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "answer": "C",
+    "hint": "By + = , + 1 = m = 1 The intercept on the vertical axis is always equal to -1.",
+    "imageCount": 6,
+    "diagramRequired": true,
+    "id": "ch35-m02",
+    "section": "magnification-lens-formula",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 3,
+    "stem": "The slope of the m-v graph is . A convex lens of greater refractive index has a shorter focal length f, and its m-v graph has a greater slope.\n\n∴ The answer is C.\n\nmv-1mv-1\n\nm\n\nv\n\n-1\n\nm\n\nv\n\n-1\n\nAn object is placed 5 cm in front of a convex lens with a focal length of 3 cm. In applying the lens formula to find the position of the image, which of the following statements is/are correct?\n\n(1)f is 3 cm.\n\n(2)u is +5 cm.\n\n(3)The image is 1.875 cm from the lens on the same side as the object.",
+    "options": {
+      "A": "(2) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "A",
+    "hint": "f is positive for a convex lens. Therefore, f is +3 cm. ∴ (1) is incorrect. u is always positive. ∴ (2) is correct. By , ∴ (3) is incorrect.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch35-m03",
+    "section": "magnification-lens-formula",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 4,
+    "stem": "An object 7 cm tall is placed in front of a lens and the image formed is 5 cm tall. Which of the following may be the lens used?\n\n(1)Convex lens of focal length 2.92 cm\n\n(2)Convex lens of focal length 17.5 cm\n\n(3)Concave lens of focal length 2.92 cm\n\n(4)Concave lens of focal length 17.5 cm",
+    "options": {
+      "A": "(3) only",
+      "B": "(2) and (3) only",
+      "C": "(1) and (4) only",
+      "D": "(1), (2), (3) and (4)"
+    },
+    "answer": "D",
+    "hint": "Let f be the foal length. If the lens is convex and the object distance is greater than 2f, a diminished image is formed. Since the object distance is not given, (1) and (2) may be used.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch35-m04",
+    "section": "magnification-lens-formula",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 5,
+    "stem": "An image formed by a concave lens is always diminished.\n\n∴ (3) and (4) may be used.\n\nAn object is placed in front of a convex lens as shown. A real image is formed and its magnification is 1.5. What is the focal length of the lens?",
+    "options": {
+      "A": "4 cm",
+      "B": "6 cm",
+      "C": "8 cm",
+      "D": "30 cm"
+    },
+    "answer": "B",
+    "hint": "A magnified real image formed by a convex lens must be inverted. Construct a ray diagram as shown by drawing an inverted image I with an image distance of 15 cm. From the ray diagram, focal length of the lens = 6 cm",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch35-m05",
+    "section": "magnification-lens-formula",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 6,
+    "stem": "The magnification of an image is 2, and the distance between the image and the lens is 8 cm. Which of the following may be the distance between the image and the object?\n\n(1)4 cm\n\n(2)8 cm\n\n(3)12 cm",
+    "options": {
+      "A": "(3) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "By m = , u = = = 4 cm Since the image is magnified, the lens must be convex. There are two scenarios the image can be formed. Scenario 1: If the object distance is between f and 2f, the image and the object are on opposite sides of the lens. Distance between the image and the object = 4 + 8 = 12 cm Scenario 2: If the object distance is smaller than f, the image and the object are on the same side of the lens. Distance between the image and the object = 8 4 = 4 cm ∴ (1) and (3) are correct. (2) is incorrect.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch35-m06",
+    "section": "magnification-lens-formula",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 8,
+    "stem": "An object is placed 10 cm in front of a lens and an erect image is formed 6 cm from the lens. Which of the following is the correct description of the lens?\n\nFocal length\n\nType of the lens",
+    "options": {
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "answer": "C",
+    "hint": "Since the image is erect and diminished, the lens is diverging (concave) and the image is virtual. By , The focal length of the lens is 15 cm.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch35-m07",
+    "section": "magnification-lens-formula",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 9,
+    "stem": "A student holds a lens 3 cm above a piece of paper. The image of the letters ‘AT’ is shown in the figure below. Its magnification is 3.\n\nlens\n\nlens\n\nFind the image distance and the focal length of the lens.\n\nImage distance",
+    "options": {
+      "A": "A",
+      "B": "B",
+      "C": "C",
+      "D": "D"
+    },
+    "answer": "D",
+    "hint": "Since the image is erect and magnified, the lens is convex. By m = , image distance = mu = 3 3 = 9 cm Apply . An erect image formed by a convex lens must be virtual. Therefore, v = 9 cm. The focal length of the lens is 4.5 cm.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch35-m08",
+    "section": "magnification-lens-formula",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 10,
+    "stem": "A luminous point object is placed 3 cm above the principal axis of a converging lens of focal length 10 cm. Its image is 5 cm below the axis. How far is the object from the lens?",
+    "options": {
+      "A": "4 cm",
+      "B": "5.33 cm",
+      "C": "12 cm",
+      "D": "16 cm"
+    },
+    "answer": "D",
+    "hint": "For this object, By , The object is 16 cm from the lens.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch35-m09",
+    "section": "magnification-lens-formula",
+    "difficulty": "Applied",
+    "sourceFile": "Ch.3.5 Magnification and lens formula.docx",
+    "hasImage": false
+  },
+  {
+    "qnum": 1,
+    "stem": "Which of the following statements about lenses is/are correct?\n\n(1)Convex and concave lenses form images by refraction.\n\n(2)Convex lenses are thinner in the middle.\n\n(3)Concave lenses are diverging lenses.",
+    "options": {
+      "A": "(1) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "B",
+    "hint": "Light rays are bent due to refraction when entering and leaving a lens. ∴ (1) is correct. Convex lenses are thicker in the middle while concave lenses are thinner in the middle. ∴ (2) is incorrect. A concave lens diverges parallel light rays from a point. Therefore it is called a diverging lens. ∴ (3) is correct.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch36-v01",
+    "section": "concave-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.6 Concave lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 5,
+    "stem": "An object is put in front of a lens and a virtual image is formed. The figure below shows the positions of the object and the image. What is the focal length of the lens?\n\nobjectimage5 cmobjectimage5 cm\n\nobject\n\nimage\n\n5 cm\n\nobject\n\nimage\n\n5 cm",
+    "options": {
+      "A": "5 cm",
+      "B": "10 cm",
+      "C": "15 cm",
+      "D": "20 cm"
+    },
+    "answer": "C",
+    "hint": "By constructing the ray diagram as shown, the position of the lens is located and the focal length is found to be 15 cm.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch36-v02",
+    "section": "concave-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.6 Concave lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 6,
+    "stem": "F and F' are the principal foci of a concave lens, which of the following ray diagrams is/are incorrect?\n\n(1)\n\n(2)\n\n(3)",
+    "options": {
+      "A": "(2) only",
+      "B": "(1) and (3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "∴ (1), (2) and (3) are incorrect.",
+    "imageCount": 3,
+    "diagramRequired": true,
+    "id": "ch36-v03",
+    "section": "concave-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.6 Concave lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 7,
+    "stem": "In the following diagram, intervals AB, BC, CD, DE and EF are of equal length. An object is placed at O. When a lens is put in front of the object, an image of the object is formed at I.",
+    "options": {
+      "A": "(1) only",
+      "B": "(2) only",
+      "C": "(1) and (3) only",
+      "D": "(2) and (3) only"
+    },
+    "answer": "B",
+    "hint": "∴ (1) is incorrect.",
+    "imageCount": 1,
+    "diagramRequired": true,
+    "id": "ch36-v04",
+    "section": "concave-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.6 Concave lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 8,
+    "stem": "For option (2), a concave lens should form an image within a focal length from the lens. The image should be on the same side as the object.\n\n∴ (2) is correct.\n\nFor option (3), the object distance is between f and 2f, so the image distance should be greater than 2f. The image and the object should be on opposite sides of the lens.\n\n∴ (3) is incorrect.\n\nWhich of the following statements about the image formed by a concave lens is/are correct?\n\n(1)It is always between the lens and object.\n\n(2)It is always diminished.\n\n(3)It will be formed at infinity if the object is located at the focus of the lens.",
+    "options": {
+      "A": "(1) only",
+      "B": "(3) only",
+      "C": "(1) and (2) only",
+      "D": "(2) and (3) only"
+    },
+    "answer": "C",
+    "hint": "An image formed by a concave lens is always diminished and it always lies between the lens and the object. ∴ (1) and (2) are correct. (3) is incorrect.",
+    "imageCount": 0,
+    "diagramRequired": true,
+    "id": "ch36-v05",
+    "section": "concave-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.6 Concave lens.docx",
+    "hasImage": true
+  },
+  {
+    "qnum": 10,
+    "stem": "In the following diagram, lenses X and Y are made of the same material but have different shapes, while lenses X and Z are made of different materials but have the same shape.\n\nn = 1.5\n\nn = 1.5\n\nn = 1.7\n\nWhich of the following statements is/are correct?\n\n(1)X, Y and Z are diverging lenses.\n\n(2)Y has a shorter focal length than X.\n\n(3)Z has a shorter focal length than X.",
+    "options": {
+      "A": "(2) only",
+      "B": "(3) only",
+      "C": "(2) and (3) only",
+      "D": "(1), (2) and (3)"
+    },
+    "answer": "D",
+    "hint": "A diverging (concave lens) is thinner in the middle. ∴ (1) is correct. A lens with a larger curvature has a shorter focal length. Y has a larger curvature than X. ∴ (2) is correct. A lens with a greater refractive index has a shorter focal length. Z has a greater refractive index than X. ∴ (3) is correct.",
+    "imageCount": 3,
+    "diagramRequired": true,
+    "id": "ch36-v06",
+    "section": "concave-lens",
+    "difficulty": "Standard",
+    "sourceFile": "Ch.3.6 Concave lens.docx",
+    "hasImage": true
+  }
+]

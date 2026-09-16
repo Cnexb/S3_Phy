@@ -1,0 +1,3111 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electromagnetic Spectrum Explorer (v2)</title>
+  <link rel="stylesheet" href="../shared/s3phy-tokens.css">
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <style>
+    :root {
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --border: #e8eaed;
+      --text: #1a1c2c;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --warn: #ca8a04;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--s3-font, "Inter", "Segoe UI", "Microsoft JhengHei", "Noto Sans TC", system-ui, -apple-system, sans-serif);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .wrap { max-width: var(--s3-content-max, 1200px); margin: 0 auto; padding: 1.25rem; }
+    html.s3phy-embed .wrap {
+      max-width: none;
+      width: 100%;
+      margin: 0;
+      padding: 0.75rem;
+      min-height: 100%;
+      box-sizing: border-box;
+    }
+    html.s3phy-embed body {
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr minmax(300px, 360px);
+      gap: 1rem;
+      align-items: start;
+    }
+    .workspace-main {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-width: 0;
+    }
+    .workspace-main .card,
+    .workspace-side {
+      margin-bottom: 0;
+    }
+    .workspace-side {
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+    }
+    header { text-align: center; margin-bottom: 1.5rem; }
+    .header-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.75rem 1rem; }
+    header h1 { font-size: 1.6rem; font-weight: 600; }
+    header p { color: var(--muted); font-size: 0.95rem; margin-top: 0.35rem; width: 100%; }
+    .lang-toggle {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .lang-toggle button {
+      background: var(--bg);
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.75rem;
+      font-family: inherit;
+    }
+    .lang-toggle button:hover { color: var(--text); }
+    .lang-toggle button.active {
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .spectrum-diagram {
+      position: relative;
+      padding: 1rem 1rem 1.25rem;
+      user-select: none;
+      background: #f5f5f5;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      overflow: visible;
+    }
+    .spectrum-diagram svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .spectrum-diagram .em-bar-hit {
+      cursor: pointer;
+    }
+    .spectrum-diagram .visible-bar-hit {
+      cursor: pointer;
+    }
+    .spectrum-cursor {
+      transition: left 0.12s ease, top 0.12s ease;
+      pointer-events: none;
+    }
+    .band-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: #1a1c2c;
+    }
+    .band-legend button {
+      background: none;
+      border: none;
+      color: #c9d1d9;
+      cursor: pointer;
+      padding: 0.2rem 0;
+      font-size: 0.9rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .band-legend button:hover { color: var(--accent); }
+    .band-legend button.active { color: var(--accent); font-weight: 600; }
+    .slider-row { margin: 1rem 0; }
+    .slider-row label {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+    }
+    .slider-row label strong { color: var(--accent); font-variant-numeric: tabular-nums; }
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--border);
+      border-radius: 4px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+    }
+    .readouts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .readout {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+    }
+    .readout .label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .readout .value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-top: 0.2rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .band-detail h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .band-detail .swatch {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .band-detail ul { margin: 0.5rem 0 0 1.2rem; color: var(--muted); font-size: 0.9rem; }
+    .band-detail ul li { margin-bottom: 0.25rem; }
+    .implications {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+    }
+    .implications h4 { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.35rem; }
+    .band-applications { margin-top: 0.75rem; }
+    .band-applications h4 { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .band-applications-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+      gap: 0.5rem;
+    }
+    .band-app-item {
+      margin: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .band-app-thumb {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: none;
+      cursor: zoom-in;
+      font: inherit;
+    }
+    .band-app-thumb:hover img { opacity: 0.92; }
+    .band-app-thumb:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .band-app-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      background: #f8f9fa;
+      pointer-events: none;
+    }
+    .band-app-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .band-app-lightbox.open {
+      display: flex;
+    }
+    .band-app-lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      border: none;
+      cursor: pointer;
+    }
+    .band-app-lightbox-panel {
+      position: relative;
+      z-index: 1;
+      max-width: min(94vw, 960px);
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.75rem;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55);
+    }
+    .band-app-lightbox-panel img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(92vh - 5rem);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 6px;
+      background: #f8f9fa;
+    }
+    .band-app-lightbox-caption {
+      margin: 0.65rem 0.25rem 0;
+      font-size: 0.95rem;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.35;
+    }
+    .band-app-lightbox-close {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.45rem;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1.35rem;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .band-app-lightbox-close:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .band-app-item figcaption {
+      font-size: 0.72rem;
+      color: var(--muted);
+      padding: 0.35rem 0.45rem;
+      line-height: 1.3;
+    }
+    .band-app-empty {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .formula-box {
+      background: var(--bg);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      margin-top: 0.75rem;
+      border: 1px solid var(--border);
+    }
+    .formula-box .sub {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-top: 0.35rem;
+    }
+    canvas#waveCanvas {
+      width: 100%;
+      height: 100px;
+      display: block;
+      background: var(--bg);
+      border-radius: 8px;
+      margin-top: 0.75rem;
+      contain: strict;
+    }
+    .schematic-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    .inverse-note {
+      font-size: 0.85rem;
+      color: var(--warn);
+      margin-top: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+    }
+    .lab-intro { font-size: 0.9rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .lab-tabs, .lab-subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
+    .lab-tab, .lab-subtab {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .lab-tab:hover, .lab-subtab:hover { color: var(--text); border-color: var(--accent); }
+    .lab-tab.active, .lab-subtab.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+    .lab-panel { display: none; }
+    .lab-panel.active { display: block; }
+    .lab-subpanel { display: none; }
+    .lab-subpanel.active { display: block; }
+    .lab-caption { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .lab-canvas-wrap { position: relative; margin: 0.5rem 0; }
+    canvas.lab-canvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      contain: strict;
+    }
+    canvas.lab-canvas.lab-canvas-active {
+      will-change: contents;
+    }
+    .lab-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      align-items: center;
+      margin: 0.5rem 0;
+      font-size: 0.85rem;
+    }
+    .lab-controls label { display: flex; align-items: center; gap: 0.4rem; color: var(--muted); }
+    .lab-controls select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.85rem;
+    }
+    .lab-controls input[type="range"] { width: 120px; }
+    .lab-readout {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .lab-readout strong { color: var(--accent); }
+    .pen-bars { margin-top: 0.5rem; padding-right: 0.15rem; overflow: visible; }
+    .pen-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+      min-width: 0;
+    }
+    .pen-bar-label {
+      width: 4.5rem;
+      min-width: 4.5rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .pen-bar-track {
+      flex: 1;
+      min-width: 0;
+      height: 14px;
+      background: var(--bg);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .pen-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.2s; }
+    .pen-bar-pct {
+      min-width: 5.25rem;
+      flex-shrink: 0;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .lab-view-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem 0.9rem;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      font-size: 0.8rem;
+    }
+    .lab-view-controls label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--muted);
+    }
+    .lab-view-controls input[type="range"] { width: 84px; }
+    .lab-view-reset {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.28rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .lab-view-reset:hover { color: var(--text); border-color: var(--accent); }
+    #labCanvasTransverse { cursor: grab; touch-action: none; }
+    #labCanvasTransverse.view-dragging { cursor: grabbing; }
+    @media (max-width: 900px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+      .workspace-side {
+        position: static;
+        max-height: none;
+      }
+    }
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.25rem; }
+    }
+    @media (min-width: 901px) {
+      html, body {
+        height: 100%;
+        overflow: hidden;
+      }
+      .wrap {
+        max-width: 100%;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        padding: 0.35rem 0.75rem 0.4rem;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 0.25rem;
+        flex-shrink: 0;
+      }
+      header h1 { font-size: 1.15rem; line-height: 1.2; }
+      header p { font-size: 0.75rem; margin-top: 0.1rem; line-height: 1.3; }
+      .workspace {
+        flex: 1;
+        min-height: 0;
+        align-items: stretch;
+        grid-template-columns: 1fr minmax(260px, 300px);
+        gap: 0.4rem;
+      }
+      .workspace-main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 0.4rem;
+        min-height: 0;
+        height: 100%;
+      }
+      .workspace-main .card {
+        padding: 0.65rem 0.85rem;
+        margin-bottom: 0;
+        min-height: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .workspace-main .card:nth-child(1),
+      .workspace-main .card:nth-child(2) {
+        align-self: stretch;
+        height: 100%;
+        min-height: 0;
+      }
+      .workspace-main .card:nth-child(1) { grid-column: 1; grid-row: 1; }
+      .workspace-main .card:nth-child(2) { grid-column: 2; grid-row: 1; }
+      .workspace-main .card:nth-child(3) {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        height: 100%;
+        min-height: 0;
+      }
+      .workspace-main .card h2 {
+        font-size: 0.95rem;
+        margin-bottom: 0.35rem;
+        flex-shrink: 0;
+      }
+      .workspace-main .card:nth-child(1) h2 {
+        font-size: 1.05rem;
+        margin-bottom: 0.45rem;
+      }
+      .workspace-main .card:nth-child(1) .spectrum-diagram {
+        padding: 0.5rem 0.6rem 0.6rem;
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .workspace-main .card:nth-child(1) .spectrum-diagram svg {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .workspace-main .card:nth-child(1) .band-legend {
+        margin-top: 0.5rem;
+        font-size: clamp(0.85rem, 1.1vh, 1rem);
+        gap: 0.35rem 0.85rem;
+        flex-shrink: 0;
+        line-height: 1.35;
+      }
+      .workspace-main .card:nth-child(1) .band-legend button {
+        font-size: inherit;
+        padding: 0.15rem 0;
+      }
+      .workspace-main .card:nth-child(2) .slider-row,
+      .workspace-main .card:nth-child(2) .readouts,
+      .workspace-main .card:nth-child(2) .inverse-note {
+        flex-shrink: 0;
+      }
+      .workspace-main .card:nth-child(2) canvas#waveCanvas {
+        flex: 1;
+        min-height: 48px;
+        height: auto !important;
+        max-height: none;
+        margin-top: 0.35rem;
+      }
+      .slider-row { margin: 0.35rem 0; }
+      .slider-row label { font-size: 0.82rem; margin-bottom: 0.25rem; }
+      .readouts {
+        margin-top: 0.35rem;
+        gap: 0.35rem;
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .readout { padding: 0.4rem 0.5rem; }
+      .readout .value { font-size: 0.88rem; }
+      .inverse-note {
+        margin-top: 0.25rem;
+        padding: 0.3rem 0.45rem;
+        font-size: 0.78rem;
+        line-height: 1.3;
+      }
+      .workspace-main .card:nth-child(2) .schematic-note,
+      #simLabCard > .schematic-note { display: none; }
+      .lab-intro {
+        margin-bottom: 0.3rem;
+        font-size: 0.8rem;
+        line-height: 1.35;
+      }
+      .lab-tabs, .lab-subtabs { margin-bottom: 0.35rem; gap: 0.25rem; }
+      .lab-tab, .lab-subtab {
+        padding: 0.28rem 0.5rem;
+        font-size: 0.76rem;
+      }
+      #simLabCard {
+        min-height: 0;
+        overflow: hidden;
+      }
+      #simLabCard > .lab-intro,
+      #simLabCard > .lab-tabs {
+        flex-shrink: 0;
+      }
+      #simLabCard .lab-panel.active {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+        justify-content: flex-start;
+      }
+      #simLabCard .lab-subpanel.active {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .lab-caption {
+        font-size: 0.78rem;
+        margin-bottom: 0.2rem;
+        flex-shrink: 0;
+        line-height: 1.35;
+      }
+      .lab-canvas-wrap {
+        flex: 1;
+        min-height: 0;
+        margin: 0.15rem 0;
+        display: flex;
+        flex-direction: column;
+      }
+      canvas.lab-canvas {
+        flex: 1;
+        width: 100%;
+        height: 100% !important;
+        min-height: 72px;
+      }
+      .lab-controls { margin: 0.25rem 0; font-size: 0.8rem; }
+      .lab-readout {
+        margin-top: 0.2rem;
+        padding: 0.35rem 0.5rem;
+        font-size: 0.76rem;
+        flex-shrink: 0;
+      }
+      .pen-bars { margin-top: 0.25rem; flex-shrink: 0; overflow: visible; }
+      #simLabCard .lab-panel[data-panel="penetration"].active {
+        overflow-x: visible;
+        overflow-y: auto;
+      }
+      .workspace-side {
+        position: static;
+        top: auto;
+        max-height: none;
+        height: 100%;
+        min-height: 0;
+        overflow-y: auto;
+      }
+      .band-detail h3 { font-size: 1.05rem; margin-bottom: 0.35rem; }
+      .band-detail ul { font-size: 0.82rem; }
+      .band-detail ul li { margin-bottom: 0.15rem; }
+      .implications {
+        margin-top: 0.4rem;
+        font-size: 0.82rem;
+        padding-left: 0.75rem;
+      }
+      .formula-box {
+        padding: 0.5rem 0.65rem;
+        font-size: 0.88rem;
+        margin-top: 0.4rem;
+      }
+      .band-applications-grid {
+        grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+      }
+      .band-app-item figcaption {
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="header-row">
+        <h1 data-i18n="headerTitle">Electromagnetic Spectrum Explorer</h1>
+        <div class="lang-toggle" role="group" data-i18n-aria="ariaLanguage">
+          <button type="button" id="langEn" data-lang="en">EN</button>
+          <button type="button" id="langZh" data-lang="zh">繁中</button>
+        </div>
+      </div>
+      <p data-i18n="headerSubtitle">Explore wavelength, frequency, and what each band of EM radiation can do.</p>
+    </header>
+
+    <main class="workspace">
+      <div class="workspace-main">
+        <div class="card">
+          <h2 data-i18n="emSpectrum">EM Spectrum</h2>
+        <div class="spectrum-diagram" id="spectrumDiagram" data-i18n-aria="ariaSpectrumDiagram"></div>
+        <div class="band-legend" id="bandLegend"></div>
+      </div>
+
+      <div class="card">
+        <h2 data-i18n="tuneWave">Tune the wave</h2>
+        <div class="slider-row">
+          <label>
+            <span data-i18n="wavelengthLog">Wavelength</span>
+            <strong id="exploreLambdaDisplay">-</strong>
+          </label>
+          <input type="range" id="exploreLambda" min="0" max="1000" value="500"
+            data-i18n-aria="ariaWavelengthSlider">
+        </div>
+        <div class="readouts">
+          <div class="readout"><div class="label" data-i18n="wavelength">Wavelength</div><div class="value" id="roLambda">-</div></div>
+          <div class="readout"><div class="label" data-i18n="frequency">Frequency</div><div class="value" id="roFreq">-</div></div>
+          <div class="readout"><div class="label" data-i18n="photonEnergy">Photon energy</div><div class="value" id="roEnergy">-</div></div>
+          <div class="readout"><div class="label" data-i18n="bandLabel">Band</div><div class="value" id="roBand">-</div></div>
+        </div>
+        <div class="inverse-note" id="inverseNote"></div>
+        <canvas id="waveCanvas" width="900" height="100" aria-label="Schematic sine wave"></canvas>
+          <p class="schematic-note">Wave drawing is schematic (not to scale with the full EM range).</p>
+        </div>
+
+        <div class="card" id="simLabCard">
+          <h2 data-i18n="simLab">Simulation Lab</h2>
+          <p class="lab-intro" data-i18n="simLabIntro">Interactive demos of how EM waves behave. Tied to your current wavelength above.</p>
+          <nav class="lab-tabs" role="tablist" data-i18n-aria="ariaLabTopics">
+            <button type="button" class="lab-tab active" data-panel="transverse" data-i18n="labTransverse">Transverse</button>
+            <button type="button" class="lab-tab" data-panel="media" data-i18n="labMedia">Speed in media</button>
+            <button type="button" class="lab-tab" data-panel="phenomena" data-i18n="labPhenomena">Wave phenomena</button>
+            <button type="button" class="lab-tab" data-panel="penetration" data-i18n="labPenetration">Penetration</button>
+          </nav>
+
+          <div class="lab-panel active" data-panel="transverse">
+            <p class="lab-caption" data-i18n-html="labTransCaption">EM waves are <strong>transverse</strong>: E and B oscillate perpendicular to each other and to propagation <strong>k</strong>. Drag the 3D view to rotate.</p>
+            <div class="lab-view-controls" id="labTransverseViewControls">
+              <label><span data-i18n="yaw">Yaw</span> <input type="range" id="labTransYaw" min="0" max="628" value="52" data-i18n-aria="ariaRotateH"></label>
+              <label><span data-i18n="pitch">Pitch</span> <input type="range" id="labTransPitch" min="0" max="270" value="183" data-i18n-aria="ariaRotateV"></label>
+              <label><span data-i18n="zoom">Zoom</span> <input type="range" id="labTransZoom" min="45" max="280" value="100" data-i18n-aria="ariaZoom"></label>
+              <button type="button" class="lab-view-reset" id="labTransViewReset" data-i18n="resetView">Reset view</button>
+            </div>
+            <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasTransverse" width="900" height="220"></canvas></div>
+            <div class="lab-readout" id="labReadoutTransverse"></div>
+          </div>
+
+          <div class="lab-panel" data-panel="media">
+            <p class="lab-caption" data-i18n-html="labMediaCaption">In matter, light slows to <em>v = c/n</em>. Frequency stays the same, so wavelength shrinks: <em>&lambda;<sub>medium</sub> = &lambda;/n</em>.</p>
+            <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasMedia" width="900" height="220"></canvas></div>
+            <div class="lab-readout" id="labReadoutMedia"></div>
+          </div>
+
+          <div class="lab-panel" data-panel="phenomena">
+            <nav class="lab-subtabs" role="tablist" data-i18n-aria="ariaWavePhenomena">
+              <button type="button" class="lab-subtab active" data-sub="reflection" data-i18n="reflection">Reflection</button>
+              <button type="button" class="lab-subtab" data-sub="refraction" data-i18n="refraction">Refraction</button>
+              <button type="button" class="lab-subtab" data-sub="diffraction" data-i18n="diffraction">Diffraction</button>
+              <button type="button" class="lab-subtab" data-sub="interference" data-i18n="interference">Interference</button>
+            </nav>
+            <div class="lab-subpanel active" data-sub="reflection">
+              <p class="lab-caption" data-i18n="labReflectCaption">At a boundary, the incident angle equals the reflected angle (law of reflection).</p>
+              <div class="lab-controls">
+                <label><span data-i18n="incidentAngle">Incident angle</span> <input type="range" id="labReflectAngle" min="10" max="70" value="45"><strong id="labReflectAngleVal">45&deg;</strong></label>
+              </div>
+              <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasReflection" width="900" height="220"></canvas></div>
+            </div>
+            <div class="lab-subpanel" data-sub="refraction">
+              <p class="lab-caption" data-i18n-html="labRefractCaption">Crossing into a denser medium, the ray bends <em>toward</em> the normal (Snell&rsquo;s law).</p>
+              <div class="lab-controls">
+                <label><span data-i18n="medium1">Medium 1</span>
+                  <select id="labRefractN1"><option value="1">Vacuum (n=1)</option><option value="1.0003">Air</option><option value="1.33" selected>Water (1.33)</option><option value="1.5">Glass (1.5)</option></select>
+                </label>
+                <label><span data-i18n="medium2">Medium 2</span>
+                  <select id="labRefractN2"><option value="1">Vacuum</option><option value="1.0003">Air</option><option value="1.33">Water</option><option value="1.5" selected>Glass (1.5)</option></select>
+                </label>
+                <label><span data-i18n="incidentAngle">Incident angle</span> <input type="range" id="labRefractAngle" min="5" max="75" value="35"><strong id="labRefractAngleVal">35&deg;</strong></label>
+              </div>
+              <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasRefraction" width="900" height="220"></canvas></div>
+              <div class="lab-readout" id="labReadoutRefraction"></div>
+            </div>
+            <div class="lab-subpanel" data-sub="diffraction">
+              <p class="lab-caption" data-i18n-html="labDiffractionCaption">Waves spread after passing through narrow opening(s). With fixed slit width <em>a</em> (nm), longer <em>&lambda;</em> diffracts more (sin&nbsp;&theta;&nbsp;&asymp;&nbsp;&lambda;/a).</p>
+              <div class="lab-controls">
+                <label><span data-i18n="setup">Setup</span>
+                  <select id="labDiffractionMode">
+                    <option value="single">Single slit</option>
+                    <option value="double">Double slit</option>
+                  </select>
+                </label>
+                <label><span data-i18n="slitWidth">Slit width (nm)</span> <input type="range" id="labSlitWidth" min="100" max="2000" value="800" step="10"><strong id="labSlitWidthVal">800 nm</strong></label>
+                <label id="labSlitSepWrap" style="display:none"><span data-i18n="slitSeparation">Slit separation (nm)</span>
+                  <input type="range" id="labSlitSep" min="200" max="3000" value="1200" step="10"><strong id="labSlitSepVal">1200 nm</strong>
+                </label>
+              </div>
+              <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasDiffraction" width="900" height="220"></canvas></div>
+            </div>
+            <div class="lab-subpanel" data-sub="interference">
+              <p class="lab-caption" data-i18n="labInterferenceCaption">Two coherent sources produce bright and dark fringes where waves arrive in or out of phase.</p>
+              <div class="lab-controls">
+                <label><span data-i18n-html="sourceSep">Source separation (&times;&lambda;)</span> <input type="range" id="labSourceSep" min="150" max="500" value="300"><strong id="labSourceSepVal">3.0&lambda;</strong></label>
+                <label><input type="checkbox" id="labPhasePi"> <span data-i18n-html="phasePi">Phase difference &pi; (destructive at center)</span></label>
+              </div>
+              <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasInterference" width="900" height="220"></canvas></div>
+            </div>
+          </div>
+
+          <div class="lab-panel" data-panel="penetration">
+            <p class="lab-caption" data-i18n="labPenCaption">Different bands penetrate materials differently — from radio passing through walls to gamma rays needing thick shielding.</p>
+            <div class="lab-controls">
+              <label><span data-i18n="barrierPreset">Barrier preset</span>
+                <select id="labPenPreset">
+                  <option value="tissue">Human tissue</option>
+                  <option value="wall">Building wall</option>
+                  <option value="lead">Lead shielding</option>
+                </select>
+              </label>
+            </div>
+            <div class="lab-canvas-wrap"><canvas class="lab-canvas" id="labCanvasPenetration" width="900" height="220"></canvas></div>
+            <div class="lab-readout" id="labReadoutPenetration"></div>
+            <div class="pen-bars" id="labPenBars"></div>
+          </div>
+
+          <p class="schematic-note" data-i18n="labSchematicNote">Lab animations are schematic (correct relationships, compressed scales).</p>
+        </div>
+      </div>
+
+      <div class="card band-detail workspace-side">
+        <h3><span class="swatch" id="bandSwatch"></span><span id="bandName">-</span></h3>
+        <p id="bandRange" style="color:var(--muted);font-size:0.9rem;"></p>
+        <ul id="bandExamples"></ul>
+        <div class="implications">
+          <h4 data-i18n="physicalImplications">Physical implications</h4>
+          <p id="bandImplications"></p>
+        </div>
+        <div class="band-applications">
+          <h4 data-i18n="applications">Applications</h4>
+          <div id="bandApplications" class="band-applications-grid" aria-live="polite"></div>
+        </div>
+        <div class="formula-box">
+          <div>c = f&lambda; &nbsp;&nbsp; E = hf</div>
+          <div class="sub" id="formulaSub" data-i18n-html="formulaConstants">c &asymp; 3.00&times;10<sup>8</sup> m/s in vacuum | h &asymp; 6.626&times;10<sup>-34</sup> J&middot;s</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="bandAppLightbox" class="band-app-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="bandAppLightboxCaption">
+    <button type="button" class="band-app-lightbox-backdrop" data-i18n-aria="ariaCloseFull"></button>
+    <div class="band-app-lightbox-panel">
+      <button type="button" class="band-app-lightbox-close" data-i18n-aria="ariaClose">&times;</button>
+      <img id="bandAppLightboxImg" src="" alt="">
+      <p id="bandAppLightboxCaption" class="band-app-lightbox-caption"></p>
+    </div>
+  </div>
+
+  <script type="application/json" id="i18n-bundle">
+{"strings":{"en":{"pageTitle":"Electromagnetic Spectrum Explorer (v2)","headerTitle":"Electromagnetic Spectrum Explorer","headerSubtitle":"Explore wavelength, frequency, and what each band of EM radiation can do.","ariaLanguage":"Language","emSpectrum":"EM Spectrum","ariaSpectrumDiagram":"Electromagnetic spectrum diagram","tuneWave":"Tune the wave","wavelengthLog":"Wavelength","ariaWavelengthSlider":"Wavelength logarithmic slider","wavelength":"Wavelength","frequency":"Frequency","photonEnergy":"Photon energy","bandLabel":"Band","ariaSineWave":"Schematic sine wave","schematicWaveNote":"Wave drawing is schematic (not to scale with the full EM range).","simLab":"Simulation Lab","simLabIntro":"Interactive demos of how EM waves behave. Tied to your current wavelength above.","ariaLabTopics":"Simulation lab topics","labTransverse":"Transverse","labMedia":"Speed in media","labPhenomena":"Wave phenomena","labPenetration":"Penetration","labTransCaption":"EM waves are <strong>transverse</strong>: E and B oscillate perpendicular to each other and to propagation <strong>k</strong>. Drag the 3D view to rotate.","yaw":"Yaw","ariaRotateH":"Rotate view horizontally","pitch":"Pitch","ariaRotateV":"Rotate view vertically","zoom":"Zoom","ariaZoom":"Zoom 3D view","resetView":"Reset view","labMediaCaption":"In matter, light slows to <em>v = c/n</em>. Frequency stays the same, so wavelength shrinks: <em>&lambda;<sub>medium</sub> = &lambda;/n</em>.","ariaWavePhenomena":"Wave phenomena","reflection":"Reflection","refraction":"Refraction","diffraction":"Diffraction","interference":"Interference","labReflectCaption":"At a boundary, the incident angle equals the reflected angle (law of reflection).","incidentAngle":"Incident angle","labRefractCaption":"Crossing into a denser medium, the ray bends <em>toward</em> the normal (Snell&rsquo;s law).","medium1":"Medium 1","medium2":"Medium 2","labDiffractionCaption":"Waves spread after passing through narrow opening(s). With fixed slit width <em>a</em> (nm), longer <em>&lambda;</em> diffracts more (sin&nbsp;&theta;&nbsp;&asymp;&nbsp;&lambda;/a).","setup":"Setup","slitWidth":"Slit width (nm)","slitSeparation":"Slit separation (nm)","labInterferenceCaption":"Two coherent sources produce bright and dark fringes where waves arrive in or out of phase.","sourceSep":"Source separation (&times;&lambda;)","phasePi":"Phase difference &pi; (destructive at center)","labPenCaption":"Different bands penetrate materials differently — from radio passing through walls to gamma rays needing thick shielding.","barrierPreset":"Barrier preset","labSchematicNote":"Lab animations are schematic (correct relationships, compressed scales).","physicalImplications":"Physical implications","applications":"Applications","formulaConstants":"c &asymp; 3.00&times;10<sup>8</sup> m/s in vacuum | h &asymp; 6.626&times;10<sup>-34</sup> J&middot;s","ariaCloseFull":"Close full image","ariaClose":"Close","optVacuum":"Vacuum","optVacuumN1":"Vacuum (n=1)","optAir":"Air","optWater":"Water (1.33)","optGlass":"Glass (1.5)","optPenTissue":"Human tissue","optPenWall":"Building wall","optPenLead":"Lead shielding","optSingleSlit":"Single slit","optDoubleSlit":"Double slit","bandRange":"Typical range: {min} to {max} | f: {fMax} to {fMin}","inverseNote":"c = fλ: if λ halves, frequency doubles (c fixed in vacuum). Shorter λ means higher f and higher photon energy E = hf.","formulaSub":"At your setting: f = c/λ = {freq} Hz,  E = hf = {energy}","noAppImages":"No application images for this band.","transverseReadout":"<strong>{lambda}</strong> | f = {freq} | 3D: E along y, B along z, k along x | E ⊥ B ⊥ k; |E|/|B| = c in vacuum.","penTableMedium":"Medium","penTableN":"n","penTableV":"v=c/n","penTableLambda":"λ=v/f","penTableFixed":"f = {freq} fixed in all media","penReadout":"<strong>{band}:</strong> {note} | Beer-Lambert exit transmission ≈ {tx}%","penBarIncident":"incident","snellLabel":"Snell:","bendToward":"toward","bendAwayFrom":"away from","snellLine":"n₁ sinθ₁ = n₂ sinθ₂ &rarr; θ₂ = {theta2}° ({bend} normal) | λ₁ = {lambda1}, λ₂ = {lambda2}","snellCritical":" | critical angle (n₁→n₂) = {crit}°","tirTitle":"Total internal reflection","tirLine":"(n₁ > n₂, θ₁ > critical). θᵣ = θ₁ = {angle}°","snellInvalidTitle":"Invalid","snellInvalidLine":": sinθ₂ > 1 (check n₁, n₂, θ₁)","svgTitle":"EM spectrum","svgFrequency":"Frequency (Hz)","svgWavelength":"Wavelength","svgVisibleSpectrum":"VISIBLE SPECTRUM","svgNm700":"~700 nm","svgNm400":"~400 nm","canvasWavePeaksLong":"longer λ (fewer peaks)","canvasWavePeaksShort":"shorter λ (more peaks)","canvasEy":"E (y)","canvasBz":"B (z)","canvasKx":"k (x)","canvasTransPhase":"E ⊥ B ⊥ k — same phase in vacuum","canvasTransDrag":"Drag to rotate · scroll to zoom · double-click reset","canvasTransSliders":"Or use Yaw / Pitch / Zoom sliders above the view","canvasMediaFooter":"f fixed = {freq} across media; λ/n and v = c/n","canvasBoundary":"Boundary","canvasNormal":"normal","canvasReflectLaw":"θᵢ = θᵣ (law of reflection)","canvasScreen":"Screen","canvasDiffSingle":"Single slit","canvasDiffDouble":"Double slit","canvasDiffFooter":"{mode} | a = {a} nm | λ = {lambda} | sinθ ≈ λ/a = {ratio}","canvasInterferenceFooter":"d = {d}λ | Δφ = k(r₂−r₁) + φ | I ∝ |E₁+E₂|²","canvasBeerLambertExit":" (Beer-Lambert) | exit ≈ {exit}%","penLayerAir":"Air","penLayerSkin":"Skin","penLayerMuscle":"Muscle","penLayerBone":"Bone","penLayerDrywall":"Drywall","penLayerConcrete":"Concrete","penLayerRebar":"Rebar","penLayerAluminum":"Aluminum","penLayerSteel":"Steel","penLayerLead":"Lead","mediaVacuum":"Vacuum","mediaAir":"Air","mediaWater":"Water","mediaGlass":"Glass","lightboxViewTitle":"View full image: {caption}"},"zh":{"pageTitle":"電磁波譜探索器 (v2)","headerTitle":"電磁波譜探索器","headerSubtitle":"探索波長、頻率，以及各電磁波段可做的事。","ariaLanguage":"語言","emSpectrum":"電磁波譜","ariaSpectrumDiagram":"電磁波譜示意圖","tuneWave":"調節波長","wavelengthLog":"波長","ariaWavelengthSlider":"波長對數滑桿","wavelength":"波長","frequency":"頻率","photonEnergy":"光子能量","bandLabel":"波段","ariaSineWave":"示意正弦波","schematicWaveNote":"波形圖僅為示意（與全譜比例不符）。","simLab":"模擬實驗室","simLabIntro":"互動示範電磁波行為，與上方目前波長同步。","ariaLabTopics":"模擬實驗主題","labTransverse":"橫波","labMedia":"介質中的速度","labPhenomena":"波動現象","labPenetration":"穿透","labTransCaption":"電磁波為<strong>橫波</strong>：E 與 B 互相垂直，且均垂直於傳播方向 <strong>k</strong>。可拖曳 3D 視圖旋轉。","yaw":"偏航","ariaRotateH":"水平旋轉視圖","pitch":"俯仰","ariaRotateV":"垂直旋轉視圖","zoom":"縮放","ariaZoom":"縮放 3D 視圖","resetView":"重設視圖","labMediaCaption":"在物質中，光速變為 <em>v = c/n</em>。頻率不變，波長縮短：<em>&lambda;<sub>medium</sub> = &lambda;/n</em>。","ariaWavePhenomena":"波動現象","reflection":"反射","refraction":"折射","diffraction":"繞射","interference":"干涉","labReflectCaption":"在界面，入射角等於反射角（反射定律）。","incidentAngle":"入射角","labRefractCaption":"光進入較密介質時，折射線向法線偏折（<em>司乃耳定律</em>）。","medium1":"介質 1","medium2":"介質 2","labDiffractionCaption":"波經窄縫後會擴散。縫寬 <em>a</em>（nm）固定時，波長 <em>&lambda;</em> 愈長，繞射愈明顯（sin&nbsp;&theta;&nbsp;&asymp;&nbsp;&lambda;/a）。","setup":"裝置","slitWidth":"縫寬 (nm)","slitSeparation":"縫距 (nm)","labInterferenceCaption":"兩相干源在疊加處形成亮暗紋（同相或反相）。","sourceSep":"源距離 (&times;&lambda;)","phasePi":"相位差 &pi;（中央相消）","labPenCaption":"不同波段穿透物質的能力不同——無線電可穿牆，伽馬射線需厚鉛屏蔽。","barrierPreset":"屏障預設","labSchematicNote":"實驗室動畫為示意（關係正確，比例壓縮）。","physicalImplications":"物理意義","applications":"應用","formulaConstants":"c &asymp; 3.00&times;10<sup>8</sup> m/s（真空）| h &asymp; 6.626&times;10<sup>-34</sup> J&middot;s","ariaCloseFull":"關閉全圖","ariaClose":"關閉","optVacuum":"真空","optVacuumN1":"真空 (n=1)","optAir":"空氣","optWater":"水 (1.33)","optGlass":"玻璃 (1.5)","optPenTissue":"人體組織","optPenWall":"建築牆壁","optPenLead":"鉛屏蔽","optSingleSlit":"單縫","optDoubleSlit":"雙縫","bandRange":"典型範圍：{min} 至 {max} | f：{fMax} 至 {fMin}","inverseNote":"c = fλ：波長減半則頻率加倍（真空中 c 固定）。λ 愈短，f 與光子能量 E = hf 愈高。","formulaSub":"目前設定：f = c/λ = {freq} Hz，E = hf = {energy}","noAppImages":"此波段暫無應用圖片。","transverseReadout":"<strong>{lambda}</strong> | f = {freq} | 3D：E 沿 y，B 沿 z，k 沿 x | E ⊥ B ⊥ k；真空中 |E|/|B| = c。","penTableMedium":"介質","penTableN":"n","penTableV":"v=c/n","penTableLambda":"λ=v/f","penTableFixed":"各介質中 f = {freq} 固定","penReadout":"<strong>{band}：</strong>{note} | 比爾定律透射率 ≈ {tx}%","penBarIncident":"入射","snellLabel":"司乃耳：","bendToward":"向法線","bendAwayFrom":"離開法線","snellLine":"n₁ sinθ₁ = n₂ sinθ₂ &rarr; θ₂ = {theta2}°（{bend}）| λ₁ = {lambda1}，λ₂ = {lambda2}","snellCritical":" | 臨界角 (n₁→n₂) = {crit}°","tirTitle":"全內反射","tirLine":"（n₁ > n₂，θ₁ > 臨界角）。θᵣ = θ₁ = {angle}°","snellInvalidTitle":"無效","snellInvalidLine":"：sinθ₂ > 1（請檢查 n₁、n₂、θ₁）","svgTitle":"電磁波譜","svgFrequency":"頻率 (Hz)","svgWavelength":"波長","svgVisibleSpectrum":"可見光譜","svgNm700":"~700 nm","svgNm400":"~400 nm","canvasWavePeaksLong":"較長 λ（波峰較少）","canvasWavePeaksShort":"較短 λ（波峰較多）","canvasEy":"E (y)","canvasBz":"B (z)","canvasKx":"k (x)","canvasTransPhase":"E ⊥ B ⊥ k — 真空中同相位","canvasTransDrag":"拖曳旋轉 · 滾輪縮放 · 雙擊重設","canvasTransSliders":"或使用上方偏航／俯仰／縮放滑桿","canvasMediaFooter":"各介質 f 固定 = {freq}；λ/n 與 v = c/n","canvasBoundary":"界面","canvasNormal":"法線","canvasReflectLaw":"θᵢ = θᵣ（反射定律）","canvasScreen":"螢幕","canvasDiffSingle":"單縫","canvasDiffDouble":"雙縫","canvasDiffFooter":"{mode} | a = {a} nm | λ = {lambda} | sinθ ≈ λ/a = {ratio}","canvasInterferenceFooter":"d = {d}λ | Δφ = k(r₂−r₁) + φ | I ∝ |E₁+E₂|²","canvasBeerLambertExit":"（比爾定律）| 透射 ≈ {exit}%","penLayerAir":"空氣","penLayerSkin":"皮膚","penLayerMuscle":"肌肉","penLayerBone":"骨骼","penLayerDrywall":"石膏板","penLayerConcrete":"混凝土","penLayerRebar":"鋼筋","penLayerAluminum":"鋁","penLayerSteel":"鋼","penLayerLead":"鉛","mediaVacuum":"真空","mediaAir":"空氣","mediaWater":"水","mediaGlass":"玻璃","lightboxViewTitle":"查看全圖：{caption}"}},"bands":{"radio":{"en":{"name":"Radio waves","examples":["AM/FM broadcasting","TV signals","Long-wavelength radar"],"implications":"Longest wavelengths, lowest frequencies. Non-ionizing. Good diffraction around obstacles. Low photon energy."},"zh":{"name":"無線電波","examples":["調幅／調頻廣播","電視訊號","長波雷達"],"implications":"波長最長、頻率最低。非電離輻射。繞射能力強。光子能量低。"}},"microwave":{"en":{"name":"Microwaves","examples":["Microwave ovens (heating water)","Wi-Fi and Bluetooth","Satellite communication"],"implications":"Absorbed by water molecules, causing heating. Still non-ionizing. Used for radar and wireless data."},"zh":{"name":"微波","examples":["微波爐（加熱水分）","Wi-Fi 與藍牙","衛星通訊"],"implications":"被水分子吸收而產生熱。仍屬非電離。用於雷達與無線數據。"}},"infrared":{"en":{"name":"Infrared","examples":["Thermal imaging","TV remote controls","Night-vision heat signatures"],"implications":"Felt as heat. Emitted by warm objects. Higher frequency than microwaves, but still non-ionizing."},"zh":{"name":"紅外線","examples":["熱成像","電視遙控","夜視熱影像"],"implications":"以熱能形式感受。溫暖物體會輻射。頻率高於微波，仍非電離。"}},"visible":{"en":{"name":"Visible light","examples":["Human vision (~400-700 nm)","Fiber-optic communications","Photosynthesis"],"implications":"The narrow band our eyes detect. Each color is a different wavelength and frequency."},"zh":{"name":"可見光","examples":["人眼視覺（約 400–700 nm）","光纖通訊","光合作用"],"implications":"人眼可感應的窄波段。不同顏色對應不同波長與頻率。"}},"uv":{"en":{"name":"Ultraviolet","examples":["Sun tanning and sunburn","Sterilization lamps","Fluorescent black lights"],"implications":"Higher frequency means more energetic photons. Can damage skin. Ionizing with prolonged exposure."},"zh":{"name":"紫外線","examples":["曬黑與曬傷","紫外消毒燈","螢光黑光燈"],"implications":"頻率較高，光子能量較大。可損傷皮膚。長時間暴露具電離性。"}},"xray":{"en":{"name":"X-rays","examples":["Medical and dental imaging","Airport security scanners","Crystallography"],"implications":"Short wavelength, penetrates soft tissue but absorbed by bone. Ionizing at high doses."},"zh":{"name":"X 射線","examples":["醫學與牙科造影","機場安檢掃描","晶體學"],"implications":"波長短，可穿透軟組織但被骨骼吸收。高劑量具電離性。"}},"gamma":{"en":{"name":"Gamma rays","examples":["Nuclear decay","Cancer radiotherapy","Gamma-ray bursts in space"],"implications":"Shortest wavelength, highest frequency, most energetic photons. Highly ionizing and penetrating."},"zh":{"name":"伽馬射線","examples":["核衰變","癌症放射治療","宇宙伽馬暴"],"implications":"波長最短、頻率最高、光子能量最大。高度電離且穿透力強。"}}},"appCaptions":{"en":{"Radio waves/AM_FM Broadcasting - Simple.webp":"AM/FM Broadcasting","Radio waves/Mobile Phone Communication - Simple.webp":"Mobile Phone Communication","Radio waves/TV Signals - Simple.webp":"TV Signals","Microwaves/Microwave Ovens - Simple.webp":"Microwave Ovens","Microwaves/Radar - Simple.webp":"Radar","Microwaves/Satellite Communication - Simple.webp":"Satellite Communication","Microwaves/Wi-Fi and Bluetooth - Simple.webp":"Wi-Fi and Bluetooth","Infrared/Auto-focus of Camera - Simple.webp":"Auto-focus of Camera","Infrared/Infra-red Thermometer - Simple.webp":"Infra-red Thermometer","Infrared/Night-vision Heat Signatures - Simple.webp":"Night-vision Heat Signatures","Infrared/Radiant Heater - Simple.webp":"Radiant Heater","Infrared/TV Remote Controls - Simple.webp":"TV Remote Controls","Visible/Fiber-optic Communications - Simple.webp":"Fiber-optic Communications","Visible/Lighting - Simple.webp":"Lighting","Visible/Photosynthesis - Simple.webp":"Photosynthesis","Ultraviolet/Checking Banknotes - Simple.webp":"Checking Banknotes","Ultraviolet/Produce Vitamin D (Skin) - Simple.webp":"Produce Vitamin D (Skin)","Ultraviolet/Sterilization Lamps - Simple.webp":"Sterilization Lamps","Ultraviolet/Sterilizing Drinking Water - Simple.webp":"Sterilizing Drinking Water","X-rays/Airport Security Scanners - Simple.webp":"Airport Security Scanners","X-rays/CT Scan - Simple.webp":"CT Scan","X-rays/See-through Images - Simple.webp":"See-through Images","X-rays/X-ray Scan - Simple.webp":"X-ray Scan","Gamma-rays/Cancer Radiotherapy - Simple.webp":"Cancer Radiotherapy","Gamma-rays/Sterilization (Food) - Simple.webp":"Sterilization (Food)"},"zh":{"Radio waves/AM_FM Broadcasting - Simple.webp":"調幅／調頻廣播","Radio waves/Mobile Phone Communication - Simple.webp":"流動電話通訊","Radio waves/TV Signals - Simple.webp":"電視訊號","Microwaves/Microwave Ovens - Simple.webp":"微波爐","Microwaves/Radar - Simple.webp":"雷達","Microwaves/Satellite Communication - Simple.webp":"衛星通訊","Microwaves/Wi-Fi and Bluetooth - Simple.webp":"Wi-Fi 與藍牙","Infrared/Auto-focus of Camera - Simple.webp":"相機自動對焦","Infrared/Infra-red Thermometer - Simple.webp":"紅外線溫度計","Infrared/Night-vision Heat Signatures - Simple.webp":"夜視熱影像","Infrared/Radiant Heater - Simple.webp":"輻射暖爐","Infrared/TV Remote Controls - Simple.webp":"電視遙控","Visible/Fiber-optic Communications - Simple.webp":"光纖通訊","Visible/Lighting - Simple.webp":"照明","Visible/Photosynthesis - Simple.webp":"光合作用","Ultraviolet/Checking Banknotes - Simple.webp":"驗鈔","Ultraviolet/Produce Vitamin D (Skin) - Simple.webp":"皮膚製造維他命 D","Ultraviolet/Sterilization Lamps - Simple.webp":"紫外消毒燈","Ultraviolet/Sterilizing Drinking Water - Simple.webp":"紫外消毒食水","X-rays/Airport Security Scanners - Simple.webp":"機場安檢掃描","X-rays/CT Scan - Simple.webp":"電腦斷層掃描","X-rays/See-through Images - Simple.webp":"透視影像","X-rays/X-ray Scan - Simple.webp":"X 光掃描","Gamma-rays/Cancer Radiotherapy - Simple.webp":"癌症放射治療","Gamma-rays/Sterilization (Food) - Simple.webp":"食物滅菌"}},"bandPenNotes":{"radio":{"en":"Long radio waves pass through most barriers with little attenuation.","zh":"長波無線電可穿過大部分障礙，衰減很小。"},"microwave":{"en":"Microwaves are partially absorbed by water-rich layers.","zh":"微波會被含水層部分吸收。"},"infrared":{"en":"Infrared is strongly absorbed near surfaces.","zh":"紅外線在表面附近被強烈吸收。"},"visible":{"en":"Visible light is blocked by opaque solids (e.g. bone, concrete).","zh":"可見光被不透明固體阻擋（如骨骼、混凝土）。"},"uv":{"en":"UV is largely blocked by skin, glass, and coatings.","zh":"紫外線多被皮膚、玻璃及塗層阻擋。"},"xray":{"en":"X-rays penetrate soft tissue but are absorbed by dense bone.","zh":"X 射線可穿透軟組織，但被致密骨骼吸收。"},"gamma":{"en":"Gamma rays are highly penetrating; thick lead greatly reduces intensity.","zh":"伽馬射線穿透力極強；厚鉛可大幅減弱強度。"}},"penLayerKeys":{"tissue":["penLayerAir","penLayerSkin","penLayerMuscle","penLayerBone"],"wall":["penLayerAir","penLayerDrywall","penLayerConcrete","penLayerRebar"],"lead":["penLayerAir","penLayerAluminum","penLayerSteel","penLayerLead"]},"selectOptionI18n":{"labRefractN1":{"1":"optVacuumN1","1.0003":"optAir","1.33":"optWater","1.5":"optGlass"},"labRefractN2":{"1":"optVacuum","1.0003":"optAir","1.33":"optWater","1.5":"optGlass"},"labPenPreset":{"tissue":"optPenTissue","wall":"optPenWall","lead":"optPenLead"},"labDiffractionMode":{"single":"optSingleSlit","double":"optDoubleSlit"}}}
+  </script>
+
+  <script>
+    const LANG_STORAGE_KEY = 'em-spectrum-lang';
+    const LANG = { EN: 'en', ZH: 'zh' };
+
+    function resolveInitialLang() {
+      try {
+        const stored = localStorage.getItem(LANG_STORAGE_KEY);
+        if (stored === LANG.EN || stored === LANG.ZH) return stored;
+      } catch (e) { /* ignore */ }
+      try {
+        const nav = navigator.language || navigator.userLanguage || '';
+        if (/^zh/i.test(nav)) return LANG.ZH;
+      } catch (e) { /* ignore */ }
+      return LANG.EN;
+    }
+
+    let currentLang = resolveInitialLang();
+
+    let STRINGS = { en: {}, zh: {} };
+    let BANDS_I18N = {};
+    let APP_CAPTIONS = { en: {}, zh: {} };
+    let BAND_PEN_NOTES_I18N = {};
+    let PEN_LAYER_KEYS = {};
+    let SELECT_OPTION_I18N = {};
+    const I18N_FALLBACK = {
+      strings: {
+        en: { pageTitle: 'Electromagnetic Spectrum Explorer (v2)', headerTitle: 'Electromagnetic Spectrum Explorer' },
+        zh: { pageTitle: '\u96fb\u78c1\u6ce2\u8b5c\u63a2\u7d22\u5668 (v2)', headerTitle: '\u96fb\u78c1\u6ce2\u8b5c\u63a2\u7d22\u5668' }
+      }
+    };
+    const els = {};
+    function requireEl(id) {
+      const el = document.getElementById(id);
+      if (!el) console.error('[EM Spectrum] Missing #' + id);
+      return el;
+    }
+    function showBootError(subsystem, message) {
+      console.error('[EM Spectrum][' + subsystem + ']', message);
+      let banner = document.getElementById('em-spectrum-error-banner');
+      if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'em-spectrum-error-banner';
+        banner.setAttribute('role', 'alert');
+        banner.style.cssText = 'background:#3d1216;color:#ffb4b4;border:1px solid #f85149;padding:0.75rem 1rem;margin:0 0 1rem;border-radius:8px;font-size:0.9rem;white-space:pre-wrap;';
+        const wrap = document.querySelector('.wrap');
+        if (wrap) wrap.insertBefore(banner, wrap.firstChild);
+        else document.body.insertBefore(banner, document.body.firstChild);
+      }
+      banner.textContent = (banner.textContent ? banner.textContent + '\n' : '') + '[' + subsystem + '] ' + message;
+    }
+    function initI18n() {
+      try {
+        const node = document.getElementById('i18n-bundle');
+        if (!node) throw new Error('Missing #i18n-bundle');
+        const data = JSON.parse(node.textContent);
+        STRINGS = data.strings || I18N_FALLBACK.strings;
+        BANDS_I18N = data.bands || {};
+        APP_CAPTIONS = data.appCaptions || { en: {}, zh: {} };
+        BAND_PEN_NOTES_I18N = data.bandPenNotes || {};
+        PEN_LAYER_KEYS = data.penLayerKeys || {};
+        SELECT_OPTION_I18N = data.selectOptionI18n || {};
+        return true;
+      } catch (e) {
+        STRINGS = I18N_FALLBACK.strings;
+        showBootError('i18n', e.message || String(e));
+        return false;
+      }
+    }
+
+    function i18n(key, params) {
+      const table = STRINGS[currentLang] || STRINGS.en;
+      let s = Object.prototype.hasOwnProperty.call(table, key)
+        ? table[key]
+        : (STRINGS.en[key] != null ? STRINGS.en[key] : key);
+      if (params) {
+        Object.keys(params).forEach(function(k) {
+          s = s.split('{' + k + '}').join(String(params[k]));
+        });
+      }
+      return s;
+    }
+
+    function getBandText(bandId) {
+      const block = BANDS_I18N[bandId];
+      if (!block) return { name: bandId, examples: [], implications: '' };
+      return block[currentLang] || block.en;
+    }
+
+    function getAppCaption(relPath) {
+      const table = APP_CAPTIONS[currentLang] || APP_CAPTIONS.en;
+      if (Object.prototype.hasOwnProperty.call(table, relPath)) return table[relPath];
+      if (Object.prototype.hasOwnProperty.call(APP_CAPTIONS.en, relPath)) return APP_CAPTIONS.en[relPath];
+      const file = String(relPath).split('/').pop() || relPath;
+      return file.replace(/ - Simple\.webp$/i, '').replace(/_/g, ' ').trim();
+    }
+
+    function getPenNote(bandId) {
+      const block = BAND_PEN_NOTES_I18N[bandId];
+      if (!block) return '';
+      return block[currentLang] || block.en || '';
+    }
+
+    function getPenLayerName(preset, index) {
+      const keys = PEN_LAYER_KEYS[preset];
+      if (!keys || index < 0 || index >= keys.length) return '';
+      return i18n(keys[index]);
+    }
+
+    function getMediaName(mediaId) {
+      const key = 'media' + String(mediaId).charAt(0).toUpperCase() + String(mediaId).slice(1);
+      return i18n(key);
+    }
+
+    function applyStaticI18n() {
+      document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        el.textContent = i18n(el.dataset.i18n);
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+        el.innerHTML = i18n(el.dataset.i18nHtml);
+      });
+      document.querySelectorAll('[data-i18n-aria]').forEach(function(el) {
+        el.setAttribute('aria-label', i18n(el.dataset.i18nAria));
+      });
+      document.querySelectorAll('[data-i18n-title]').forEach(function(el) {
+        el.setAttribute('title', i18n(el.dataset.i18nTitle));
+      });
+      Object.keys(SELECT_OPTION_I18N).forEach(function(selectId) {
+        const select = document.getElementById(selectId);
+        const map = SELECT_OPTION_I18N[selectId];
+        if (!select || !map) return;
+        Array.prototype.forEach.call(select.options, function(opt) {
+          const key = map[opt.value];
+          if (key) opt.textContent = i18n(key);
+        });
+      });
+    }
+
+    function rebuildBandLegend() {
+      const bandLegend = document.getElementById('bandLegend');
+      if (!bandLegend || typeof BANDS === 'undefined') return;
+      const activeId = bandLegend.querySelector('button.active');
+      const activeBandId = activeId && activeId.dataset.bandId;
+      bandLegend.innerHTML = '';
+      BANDS.forEach(function(b) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.bandId = b.id;
+        btn.textContent = getBandText(b.id).name;
+        if (activeBandId === b.id) btn.classList.add('active');
+        btn.addEventListener('click', function() {
+          if (typeof jumpToBand === 'function') jumpToBand(b.id);
+        });
+        bandLegend.appendChild(btn);
+      });
+    }
+
+    function setLang(lang) {
+      if (lang !== LANG.EN && lang !== LANG.ZH) return;
+      currentLang = lang;
+      try { localStorage.setItem(LANG_STORAGE_KEY, lang); } catch (e) { /* ignore */ }
+      document.documentElement.lang = lang === LANG.ZH ? 'zh-Hant' : 'en';
+      document.title = i18n('pageTitle');
+      applyStaticI18n();
+      rebuildBandLegend();
+      buildSpectrumDiagram();
+      if (els.langEn) els.langEn.classList.toggle('active', lang === LANG.EN);
+      if (els.langZh) els.langZh.classList.toggle('active', lang === LANG.ZH);
+      refreshAll({ forceBand: true });
+    }
+
+    function initLangToggle() {
+      const enBtn = document.getElementById('langEn');
+      const zhBtn = document.getElementById('langZh');
+      if (!enBtn || !zhBtn) return;
+      enBtn.addEventListener('click', function() { setLang(LANG.EN); });
+      zhBtn.addEventListener('click', function() { setLang(LANG.ZH); });
+      enBtn.classList.toggle('active', currentLang === LANG.EN);
+      zhBtn.classList.toggle('active', currentLang === LANG.ZH);
+    }
+
+    const C = 3e8;
+    const H = 6.626e-34;
+    const EV = 1.602e-19;
+    const LOG_MIN = -12;
+    const LOG_MAX = 3;
+
+    const BAND_APP_BASE = 'assets/applications/';
+    const BAND_APPLICATIONS = {
+      radio: [
+        'Radio waves/AM_FM Broadcasting - Simple.webp',
+        'Radio waves/Mobile Phone Communication - Simple.webp',
+        'Radio waves/TV Signals - Simple.webp'
+      ],
+      microwave: [
+        'Microwaves/Microwave Ovens - Simple.webp',
+        'Microwaves/Radar - Simple.webp',
+        'Microwaves/Satellite Communication - Simple.webp',
+        'Microwaves/Wi-Fi and Bluetooth - Simple.webp'
+      ],
+      infrared: [
+        'Infrared/Auto-focus of Camera - Simple.webp',
+        'Infrared/Infra-red Thermometer - Simple.webp',
+        'Infrared/Night-vision Heat Signatures - Simple.webp',
+        'Infrared/Radiant Heater - Simple.webp',
+        'Infrared/TV Remote Controls - Simple.webp'
+      ],
+      visible: [
+        'Visible/Fiber-optic Communications - Simple.webp',
+        'Visible/Lighting - Simple.webp',
+        'Visible/Photosynthesis - Simple.webp'
+      ],
+      uv: [
+        'Ultraviolet/Checking Banknotes - Simple.webp',
+        'Ultraviolet/Produce Vitamin D (Skin) - Simple.webp',
+        'Ultraviolet/Sterilization Lamps - Simple.webp',
+        'Ultraviolet/Sterilizing Drinking Water - Simple.webp'
+      ],
+      xray: [
+        'X-rays/Airport Security Scanners - Simple.webp',
+        'X-rays/CT Scan - Simple.webp',
+        'X-rays/See-through Images - Simple.webp',
+        'X-rays/X-ray Scan - Simple.webp'
+      ],
+      gamma: [
+        'Gamma-rays/Cancer Radiotherapy - Simple.webp',
+        'Gamma-rays/Sterilization (Food) - Simple.webp'
+      ]
+    };
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function appCaptionFromPath(relPath) {
+      const file = relPath.split('/').pop() || relPath;
+      return file.replace(/ - Simple\.webp$/i, '').replace(/_/g, ' ').trim();
+    }
+
+    function renderBandApplications(band) {
+      const el = document.getElementById('bandApplications');
+      if (!el) return;
+      const files = BAND_APPLICATIONS[band.id] || [];
+      if (!files.length) {
+        el.innerHTML = '<p class="band-app-empty">' + i18n('noAppImages') + '</p>';
+        return;
+      }
+      el.innerHTML = files.map(function(rel) {
+        const caption = getAppCaption(rel);
+        const src = encodeURI(BAND_APP_BASE + rel);
+        return '<figure class="band-app-item">' +
+          '<button type="button" class="band-app-thumb" data-src="' + src + '" data-caption="' + escapeHtml(caption) + '" title="' + escapeHtml(i18n('lightboxViewTitle', { caption: caption })) + '">' +
+          '<img src="' + src + '" alt="' + escapeHtml(caption) + '" loading="lazy">' +
+          '</button>' +
+          '<figcaption>' + escapeHtml(caption) + '</figcaption>' +
+          '</figure>';
+      }).join('');
+    }
+
+    function openBandAppLightbox(src, caption) {
+      const box = document.getElementById('bandAppLightbox');
+      const img = document.getElementById('bandAppLightboxImg');
+      const cap = document.getElementById('bandAppLightboxCaption');
+      if (!box || !img || !cap) return;
+      img.src = src;
+      img.alt = caption;
+      cap.textContent = caption;
+      box.classList.add('open');
+      box.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      box.querySelector('.band-app-lightbox-close').focus();
+    }
+
+    function closeBandAppLightbox() {
+      const box = document.getElementById('bandAppLightbox');
+      const img = document.getElementById('bandAppLightboxImg');
+      if (!box || !img) return;
+      box.classList.remove('open');
+      box.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      img.removeAttribute('src');
+    }
+
+    function initBandAppLightbox() {
+      const grid = document.getElementById('bandApplications');
+      const box = document.getElementById('bandAppLightbox');
+      if (!grid || !box || grid.dataset.lightboxInit === '1') return;
+      grid.dataset.lightboxInit = '1';
+      grid.addEventListener('click', function(e) {
+        const btn = e.target.closest('.band-app-thumb');
+        if (!btn) return;
+        openBandAppLightbox(btn.dataset.src, btn.dataset.caption || '');
+      });
+      box.querySelector('.band-app-lightbox-close').addEventListener('click', closeBandAppLightbox);
+      box.querySelector('.band-app-lightbox-backdrop').addEventListener('click', closeBandAppLightbox);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && box.classList.contains('open')) closeBandAppLightbox();
+      });
+    }
+
+    const BANDS = [
+      {
+        id: 'radio', name: 'Radio waves', color: '#4a5568',
+        lambdaMin: 1e-1, lambdaMax: 1e5,
+        examples: ['AM/FM broadcasting', 'TV signals', 'Long-wavelength radar'],
+        implications: 'Longest wavelengths, lowest frequencies. Non-ionizing. Good diffraction around obstacles. Low photon energy.',
+        markerColor: '#2d3748'
+      },
+      {
+        id: 'microwave', name: 'Microwaves', color: '#805ad5',
+        lambdaMin: 1e-3, lambdaMax: 1e-1,
+        examples: ['Microwave ovens (heating water)', 'Wi-Fi and Bluetooth', 'Satellite communication'],
+        implications: 'Absorbed by water molecules, causing heating. Still non-ionizing. Used for radar and wireless data.',
+        markerColor: '#6b46c1'
+      },
+      {
+        id: 'infrared', name: 'Infrared', color: '#e53e3e',
+        lambdaMin: 7e-7, lambdaMax: 1e-3,
+        examples: ['Thermal imaging', 'TV remote controls', 'Night-vision heat signatures'],
+        implications: 'Felt as heat. Emitted by warm objects. Higher frequency than microwaves, but still non-ionizing.',
+        markerColor: '#c53030'
+      },
+      {
+        id: 'visible', name: 'Visible light', color: '#ecc94b',
+        lambdaMin: 400e-9, lambdaMax: 700e-9,
+        examples: ['Human vision (~400-700 nm)', 'Fiber-optic communications', 'Photosynthesis'],
+        implications: 'The narrow band our eyes detect. Each color is a different wavelength and frequency.',
+        markerColor: '#d69e2e'
+      },
+      {
+        id: 'uv', name: 'Ultraviolet', color: '#9f7aea',
+        lambdaMin: 1e-8, lambdaMax: 4e-7,
+        examples: ['Sun tanning and sunburn', 'Sterilization lamps', 'Fluorescent black lights'],
+        implications: 'Higher frequency means more energetic photons. Can damage skin. Ionizing with prolonged exposure.',
+        markerColor: '#805ad5'
+      },
+      {
+        id: 'xray', name: 'X-rays', color: '#63b3ed',
+        lambdaMin: 1e-11, lambdaMax: 1e-8,
+        examples: ['Medical and dental imaging', 'Airport security scanners', 'Crystallography'],
+        implications: 'Short wavelength, penetrates soft tissue but absorbed by bone. Ionizing at high doses.',
+        markerColor: '#4299e1'
+      },
+      {
+        id: 'gamma', name: 'Gamma rays', color: '#f6e05e',
+        lambdaMin: 1e-20, lambdaMax: 1e-11,
+        examples: ['Nuclear decay', 'Cancer radiotherapy', 'Gamma-ray bursts in space'],
+        implications: 'Shortest wavelength, highest frequency, most energetic photons. Highly ionizing and penetrating.',
+        markerColor: '#ecc94b'
+      }
+    ];
+
+    function logToLambda(t) {
+      const log = LOG_MIN + ((1000 - t) / 1000) * (LOG_MAX - LOG_MIN);
+      return Math.pow(10, log);
+    }
+    function lambdaToLog(lambda) {
+      const log = Math.log10(Math.max(lambda, 1e-20));
+      return Math.round(1000 - ((log - LOG_MIN) / (LOG_MAX - LOG_MIN)) * 1000);
+    }
+    function lambdaToFreq(lambda) { return C / lambda; }
+
+    function formatLambda(m) {
+      if (m >= 1) return m.toPrecision(3) + ' m';
+      if (m >= 1e-3) return (m * 1e3).toPrecision(3) + ' mm';
+      if (m >= 1e-6) return (m * 1e6).toPrecision(3) + ' um';
+      if (m >= 1e-9) return (m * 1e9).toPrecision(3) + ' nm';
+      return (m * 1e12).toPrecision(3) + ' pm';
+    }
+    function formatFreq(hz) {
+      if (hz >= 1e12) return (hz / 1e12).toPrecision(3) + ' THz';
+      if (hz >= 1e9) return (hz / 1e9).toPrecision(3) + ' GHz';
+      if (hz >= 1e6) return (hz / 1e6).toPrecision(3) + ' MHz';
+      if (hz >= 1e3) return (hz / 1e3).toPrecision(3) + ' kHz';
+      return hz.toPrecision(3) + ' Hz';
+    }
+    const SCI_SUP = { '-': '\u207B', '0': '\u2070', '1': '\u00B9', '2': '\u00B2', '3': '\u00B3', '4': '\u2074', '5': '\u2075', '6': '\u2076', '7': '\u2077', '8': '\u2078', '9': '\u2079' };
+    function sciParts(n) {
+      const exp = Math.floor(Math.log10(Math.abs(n)));
+      const mant = n / Math.pow(10, exp);
+      return { mant: mant.toFixed(2), exp: String(exp) };
+    }
+    function formatSciText(n) {
+      const p = sciParts(n);
+      const sup = p.exp.split('').map(function(ch) { return SCI_SUP[ch] || ch; }).join('');
+      return p.mant + '\u00D710' + sup;
+    }
+    function formatSciHtml(n) {
+      const p = sciParts(n);
+      return p.mant + '&times;10<sup>' + p.exp + '</sup>';
+    }
+    function formatEnergy(j) {
+      const ev = j / EV;
+      if (ev >= 1e3) return (ev / 1e3).toPrecision(3) + ' keV';
+      if (ev >= 1) return ev.toPrecision(3) + ' eV';
+      return (ev * 1e3).toPrecision(3) + ' meV';
+    }
+
+    function getBand(lambda) {
+      for (const b of BANDS) {
+        if (lambda >= b.lambdaMin && lambda < b.lambdaMax) return b;
+      }
+      if (lambda >= BANDS[0].lambdaMin) return BANDS[0];
+      return BANDS[BANDS.length - 1];
+    }
+
+    const FREQ_TICK_MIN = 4;
+    const FREQ_TICK_MAX = 20;
+    const FREQ_MAP_MIN = 4;
+    const FREQ_MAP_MAX = 20.4;
+    const VIS_RED = 630e-9;
+    const VIS_GREEN = 532e-9;
+    const VIS_BLUE = 467e-9;
+    const VISIBLE_LAMBDA_MAX = 700e-9;
+    const VISIBLE_LAMBDA_MIN = 400e-9;
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function clamp255(v) { return Math.max(0, Math.min(255, Math.round(v))); }
+
+    function wavelengthToRGB(lambda) {
+      const lnm = lambda * 1e9;
+      let r, g, b;
+      if (lnm >= 700) {
+        const t = Math.min(1, (lnm - 700) / 400);
+        r = lerp(220, 120, t);
+        g = lerp(50, 40, t);
+        b = lerp(40, 40, t);
+      } else if (lnm >= 630) {
+        const t = (lnm - 630) / 70;
+        r = 255;
+        g = lerp(40, 120, t);
+        b = lerp(20, 40, t);
+      } else if (lnm >= 532) {
+        const t = (lnm - 532) / (630 - 532);
+        r = lerp(80, 255, t);
+        g = lerp(220, 40, t);
+        b = lerp(80, 20, t);
+      } else if (lnm >= 467) {
+        const t = (lnm - 467) / (532 - 467);
+        r = lerp(55, 80, t);
+        g = lerp(60, 220, t);
+        b = lerp(255, 80, t);
+      } else if (lnm >= 400) {
+        const t = (lnm - 400) / (467 - 400);
+        r = lerp(120, 55, t);
+        g = lerp(0, 60, t);
+        b = lerp(180, 255, t);
+      } else {
+        const t = Math.min(1, (400 - lnm) / 60);
+        r = lerp(80, 120, t);
+        g = 0;
+        b = lerp(140, 180, t);
+      }
+      return { r: clamp255(r), g: clamp255(g), b: clamp255(b) };
+    }
+
+    function wavelengthToCSS(lambda) {
+      const c = wavelengthToRGB(lambda);
+      return 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')';
+    }
+
+    function wavelengthToRGBA(lambda, alpha) {
+      const c = wavelengthToRGB(lambda);
+      return 'rgba(' + c.r + ',' + c.g + ',' + c.b + ',' + alpha + ')';
+    }
+
+    function freqToBarPercent(freq) {
+      const log = Math.log10(Math.max(freq, 1));
+      return ((log - FREQ_MAP_MIN) / (FREQ_MAP_MAX - FREQ_MAP_MIN)) * 100;
+    }
+    function tickToBarPercent(tickExp) {
+      return ((tickExp - FREQ_TICK_MIN) / (FREQ_TICK_MAX - FREQ_TICK_MIN)) * 100;
+    }
+    function barPercentToFreq(pct) {
+      const log = FREQ_TICK_MIN + (pct / 100) * (FREQ_TICK_MAX - FREQ_TICK_MIN);
+      return Math.pow(10, log);
+    }
+    function lambdaToVisiblePercent(lambda) {
+      const t = (VISIBLE_LAMBDA_MAX - lambda) / (VISIBLE_LAMBDA_MAX - VISIBLE_LAMBDA_MIN);
+      return Math.max(0, Math.min(100, t * 100));
+    }
+    function visiblePercentToLambda(pct) {
+      return VISIBLE_LAMBDA_MAX - (pct / 100) * (VISIBLE_LAMBDA_MAX - VISIBLE_LAMBDA_MIN);
+    }
+
+    let diagram = null;
+    const BAR_LEFT = 70;
+    const BAR_W = 780;
+    const BAR_EXT_W = 42;
+    const SVG_W = 962;
+    const SVG_H = 206;
+    const sliverLeft = freqToBarPercent(4.3e14);
+    const sliverRight = freqToBarPercent(7.9e14);
+    const visBarLeft = 12;
+    const visBarRight = 88;
+    const visBarY = 108;
+    const visBarH = 44;
+    const visMidY = visBarY + visBarH / 2;
+    const visLabelY = visBarY + visBarH + 14;
+    const visNmY = visBarY + visBarH + 30;
+
+    function barX(pct) { return BAR_LEFT + (pct / 100) * BAR_W; }
+
+    function visGradStop(lambda) {
+      const pct = lambdaToVisiblePercent(lambda);
+      const c = wavelengthToRGB(lambda);
+      return '<stop offset="'+pct.toFixed(1)+'%" stop-color="rgb('+c.r+','+c.g+','+c.b+')"/>';
+    }
+    const visGradStops = [700e-9, 630e-9, 532e-9, 467e-9, 400e-9].map(visGradStop).join('');
+    let svg, mainCursor, mainCursorDot, visCursor, visCursorDot;
+
+    function onSpectrumDiagramClick(e) {
+      if (!svg || !els.exploreLambda) return;
+      const hit = e.target.closest('.em-bar-hit, .visible-bar-hit');
+      if (!hit) return;
+      const rect = svg.getBoundingClientRect();
+      const svgX = (e.clientX - rect.left) / rect.width * SVG_W;
+      if (hit.classList.contains('em-bar-hit')) {
+        const pct = Math.max(0, Math.min(100, ((svgX - BAR_LEFT) / BAR_W) * 100));
+        els.exploreLambda.value = lambdaToLog(C / barPercentToFreq(pct));
+        refreshAll();
+      } else if (hit.classList.contains('visible-bar-hit')) {
+        const vx = barX(visBarLeft);
+        const vbarW = (visBarRight - visBarLeft) / 100 * BAR_W;
+        const pct = Math.max(0, Math.min(100, ((svgX - vx) / vbarW) * 100));
+        els.exploreLambda.value = lambdaToLog(visiblePercentToLambda(pct));
+        refreshAll();
+      }
+    }
+
+    function buildSpectrumDiagram() {
+      if (!diagram) return false;
+      diagram.innerHTML = '<svg viewBox="0 0 '+SVG_W+' '+SVG_H+'" xmlns="http://www.w3.org/2000/svg" role="img"><defs><linearGradient id="visSliver" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#c83232"/><stop offset="35%" stop-color="#dc5032"/><stop offset="65%" stop-color="#3c78dc"/><stop offset="100%" stop-color="#503ca0"/></linearGradient><linearGradient id="visFull" x1="0%" y1="0%" x2="100%" y2="0%">'+visGradStops+'</linearGradient></defs><title>'+i18n('svgTitle')+'</title>' +
+      '<text x="'+(BAR_LEFT+BAR_W/2)+'" y="20" text-anchor="middle" fill="#111" font-size="15" font-weight="600" font-family="Segoe UI,sans-serif">'+i18n('svgFrequency')+'</text>' +
+      [4,8,12,15,16,18,20].map(n => { const x = barX(tickToBarPercent(n)); return '<text x="'+x+'" y="38" text-anchor="middle" fill="#111" font-size="13" font-family="Segoe UI,sans-serif">10<tspan baseline-shift="super" font-size="10">'+n+'</tspan></text><line x1="'+x+'" y1="42" x2="'+x+'" y2="48" stroke="#444" stroke-width="1.5"/>'; }).join('') +
+      '<rect class="em-bar-hit" x="'+BAR_LEFT+'" y="50" width="'+BAR_W+'" height="24" fill="#0a0a0a" rx="2"/>' +
+      '<rect x="'+(BAR_LEFT+BAR_W)+'" y="50" width="'+BAR_EXT_W+'" height="24" fill="#0a0a0a" rx="0 2 2 0"/>' +
+      '<text x="'+(BAR_LEFT+BAR_W+BAR_EXT_W/2)+'" y="66" text-anchor="middle" fill="#aaa" font-size="9" font-family="Segoe UI,sans-serif">&#947;</text>' +
+      '<rect x="'+barX(sliverLeft)+'" y="50" width="'+Math.max(5,(sliverRight-sliverLeft)/100*BAR_W)+'" height="24" fill="url(#visSliver)" rx="1"/>' +
+      '<line x1="'+barX(sliverLeft)+'" y1="74" x2="'+barX(visBarLeft)+'" y2="'+visBarY+'" stroke="#c53030" stroke-width="2.5"/>' +
+      '<line x1="'+barX(sliverRight)+'" y1="74" x2="'+barX(visBarRight)+'" y2="'+visBarY+'" stroke="#805ad5" stroke-width="2.5"/>' +
+      '<text x="52" y="'+visMidY+'" text-anchor="middle" fill="#111" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif" transform="rotate(-90 52 '+visMidY+')">'+i18n('svgWavelength')+'</text>' +
+      '<rect class="visible-bar-hit" x="'+barX(visBarLeft)+'" y="'+visBarY+'" width="'+((visBarRight-visBarLeft)/100*BAR_W)+'" height="'+visBarH+'" fill="url(#visFull)" rx="4"/>' +
+      '<text x="'+barX((visBarLeft+visBarRight)/2)+'" y="'+visLabelY+'" text-anchor="middle" fill="#111" font-size="13" font-weight="bold" font-family="Segoe UI,sans-serif" letter-spacing="1.2">'+i18n('svgVisibleSpectrum')+'</text>' +
+      '<text x="'+barX(visBarLeft)+'" y="'+visNmY+'" fill="#111" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif">'+i18n('svgNm700')+'</text>' +
+      '<text x="'+barX(visBarRight)+'" y="'+visNmY+'" text-anchor="end" fill="#111" font-size="13" font-weight="600" font-family="Segoe UI,sans-serif">'+i18n('svgNm400')+'</text>' +
+      '<line id="mainCursor" x1="460" y1="50" x2="460" y2="74" stroke="#222" stroke-width="2"/><circle id="mainCursorDot" cx="460" cy="62" r="6" fill="#2563eb" stroke="#fff" stroke-width="2"/>' +
+      '<line id="visCursor" x1="460" y1="'+visBarY+'" x2="460" y2="'+(visBarY+visBarH)+'" stroke="#222" stroke-width="2" opacity="0"/>' +
+      '<circle id="visCursorDot" cx="460" cy="'+visMidY+'" r="6" fill="#2563eb" stroke="#fff" stroke-width="2" opacity="0"/></svg>';
+      svg = diagram.querySelector('svg');
+      mainCursor = document.getElementById('mainCursor');
+      mainCursorDot = document.getElementById('mainCursorDot');
+      visCursor = document.getElementById('visCursor');
+      visCursorDot = document.getElementById('visCursorDot');
+      return true;
+    }
+
+    function svgXFromPercent(pct) { return BAR_LEFT + (pct / 100) * BAR_W; }
+
+    function updateSpectrumCursors(freq, lambda, bandId) {
+      if (!mainCursor || !mainCursorDot || !visCursor || !visCursorDot) return;
+      const fx = svgXFromPercent(freqToBarPercent(freq));
+      mainCursor.setAttribute('x1', fx);
+      mainCursor.setAttribute('x2', fx);
+      mainCursorDot.setAttribute('cx', fx);
+      const inVisible = bandId === 'visible';
+      visCursor.setAttribute('opacity', inVisible ? '1' : '0');
+      visCursorDot.setAttribute('opacity', inVisible ? '1' : '0');
+      if (inVisible) {
+        const vx = svgXFromPercent(visBarLeft + (lambdaToVisiblePercent(lambda) / 100) * (visBarRight - visBarLeft));
+        visCursor.setAttribute('x1', vx);
+        visCursor.setAttribute('x2', vx);
+        visCursorDot.setAttribute('cx', vx);
+      }
+    }
+
+    let bandLegend = null;
+    let waveCanvas = null;
+    let waveCtx = null;
+    const waveCanvasState = { w: 0, h: 0, dpr: 1 };
+
+    function jumpToBand(bandId) {
+      const b = BANDS.find(x => x.id === bandId);
+      if (!b || !els.exploreLambda) return;
+      let lambda;
+      if (bandId === 'gamma') {
+        lambda = 1e-12;
+      } else if (bandId === 'radio') {
+        lambda = Math.sqrt(b.lambdaMin * Math.min(b.lambdaMax, 10));
+      } else {
+        lambda = Math.sqrt(b.lambdaMin * b.lambdaMax);
+      }
+      els.exploreLambda.value = lambdaToLog(lambda);
+      refreshAll({ forceBand: true });
+    }
+
+    let currentLambda = logToLambda(500);
+    let lastRenderedBandId = null;
+    let labLabVisible = false;
+    let labSyncTimer = null;
+
+    function updateExploreBandContent(band) {
+      const bt = getBandText(band.id);
+      document.getElementById('bandRange').textContent = i18n('bandRange', {
+        min: formatLambda(band.lambdaMin),
+        max: formatLambda(band.lambdaMax),
+        fMin: formatFreq(lambdaToFreq(band.lambdaMin)),
+        fMax: formatFreq(lambdaToFreq(band.lambdaMax))
+      });
+      document.getElementById('bandExamples').innerHTML = bt.examples.map(function(e) { return '<li>' + e + '</li>'; }).join('');
+      document.getElementById('bandImplications').textContent = bt.implications;
+      renderBandApplications(band);
+    }
+
+    function updateExplore(sliderVal, opts) {
+      opts = opts || {};
+      currentLambda = logToLambda(Number(sliderVal));
+      const freq = lambdaToFreq(currentLambda);
+      const energy = H * freq;
+      const band = getBand(currentLambda);
+
+      if (els.exploreLambdaDisplay) els.exploreLambdaDisplay.textContent = formatLambda(currentLambda);
+      if (els.roLambda) els.roLambda.innerHTML = formatLambda(currentLambda) + ' (' + formatSciHtml(currentLambda) + ' m)';
+      if (els.roFreq) els.roFreq.innerHTML = formatFreq(freq) + ' (' + formatSciHtml(freq) + ' Hz)';
+      if (els.roEnergy) els.roEnergy.textContent = formatEnergy(energy);
+      if (els.roBand) els.roBand.textContent = getBandText(band.id).name;
+
+      if (els.bandName) els.bandName.textContent = getBandText(band.id).name;
+      if (els.bandSwatch) els.bandSwatch.style.background = band.color;
+      if (els.formulaSub) els.formulaSub.innerHTML = i18n('formulaSub', {
+        freq: formatSciHtml(freq) + ' Hz',
+        energy: formatEnergy(energy)
+      });
+
+      if (els.inverseNote) els.inverseNote.innerHTML = i18n('inverseNote');
+
+      if (bandLegend) {
+        bandLegend.querySelectorAll('button').forEach(function(btn) {
+          btn.classList.toggle('active', btn.dataset.bandId === band.id);
+        });
+      }
+      updateSpectrumCursors(freq, currentLambda, band.id);
+      drawWave();
+
+      if (opts.forceBand || band.id !== lastRenderedBandId) {
+        lastRenderedBandId = band.id;
+        updateExploreBandContent(band);
+      }
+
+      if (opts.forceBand && labLabVisible) {
+        if (labSyncTimer) {
+          clearTimeout(labSyncTimer);
+          labSyncTimer = null;
+        }
+        labSyncFromSpectrum();
+      } else if (labLabVisible) {
+        if (labSyncTimer) clearTimeout(labSyncTimer);
+        labSyncTimer = setTimeout(function() {
+          labSyncTimer = null;
+          labSyncFromSpectrum();
+        }, 50);
+      }
+    }
+
+    function ensureWaveCanvas() {
+      if (!waveCanvas) return null;
+      const wrap = waveCanvas.parentElement;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(wrap ? wrap.clientWidth : 300, 300);
+      const h = Math.max(waveCanvas.offsetHeight || 100, 80);
+      if (!waveCtx || waveCanvasState.w !== w || waveCanvasState.h !== h || waveCanvasState.dpr !== dpr) {
+        waveCanvas.width = w * dpr;
+        waveCanvas.height = h * dpr;
+        waveCtx = waveCanvas.getContext('2d');
+        waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        waveCanvasState.w = w;
+        waveCanvasState.h = h;
+        waveCanvasState.dpr = dpr;
+      }
+      return { ctx: waveCtx, w: w, h: h };
+    }
+
+    function drawWave() {
+      const s = ensureWaveCanvas();
+      if (!s) return;
+      const w = s.w;
+      const h = s.h;
+      const ctx = s.ctx;
+      ctx.clearRect(0, 0, w, h);
+      const logPos = (Math.log10(currentLambda) - LOG_MIN) / (LOG_MAX - LOG_MIN);
+      const periods = 2 + (1 - logPos) * 6;
+      const amplitude = h * 0.32;
+      const mid = h / 2;
+      ctx.strokeStyle = wavelengthToCSS(currentLambda);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      const step = Math.max(1, Math.floor(w / 400));
+      for (let x = 0; x <= w; x += step) {
+        const y = mid - amplitude * Math.sin((x / w) * periods * 2 * Math.PI);
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      if (w % step !== 0) {
+        const y = mid - amplitude * Math.sin(periods * 2 * Math.PI);
+        ctx.lineTo(w, y);
+      }
+      ctx.stroke();
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '12px sans-serif';
+      const peakY = h - 8;
+      ctx.textAlign = 'left';
+      ctx.fillText(i18n('canvasWavePeaksLong'), 12, peakY);
+      ctx.textAlign = 'right';
+      ctx.fillText(i18n('canvasWavePeaksShort'), w - 12, peakY);
+      ctx.textAlign = 'left';
+    }
+
+    // --- Simulation Lab ---
+    const LAB_MEDIA = [
+      { id: 'vacuum', name: 'Vacuum', n: 1, color: '#1a1f2e' },
+      { id: 'air', name: 'Air', n: 1.0003, color: '#1e3a5f' },
+      { id: 'water', name: 'Water', n: 1.33, color: '#164e63' },
+      { id: 'glass', name: 'Glass', n: 1.5, color: '#3d2c4a' }
+    ];
+
+    const PENETRATION_PRESETS = {
+      tissue: { layers: ['Air', 'Skin', 'Muscle', 'Bone'], colors: ['#2d3748', '#e8b4a0', '#c53030', '#e2e8f0'] },
+      wall: { layers: ['Air', 'Drywall', 'Concrete', 'Rebar'], colors: ['#2d3748', '#d4a574', '#718096', '#4a5568'] },
+      lead: { layers: ['Air', 'Aluminum', 'Steel', 'Lead'], colors: ['#2d3748', '#a0aec0', '#718096', '#4a5568'] }
+    };
+
+    // Beer-Lambert: I = I0*exp(-alpha*x). alpha (1/m) per band per preset layer (schematic thicknesses in metres).
+    const PENETRATION_THICKNESS = {
+      tissue: [0, 0.001, 0.04, 0.015],
+      wall:   [0, 0.012, 0.15, 0.008],
+      lead:   [0, 0.002, 0.01, 0.05]
+    };
+    const BAND_ATTENUATION = {
+      radio:     { tissue: [0, 0.3, 0.2, 1.5],   wall: [0, 0.2, 0.15, 2],    lead: [0, 1, 3, 8] },
+      microwave: { tissue: [0, 8, 35, 25],        wall: [0, 5, 12, 18],       lead: [0, 15, 40, 120] },
+      infrared:  { tissue: [0, 40, 80, 60],       wall: [0, 25, 55, 45],     lead: [0, 50, 90, 200] },
+      visible:   { tissue: [0, 120, 200, 350],    wall: [0, 200, 500, 800],  lead: [0, 300, 600, 900] },
+      uv:        { tissue: [0, 60, 150, 280],      wall: [0, 80, 220, 400],   lead: [0, 120, 280, 500] },
+      xray:      { tissue: [0, 5, 12, 180],        wall: [0, 15, 35, 120],    lead: [0, 80, 200, 450] },
+      gamma:     { tissue: [0, 2, 6, 45],          wall: [0, 8, 20, 70],      lead: [0, 35, 90, 280] }
+    };
+
+    let labActivePanel = 'transverse';
+    let labActiveSub = 'reflection';
+    let labAnimPhase = 0;
+    let labLastTime = 0;
+    let labAnimRunning = false;
+    const labCanvasCache = new WeakMap();
+    const labInterferenceBuffer = { canvas: null, pw: 0, ph: 0, img: null };
+    const labControlState = {
+      reflectAngle: 45,
+      refractN1: 1.33,
+      refractN2: 1.5,
+      refractAngle: 35,
+      diffractionMode: 'double',
+      slitWidth: 800,
+      slitSep: 1200,
+      sourceSep: 300,
+      phasePi: false,
+      penPreset: 'tissue'
+    };
+    const labDiffractionScreenCache = { key: '', canvas: null, ctx: null, y0: 0, h: 0, stripW: 0 };
+    let labActiveCanvasEl = null;
+    let resizeTimer = null;
+    let labTickFrame = 0;
+    let labTransverseProjectorCache = null;
+
+    function labPrefersReducedMotion() {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    function syncLabControlState() {
+      if (els.labReflectAngle) labControlState.reflectAngle = Number(els.labReflectAngle.value);
+      if (els.labRefractN1) labControlState.refractN1 = Number(els.labRefractN1.value);
+      if (els.labRefractN2) labControlState.refractN2 = Number(els.labRefractN2.value);
+      if (els.labRefractAngle) labControlState.refractAngle = Number(els.labRefractAngle.value);
+      if (els.labDiffractionMode) labControlState.diffractionMode = els.labDiffractionMode.value;
+      if (els.labSlitWidth) labControlState.slitWidth = Number(els.labSlitWidth.value);
+      if (els.labSlitSep) labControlState.slitSep = Number(els.labSlitSep.value);
+      if (els.labSourceSep) labControlState.sourceSep = Number(els.labSourceSep.value);
+      if (els.labPhasePi) labControlState.phasePi = els.labPhasePi.checked;
+      if (els.labPenPreset) labControlState.penPreset = els.labPenPreset.value;
+    }
+
+    function labInvalidateDiffractionScreenCache() {
+      labDiffractionScreenCache.key = '';
+    }
+
+    function labSetActiveCanvas(canvas) {
+      if (labActiveCanvasEl && labActiveCanvasEl !== canvas) {
+        labActiveCanvasEl.classList.remove('lab-canvas-active');
+      }
+      labActiveCanvasEl = canvas || null;
+      if (labActiveCanvasEl) labActiveCanvasEl.classList.add('lab-canvas-active');
+    }
+
+    const LAB_INTERFERENCE_BUF_W = 480;
+    const LAB_INTERFERENCE_BUF_H = 120;
+
+    const LAB_LAMBDA_REF = 532e-9;
+    const LAB_PX_PER_LAMBDA = 72;
+
+    function labLambdaPx(lambda) {
+      return LAB_PX_PER_LAMBDA * (lambda / LAB_LAMBDA_REF);
+    }
+
+    function labK(lambda, n) {
+      n = n || 1;
+      return (2 * Math.PI * n) / Math.max(labLambdaPx(lambda), 6);
+    }
+
+    const LAB_OMEGA_VIS = 3.5;
+
+    function labOmega(lambda) {
+      return LAB_OMEGA_VIS;
+    }
+
+    function getPenetrationData(bandId, preset) {
+      const thicknesses = PENETRATION_THICKNESS[preset];
+      const alphas = (BAND_ATTENUATION[bandId] || BAND_ATTENUATION.visible)[preset];
+      const layerTx = [];
+      let cumulative = 1;
+      for (let i = 0; i < thicknesses.length; i++) {
+        const tLayer = i === 0 ? 1 : Math.exp(-alphas[i] * thicknesses[i]);
+        layerTx.push(Math.round(tLayer * 1000) / 10);
+        cumulative *= tLayer;
+      }
+      return { layerTx: layerTx, exitTx: Math.round(cumulative * 1000) / 10 };
+    }
+
+    function labInvalidateCanvas(canvas) {
+      labCanvasCache.delete(canvas);
+    }
+
+    function labInvalidateAllCanvases() {
+      document.querySelectorAll('.lab-canvas').forEach(labInvalidateCanvas);
+      labInvalidateDiffractionScreenCache();
+    }
+
+    function labEnsureCanvas(canvas) {
+      const wrap = canvas.parentElement;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.max(wrap.clientWidth, 300);
+      const h = Math.max(Math.round(canvas.offsetHeight) || 140, 80);
+      let state = labCanvasCache.get(canvas);
+      if (!state || state.w !== w || state.h !== h || state.dpr !== dpr) {
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        state = { ctx: ctx, w: w, h: h, dpr: dpr };
+        labCanvasCache.set(canvas, state);
+      }
+      return state;
+    }
+
+    const LAB_TRANSVERSE_VIEW_DEFAULT = { yaw: 0.52, pitch: 0.48, zoom: 1 };
+    let labTransverseView = { yaw: 0.52, pitch: 0.48, zoom: 1 };
+    const LAB_TRANSVERSE_FOCAL = 420;
+    const LAB_TRANSVERSE_XLEN = 280;
+    const LAB_TRANSVERSE_AMP = 52;
+
+    function labTransverseRotate(x, y, z) {
+      const cosY = Math.cos(labTransverseView.yaw);
+      const sinY = Math.sin(labTransverseView.yaw);
+      const cosP = Math.cos(labTransverseView.pitch);
+      const sinP = Math.sin(labTransverseView.pitch);
+      const rx = x * cosY + z * sinY;
+      const rz = -x * sinY + z * cosY;
+      const ry = y * cosP - rz * sinP;
+      const depth = y * sinP + rz * cosP;
+      return { rx: rx, ry: ry, depth: depth };
+    }
+
+    function labTransversePersp(m) {
+      return LAB_TRANSVERSE_FOCAL / (LAB_TRANSVERSE_FOCAL + m.depth + 90);
+    }
+
+    function labTransverseGetProjector(w, h) {
+      const v = labTransverseView;
+      const c = labTransverseProjectorCache;
+      if (c && c.w === w && c.h === h && c.yaw === v.yaw && c.pitch === v.pitch && c.zoom === v.zoom) {
+        return c.camera;
+      }
+      const xLen = LAB_TRANSVERSE_XLEN;
+      const amp = LAB_TRANSVERSE_AMP;
+      const steps = 80;
+      const gridStep = amp / 2;
+      const camera = labTransverseCreateProjector(w, h, function(add) {
+        add(0, 0, 0);
+        add(xLen + 40, 0, 0);
+        add(0, amp * 1.4, 0);
+        add(0, -amp * 1.4, 0);
+        add(0, 0, amp * 1.4);
+        add(0, 0, -amp * 1.4);
+        let i;
+        for (i = 0; i <= steps; i++) {
+          const x = (xLen * i) / steps;
+          add(x, amp * Math.sin(labK(LAB_LAMBDA_REF, 1) * x), 0);
+          add(x, 0, amp * Math.sin(labK(LAB_LAMBDA_REF, 1) * x));
+        }
+        for (let gz = -amp; gz <= amp + 0.01; gz += gridStep) {
+          for (i = 0; i <= steps; i++) add((xLen * i) / steps, 0, gz);
+        }
+        for (let gy = -amp; gy <= amp + 0.01; gy += gridStep) {
+          for (i = 0; i <= steps; i++) add((xLen * i) / steps, gy, 0);
+        }
+      });
+      labTransverseProjectorCache = { w: w, h: h, yaw: v.yaw, pitch: v.pitch, zoom: v.zoom, camera: camera };
+      return camera;
+    }
+
+    function labTransverseInvalidateProjector() {
+      labTransverseProjectorCache = null;
+    }
+
+    function labTransverseCreateProjector(w, h, sampleModelPoints) {
+      const rotated = [];
+      sampleModelPoints(function(x, y, z) {
+        rotated.push(labTransverseRotate(x, y, z));
+      });
+      let minSx = Infinity;
+      let maxSx = -Infinity;
+      let minSy = Infinity;
+      let maxSy = -Infinity;
+      rotated.forEach(function(m) {
+        const p = labTransversePersp(m);
+        const sx = m.rx * p;
+        const sy = m.ry * p;
+        minSx = Math.min(minSx, sx);
+        maxSx = Math.max(maxSx, sx);
+        minSy = Math.min(minSy, sy);
+        maxSy = Math.max(maxSy, sy);
+      });
+      const pad = Math.max(16, Math.min(w, h) * 0.05);
+      const spanX = Math.max(maxSx - minSx, 1);
+      const spanY = Math.max(maxSy - minSy, 1);
+      const fitScale = Math.min((w - pad * 2) / spanX, (h - pad * 2) / spanY) * labTransverseView.zoom;
+      const midSx = (minSx + maxSx) / 2;
+      const midSy = (minSy + maxSy) / 2;
+      return {
+        fitScale: fitScale,
+        project: function(x, y, z) {
+          const m = labTransverseRotate(x, y, z);
+          const p = labTransversePersp(m);
+          const sx = m.rx * p;
+          const sy = m.ry * p;
+          return {
+            px: (sx - midSx) * fitScale + w * 0.5,
+            py: h * 0.5 - (sy - midSy) * fitScale,
+            depth: m.depth
+          };
+        }
+      };
+    }
+
+    function labTransverseSyncViewSliders() {
+      const yawEl = document.getElementById('labTransYaw');
+      const pitchEl = document.getElementById('labTransPitch');
+      const zoomEl = document.getElementById('labTransZoom');
+      if (!yawEl || !pitchEl || !zoomEl) return;
+      const tau = Math.PI * 2;
+      const yawNorm = ((labTransverseView.yaw % tau) + tau) % tau;
+      yawEl.value = String(Math.round(yawNorm * 100));
+      pitchEl.value = String(Math.round(labTransverseView.pitch * 100 + 135));
+      zoomEl.value = String(Math.round(labTransverseView.zoom * 100));
+    }
+
+    function labTransverseApplyViewSliders() {
+      const yawEl = document.getElementById('labTransYaw');
+      const pitchEl = document.getElementById('labTransPitch');
+      const zoomEl = document.getElementById('labTransZoom');
+      if (!yawEl || !pitchEl || !zoomEl) return;
+      labTransverseView.yaw = parseFloat(yawEl.value) / 100;
+      labTransverseView.pitch = Math.max(-1.35, Math.min(1.35, (parseFloat(pitchEl.value) - 135) / 100));
+      labTransverseView.zoom = Math.max(0.45, Math.min(2.8, parseFloat(zoomEl.value) / 100));
+    }
+
+    function labTransverseResetView() {
+      labTransverseView.yaw = LAB_TRANSVERSE_VIEW_DEFAULT.yaw;
+      labTransverseView.pitch = LAB_TRANSVERSE_VIEW_DEFAULT.pitch;
+      labTransverseView.zoom = LAB_TRANSVERSE_VIEW_DEFAULT.zoom;
+      labTransverseInvalidateProjector();
+      labTransverseSyncViewSliders();
+    }
+
+    function initTransverseViewControls() {
+      const canvas = document.getElementById('labCanvasTransverse');
+      if (!canvas) return;
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        canvas.classList.remove('view-dragging');
+        try { canvas.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      }
+
+      canvas.addEventListener('pointerdown', function(e) {
+        if (e.button !== 0) return;
+        dragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        canvas.classList.add('view-dragging');
+        canvas.setPointerCapture(e.pointerId);
+      });
+      canvas.addEventListener('pointermove', function(e) {
+        if (!dragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        labTransverseView.yaw += dx * 0.009;
+        labTransverseView.pitch = Math.max(-1.35, Math.min(1.35, labTransverseView.pitch + dy * 0.009));
+        labTransverseInvalidateProjector();
+        labTransverseSyncViewSliders();
+      });
+      canvas.addEventListener('pointerup', endDrag);
+      canvas.addEventListener('pointercancel', endDrag);
+      canvas.addEventListener('dblclick', function() {
+        labTransverseResetView();
+        labTransverseInvalidateProjector();
+      });
+      canvas.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        const factor = e.deltaY > 0 ? 0.94 : 1.06;
+        labTransverseView.zoom = Math.max(0.45, Math.min(2.8, labTransverseView.zoom * factor));
+        labTransverseInvalidateProjector();
+        labTransverseSyncViewSliders();
+      }, { passive: false });
+
+      ['labTransYaw', 'labTransPitch', 'labTransZoom'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function() {
+          labTransverseApplyViewSliders();
+          labTransverseInvalidateProjector();
+        });
+      });
+      const resetBtn = document.getElementById('labTransViewReset');
+      if (resetBtn) resetBtn.addEventListener('click', function() {
+        labTransverseResetView();
+        labTransverseInvalidateProjector();
+      });
+      labTransverseSyncViewSliders();
+    }
+
+    function labDraw3DArrow(ctx, p0, p1, color, opts) {
+      opts = opts || {};
+      const dx = p1.px - p0.px;
+      const dy = p1.py - p0.py;
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len;
+      const uy = dy / len;
+      const head = opts.head || Math.min(12, len * 0.22);
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = opts.width || 1.8;
+      ctx.beginPath();
+      ctx.moveTo(p0.px, p0.py);
+      ctx.lineTo(p1.px, p1.py);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(p1.px, p1.py);
+      ctx.lineTo(p1.px - ux * head - uy * head * 0.45, p1.py - uy * head + ux * head * 0.45);
+      ctx.lineTo(p1.px - ux * head + uy * head * 0.45, p1.py - uy * head - ux * head * 0.45);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function labDraw3DWave(ctx, points, color, lineWidth) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      points.forEach(function(p, i) {
+        if (i === 0) ctx.moveTo(p.px, p.py);
+        else ctx.lineTo(p.px, p.py);
+      });
+      ctx.stroke();
+    }
+
+    function drawLabTransverse(ctx, w, h, lambda, animT) {
+      ctx.clearRect(0, 0, w, h);
+      const k = labK(lambda, 1);
+      const phase = labOmega(lambda) * animT;
+      const waveCol = wavelengthToCSS(lambda);
+      const xLen = LAB_TRANSVERSE_XLEN;
+      const amp = LAB_TRANSVERSE_AMP;
+      const steps = 120;
+      const gridSteps = 80;
+
+      const camera = labTransverseGetProjector(w, h);
+      const proj = camera.project;
+      const lineW = Math.max(2.5, camera.fitScale * 0.014);
+      const axisW = Math.max(2, lineW * 0.85);
+      const fontSize = Math.max(12, Math.min(w, h) * 0.045);
+      const dotR = Math.max(4, lineW * 1.1);
+
+      const origin = proj(0, 0, 0);
+
+      function sampleWave(ey, ez) {
+        const pts = [];
+        for (let i = 0; i <= steps; i++) {
+          const x = (xLen * i) / steps;
+          const s = Math.sin(k * x - phase);
+          pts.push(proj(x, ey * s, ez * s));
+        }
+        return pts;
+      }
+
+      const eWave = sampleWave(amp, 0);
+      const bWave = sampleWave(0, amp);
+
+      const gridStep = amp / 2;
+      ctx.strokeStyle = 'rgba(72, 79, 88, 0.4)';
+      ctx.lineWidth = Math.max(1, lineW * 0.45);
+      ctx.beginPath();
+      for (let gz = -amp; gz <= amp + 0.01; gz += gridStep) {
+        for (let i = 0; i <= gridSteps; i++) {
+          const x = (xLen * i) / gridSteps;
+          const p = proj(x, 0, gz);
+          if (i === 0) ctx.moveTo(p.px, p.py);
+          else ctx.lineTo(p.px, p.py);
+        }
+      }
+      for (let gy = -amp; gy <= amp + 0.01; gy += gridStep) {
+        for (let i = 0; i <= gridSteps; i++) {
+          const x = (xLen * i) / gridSteps;
+          const p = proj(x, gy, 0);
+          if (i === 0) ctx.moveTo(p.px, p.py);
+          else ctx.lineTo(p.px, p.py);
+        }
+      }
+      ctx.stroke();
+
+      const kEnd = proj(xLen + 38, 0, 0);
+      const eEnd = proj(0, amp * 1.32, 0);
+      const bEnd = proj(0, 0, amp * 1.32);
+
+      const arrowHead = Math.max(10, camera.fitScale * 0.038);
+      const arrowOpts = { width: axisW, head: arrowHead };
+      labDraw3DArrow(ctx, origin, kEnd, '#2563eb', arrowOpts);
+      labDraw3DArrow(ctx, origin, eEnd, waveCol, arrowOpts);
+      labDraw3DArrow(ctx, origin, bEnd, '#d29922', arrowOpts);
+
+      const avgDepth = function(pts) {
+        let d = 0;
+        pts.forEach(function(p) { d += p.depth; });
+        return d / pts.length;
+      };
+      if (avgDepth(bWave) < avgDepth(eWave)) {
+        labDraw3DWave(ctx, bWave, '#d29922', lineW);
+        labDraw3DWave(ctx, eWave, waveCol, lineW * 1.15);
+      } else {
+        labDraw3DWave(ctx, eWave, waveCol, lineW * 1.15);
+        labDraw3DWave(ctx, bWave, '#d29922', lineW);
+      }
+
+      const hi = Math.floor(steps * 0.55);
+      const pE = eWave[hi];
+      const pB = bWave[hi];
+      ctx.fillStyle = waveCol;
+      ctx.beginPath();
+      ctx.arc(pE.px, pE.py, dotR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#d29922';
+      ctx.beginPath();
+      ctx.arc(pB.px, pB.py, dotR, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.font = 'bold ' + fontSize + 'px sans-serif';
+      ctx.fillStyle = waveCol;
+      ctx.fillText(i18n('canvasEy'), eEnd.px + 8, eEnd.py - 6);
+      ctx.fillStyle = '#d29922';
+      ctx.fillText(i18n('canvasBz'), bEnd.px + 8, bEnd.py + fontSize);
+      ctx.fillStyle = '#2563eb';
+      ctx.font = fontSize + 'px sans-serif';
+      ctx.fillText(i18n('canvasKx'), kEnd.px + 8, kEnd.py + 4);
+
+      const noteSize = Math.max(10, fontSize * 0.85);
+      ctx.font = noteSize + 'px sans-serif';
+      ctx.fillStyle = 'rgba(248, 249, 250, 0.92)';
+      const noteY = h - noteSize * 3.5 - 10;
+      ctx.fillRect(8, noteY - 4, Math.min(w - 16, 520), noteSize * 3.5 + 12);
+      ctx.fillStyle = '#6b7280';
+      ctx.fillText(i18n('canvasTransPhase'), 14, noteY + noteSize);
+      ctx.fillText(i18n('canvasTransDrag'), 14, noteY + noteSize * 2.1);
+      ctx.fillText(i18n('canvasTransSliders'), 14, noteY + noteSize * 3.2);
+    }
+
+    function drawLabMedia(ctx, w, h, lambda, animT) {
+      ctx.clearRect(0, 0, w, h);
+      const colW = w / LAB_MEDIA.length;
+      const midY = h * 0.55;
+      const amp = h * 0.18;
+      const omega = labOmega(lambda);
+      const f = C / lambda;
+
+      LAB_MEDIA.forEach(function(m, i) {
+        const x0 = i * colW;
+        const x1 = x0 + colW;
+        const kMed = labK(lambda, m.n);
+        const vMed = C / m.n;
+        const lambdaN = lambda / m.n;
+
+        ctx.fillStyle = m.color;
+        ctx.fillRect(x0 + 2, 28, colW - 4, h - 50);
+        ctx.fillStyle = '#1a1c2c';
+        ctx.font = '600 12px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(getMediaName(m.id), (x0 + x1) / 2, 48);
+        ctx.font = '11px sans-serif';
+        ctx.fillStyle = '#6b7280';
+        ctx.fillText('n = ' + m.n + ' | v = ' + (vMed / 1e6).toFixed(2) + '×10⁶ m/s', (x0 + x1) / 2, 64);
+        ctx.fillText('\u03BB = ' + formatLambda(lambdaN), (x0 + x1) / 2, 78);
+
+        ctx.strokeStyle = wavelengthToCSS(lambda);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let x = x0 + 8; x < x1 - 8; x += 2) {
+          const y = midY - amp * Math.sin(kMed * (x - x0) - omega * animT);
+          if (x === x0 + 8) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        const xEnd = x1 - 9;
+        if (xEnd > x0 + 8) {
+          const yEnd = midY - amp * Math.sin(kMed * (xEnd - x0) - omega * animT);
+          ctx.lineTo(xEnd, yEnd);
+        }
+        ctx.stroke();
+
+        if (i < LAB_MEDIA.length - 1) {
+          ctx.strokeStyle = '#e8eaed';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(x1, 28);
+          ctx.lineTo(x1, h - 22);
+          ctx.stroke();
+        }
+      });
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '11px sans-serif';
+      ctx.fillText(i18n('canvasMediaFooter', { freq: formatFreq(f) }), 12, h - 8);
+    }
+
+    function labDrawRayArrow(ctx, x1, y1, x2, y2, color) {
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      const ang = Math.atan2(y2 - y1, x2 - x1);
+      const head = 11;
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - head * Math.cos(ang - 0.42), y2 - head * Math.sin(ang - 0.42));
+      ctx.lineTo(x2 - head * Math.cos(ang + 0.42), y2 - head * Math.sin(ang + 0.42));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function labNormalizeAngle(a) {
+      while (a <= -Math.PI) a += 2 * Math.PI;
+      while (a > Math.PI) a -= 2 * Math.PI;
+      return a;
+    }
+
+    function labArcMidAngle(angStart, angEnd, counterclockwise) {
+      let sweep;
+      if (counterclockwise) {
+        sweep = angStart - angEnd;
+        if (sweep <= 0) sweep += 2 * Math.PI;
+        return angStart - sweep / 2;
+      }
+      sweep = angEnd - angStart;
+      if (sweep <= 0) sweep += 2 * Math.PI;
+      return angStart + sweep / 2;
+    }
+
+    function labDrawAngleArc(ctx, cx, cy, angStart, angEnd, radius, label, color, counterclockwise) {
+      ctx.strokeStyle = color || '#ecc94b';
+      ctx.fillStyle = color || '#ecc94b';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, angStart, angEnd, !!counterclockwise);
+      ctx.stroke();
+      if (!label) return;
+      const mid = labArcMidAngle(angStart, angEnd, !!counterclockwise);
+      const labelR = radius + 14;
+      const lx = cx + labelR * Math.cos(mid);
+      const ly = cy + labelR * Math.sin(mid);
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, lx, ly);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    function labDrawAngleFromNormal(ctx, cx, cy, angNormal, angRay, radius, label, color) {
+      let d = angRay - angNormal;
+      while (d <= -Math.PI) d += 2 * Math.PI;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      if (Math.abs(d) > Math.PI / 2) d = d > 0 ? d - Math.PI : d + Math.PI;
+      const angEnd = angNormal + d;
+      const counterclockwise = d < 0;
+      labDrawAngleArc(ctx, cx, cy, angNormal, angEnd, radius, label, color, counterclockwise);
+    }
+
+    /** Short arc from ray to normal (acute angle, either ray direction). */
+    function labDrawRayToNormalArc(ctx, cx, cy, angRay, angNormal, radius, label, color) {
+      let d = angRay - angNormal;
+      while (d <= -Math.PI) d += 2 * Math.PI;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      if (Math.abs(d) > Math.PI / 2) {
+        angRay += Math.PI;
+        d = angRay - angNormal;
+        while (d <= -Math.PI) d += 2 * Math.PI;
+        while (d > Math.PI) d -= 2 * Math.PI;
+      }
+      labDrawAngleArc(ctx, cx, cy, angRay, angNormal, radius, label, color, d > 0);
+    }
+
+    // Draw acute angle between normal and ray using the short arc on the ray side.
+    function labDrawAcuteAngle(ctx, cx, cy, angNormal, angRay, radius, label, color) {
+      let d = angRay - angNormal;
+      while (d <= -Math.PI) d += 2 * Math.PI;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      if (Math.abs(d) > Math.PI / 2) {
+        if (d > 0) { labDrawAngleArc(ctx, cx, cy, angRay, angNormal, radius, label, color, true); return; }
+        labDrawAngleArc(ctx, cx, cy, angNormal, angRay, radius, label, color, true);
+        return;
+      }
+      if (d > 0) labDrawAngleArc(ctx, cx, cy, angNormal, angRay, radius, label, color, false);
+      else labDrawAngleArc(ctx, cx, cy, angRay, angNormal, radius, label, color, false);
+    }
+
+    function drawLabReflection(ctx, w, h, lambda, animT) {
+      ctx.clearRect(0, 0, w, h);
+      const thetaDeg = labControlState.reflectAngle;
+      const theta = thetaDeg * Math.PI / 180;
+      const bx = w * 0.5;
+      const by = h * 0.55;
+      const len = Math.min(w, h) * 0.38;
+      const angNormal = Math.PI;
+
+      ctx.fillStyle = '#e8eaed';
+      ctx.fillRect(bx - 4, 20, 8, h - 40);
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '11px sans-serif';
+      ctx.fillText(i18n('canvasBoundary'), bx + 10, 32);
+
+      ctx.strokeStyle = '#484f58';
+      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(bx, by);
+      ctx.lineTo(bx - len, by);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '10px sans-serif';
+      ctx.fillText(i18n('canvasNormal'), bx - len + 4, by + 12);
+
+      const ix = bx - len * Math.sin(theta);
+      const iy = by - len * Math.cos(theta);
+      const rx = bx - len * Math.sin(theta);
+      const ry = by + len * Math.cos(theta);
+      const angInc = Math.atan2(by - iy, bx - ix);
+      const angRefl = Math.atan2(ry - by, rx - bx);
+
+      const waveCol = wavelengthToCSS(lambda);
+      labDrawRayArrow(ctx, ix, iy, bx, by, waveCol);
+      labDrawRayArrow(ctx, bx, by, rx, ry, '#3fb950');
+
+      labDrawRayToNormalArc(ctx, bx, by, angInc, angNormal, 38, '\u03B8\u1D62=' + thetaDeg + '\u00B0', waveCol);
+      labDrawRayToNormalArc(ctx, bx, by, angRefl, angNormal, 50, '\u03B8\u1D63=' + thetaDeg + '\u00B0', '#3fb950');
+
+      const k = labK(lambda, 1);
+      const omega = labOmega(lambda);
+      const waveLen = labLambdaPx(lambda);
+      ctx.strokeStyle = wavelengthToRGBA(lambda, 0.45);
+      ctx.lineWidth = 1.2;
+      for (let n = 0; n < 4; n++) {
+        const dist = ((omega * animT * 0.35 + n * waveLen * 0.5) % (len * 1.2));
+        const frac = dist / len;
+        const px = ix + (bx - ix) * frac;
+        const py = iy + (by - iy) * frac;
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(i18n('canvasReflectLaw'), 12, h - 10);
+    }
+
+    function updateLabRefractionReadout() {
+      const el = document.getElementById('labReadoutRefraction');
+      if (!el) return;
+      const n1 = labControlState.refractN1;
+      const n2 = labControlState.refractN2;
+      const theta1Deg = labControlState.refractAngle;
+      const theta1 = theta1Deg * Math.PI / 180;
+      const sinTheta2 = (n1 / n2) * Math.sin(theta1);
+      const lambda1 = currentLambda / n1;
+      const lambda2 = currentLambda / n2;
+
+      if (Math.abs(sinTheta2) <= 1) {
+        const theta2 = Math.asin(sinTheta2);
+        const bend = n2 > n1 ? i18n('bendToward') : i18n('bendAwayFrom');
+        let html = '<strong>' + i18n('snellLabel') + '</strong> ' + i18n('snellLine', {
+          theta2: (theta2 * 180 / Math.PI).toFixed(1),
+          bend: bend,
+          lambda1: formatLambda(lambda1),
+          lambda2: formatLambda(lambda2)
+        });
+        if (n1 > n2 && theta1Deg > 0) {
+          const crit = Math.asin(n2 / n1) * 180 / Math.PI;
+          html += i18n('snellCritical', { crit: crit.toFixed(1) });
+        }
+        el.innerHTML = html;
+      } else if (n1 > n2) {
+        el.innerHTML = '<strong>' + i18n('tirTitle') + '</strong> ' + i18n('tirLine', { angle: theta1Deg });
+      } else {
+        el.innerHTML = '<strong>' + i18n('snellInvalidTitle') + '</strong>' + i18n('snellInvalidLine');
+      }
+    }
+
+    function drawLabRefraction(ctx, w, h, lambda, animT) {
+      ctx.clearRect(0, 0, w, h);
+      const n1 = labControlState.refractN1;
+      const n2 = labControlState.refractN2;
+      const theta1Deg = labControlState.refractAngle;
+      const theta1 = theta1Deg * Math.PI / 180;
+      const sinTheta2 = (n1 / n2) * Math.sin(theta1);
+      const bx = w * 0.5;
+      const by = h * 0.5;
+      const len = Math.min(w, h) * 0.4;
+      const lambda1 = lambda / n1;
+      const lambda2 = lambda / n2;
+
+      ctx.fillStyle = '#164e63';
+      ctx.globalAlpha = 0.25;
+      ctx.fillRect(0, 0, w, by);
+      ctx.fillStyle = '#3d2c4a';
+      ctx.fillRect(0, by, w, h - by);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = '#1a1c2c';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('n\u2081 = ' + n1, 12, 24);
+      ctx.fillText('n\u2082 = ' + n2, 12, h - 12);
+      ctx.strokeStyle = '#1a1c2c';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, by);
+      ctx.lineTo(w, by);
+      ctx.stroke();
+
+      const angNormal1 = -Math.PI / 2;
+      const angNormal2 = Math.PI / 2;
+
+      ctx.strokeStyle = '#484f58';
+      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(bx, by - len);
+      ctx.lineTo(bx, by + len);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '10px sans-serif';
+      ctx.fillText(i18n('canvasNormal'), bx + 6, by - len + 14);
+
+      const ix = bx - len * Math.sin(theta1);
+      const iy = by - len * Math.cos(theta1);
+
+      const angInc = Math.atan2(by - iy, bx - ix);
+      const waveCol = wavelengthToCSS(lambda);
+      labDrawRayArrow(ctx, ix, iy, bx, by, waveCol);
+      labDrawRayToNormalArc(ctx, bx, by, angInc, angNormal1, 34, '\u03B8\u2081=' + theta1Deg + '\u00B0', waveCol);
+
+      const k1 = labK(lambda1, 1);
+      const k2 = labK(lambda2, 1);
+      const omega = labOmega(lambda);
+      const spacing1 = (2 * Math.PI / k1);
+      const phase1 = omega * animT;
+      ctx.strokeStyle = wavelengthToRGBA(lambda, 0.35);
+      ctx.lineWidth = 1.2;
+      const maxWaveLines = 14;
+      let waveLineCount = 0;
+      for (let y = 20; y < by - 10 && waveLineCount < maxWaveLines; y += spacing1 * 0.55) {
+        waveLineCount++;
+        ctx.beginPath();
+        for (let x = 15; x < bx - 5; x++) {
+          const waveY = y + 8 * Math.sin(k1 * (x * Math.cos(theta1) + y * Math.sin(theta1)) - phase1);
+          if (x === 15) ctx.moveTo(x, waveY);
+          else ctx.lineTo(x, waveY);
+        }
+        ctx.stroke();
+      }
+
+      if (Math.abs(sinTheta2) <= 1) {
+        const theta2 = Math.asin(sinTheta2);
+        const theta2Deg = (theta2 * 180 / Math.PI).toFixed(1);
+        const tx = bx + len * Math.sin(theta2);
+        const ty = by + len * Math.cos(theta2);
+        const angRefr = Math.atan2(ty - by, tx - bx);
+        labDrawRayArrow(ctx, bx, by, tx, ty, '#3fb950');
+        labDrawRayToNormalArc(ctx, bx, by, angRefr, angNormal2, 40, '\u03B8\u2082=' + theta2Deg + '\u00B0', '#3fb950');
+        const spacing2 = (2 * Math.PI / k2);
+        ctx.strokeStyle = 'rgba(63,185,80,0.35)';
+        waveLineCount = 0;
+        for (let y = by + 15; y < h - 15 && waveLineCount < maxWaveLines; y += spacing2 * 0.55) {
+          waveLineCount++;
+          ctx.beginPath();
+          for (let x = bx + 5; x < w - 15; x++) {
+            const waveY = y + 8 * Math.sin(k2 * (x * Math.cos(theta2) + (y - by) * Math.sin(theta2)) - phase1);
+            if (x === bx + 5) ctx.moveTo(x, waveY);
+            else ctx.lineTo(x, waveY);
+          }
+          ctx.stroke();
+        }
+      } else if (n1 > n2) {
+        const thetaR = theta1;
+        const rx = bx + len * Math.sin(thetaR);
+        const ry = by - len * Math.cos(thetaR);
+        const angRefl = Math.atan2(ry - by, rx - bx);
+        labDrawRayArrow(ctx, bx, by, rx, ry, '#3fb950');
+        labDrawRayToNormalArc(ctx, bx, by, angRefl, angNormal1, 44, '\u03B8\u1D63=' + theta1Deg + '\u00B0', '#3fb950');
+      }
+    }
+
+    function labSinc(x) {
+      if (Math.abs(x) < 1e-10) return 1;
+      return Math.sin(x) / x;
+    }
+
+    function labNmToPx(nm, lambda) {
+      return nm * 1e-9 * labLambdaPx(lambda) / lambda;
+    }
+
+    function labDrawBeerLambertLabel(ctx, x, y, exitPct) {
+      ctx.fillStyle = '#6b7280';
+      const baseFont = '12px sans-serif';
+      const superFont = '8px sans-serif';
+      const base = 'I = I\u2080 e';
+      const superscript = '\u2212\u03b1x';
+      ctx.font = baseFont;
+      ctx.fillText(base, x, y);
+      const baseW = ctx.measureText(base).width;
+      ctx.font = superFont;
+      const superW = ctx.measureText(superscript).width;
+      ctx.fillText(superscript, x + baseW, y - 5);
+      ctx.font = baseFont;
+      ctx.fillText(i18n('canvasBeerLambertExit', { exit: exitPct }), x + baseW + superW, y);
+    }
+
+    function labDrawSlitBarrier(ctx, w, h, slitX, cy, slitHalfPx, mode, sepPx) {
+      const barW = 10;
+      ctx.fillStyle = '#f1f3f5';
+      ctx.fillRect(0, 0, slitX - barW / 2, h);
+      ctx.fillRect(slitX + barW / 2, 0, w - slitX - barW / 2, h);
+      if (mode === 'double') {
+        const c1 = cy - sepPx / 2;
+        const c2 = cy + sepPx / 2;
+        ctx.fillRect(slitX - barW / 2, 0, barW, c1 - slitHalfPx);
+        ctx.fillRect(slitX - barW / 2, c1 + slitHalfPx, barW, c2 - c1 - 2 * slitHalfPx);
+        ctx.fillRect(slitX - barW / 2, c2 + slitHalfPx, barW, h - (c2 + slitHalfPx));
+      } else {
+        ctx.fillRect(slitX - barW / 2, 0, barW, cy - slitHalfPx);
+        ctx.fillRect(slitX - barW / 2, cy + slitHalfPx, barW, h - (cy + slitHalfPx));
+      }
+      ctx.fillStyle = '#ffffff';
+      if (mode === 'double') {
+        const c1 = cy - sepPx / 2;
+        const c2 = cy + sepPx / 2;
+        ctx.fillRect(slitX - barW / 2, c1 - slitHalfPx, barW, 2 * slitHalfPx);
+        ctx.fillRect(slitX - barW / 2, c2 - slitHalfPx, barW, 2 * slitHalfPx);
+      } else {
+        ctx.fillRect(slitX - barW / 2, cy - slitHalfPx, barW, 2 * slitHalfPx);
+      }
+    }
+
+    function labPaintDiffractionScreenStrip(octx, y0, stripH, cy, L, mode, aM, dM, lambda, lambdaNm, slitWidthNm, waveRgb, stripW) {
+      for (let y = y0; y < y0 + stripH; y += 2) {
+        const sinTheta = (y - cy) / L;
+        const beta = Math.PI * aM * sinTheta / lambda;
+        let intensity = labSinc(beta) * labSinc(beta);
+        if (mode === 'double') {
+          const gamma = Math.PI * dM * sinTheta / lambda;
+          intensity *= Math.cos(gamma) * Math.cos(gamma);
+        }
+        intensity = Math.min(1, intensity * (0.35 + 0.65 * (lambdaNm / slitWidthNm)));
+        const bright = Math.floor(intensity * 255);
+        const row = y - y0;
+        octx.fillStyle = 'rgba(' + waveRgb.r + ',' + waveRgb.g + ',' + waveRgb.b + ',' + (0.15 + intensity * 0.85) + ')';
+        octx.fillRect(0, row, stripW, 1);
+        if (bright > 20) {
+          octx.fillStyle = 'rgba(255,255,255,' + (intensity * 0.25) + ')';
+          octx.fillRect(0, row, stripW, 1);
+        }
+      }
+    }
+
+    function drawLabDiffraction(ctx, w, h, lambda, animT) {
+      ctx.clearRect(0, 0, w, h);
+      const mode = labControlState.diffractionMode;
+      const slitWidthNm = labControlState.slitWidth;
+      const slitSepNm = labControlState.slitSep;
+      const slitHalfPx = Math.max(3, labNmToPx(slitWidthNm, lambda) / 2);
+      const sepPx = labNmToPx(slitSepNm, lambda);
+      const slitX = w * 0.38;
+      const screenX = w * 0.88;
+      const cy = h * 0.5;
+      const k = labK(lambda, 1);
+      const phase = labOmega(lambda) * animT;
+      const waveRgb = wavelengthToRGB(lambda);
+      const lambdaNm = lambda * 1e9;
+      const spread = Math.min(2.4, 0.25 + lambdaNm / slitWidthNm);
+      const aM = slitWidthNm * 1e-9;
+      const dM = slitSepNm * 1e-9;
+      const L = screenX - slitX - 8;
+
+      labDrawSlitBarrier(ctx, w, h, slitX, cy, slitHalfPx, mode, sepPx);
+
+      ctx.strokeStyle = wavelengthToRGBA(lambda, 0.55);
+      ctx.lineWidth = 1.5;
+      for (let y = 20; y < h - 20; y += 14) {
+        const wavePhase = k * y * 0.08 - phase * 2.5;
+        ctx.beginPath();
+        for (let x = 10; x < slitX - 14; x++) {
+          const off = 6 * Math.sin(wavePhase + x * 0.04);
+          if (x === 10) ctx.moveTo(x, y + off);
+          else ctx.lineTo(x, y + off);
+        }
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 0.85;
+      for (let n = -4; n <= 4; n++) {
+        const angle = (n / 4) * spread * 0.9;
+        ctx.strokeStyle = wavelengthToRGBA(lambda, 0.9 - Math.abs(n) * 0.15);
+        ctx.beginPath();
+        for (let r = 0; r < screenX - slitX - 24; r++) {
+          const x = slitX + 16 + r;
+          const y = cy + r * angle + 8 * Math.sin(k * r * 0.15 - phase * 2 + n);
+          if (r === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      ctx.strokeStyle = '#6b7280';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(screenX, 18);
+      ctx.lineTo(screenX, h - 18);
+      ctx.stroke();
+      ctx.fillStyle = '#1a1c2c';
+      ctx.font = '11px sans-serif';
+      ctx.fillText(i18n('canvasScreen'), screenX - 22, 14);
+
+      const stripW = 14;
+      const y0 = 20;
+      const stripH = h - 40;
+      const cacheKey = lambda + '|' + mode + '|' + slitWidthNm + '|' + slitSepNm + '|' + w + '|' + h + '|' + screenX;
+      if (labDiffractionScreenCache.key !== cacheKey) {
+        if (!labDiffractionScreenCache.canvas) {
+          labDiffractionScreenCache.canvas = document.createElement('canvas');
+          labDiffractionScreenCache.ctx = labDiffractionScreenCache.canvas.getContext('2d');
+        }
+        labDiffractionScreenCache.canvas.width = stripW;
+        labDiffractionScreenCache.canvas.height = stripH;
+        labDiffractionScreenCache.y0 = y0;
+        labDiffractionScreenCache.stripW = stripW;
+        labDiffractionScreenCache.h = stripH;
+        labPaintDiffractionScreenStrip(labDiffractionScreenCache.ctx, y0, stripH, cy, L, mode, aM, dM, lambda, lambdaNm, slitWidthNm, waveRgb, stripW);
+        labDiffractionScreenCache.key = cacheKey;
+      }
+      ctx.drawImage(labDiffractionScreenCache.canvas, screenX + 2, y0);
+
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '12px sans-serif';
+      const modeLabel = mode === 'double' ? i18n('canvasDiffDouble') : i18n('canvasDiffSingle');
+      ctx.fillText(i18n('canvasDiffFooter', {
+        mode: modeLabel,
+        a: slitWidthNm,
+        lambda: formatLambda(lambda),
+        ratio: (lambdaNm / slitWidthNm).toFixed(2)
+      }), 10, h - 12);
+    }
+
+    function drawLabInterference(ctx, w, h, lambda, animT) {
+      const dRatio = labControlState.sourceSep / 100;
+      const phaseOff = labControlState.phasePi ? Math.PI : 0;
+      const k = labK(lambda, 1);
+      const phaseT = labOmega(lambda) * animT;
+      const bufW = LAB_INTERFERENCE_BUF_W;
+      const bufH = LAB_INTERFERENCE_BUF_H;
+      const cy = bufH * 0.5;
+      const barrierX = bufW * 0.2;
+      const halfSep = (dRatio * labLambdaPx(lambda) * (bufH / Math.max(h, 1))) / 2;
+      const s1x = barrierX;
+      const s2x = barrierX;
+      const s1y = cy - halfSep;
+      const s2y = cy + halfSep;
+      const waveRgb = wavelengthToRGB(lambda);
+      const scaleX = w / bufW;
+      const scaleY = h / bufH;
+
+      if (!labInterferenceBuffer.canvas) {
+        labInterferenceBuffer.canvas = document.createElement('canvas');
+        labInterferenceBuffer.ctx = labInterferenceBuffer.canvas.getContext('2d');
+      }
+      if (labInterferenceBuffer.pw !== bufW || labInterferenceBuffer.ph !== bufH) {
+        labInterferenceBuffer.pw = bufW;
+        labInterferenceBuffer.ph = bufH;
+        labInterferenceBuffer.canvas.width = bufW;
+        labInterferenceBuffer.canvas.height = bufH;
+        labInterferenceBuffer.img = labInterferenceBuffer.ctx.createImageData(bufW, bufH);
+      }
+      const offCtx = labInterferenceBuffer.ctx;
+      const img = labInterferenceBuffer.img;
+      const data = img.data;
+      const pw = bufW;
+      const ph = bufH;
+      const step = w < 500 ? 3 : 2;
+
+      for (let py = 0; py < ph; py += step) {
+        for (let px = 0; px < pw; px += step) {
+          const x = px;
+          const y = py;
+          const r1 = Math.hypot(x - s1x, y - s1y);
+          const r2 = Math.hypot(x - s2x, y - s2y);
+          const v = Math.sin(k * r1 * scaleX - phaseT * 2) + Math.sin(k * r2 * scaleX - phaseT * 2 + phaseOff);
+          const intensity = (v * v) / 4;
+          const idx = (py * pw + px) * 4;
+          const r = Math.floor(waveRgb.r * intensity + 12 * (1 - intensity));
+          const g = Math.floor(waveRgb.g * intensity + 12 * (1 - intensity));
+          const b = Math.floor(waveRgb.b * intensity + 28 * (1 - intensity));
+          data[idx] = r;
+          data[idx + 1] = g;
+          data[idx + 2] = b;
+          data[idx + 3] = 255;
+          if (step > 1) {
+            for (let dy = 0; dy < step && py + dy < ph; dy++) {
+              for (let dx = 0; dx < step && px + dx < pw; dx++) {
+                if (dx === 0 && dy === 0) continue;
+                const i2 = ((py + dy) * pw + (px + dx)) * 4;
+                data[i2] = r;
+                data[i2 + 1] = g;
+                data[i2 + 2] = b;
+                data[i2 + 3] = 255;
+              }
+            }
+          }
+        }
+      }
+      offCtx.putImageData(img, 0, 0);
+      ctx.drawImage(labInterferenceBuffer.canvas, 0, 0, w, h);
+
+      const barrierXDisp = w * 0.2;
+      const halfSepDisp = (dRatio * labLambdaPx(lambda)) / 2;
+      const s1yDisp = h * 0.5 - halfSepDisp;
+      const s2yDisp = h * 0.5 + halfSepDisp;
+
+      ctx.fillStyle = '#f1f3f5';
+      ctx.fillRect(barrierXDisp - 5, 0, 10, s1yDisp - 6);
+      ctx.fillRect(barrierXDisp - 5, s1yDisp + 6, 10, s2yDisp - s1yDisp - 12);
+      ctx.fillRect(barrierXDisp - 5, s2yDisp + 6, 10, h - (s2yDisp + 6));
+
+      ctx.fillStyle = wavelengthToCSS(lambda);
+      ctx.beginPath();
+      ctx.arc(barrierXDisp, s1yDisp, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(barrierXDisp, s2yDisp, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#1a1c2c';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('S\u2081', barrierXDisp - 10, s1yDisp + 4);
+      ctx.fillText('S\u2082', barrierXDisp - 10, s2yDisp + 4);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#6b7280';
+      ctx.fillText('d = ' + dRatio.toFixed(1) + '\u03BB | \u0394\u03C6 = k(r\u2082\u2212r\u2081) + \u03C6 | I \u221D |E\u2081+E\u2082|\u00B2', 10, h - 8);
+    }
+
+    function drawLabPenetration(ctx, w, h, lambda, animT) {
+      ctx.clearRect(0, 0, w, h);
+      const preset = labControlState.penPreset;
+      const band = getBand(lambda);
+      const cfg = PENETRATION_PRESETS[preset];
+      const pen = getPenetrationData(band.id, preset);
+      const n = cfg.layers.length;
+      const layerW = (w - 80) / n;
+      const k = labK(lambda, 1);
+      const omega = labOmega(lambda);
+      let cumulative = 1;
+
+      for (let i = 0; i < n; i++) {
+        const x0 = 40 + i * layerW;
+        const tLayer = i === 0 ? 1 : pen.layerTx[i] / 100;
+        cumulative *= tLayer;
+        ctx.fillStyle = cfg.colors[i];
+        ctx.globalAlpha = 0.35 + (1 - cumulative) * 0.35;
+        ctx.fillRect(x0, 40, layerW - 4, h - 70);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#1a1c2c';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(getPenLayerName(preset, i), x0 + layerW / 2 - 2, h - 38);
+        ctx.fillStyle = '#2563eb';
+        ctx.font = '600 11px sans-serif';
+        const label = i === 0 ? '100%' : 'T = ' + pen.layerTx[i] + '%';
+        ctx.fillText(label, x0 + layerW / 2 - 2, h - 22);
+      }
+      ctx.textAlign = 'left';
+
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let x = 10; x < w - 20; x++) {
+        const layerIdx = Math.min(n - 1, Math.max(0, Math.floor((x - 40) / layerW)));
+        let atten = 1;
+        for (let j = 1; j <= layerIdx; j++) atten *= pen.layerTx[j] / 100;
+        const y = h * 0.48 - h * 0.18 * atten * Math.sin(k * x * 0.15 - omega * animT * 0.5);
+        if (x === 10) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      labDrawBeerLambertLabel(ctx, 10, 16, pen.exitTx);
+    }
+
+    function updateLabPenBars() {
+      const preset = labControlState.penPreset;
+      const band = getBand(currentLambda);
+      const cfg = PENETRATION_PRESETS[preset];
+      const pen = getPenetrationData(band.id, preset);
+      const container = document.getElementById('labPenBars');
+      let cumul = 100;
+      container.innerHTML = cfg.layers.map(function(name, i) {
+        if (i > 0) cumul = Math.round(cumul * pen.layerTx[i] / 1000) / 10;
+        const pct = i === 0 ? 100 : pen.layerTx[i];
+        const barW = i === 0 ? 100 : cumul;
+        return '<div class="pen-bar-row"><span class="pen-bar-label">' + getPenLayerName(preset, i) + '</span>' +
+          '<div class="pen-bar-track"><div class="pen-bar-fill" style="width:' + barW + '%"></div></div>' +
+          '<span class="pen-bar-pct">' + (i === 0 ? i18n('penBarIncident') : 'T=' + pct + '%') + '</span></div>';
+      }).join('');
+    }
+
+    function labSyncFromSpectrum() {
+      const lambda = currentLambda;
+      const freq = lambdaToFreq(lambda);
+      const band = getBand(lambda);
+      document.getElementById('labReadoutTransverse').innerHTML = i18n('transverseReadout', {
+        lambda: formatLambda(lambda),
+        freq: formatFreq(freq)
+      });
+      const f = C / lambda;
+      let mediaHtml = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem">';
+      mediaHtml += '<tr style="color:var(--muted)"><th align="left">' + i18n('penTableMedium') + '</th><th>' + i18n('penTableN') + '</th><th>' + i18n('penTableV') + '</th><th>' + i18n('penTableLambda') + '</th></tr>';
+      LAB_MEDIA.forEach(function(m) {
+        const v = C / m.n;
+        const lamN = v / f;
+        mediaHtml += '<tr><td>' + getMediaName(m.id) + '</td><td>' + m.n + '</td><td>' + formatSciHtml(v) + ' m/s</td><td>' + formatLambda(lamN) + '</td></tr>';
+      });
+      mediaHtml += '</table><span style="color:var(--muted)">' + i18n('penTableFixed', { freq: formatFreq(f) }) + '</span>';
+      document.getElementById('labReadoutMedia').innerHTML = mediaHtml;
+      const bandNote = getPenNote(band.id) || getBandText(band.id).implications;
+      const penData = getPenetrationData(band.id, labControlState.penPreset);
+      document.getElementById('labReadoutPenetration').innerHTML = i18n('penReadout', {
+        band: getBandText(band.id).name,
+        note: bandNote,
+        tx: penData.exitTx
+      });
+      updateLabPenBars();
+      updateLabRefractionReadout();
+    }
+
+    function labPaintActive() {
+      const lambda = currentLambda;
+      const animT = labAnimPhase;
+      let activeCanvas = null;
+      if (labActivePanel === 'transverse') {
+        activeCanvas = els.labCanvasTransverse;
+        const s = labEnsureCanvas(activeCanvas);
+        drawLabTransverse(s.ctx, s.w, s.h, lambda, animT);
+      } else if (labActivePanel === 'media') {
+        activeCanvas = els.labCanvasMedia;
+        const s = labEnsureCanvas(activeCanvas);
+        drawLabMedia(s.ctx, s.w, s.h, lambda, animT);
+      } else if (labActivePanel === 'phenomena') {
+        if (labActiveSub === 'reflection') {
+          activeCanvas = els.labCanvasReflection;
+          const s = labEnsureCanvas(activeCanvas);
+          drawLabReflection(s.ctx, s.w, s.h, lambda, animT);
+        } else if (labActiveSub === 'refraction') {
+          activeCanvas = els.labCanvasRefraction;
+          const s = labEnsureCanvas(activeCanvas);
+          drawLabRefraction(s.ctx, s.w, s.h, lambda, animT);
+        } else if (labActiveSub === 'diffraction') {
+          activeCanvas = els.labCanvasDiffraction;
+          const s = labEnsureCanvas(activeCanvas);
+          drawLabDiffraction(s.ctx, s.w, s.h, lambda, animT);
+        } else if (labActiveSub === 'interference') {
+          activeCanvas = els.labCanvasInterference;
+          const s = labEnsureCanvas(activeCanvas);
+          drawLabInterference(s.ctx, s.w, s.h, lambda, animT);
+        }
+      } else if (labActivePanel === 'penetration') {
+        activeCanvas = els.labCanvasPenetration;
+        const s = labEnsureCanvas(activeCanvas);
+        drawLabPenetration(s.ctx, s.w, s.h, lambda, animT);
+      }
+      labSetActiveCanvas(activeCanvas);
+    }
+
+    function labStartAnim() {
+      if (labAnimRunning) return;
+      labAnimRunning = true;
+      labLastTime = 0;
+      requestAnimationFrame(labTick);
+    }
+
+    function labStopAnim() {
+      labAnimRunning = false;
+    }
+
+    function labUpdateAnimGate() {
+      if (labLabVisible && !document.hidden) labStartAnim();
+      else labStopAnim();
+    }
+
+    function labTick(ts) {
+      if (!labAnimRunning) return;
+      if (!labLastTime) labLastTime = ts;
+      const dt = (ts - labLastTime) / 1000;
+      labLastTime = ts;
+      labTickFrame++;
+      if (!labPrefersReducedMotion() || labTickFrame % 3 === 0) {
+        labAnimPhase += dt;
+      }
+      labPaintActive();
+      requestAnimationFrame(labTick);
+    }
+
+    function initSimulationLab() {
+      els.labReflectAngle = requireEl('labReflectAngle');
+      els.labRefractN1 = requireEl('labRefractN1');
+      els.labRefractN2 = requireEl('labRefractN2');
+      els.labRefractAngle = requireEl('labRefractAngle');
+      els.labDiffractionMode = requireEl('labDiffractionMode');
+      els.labSlitWidth = requireEl('labSlitWidth');
+      els.labSlitSep = requireEl('labSlitSep');
+      els.labSourceSep = requireEl('labSourceSep');
+      els.labPhasePi = requireEl('labPhasePi');
+      els.labPenPreset = requireEl('labPenPreset');
+      els.labCanvasTransverse = requireEl('labCanvasTransverse');
+      els.labCanvasMedia = requireEl('labCanvasMedia');
+      els.labCanvasReflection = requireEl('labCanvasReflection');
+      els.labCanvasRefraction = requireEl('labCanvasRefraction');
+      els.labCanvasDiffraction = requireEl('labCanvasDiffraction');
+      els.labCanvasInterference = requireEl('labCanvasInterference');
+      els.labCanvasPenetration = requireEl('labCanvasPenetration');
+      syncLabControlState();
+
+      document.querySelectorAll('.lab-tab').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          labActivePanel = btn.dataset.panel;
+          document.querySelectorAll('.lab-tab').forEach(function(b) { b.classList.toggle('active', b === btn); });
+          document.querySelectorAll('.lab-panel').forEach(function(p) {
+            p.classList.toggle('active', p.dataset.panel === labActivePanel);
+          });
+          labInvalidateAllCanvases();
+          labTransverseInvalidateProjector();
+          labPaintActive();
+        });
+      });
+      document.querySelectorAll('.lab-subtab').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          labActiveSub = btn.dataset.sub;
+          document.querySelectorAll('.lab-subtab').forEach(function(b) { b.classList.toggle('active', b === btn); });
+          document.querySelectorAll('.lab-subpanel').forEach(function(p) {
+            p.classList.toggle('active', p.dataset.sub === labActiveSub);
+          });
+          labInvalidateAllCanvases();
+          labPaintActive();
+        });
+      });
+      els.labReflectAngleVal = document.getElementById('labReflectAngleVal');
+      els.labRefractAngleVal = document.getElementById('labRefractAngleVal');
+      els.labSlitWidthVal = document.getElementById('labSlitWidthVal');
+      els.labSlitSepVal = document.getElementById('labSlitSepVal');
+      els.labSourceSepVal = document.getElementById('labSourceSepVal');
+      els.labSlitSepWrap = document.getElementById('labSlitSepWrap');
+
+      els.labReflectAngle.addEventListener('input', function(e) {
+        if (els.labReflectAngleVal) els.labReflectAngleVal.textContent = e.target.value + '\u00B0';
+      });
+      els.labRefractAngle.addEventListener('input', function(e) {
+        if (els.labRefractAngleVal) els.labRefractAngleVal.textContent = e.target.value + '\u00B0';
+      });
+      function updateDiffractionControls() {
+        const mode = els.labDiffractionMode.value;
+        if (els.labSlitSepWrap) els.labSlitSepWrap.style.display = mode === 'double' ? '' : 'none';
+      }
+      els.labDiffractionMode.addEventListener('change', function() {
+        updateDiffractionControls();
+        syncLabControlState();
+        labInvalidateDiffractionScreenCache();
+        labSyncFromSpectrum();
+      });
+      els.labSlitWidth.addEventListener('input', function(e) {
+        if (els.labSlitWidthVal) els.labSlitWidthVal.textContent = e.target.value + ' nm';
+      });
+      els.labSlitSep.addEventListener('input', function(e) {
+        if (els.labSlitSepVal) els.labSlitSepVal.textContent = e.target.value + ' nm';
+      });
+      updateDiffractionControls();
+      els.labSourceSep.addEventListener('input', function(e) {
+        if (els.labSourceSepVal) els.labSourceSepVal.textContent = (e.target.value / 100).toFixed(1) + '\u03BB';
+      });
+      ['labReflectAngle', 'labRefractN1', 'labRefractN2', 'labRefractAngle', 'labDiffractionMode', 'labSlitWidth', 'labSlitSep', 'labSourceSep', 'labPhasePi', 'labPenPreset'].forEach(function(id) {
+        const el = els[id];
+        if (!el) return;
+        const onLabControl = function() {
+          syncLabControlState();
+          labInvalidateDiffractionScreenCache();
+          labSyncFromSpectrum();
+          labInvalidateAllCanvases();
+          labPaintActive();
+          if (id === 'labPenPreset') updateLabPenBars();
+          if (id === 'labRefractN1' || id === 'labRefractN2' || id === 'labRefractAngle') {
+            updateLabRefractionReadout();
+          }
+        };
+        el.addEventListener('input', onLabControl);
+        if (el.tagName === 'SELECT' || el.type === 'checkbox') el.addEventListener('change', onLabControl);
+      });
+      initTransverseViewControls();
+      labSyncFromSpectrum();
+      updateLabRefractionReadout();
+
+      const simLabCard = document.getElementById('simLabCard');
+      if (simLabCard && typeof IntersectionObserver !== 'undefined') {
+        const labObserver = new IntersectionObserver(function(entries) {
+          labLabVisible = entries.some(function(e) { return e.isIntersecting; });
+          labUpdateAnimGate();
+        }, { root: null, threshold: 0.08 });
+        labObserver.observe(simLabCard);
+      } else {
+        labLabVisible = true;
+      }
+      document.addEventListener('visibilitychange', labUpdateAnimGate);
+      labUpdateAnimGate();
+      labPaintActive();
+    }
+
+    function refreshExplore(opts) {
+      if (!els.exploreLambda) return;
+      updateExplore(els.exploreLambda.value, opts);
+    }
+
+    function refreshAll(opts) {
+      opts = opts || {};
+      if (!els.exploreLambda) return;
+      updateExplore(els.exploreLambda.value, opts);
+      if (opts.forceBand) {
+        if (labSyncTimer) {
+          clearTimeout(labSyncTimer);
+          labSyncTimer = null;
+        }
+        labInvalidateDiffractionScreenCache();
+        labSyncFromSpectrum();
+        labPaintActive();
+      }
+    }
+
+    function onResize() {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        resizeTimer = null;
+        waveCanvasState.w = 0;
+        drawWave();
+        labInvalidateAllCanvases();
+        labTransverseInvalidateProjector();
+        labPaintActive();
+      }, 120);
+    }
+
+    function initSpectrum() {
+      try {
+        diagram = requireEl('spectrumDiagram');
+        if (!diagram) {
+          showBootError('spectrum', 'Missing #spectrumDiagram');
+          return false;
+        }
+        diagram.addEventListener('click', onSpectrumDiagramClick);
+        if (!buildSpectrumDiagram()) {
+          showBootError('spectrum', 'Failed to build spectrum diagram');
+          return false;
+        }
+        return true;
+      } catch (e) {
+        showBootError('spectrum', e.message || String(e));
+        return false;
+      }
+    }
+
+    function initExplore() {
+      try {
+        els.exploreLambda = requireEl('exploreLambda');
+        waveCanvas = requireEl('waveCanvas');
+        bandLegend = requireEl('bandLegend');
+        if (!els.exploreLambda || !waveCanvas) {
+          showBootError('explore', 'Missing slider or wave canvas');
+          return false;
+        }
+        if (!ensureWaveCanvas()) {
+          showBootError('explore', 'Could not initialize wave canvas');
+          return false;
+        }
+        els.exploreLambdaDisplay = requireEl('exploreLambdaDisplay');
+        els.roLambda = requireEl('roLambda');
+        els.roFreq = requireEl('roFreq');
+        els.roEnergy = requireEl('roEnergy');
+        els.roBand = requireEl('roBand');
+        els.bandName = requireEl('bandName');
+        els.bandSwatch = requireEl('bandSwatch');
+        els.formulaSub = requireEl('formulaSub');
+        els.inverseNote = requireEl('inverseNote');
+
+        els.exploreLambda.addEventListener('input', function() { refreshExplore(); });
+        els.exploreLambda.addEventListener('change', function() { refreshAll({ forceBand: true }); });
+        initBandAppLightbox();
+        rebuildBandLegend();
+        return true;
+      } catch (e) {
+        showBootError('explore', e.message || String(e));
+        return false;
+      }
+    }
+
+    function boot() {
+      initI18n();
+      els.langEn = requireEl('langEn');
+      els.langZh = requireEl('langZh');
+      initLangToggle();
+      applyStaticI18n();
+      if (!initSpectrum()) return;
+      if (!initExplore()) return;
+      try {
+        initSimulationLab();
+      } catch (e) {
+        showBootError('lab', e.message || String(e));
+      }
+      if (els.exploreLambda) {
+        els.exploreLambda.value = 500;
+        refreshAll({ forceBand: true });
+      }
+      window.addEventListener('resize', onResize);
+      window.addEventListener('error', function(ev) {
+        showBootError('runtime', (ev.message || 'Unknown error') + (ev.filename ? ' at ' + ev.filename + ':' + ev.lineno : ''));
+      });
+
+      function hubLangToEm(lang) {
+        if (!lang) return null;
+        if (lang === 'zh-Hant' || lang === 'zh') return LANG.ZH;
+        if (lang === 'en') return LANG.EN;
+        return null;
+      }
+      const urlLang = new URLSearchParams(location.search).get('lang');
+      const fromHub = hubLangToEm(urlLang);
+      if (fromHub) setLang(fromHub);
+
+      window.addEventListener('message', function(e) {
+        if (e.data && e.data.type === 's3phy:lang') {
+          const mapped = hubLangToEm(e.data.lang);
+          if (mapped) setLang(mapped);
+        }
+      });
+    }
+
+    boot();
+  </script>
+</body>
+</html>

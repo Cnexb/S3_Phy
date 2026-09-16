@@ -1,0 +1,38 @@
+{
+  "chapter": "S3 Optics Ch.3",
+  "uiLangs": [
+    "en"
+  ],
+  "sources": [
+    {
+      "file": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Quiz\\Ch.3.1 Light reflection.docx",
+      "label": "Ch.3.1 Light reflection.docx",
+      "section": "reflection"
+    },
+    {
+      "file": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Quiz\\Ch.3.2 Light refraction.docx",
+      "label": "Ch.3.2 Light refraction.docx",
+      "section": "refraction-snells-law"
+    },
+    {
+      "file": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Quiz\\Ch.3.3 Total internal reflection.docx",
+      "label": "Ch.3.3 Total internal reflection.docx",
+      "section": "total-internal-reflection"
+    },
+    {
+      "file": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Quiz\\Ch.3.4 Convex lens.docx",
+      "label": "Ch.3.4 Convex lens.docx",
+      "section": "convex-lens"
+    },
+    {
+      "file": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Quiz\\Ch.3.5 Magnification and lens formula.docx",
+      "label": "Ch.3.5 Magnification and lens formula.docx",
+      "section": "magnification-lens-formula"
+    },
+    {
+      "file": "C:\\Users\\UniplusUser02\\Desktop\\PHYS\\S3\\Optics\\Quiz\\Ch.3.6 Concave lens.docx",
+      "label": "Ch.3.6 Concave lens.docx",
+      "section": "concave-lens"
+    }
+  ]
+}

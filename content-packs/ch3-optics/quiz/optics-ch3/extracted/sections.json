@@ -1,0 +1,26 @@
+[
+  {
+    "id": "reflection",
+    "label": "Reflection"
+  },
+  {
+    "id": "refraction-snells-law",
+    "label": "Refraction and Snell's Law"
+  },
+  {
+    "id": "total-internal-reflection",
+    "label": "Total Internal Reflection"
+  },
+  {
+    "id": "convex-lens",
+    "label": "Convex Lens"
+  },
+  {
+    "id": "magnification-lens-formula",
+    "label": "Magnification and Lens Formula"
+  },
+  {
+    "id": "concave-lens",
+    "label": "Concave Lens"
+  }
+]

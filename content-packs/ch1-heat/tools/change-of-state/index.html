@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change of State Lab | Uni+ Education</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- KaTeX CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <link rel="stylesheet" href="../shared/s3phy-tokens.css">
+  <link rel="stylesheet" href="../shared/s3phy-embed.css?v=14">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <style>
+    body {
+      font-family: var(--s3-font, 'Inter', sans-serif);
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .lab-section { position: relative; min-height: min(640px, calc(100dvh - 48px)); }
+    @media (min-width: 900px) {
+      .lab-section.controls-floating .lab-viz { grid-column: span 6 / span 6; }
+      .lab-section.controls-floating .lab-steps { grid-column: span 6 / span 6; }
+    }
+    .lab-controls.lab-controls-float {
+      position: absolute;
+      z-index: 40;
+      width: var(--s3-float-panel-w);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    }
+    .lab-controls-body { transition: max-height 0.25s ease, opacity 0.2s ease; }
+    .lab-controls-desc { transition: max-height 0.25s ease, opacity 0.2s ease; }
+    .lab-controls.controls-collapsed .lab-controls-body,
+    .lab-controls.controls-collapsed .lab-controls-desc {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      margin: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .lab-controls:not(.controls-collapsed) .lab-controls-body {
+      max-height: min(70vh, 520px);
+      opacity: 1;
+      overflow-y: auto;
+    }
+    .lab-controls:not(.controls-collapsed) .lab-controls-desc { opacity: 1; max-height: 4rem; }
+    .lab-controls.controls-collapsed .lab-controls-title-text { display: none; }
+    .lab-controls-header { display: flex; align-items: center; gap: 0.5rem; }
+    .lab-controls-actions { flex-direction: row; gap: 0.5rem; }
+    .lab-controls-actions button { padding: 0.625rem 0.75rem; justify-content: center; }
+    .lab-controls-actions button.flex-1 { white-space: nowrap; min-width: max-content; }
+    #startStateBtn .lab-btn-label { font-size: clamp(0.75rem, 2.8vw, 0.875rem); }
+    .lab-controls-drag-handle {
+      display: none;
+      cursor: grab;
+      touch-action: none;
+      color: #94a3b8;
+      padding: 0.25rem;
+      border-radius: 0.375rem;
+      flex-shrink: 0;
+      background: none;
+      border: none;
+    }
+    .lab-controls-drag-handle.is-dragging { cursor: grabbing; }
+    .lab-controls-drag-handle:hover { color: #64748b; background: #f1f5f9; }
+    .lab-controls-float .lab-controls-drag-handle { display: flex; align-items: center; }
+    .lab-controls-toggle { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; text-align: left; background: none; border: none; cursor: pointer; padding: 0; }
+    .lab-controls-toggle:hover { opacity: 0.85; }
+    .lab-controls-toggle-icon { flex-shrink: 0; }
+    @media (max-width: 899px) {
+      .lab-controls.lab-controls-float { position: relative; width: 100%; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06); }
+    }
+    .lab-viz { display: flex; flex-direction: column; min-height: 0; }
+    .lab-viz-canvas { aspect-ratio: 4 / 3; width: 100%; }
+    /* Dual-panel viz (animation + chart): proportional grid rows */
+    .lab-viz-dual {
+      display: grid !important;
+      grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 0.75rem;
+      align-content: stretch;
+      min-height: 0;
+      height: 100%;
+      max-height: none;
+      overflow: hidden;
+      overflow-x: hidden;
+    }
+    @media (min-width: 900px) {
+      .lab-section.controls-floating .lab-viz-panel:first-child .lab-viz-canvas {
+        aspect-ratio: unset;
+        flex: 1 1 auto;
+        min-height: 120px;
+        max-height: none;
+      }
+      .lab-section.controls-floating .lab-viz-panel-chart .lab-viz-chart-wrap {
+        flex: 1 1 auto;
+        min-height: 0;
+        margin-top: 0;
+      }
+    }
+    .lab-steps .katex { font-size: 1.2em; }
+    .lab-viz-dual .lab-viz-panel {
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .lab-viz-dual .lab-viz-panel-chart { z-index: 2; overflow: hidden; flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .lab-viz-dual .lab-viz-panel:first-child .lab-viz-canvas {
+      width: 100%;
+      height: auto;
+      min-height: 120px;
+      max-height: none;
+      flex: 1 1 auto;
+      aspect-ratio: unset;
+      overflow: hidden;
+    }
+    .lab-viz-dual .lab-viz-panel-chart .lab-viz-chart-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin-top: 0;
+      overflow: visible;
+    }
+    .lab-viz-dual .lab-viz-canvas canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      max-height: 100%;
+    }
+    .lab-viz-dual .lab-viz-chart-wrap canvas {
+      display: block;
+    }
+    html.s3phy-embed .lab-controls.lab-controls-float {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+      padding: 0.875rem;
+      border-radius: 1rem;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col p-1.5">
+
+  <main class="flex-grow w-full mx-auto px-2 py-1.5">
+    <!-- TAB 3: CHANGE OF STATE LAB -->
+    <section id="tabContent-state" class="lab-section grid grid-cols-1 lg:grid-cols-12 gap-2">
+      <!-- Floating Controls -->
+      <div class="lab-controls controls-collapsed bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
+        <div class="lab-controls-header">
+          <button type="button" id="labControlsDragHandle" class="lab-controls-drag-handle" aria-label="Drag to move" title="Drag to move">
+            <i data-lucide="grip-horizontal" class="w-4 h-4"></i>
+          </button>
+          <button type="button" id="labControlsToggle" class="lab-controls-toggle" aria-expanded="false" aria-controls="labControlsBody">
+            <i data-float-chevron data-lucide="chevron-down" class="lab-controls-toggle-icon w-5 h-5 text-blue-600"></i>
+            <i data-lucide="sliders" class="w-5 h-5 text-blue-600 flex-shrink-0"></i>
+            <span class="lab-controls-title-text text-lg font-bold text-slate-900" data-i18n="stateControls">Latent Heat Parameters</span>
+          </button>
+        </div>
+        <p class="lab-controls-desc text-xs text-slate-500" data-i18n="stateDesc">Heat ice to steam and observe latent heat absorption.</p>
+
+        <div id="labControlsBody" class="lab-controls-body flex flex-col gap-3">
+        <!-- Substance Select -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="substance">Substance</label>
+          <select id="stateSubstance" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+            <option value="water" selected>Water / Ice (H₂O)</option>
+            <option value="naphthalene">Naphthalene (C₁₀H₈)</option>
+          </select>
+        </div>
+
+        <!-- Mode Select (Heating / Cooling) -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="type">Process</label>
+          <select id="stateMode" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+            <option value="heating" selected>Heating Curve (Melting & Boiling)</option>
+            <option value="cooling">Cooling Curve (Solidifying / Freezing)</option>
+          </select>
+        </div>
+
+        <!-- Mass -->
+        <div class="space-y-2">
+          <label id="stateMassLabel" class="block text-xs font-bold tracking-wider text-slate-500" data-i18n="iceMass">Ice Mass (m) [kg]</label>
+          <input type="number" id="stateMass" min="0.1" max="2.0" step="0.1" value="0.5" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Heater / Cooler Power -->
+        <div class="space-y-2">
+          <label id="statePowerLabel" class="block text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="power">Heater Power (P) [W]</label>
+          <input type="number" id="statePower" min="100" max="10000" step="100" value="1000" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Initial Temp -->
+        <div class="space-y-2">
+          <label id="stateInitTempLabel" class="block text-xs font-bold uppercase tracking-wider text-slate-500" data-i18n="initIceTemp">Initial Ice Temp (T<sub>i</sub>) [°C]</label>
+          <input type="number" id="stateInitTemp" min="-100" max="0" step="1" value="-10" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-mono font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Sealed System Toggle -->
+        <div id="sealedSystemContainer" class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl">
+          <div class="flex flex-col">
+            <span class="text-xs font-bold text-slate-700" data-i18n="sealedSystem">Sealed System (Closed Container)</span>
+            <span class="text-[10px] text-slate-400" data-i18n="sealedSystemDesc">Keep steam inside to observe steam heating</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="stateSealed" class="sr-only peer">
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+
+        <!-- Enable Heat Loss Toggle -->
+        <div class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl">
+          <div class="flex flex-col">
+            <span class="text-xs font-bold text-slate-700" data-i18n="enableHeatLoss">Heat Loss to Surroundings</span>
+            <span class="text-[10px] text-slate-400" data-i18n="heatLossDesc">Consider real-world heat exchange</span>
+          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="stateEnableLoss" class="sr-only peer">
+            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+
+        <!-- Constants Reference Box -->
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 text-xs">
+          <span class="block font-bold text-slate-700 uppercase tracking-wider text-[10px]" data-i18n="constants">Constants Reference</span>
+          <div class="grid grid-cols-2 gap-x-2 gap-y-1 font-mono text-[11px] text-slate-600" id="stateConstantsBox">
+            <div class="flex justify-between"><span data-i18n="cIce">c<sub>ice</sub>:</span><span>2100</span></div>
+            <div class="flex justify-between"><span data-i18n="cWater">c<sub>water</sub>:</span><span>4200</span></div>
+            <div class="flex justify-between"><span data-i18n="lfIce">l<sub>fusion</sub> (ice):</span><span>3.34 × 10<sup>5</sup></span></div>
+            <div class="flex justify-between"><span data-i18n="lvWater">l<sub>vapor</sub> (water):</span><span>2.26 × 10<sup>6</sup></span></div>
+          </div>
+        </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="lab-controls-actions flex gap-2 mt-1">
+          <button id="startStateBtn" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-xl shadow-md shadow-blue-200 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="play" class="w-5 h-5"></i>
+            <span class="lab-btn-label" id="stateBtnText" data-i18n="startState">Start Heating</span>
+          </button>
+          <button id="stateSpeedBtn" type="button" class="px-2.5 py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold rounded-xl transition-all flex items-center justify-center gap-1 min-w-[3rem]" title="Playback speed">
+            <i data-lucide="gauge" class="w-4 h-4"></i>
+            <span class="lab-speed-label text-sm">1×</span>
+          </button>
+          <button id="stateSkipBtn" type="button" class="px-2.5 py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold rounded-xl transition-all flex items-center justify-center" data-i18n-title="skipToEndTitle">
+            <i data-lucide="skip-forward" class="w-5 h-5"></i>
+          </button>
+          <button id="resetStateBtn" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold rounded-xl transition-all flex items-center justify-center">
+            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Center: Visual Lab & Heating Curve Graph -->
+      <div class="lab-viz lab-viz-dual lg:col-span-4">
+        <!-- Visual View -->
+        <div class="lab-viz-panel bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-3">
+          <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2 shrink-0">
+            <i data-lucide="eye" class="w-5 h-5 text-indigo-600"></i>
+            <span data-i18n="visualLab">Interactive Lab View</span>
+          </h3>
+          <div class="lab-viz-canvas relative bg-gradient-to-b from-slate-900 to-slate-950 rounded-xl overflow-hidden border border-slate-800 shadow-inner">
+            <canvas id="stateCanvas" class="block w-full h-full"></canvas>
+          </div>
+          <!-- Live HUD Bar (Below Animation) -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 flex justify-between items-center text-white text-xs font-semibold shadow-sm">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold" id="liveStatePhase" data-i18n="liveStatePhase">Phase: Ice Heating</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5 font-mono text-[11px] justify-end">
+              <span class="text-orange-400 font-black text-xs" id="liveStateTemp">-10.0 °C</span>
+              <span class="text-slate-300" id="liveStateEnergy">E = 0 J</span>
+              <span class="text-slate-300" id="liveStateTime">t = 0.0 s</span>
+              <span class="text-red-400 hidden" id="liveStateLoss">Heat Loss: 0 W</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="lab-viz-panel lab-viz-panel-chart bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-2">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2 shrink-0">
+            <i data-lucide="trending-up" class="w-5 h-5 text-blue-600"></i>
+            <span data-i18n="heatingCurve">Heating Curve (T vs. Time)</span>
+          </h3>
+          <div class="lab-viz-chart-wrap relative bg-slate-50 rounded-xl border border-slate-100 p-2">
+            <canvas id="stateChartCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Step-by-Step Calculations -->
+      <div class="lab-steps lg:col-span-4 bg-white p-3 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-2.5 overflow-y-auto max-h-[600px] lg:max-h-none lg:h-[calc(100dvh-44px)]">
+        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+          <i data-lucide="binary" class="w-5 h-5 text-emerald-600"></i>
+          <span data-i18n="calcSteps">Calculation Steps</span>
+        </h3>
+        <div id="stateKeyResults" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-mono text-slate-700"></div>
+        <div id="stateSteps" class="space-y-3 text-base leading-snug">
+          <div class="text-slate-400 text-center py-10" data-i18n="clickStartToSee">Click "Start Heating" to see calculation steps.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../shared/floating-controls-panel.js"></script>
+  <script>
+    // Bilingual Dictionary
+    const i18n = {
+      en: {
+        stateControls: "Latent Heat Parameters",
+        stateDesc: "Heat ice to steam and observe latent heat absorption.",
+        substance: "Substance",
+        initTemp: "Initial Temp (T<sub>i</sub>) [°C]",
+        power: "Heater Power (P) [W]",
+        mass: "Mass (m) [kg]",
+        iceMass: "Ice Mass (m) [kg]",
+        initIceTemp: "Initial Ice Temp (T<sub>i</sub>) [°C]",
+        startState: "Start Heating",
+        constants: "Constants Reference",
+        cIce: "c<sub>ice</sub>:",
+        cWater: "c<sub>water</sub>:",
+        lfIce: "l<sub>fusion</sub> (ice):",
+        lvWater: "l<sub>vapor</sub> (water):",
+        heatingCurve: "Heating Curve (T vs. Time)",
+        liveStatePhase: "Phase: Ice Heating",
+        phaseIceHeating: "Phase 1: Ice Heating",
+        phaseIceMelting: "Phase 2: Ice Melting (Solid to Liquid)",
+        phaseWaterHeating: "Phase 3: Water Heating",
+        phaseWaterBoiling: "Phase 4: Water Boiling (Liquid to Gas)",
+        phaseVaporized: "Phase 5: Fully Vaporized",
+        phaseSteamHeating: "Phase 5: Steam Heating (Gas)",
+        sealedSystem: "Sealed System (Closed Container)",
+        sealedSystemDesc: "Keep steam inside to observe steam heating",
+        enableHeatLoss: "Heat Loss to Surroundings",
+        heatLossDesc: "Consider real-world heat exchange",
+        visualLab: "Interactive Lab View",
+        liveStats: "Live Stats",
+        calcSteps: "Calculation Steps",
+        clickStartToSee: "Click 'Start' to see calculation steps.",
+        showControls: "Show parameters",
+        hideControls: "Hide parameters",
+        dragHint: "Drag to move",
+        skipToEndTitle: "Skip to end of simulation"
+      },
+      zhHant: {
+        stateControls: "潛熱實驗參數",
+        stateDesc: "將冰塊加熱至沸騰汽化，觀察相變與潛熱吸收。",
+        substance: "物質種類",
+        initTemp: "初始溫度 (T<sub>i</sub>) [°C]",
+        power: "加熱器功率 (P) [W]",
+        mass: "質量 (m) [kg]",
+        iceMass: "冰塊質量 (m) [kg]",
+        initIceTemp: "冰塊初始溫度 (T<sub>i</sub>) [°C]",
+        startState: "開始加熱",
+        constants: "常用物理常數參考",
+        cIce: "冰的比熱容量 c<sub>ice</sub>:",
+        cWater: "水的比熱容量 c<sub>water</sub>:",
+        lfIce: "冰的熔化潛熱 l<sub>f</sub>:",
+        lvWater: "水的汽化潛熱 l<sub>v</sub>:",
+        heatingCurve: "加熱曲線圖 (溫度對時間)",
+        liveStatePhase: "階段: 冰塊升溫",
+        phaseIceHeating: "階段 1: 冰塊升溫",
+        phaseIceMelting: "階段 2: 冰塊熔化 (固態至液態)",
+        phaseWaterHeating: "階段 3: 水升溫",
+        phaseWaterBoiling: "階段 4: 水沸騰汽化 (液態至氣態)",
+        phaseVaporized: "階段 5: 完全汽化",
+        phaseSteamHeating: "階段 5: 水蒸氣升溫 (氣態)",
+        sealedSystem: "密閉系統 (封口容器)",
+        sealedSystemDesc: "將水蒸氣鎖在容器內以觀察其受熱升溫",
+        enableHeatLoss: "向環境散失熱量",
+        heatLossDesc: "考慮真實物理環境下的熱交換",
+        visualLab: "實驗室實時畫面",
+        liveStats: "實時數據",
+        calcSteps: "計算步驟",
+        clickStartToSee: "點擊「開始」以顯示詳細計算步驟。",
+        showControls: "顯示參數",
+        hideControls: "隱藏參數",
+        dragHint: "拖曳以移動",
+        skipToEndTitle: "跳至模擬結果"
+      }
+    };
+
+    const PLAYBACK_SPEEDS = [1, 2, 4];
+    const STATE_BASE_SIM_SPEED = 4.0;
+
+    const CONTROLS_STORAGE_KEY = 's3phy-change-of-state-controls-collapsed';
+    let floatControlsApi = null;
+
+    function getControlsToggleTitle(collapsed) {
+      return collapsed
+        ? (currentLang === 'en' ? i18n.en.showControls : i18n.zhHant.showControls)
+        : (currentLang === 'en' ? i18n.en.hideControls : i18n.zhHant.hideControls);
+    }
+
+    function initLabControlsCollapse() {
+      const section = document.querySelector('.lab-section');
+      const panel = document.querySelector('.lab-controls');
+      const toggle = document.getElementById('labControlsToggle');
+      const dragHandle = document.getElementById('labControlsDragHandle');
+      if (!section || !panel || !toggle || !window.initFloatingControlsPanel) return;
+
+      floatControlsApi = window.initFloatingControlsPanel({
+        container: section,
+        breakpoint: 768,
+        panel,
+        toggleBtn: toggle,
+        dragHandle,
+        storageKey: CONTROLS_STORAGE_KEY,
+        getToggleTitle: getControlsToggleTitle,
+        onLayoutChange: () => layoutLabCanvases(),
+      });
+    }
+
+    let currentLang = "zhHant";
+
+    function updateLanguage() {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (i18n[currentLang][key]) {
+          el.innerHTML = i18n[currentLang][key];
+        }
+      });
+      
+      document.getElementById("stateMassLabel").textContent = stateState.substance === "water" ? (currentLang === "en" ? "Water/Ice Mass (m) [kg]" : "水/冰質量 (m) [kg]") : (currentLang === "en" ? "Naphthalene Mass (m) [kg]" : "萘質量 (m) [kg]");
+      
+      if (stateState.substance === "water") {
+        document.getElementById("stateInitTempLabel").innerHTML = currentLang === "en" ? "Initial Ice Temp (T<sub>i</sub>) [°C]" : "冰塊初始溫度 (T<sub>i</sub>) [°C]";
+      } else {
+        document.getElementById("stateInitTempLabel").innerHTML = currentLang === "en" ? "Initial Temp (T<sub>i</sub>) [°C]" : "初始溫度 (T<sub>i</sub>) [°C]";
+      }
+      
+      document.getElementById("statePowerLabel").textContent = stateState.mode === "heating" ? (currentLang === "en" ? "Heater Power (P) [W]" : "加熱器功率 (P) [W]") : (currentLang === "en" ? "Cooling Power (P) [W]" : "冷卻功率 (P) [W]");
+
+      const phaseNames = {
+        iceHeating: currentLang === 'en' ? "Phase 1: Ice Heating" : "階段 1: 冰塊升溫",
+        solidHeating: currentLang === 'en' ? "Phase 1: Solid Heating" : "階段 1: 固態升溫",
+        iceMelting: stateState.substance === "water" ? (currentLang === 'en' ? "Phase 2: Ice Melting" : "階段 2: 冰塊熔化") : (currentLang === 'en' ? "Phase 2: Naphthalene Melting" : "階段 2: 萘熔化"),
+        waterHeating: stateState.substance === "water" ? (currentLang === 'en' ? "Phase 3: Water Heating" : "階段 3: 水升溫") : (currentLang === 'en' ? "Phase 3: Liquid Heating" : "階段 3: 液態升溫"),
+        waterBoiling: currentLang === 'en' ? "Phase 4: Water Boiling" : "階段 4: 水沸騰汽化",
+        steamHeating: currentLang === 'en' ? "Phase 5: Steam Heating" : "階段 5: 水蒸氣升溫",
+        vaporized: currentLang === 'en' ? "Phase: Completed" : "階段: 模擬完成",
+        liquidCooling: currentLang === 'en' ? "Phase 1: Liquid Cooling" : "階段 1: 液態冷卻",
+        solidifying: currentLang === 'en' ? "Phase 2: Solidifying (Freezing)" : "階段 2: 凝固中 (放熱)",
+        solidCooling: currentLang === 'en' ? "Phase 3: Solid Cooling" : "階段 3: 固態冷卻"
+      };
+
+      document.getElementById("liveStatePhase").textContent = phaseNames[stateState.phase] || (stateState.mode === "heating" ? (currentLang === 'en' ? "Heating" : "加熱中") : (currentLang === 'en' ? "Cooling" : "冷卻中"));
+
+      if (document.getElementById("liveStateLoss")) {
+        const showLoss = stateState.enableLoss;
+        const currentLoss = Math.round(stateState.heatLossPower || 0);
+        document.getElementById("liveStateLoss").textContent = stateState.mode === "heating" ? 
+          (currentLang === 'en' ? `Heat Loss: ${currentLoss} W` : `熱量流失: ${currentLoss} W`) : 
+          (currentLang === 'en' ? `Heat Dissipation: ${currentLoss} W` : `散熱功率: ${currentLoss} W`);
+      }
+
+      // Action Button
+      if (stateState.running) {
+        document.getElementById("startStateBtn").innerHTML = `<i data-lucide="pause" class="w-5 h-5"></i><span class="lab-btn-label">${currentLang === 'en' ? 'Pause' : '暫停'}</span>`;
+      } else {
+        const isPaused = stateState.timeElapsed > 0;
+        if (isPaused) {
+          const fullText = stateState.mode === "heating" ? (currentLang === 'en' ? 'Resume Heating' : '繼續加熱') : (currentLang === 'en' ? 'Resume Cooling' : '繼續冷卻');
+          const btnText = currentLang === 'en' ? 'Resume' : fullText;
+          const startBtn = document.getElementById("startStateBtn");
+          startBtn.title = fullText;
+          startBtn.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i><span class="lab-btn-label">${btnText}</span>`;
+        } else {
+          const btnText = stateState.mode === "heating" ? (currentLang === 'en' ? 'Start Heating' : '開始加熱') : (currentLang === 'en' ? 'Start Cooling' : '開始冷卻');
+          document.getElementById("startStateBtn").innerHTML = `<i data-lucide="play" class="w-5 h-5"></i><span class="lab-btn-label">${btnText}</span>`;
+        }
+      }
+
+      // Calculation Steps or placeholder
+      if (stateState.timeElapsed > 0) {
+        updateStateSteps();
+      } else {
+        document.getElementById("stateSteps").innerHTML = `<div class="text-slate-400 text-center py-10">${currentLang === 'en' ? 'Click "Start" to see calculation steps.' : '點擊「開始」以顯示詳細計算步驟。'}</div>`;
+      }
+
+      // Update Chart labels/titles
+      if (stateChart) {
+        stateChart.data.datasets[0].label = stateState.substance === "water" ? (currentLang === "en" ? "Water Temp (°C)" : "水溫 (°C)") : (currentLang === "en" ? "Naphthalene Temp (°C)" : "萘溫 (°C)");
+        stateChart.options.scales.x.title.text = currentLang === "en" ? "Time (s)" : "時間 (秒)";
+        stateChart.options.scales.y.title.text = currentLang === "en" ? "Temperature (°C)" : "溫度 (°C)";
+        stateChart.update();
+      }
+      lucide.createIcons();
+      const dragHandle = document.getElementById('labControlsDragHandle');
+      if (dragHandle) {
+        dragHandle.title = currentLang === 'en' ? i18n.en.dragHint : i18n.zhHant.dragHint;
+        dragHandle.setAttribute('aria-label', dragHandle.title);
+      }
+      if (floatControlsApi) {
+        floatControlsApi.setToggleTitleGetter(getControlsToggleTitle);
+      }
+    }
+
+    // Parse language from URL query or default to zhHant
+    const urlParams = new URLSearchParams(window.location.search);
+    const langParam = urlParams.get('lang');
+    if (langParam) {
+      currentLang = (langParam === 'zh-Hant' || langParam === 'zhHant') ? 'zhHant' : 'en';
+    }
+
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 's3phy:lang') {
+        const lang = event.data.lang;
+        currentLang = (lang === 'zh-Hant' || lang === 'zhHant') ? 'zhHant' : 'en';
+        updateLanguage();
+      }
+    });
+
+    const C_WATER = 4200; // J kg⁻¹ °C⁻¹
+    const C_ICE = 2100;   // J kg⁻¹ °C⁻¹
+    const C_COPPER = 390; // J kg⁻¹ °C⁻¹
+    const C_ALUMINUM = 900; // J kg⁻¹ °C⁻¹
+    const C_GLASS = 670;  // J kg⁻¹ °C⁻¹
+    const L_FUSION = 3.34e5; // J kg⁻¹
+    const L_VAPOR = 2.26e6;  // J kg⁻¹
+
+    function formatSciKaTeX(value) {
+      const exp = Math.floor(Math.log10(value));
+      const mantissa = +(value / Math.pow(10, exp)).toFixed(2);
+      return `${mantissa} \\times 10^{${exp}}`;
+    }
+
+    function formatSciHTML(value) {
+      const exp = Math.floor(Math.log10(value));
+      const mantissa = +(value / Math.pow(10, exp)).toFixed(2);
+      return `${mantissa} × 10<sup>${exp}</sup>`;
+    }
+
+    const SUBSTANCES = {
+      water: { nameEn: "Water", nameZh: "水", c: C_WATER },
+      copper: { nameEn: "Copper", nameZh: "銅", c: C_COPPER },
+      aluminum: { nameEn: "Aluminum", nameZh: "鋁", c: C_ALUMINUM },
+      glass: { nameEn: "Glass", nameZh: "玻璃", c: C_GLASS }
+    };
+
+    function getSubName(key) {
+      return currentLang === "en" ? SUBSTANCES[key].nameEn : SUBSTANCES[key].nameZh;
+    }
+
+    // KaTeX Helper
+    function renderLatex(elementId, latex) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        try {
+          katex.render(latex, el, { throwOnError: false, displayMode: true });
+        } catch (e) {
+          el.innerHTML = latex;
+        }
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // TAB 3: CHANGE OF STATE SIMULATION
+    // -------------------------------------------------------------------------
+    const stateCanvas = document.getElementById("stateCanvas");
+    const stateCtx = stateCanvas.getContext("2d");
+    let stateInterval = null;
+    let stateChart = null;
+
+    let stateState = {
+      running: false,
+      timeElapsed: 0,
+      mass: 0.5,
+      power: 1000,
+      initTemp: -10,
+      temp: -10,
+      energy: 0,
+      substance: "water",
+      mode: "heating", // heating or cooling
+      phase: "iceHeating", // iceHeating, iceMelting, waterHeating, waterBoiling, steamHeating, vaporized, liquidCooling, solidifying, solidCooling
+      enableLoss: false,
+      isSealed: false,
+      iceCubes: [],
+      bubbles: [],
+      steamParticles: [],
+      chartData: { labels: [0], temps: [-10] },
+      heatLossPower: 0,
+      playbackSpeed: 1
+    };
+
+    function cyclePlaybackSpeed(state, btn) {
+      const i = PLAYBACK_SPEEDS.indexOf(state.playbackSpeed);
+      state.playbackSpeed = PLAYBACK_SPEEDS[(i + 1) % PLAYBACK_SPEEDS.length];
+      btn.querySelector(".lab-speed-label").textContent = state.playbackSpeed + "×";
+      btn.classList.toggle("bg-amber-100", state.playbackSpeed > 1);
+      btn.classList.toggle("text-amber-800", state.playbackSpeed > 1);
+      btn.classList.toggle("bg-slate-100", state.playbackSpeed === 1);
+      btn.classList.toggle("text-slate-600", state.playbackSpeed === 1);
+    }
+
+    function isStateLabComplete() {
+      return stateState.phase === "vaporized" && stateState.timeElapsed > 0;
+    }
+
+    function updateStateSkipButton() {
+      const skipBtn = document.getElementById("stateSkipBtn");
+      if (skipBtn) skipBtn.disabled = isStateLabComplete();
+    }
+
+    function setStateStartButtonIdle() {
+      const btnText = stateState.mode === "heating"
+        ? (currentLang === "en" ? "Start Heating" : "開始加熱")
+        : (currentLang === "en" ? "Start Cooling" : "開始冷卻");
+      document.getElementById("startStateBtn").innerHTML = `<i data-lucide="play" class="w-5 h-5"></i><span class="lab-btn-label">${btnText}</span>`;
+      lucide.createIcons();
+    }
+
+    function getLabSceneLayout(w, h, opts = {}) {
+      const overhead = opts.overhead ?? 0;
+      const centerX = w / 2;
+      const beakerH = Math.min(h * 0.55, w * 0.50 * (180 / 160));
+      const beakerW = beakerH * (160 / 180);
+      const scale = beakerH / 180;
+      const plateH = 15 * scale;
+      const gap = 20 * scale;
+      const sceneH = overhead + gap + beakerH + plateH;
+      const sceneTop = Math.max(16, (h - sceneH) / 2);
+      const beakerY = sceneTop + overhead + gap + beakerH;
+      return {
+        centerX,
+        beakerX: centerX - beakerW / 2,
+        beakerY,
+        beakerW,
+        beakerH,
+        scale,
+        plateH,
+        sceneTop,
+        gap,
+        plateY: beakerY + 8 * scale,
+      };
+    }
+
+    function initStateIceCubes() {
+      const w = stateCanvas.width / window.devicePixelRatio;
+      const h = stateCanvas.height / window.devicePixelRatio;
+      const layout = getLabSceneLayout(w, h);
+      const { beakerW, scale } = layout;
+      const halfW = (beakerW / 2) * 0.9;
+      stateState.iceCubes = [];
+      const iceCount = Math.max(5, Math.ceil(stateState.mass * 16));
+      for (let i = 0; i < iceCount; i++) {
+        stateState.iceCubes.push({
+          rx: -halfW + Math.random() * (halfW * 2),
+          ry: -15 * scale - Math.random() * 30 * scale,
+          size: (15 + Math.random() * 10) * scale,
+          angle: Math.random() * Math.PI * 2,
+        });
+      }
+    }
+
+    function resizeCanvas(canvas) {
+      const parent = canvas.parentNode;
+      if (!parent) return;
+      const rect = parent.getBoundingClientRect();
+      let w = rect.width;
+      let h = rect.height;
+      if (h <= 0 && w > 0) {
+        h = w * (10 / 16);
+      }
+      if (w <= 0 || h <= 0) return;
+      canvas.width = w * window.devicePixelRatio;
+      canvas.height = h * window.devicePixelRatio;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    }
+
+    function sizeChartContainer() {
+      const wrap = document.querySelector('.lab-viz-chart-wrap');
+      if (!wrap) return;
+      wrap.style.height = '';
+      wrap.style.minHeight = '';
+      wrap.style.maxHeight = '';
+    }
+
+    function layoutLabCanvases() {
+      resizeCanvas(stateCanvas);
+      drawStateLab();
+      sizeChartContainer();
+      if (stateChart) {
+        stateChart.resize();
+        updateChart();
+      } else {
+        initChart();
+      }
+    }
+
+    let layoutObserver = null;
+    function bindLayoutObserver() {
+      const dual = document.querySelector('.lab-viz-dual');
+      if (!dual || layoutObserver || typeof ResizeObserver === 'undefined') return;
+      layoutObserver = new ResizeObserver(() => {
+        requestAnimationFrame(layoutLabCanvases);
+      });
+      layoutObserver.observe(dual);
+    }
+
+    window.addEventListener("resize", () => {
+      layoutLabCanvases();
+    });
+
+    const substanceC_water = {
+      water: {
+        cSolid: C_ICE,
+        cLiquid: C_WATER,
+        cGas: 2000, // Steam SHC approx
+        lFusion: L_FUSION,
+        lVapor: L_VAPOR,
+        tMelting: 0,
+        tBoiling: 100
+      },
+      naphthalene: {
+        cSolid: 1720, // J kg⁻¹ °C⁻¹
+        cLiquid: 2200, // J kg⁻¹ °C⁻¹
+        cGas: 1500, // approx
+        lFusion: 1.49e5, // J kg⁻¹
+        lVapor: 3.0e5, // J kg⁻¹ approx
+        tMelting: 80,
+        tBoiling: 218
+      }
+    };
+
+    function updateStateDefaults() {
+      const sub = document.getElementById("stateSubstance").value;
+      const mode = document.getElementById("stateMode").value;
+      
+      const initTempInput = document.getElementById("stateInitTemp");
+      const sealedContainer = document.getElementById("sealedSystemContainer");
+      const constantsBox = document.getElementById("stateConstantsBox");
+
+      stateState.substance = sub;
+      stateState.mode = mode;
+
+      if (sub === "water") {
+        sealedContainer.classList.remove("hidden");
+        
+        constantsBox.innerHTML = `
+          <div class="flex justify-between"><span data-i18n="cIce">${currentLang === 'en' ? 'c<sub>ice</sub>:' : '冰的比熱容量 c<sub>ice</sub>:'}</span><span>2100 J kg⁻¹ °C⁻¹</span></div>
+          <div class="flex justify-between"><span data-i18n="cWater">${currentLang === 'en' ? 'c<sub>water</sub>:' : '水的比熱容量 c<sub>water</sub>:'}</span><span>4200 J kg⁻¹ °C⁻¹</span></div>
+          <div class="flex justify-between"><span data-i18n="lfIce">${currentLang === 'en' ? 'l<sub>fusion</sub> (ice):' : '冰的熔化潛熱 l<sub>f</sub>:'}</span><span>${formatSciHTML(L_FUSION)} J kg⁻¹</span></div>
+          <div class="flex justify-between"><span data-i18n="lvWater">${currentLang === 'en' ? 'l<sub>vapor</sub> (water):' : '水的汽化潛熱 l<sub>v</sub>:'}</span><span>${formatSciHTML(L_VAPOR)} J kg⁻¹</span></div>
+        `;
+
+        if (mode === "heating") {
+          initTempInput.min = -100;
+          initTempInput.max = 0;
+          initTempInput.value = -10;
+          stateState.phase = "iceHeating";
+        } else {
+          initTempInput.min = 0;
+          initTempInput.max = 100;
+          initTempInput.value = 100;
+          stateState.phase = "liquidCooling";
+        }
+      } else {
+        // Naphthalene
+        sealedContainer.classList.add("hidden");
+        stateState.isSealed = false;
+        document.getElementById("stateSealed").checked = false;
+
+        constantsBox.innerHTML = `
+          <div class="flex justify-between"><span>c<sub>solid</sub> (naph):</span><span>1720 J kg⁻¹ °C⁻¹</span></div>
+          <div class="flex justify-between"><span>c<sub>liquid</sub> (naph):</span><span>2200 J kg⁻¹ °C⁻¹</span></div>
+          <div class="flex justify-between"><span>l<sub>fusion</sub> (naph):</span><span>${formatSciHTML(substanceC_water.naphthalene.lFusion)} J kg⁻¹</span></div>
+          <div class="flex justify-between"><span>Melting Pt (naph):</span><span>80 °C</span></div>
+        `;
+
+        if (mode === "heating") {
+          initTempInput.min = 0;
+          initTempInput.max = 80;
+          initTempInput.value = 20;
+          stateState.phase = "solidHeating";
+        } else {
+          initTempInput.min = 80;
+          initTempInput.max = 150;
+          initTempInput.value = 100;
+          stateState.phase = "liquidCooling";
+        }
+      }
+
+      stateState.initTemp = parseInt(initTempInput.value);
+      stateState.temp = stateState.initTemp;
+      resetStateLab();
+    }
+
+    document.getElementById("stateSubstance").addEventListener("change", updateStateDefaults);
+    document.getElementById("stateMode").addEventListener("change", updateStateDefaults);
+
+    document.getElementById("stateMass").addEventListener("input", (e) => {
+      stateState.mass = parseFloat(e.target.value) || 0.1;
+      resetStateLab();
+    });
+
+    document.getElementById("statePower").addEventListener("input", (e) => {
+      stateState.power = parseInt(e.target.value) || 100;
+      resetStateLab();
+    });
+
+    // Smart clamping change listener for initTemp
+    document.getElementById("stateInitTemp").addEventListener("change", (e) => {
+      let val = parseInt(e.target.value);
+      if (isNaN(val)) {
+        val = stateState.mode === "heating" ? (stateState.substance === "water" ? -10 : 20) : 100;
+      }
+      const min = parseInt(e.target.min);
+      const max = parseInt(e.target.max);
+      if (!isNaN(min) && val < min) val = min;
+      if (!isNaN(max) && val > max) val = max;
+      e.target.value = val;
+      stateState.initTemp = val;
+      stateState.temp = stateState.initTemp;
+      resetStateLab();
+    });
+
+    document.getElementById("stateEnableLoss").addEventListener("change", (e) => {
+      stateState.enableLoss = e.target.checked;
+      const liveLoss = document.getElementById("liveStateLoss");
+      if (stateState.enableLoss) {
+        liveLoss?.classList.remove("hidden");
+      } else {
+        liveLoss?.classList.add("hidden");
+      }
+      resetStateLab();
+    });
+
+    document.getElementById("stateSealed").addEventListener("change", (e) => {
+      stateState.isSealed = e.target.checked;
+      resetStateLab();
+    });
+
+    function resetStateLab() {
+      clearInterval(stateInterval);
+      stateState.running = false;
+      stateState.timeElapsed = 0;
+      stateState.temp = stateState.initTemp;
+      stateState.energy = 0;
+      stateState.bubbles = [];
+      stateState.steamParticles = [];
+      stateState.heatLossPower = 0;
+
+      // Reset phase appropriately
+      if (stateState.mode === "heating") {
+        stateState.phase = stateState.substance === "water" ? "iceHeating" : "solidHeating";
+      } else {
+        stateState.phase = "liquidCooling";
+      }
+
+      // Initialize Ice Cubes visuals (using coordinates relative to centerX and beakerY)
+      if (stateState.substance === "water" && stateState.mode === "heating") {
+        initStateIceCubes();
+      } else {
+        stateState.iceCubes = [];
+      }
+
+      // Reset chart lists
+      stateState.chartData = {
+        labels: [0],
+        temps: [stateState.initTemp]
+      };
+
+      document.getElementById("liveStateTemp").textContent = stateState.temp.toFixed(1) + " °C";
+      document.getElementById("liveStateEnergy").textContent = "E = 0 J";
+      document.getElementById("liveStateTime").textContent = "t = 0.0 s";
+      document.getElementById("liveStateLoss").textContent = "Heat Loss: 0 W";
+
+      const btnText = stateState.mode === "heating" ? (currentLang === 'en' ? 'Start Heating' : '開始加熱') : (currentLang === 'en' ? 'Start Cooling' : '開始冷卻');
+      document.getElementById("startStateBtn").innerHTML = `<i data-lucide="play" class="w-5 h-5"></i><span class="lab-btn-label">${btnText}</span>`;
+      lucide.createIcons();
+      document.getElementById("stateSteps").innerHTML = `<div class="text-slate-400 text-center py-10">${currentLang === 'en' ? 'Click "Start" to see calculation steps.' : '點擊「開始」以顯示詳細計算步驟。'}</div>`;
+
+      initChart();
+      drawStateLab();
+      updateStateSkipButton();
+    }
+
+    function stepStateLab(dt, options) {
+      const thinChart = options && options.thinChart;
+      const lastChartT = options && options.lastChartT != null ? options.lastChartT : stateState.timeElapsed;
+      stateState.timeElapsed += dt;
+
+      const subData = substanceC_water[stateState.substance];
+      const m = stateState.mass;
+      const P = stateState.power;
+      let netPower = P;
+
+      let heatLossPower = 0;
+      if (stateState.enableLoss) {
+        const tempDiff = Math.max(0, stateState.temp - 20);
+        const coolingLossPower = tempDiff * 0.45 * 1.5;
+
+        if (stateState.mode === "heating") {
+          heatLossPower = coolingLossPower;
+          netPower = Math.max(0, P - coolingLossPower);
+        } else {
+          heatLossPower = coolingLossPower;
+          netPower = P + coolingLossPower;
+        }
+      }
+      stateState.heatLossPower = heatLossPower;
+
+      stateState.energy += netPower * dt;
+
+      const E = stateState.energy;
+      const cS = subData.cSolid;
+      const cL = subData.cLiquid;
+      const cG = subData.cGas;
+      const Lf = subData.lFusion;
+      const Lv = subData.lVapor;
+      const Tm = subData.tMelting;
+      const Tb = subData.tBoiling;
+      const Ti = stateState.initTemp;
+      let finished = false;
+
+      if (stateState.mode === "heating") {
+        const E1 = m * cS * (Tm - Ti);
+        const E2 = E1 + m * Lf;
+        const E3 = E2 + m * cL * (Tb - Tm);
+        const E4 = E3 + m * Lv;
+        const E5 = E4 + m * cG * (140 - Tb);
+
+        if (E < E1) {
+          stateState.phase = stateState.substance === "water" ? "iceHeating" : "solidHeating";
+          stateState.temp = Ti + E / (m * cS);
+        } else if (E < E2) {
+          stateState.phase = "iceMelting";
+          stateState.temp = Tm;
+          if (stateState.substance === "water") {
+            const meltFraction = Math.max(0, 1 - (E - E1) / (m * Lf));
+            stateState.iceCubes.forEach(cube => {
+              cube.meltedSize = (cube.size || 20) * Math.pow(meltFraction, 1/3);
+            });
+          }
+        } else if (E < E3) {
+          stateState.phase = stateState.substance === "water" ? "waterHeating" : "liquidHeating";
+          stateState.temp = Tm + (E - E2) / (m * cL);
+          stateState.iceCubes = [];
+        } else if (E < E4) {
+          if (stateState.substance === "water") {
+            stateState.phase = "waterBoiling";
+            stateState.temp = Tb;
+            if (!thinChart && Math.random() < 0.25) {
+              const w = stateCanvas.width / window.devicePixelRatio;
+              const h = stateCanvas.height / window.devicePixelRatio;
+              const { beakerX, beakerY, beakerW, scale } = getLabSceneLayout(w, h);
+              stateState.bubbles.push({
+                x: beakerX + 15 * scale + Math.random() * (beakerW - 30 * scale),
+                y: beakerY - 10 * scale - Math.random() * 15 * scale,
+                r: (1.5 + Math.random() * 4) * scale,
+                speed: 1.2 + Math.random() * 2
+              });
+            }
+          } else {
+            stateState.energy = E3;
+            stateState.temp = Tb;
+            stateState.phase = "vaporized";
+            finished = true;
+          }
+        } else if (stateState.isSealed && E < E5) {
+          stateState.phase = "steamHeating";
+          stateState.temp = Tb + (E - E4) / (m * cG);
+          stateState.bubbles = [];
+        } else {
+          const E_term = stateState.isSealed ? E5 : E4;
+          const excess = E - E_term;
+          stateState.energy = E_term;
+          if (netPower > 0) stateState.timeElapsed -= excess / netPower;
+          stateState.phase = "vaporized";
+          stateState.temp = stateState.isSealed ? 140 : Tb;
+          finished = true;
+        }
+      } else {
+        const E1 = m * cL * (Ti - Tm);
+        const E2 = E1 + m * Lf;
+        const E3 = E2 + m * cS * (Tm - -20);
+
+        if (E < E1) {
+          stateState.phase = "liquidCooling";
+          stateState.temp = Ti - E / (m * cL);
+        } else if (E < E2) {
+          stateState.phase = "solidifying";
+          stateState.temp = Tm;
+        } else if (E < E3) {
+          stateState.phase = "solidCooling";
+          stateState.temp = Tm - (E - E2) / (m * cS);
+        } else {
+          const excess = E - E3;
+          stateState.energy = E3;
+          if (netPower > 0) stateState.timeElapsed -= excess / netPower;
+          stateState.temp = -20;
+          stateState.phase = "vaporized";
+          finished = true;
+        }
+      }
+
+      document.getElementById("liveStateTemp").textContent = stateState.temp.toFixed(1) + " °C";
+      document.getElementById("liveStateEnergy").textContent = `E = ${Math.round(stateState.energy).toLocaleString()} J`;
+      document.getElementById("liveStateTime").textContent = `t = ${stateState.timeElapsed.toFixed(1)} s`;
+
+      if (document.getElementById("liveStateLoss")) {
+        const currentLoss = Math.round(stateState.heatLossPower || 0);
+        document.getElementById("liveStateLoss").textContent = stateState.mode === "heating"
+          ? (currentLang === "en" ? `Heat Loss: ${currentLoss} W` : `熱量流失: ${currentLoss} W`)
+          : (currentLang === "en" ? `Heat Dissipation: ${currentLoss} W` : `散熱功率: ${currentLoss} W`);
+      }
+
+      const shouldPushChart = !thinChart
+        || finished
+        || stateState.chartData.labels.length === 0
+        || (stateState.timeElapsed - lastChartT >= 5);
+      if (shouldPushChart) {
+        stateState.chartData.labels.push(stateState.timeElapsed);
+        stateState.chartData.temps.push(stateState.temp);
+        if (options) options.lastChartT = stateState.timeElapsed;
+      }
+
+      return { finished, lastChartT: options ? options.lastChartT : stateState.timeElapsed };
+    }
+
+    function skipStateLabToEnd() {
+      if (isStateLabComplete()) return;
+      clearInterval(stateInterval);
+      stateState.running = true;
+      const skipOpts = { thinChart: true, lastChartT: stateState.timeElapsed };
+      let guard = 0;
+      let result;
+      do {
+        result = stepStateLab(2.0, skipOpts);
+        guard++;
+      } while (!result.finished && guard < 50000);
+
+      stateState.running = false;
+      setStateStartButtonIdle();
+      updateChart();
+      updateStateSteps();
+      drawStateLab();
+      updateStateSkipButton();
+    }
+
+    document.getElementById("resetStateBtn").addEventListener("click", resetStateLab);
+
+    document.getElementById("stateSpeedBtn").addEventListener("click", () => {
+      cyclePlaybackSpeed(stateState, document.getElementById("stateSpeedBtn"));
+    });
+
+    document.getElementById("stateSkipBtn").addEventListener("click", skipStateLabToEnd);
+
+    document.getElementById("startStateBtn").addEventListener("click", () => {
+      if (stateState.running) {
+        clearInterval(stateInterval);
+        stateState.running = false;
+
+        const fullText = stateState.mode === "heating" ? (currentLang === "en" ? "Resume Heating" : "繼續加熱") : (currentLang === "en" ? "Resume Cooling" : "繼續冷卻");
+        const btnText = currentLang === "en" ? "Resume" : fullText;
+        const startBtn = document.getElementById("startStateBtn");
+        startBtn.title = fullText;
+        startBtn.innerHTML = `<i data-lucide="play" class="w-5 h-5"></i><span class="lab-btn-label">${btnText}</span>`;
+        lucide.createIcons();
+      } else {
+        stateState.running = true;
+        document.getElementById("startStateBtn").innerHTML = `<i data-lucide="pause" class="w-5 h-5"></i><span class="lab-btn-label">${currentLang === "en" ? "Pause" : "暫停"}</span>`;
+        lucide.createIcons();
+        updateStateSkipButton();
+
+        const fps = 30;
+        const timeStep = 1 / fps;
+
+        stateInterval = setInterval(() => {
+          const dt = timeStep * STATE_BASE_SIM_SPEED * stateState.playbackSpeed;
+          const { finished } = stepStateLab(dt);
+          updateChart();
+          updateStateSteps();
+          drawStateLab();
+          if (finished) {
+            clearInterval(stateInterval);
+            stateState.running = false;
+            setStateStartButtonIdle();
+            updateStateSkipButton();
+          }
+        }, 1000 / fps);
+      }
+    });
+
+    function drawStateLab() {
+      const w = stateCanvas.width / window.devicePixelRatio;
+      const h = stateCanvas.height / window.devicePixelRatio;
+      stateCtx.clearRect(0, 0, w, h);
+
+      const layout = getLabSceneLayout(w, h);
+      const { centerX, beakerW, beakerH, beakerY, beakerX, scale, plateH, plateY } = layout;
+      const plateW = 200 * scale;
+
+      // Draw Heating Electric base plate
+      const plateGrad = stateCtx.createLinearGradient(centerX - plateW / 2, plateY, centerX + plateW / 2, plateY + plateH);
+      plateGrad.addColorStop(0, "#334155");
+      plateGrad.addColorStop(0.5, (stateState.running && stateState.mode === "heating") ? "#ef4444" : "#475569");
+      plateGrad.addColorStop(1, "#1e293b");
+      
+      stateCtx.fillStyle = plateGrad;
+      stateCtx.beginPath();
+      stateCtx.roundRect(centerX - plateW / 2, plateY, plateW, plateH, 5 * scale);
+      stateCtx.fill();
+
+      // Glass Beaker Glass Background
+      stateCtx.fillStyle = "rgba(255, 255, 255, 0.05)";
+      stateCtx.beginPath();
+      stateCtx.roundRect(beakerX, beakerY - beakerH, beakerW, beakerH, 4 * scale);
+      stateCtx.fill();
+
+      // Render physical states visuals
+      const p = stateState.phase;
+      const isWater = stateState.substance === "water";
+
+      if (p === "iceHeating" || p === "solidHeating") {
+        // Draw solid ice cubes or naphthalene chunks
+        stateCtx.fillStyle = isWater ? "rgba(186, 230, 253, 0.75)" : "rgba(226, 232, 240, 0.85)";
+        stateCtx.strokeStyle = isWater ? "rgba(14, 165, 233, 0.6)" : "rgba(148, 163, 184, 0.6)";
+        stateCtx.lineWidth = 1.5;
+
+        stateState.iceCubes.forEach(cube => {
+          stateCtx.save();
+          const absX = centerX + cube.rx;
+          const absY = beakerY + cube.ry;
+          stateCtx.translate(absX, absY);
+          stateCtx.rotate(cube.angle);
+          stateCtx.beginPath();
+          stateCtx.roundRect(-cube.size/2, -cube.size/2, cube.size, cube.size, 2 * scale);
+          stateCtx.fill();
+          stateCtx.stroke();
+          stateCtx.restore();
+        });
+      } else if (p === "iceMelting") {
+        // Draw partially melted ice cubes and dynamic water line rising
+        const time = Date.now() * 0.003;
+        stateCtx.fillStyle = "rgba(14, 165, 233, 0.25)";
+        stateCtx.beginPath();
+        stateCtx.moveTo(beakerX + 2, beakerY - 2);
+        
+        const subData = substanceC_water[stateState.substance];
+        const E1 = stateState.mass * subData.cSolid * (subData.tMelting - stateState.initTemp);
+        const meltingProgress = (stateState.energy - E1) / (stateState.mass * subData.lFusion);
+        
+        const waterHeight = beakerH * 0.5 * meltingProgress;
+        const currentLiquidY = beakerY - waterHeight;
+
+        stateCtx.lineTo(beakerX + 2, currentLiquidY);
+        for (let x = beakerX + 2; x <= beakerX + beakerW - 2; x++) {
+          const wave = Math.sin(x * 0.05 + time) * 1.5;
+          stateCtx.lineTo(x, currentLiquidY + wave);
+        }
+        stateCtx.lineTo(beakerX + beakerW - 2, beakerY - 2);
+        stateCtx.closePath();
+        stateCtx.fill();
+
+        // Draw smaller ice cubes inside
+        stateCtx.fillStyle = isWater ? "rgba(186, 230, 253, 0.7)" : "rgba(226, 232, 240, 0.8)";
+        stateCtx.strokeStyle = isWater ? "rgba(14, 165, 233, 0.5)" : "rgba(148, 163, 184, 0.5)";
+        stateState.iceCubes.forEach(cube => {
+          const size = cube.meltedSize !== undefined ? cube.meltedSize : cube.size;
+          if (size > 2) {
+            stateCtx.save();
+            const absX = centerX + cube.rx;
+            const absY = beakerY + cube.ry;
+            stateCtx.translate(absX, absY + (1 - (size/cube.size)) * 20 * scale); // ice sinks a bit as it melts
+            stateCtx.rotate(cube.angle);
+            stateCtx.beginPath();
+            stateCtx.roundRect(-size/2, -size/2, size, size, 2 * scale);
+            stateCtx.fill();
+            stateCtx.stroke();
+            stateCtx.restore();
+          }
+        });
+      } else if (p === "waterHeating" || p === "liquidHeating" || p === "liquidCooling" || p === "solidifying") {
+        // Draw liquid fills
+        const time = Date.now() * 0.004;
+        stateCtx.fillStyle = isWater ? "rgba(14, 165, 233, 0.4)" : "rgba(251, 243, 219, 0.9)";
+        
+        if (p === "solidifying" && !isWater) {
+          // Naphthalene solidifies - make colors dimmer grey
+          stateCtx.fillStyle = "rgba(203, 213, 225, 0.9)";
+        }
+
+        const fillHeight = beakerH * 0.55;
+        const liquidY = beakerY - fillHeight;
+
+        stateCtx.beginPath();
+        stateCtx.moveTo(beakerX + 2, beakerY - 2);
+        stateCtx.lineTo(beakerX + 2, liquidY);
+        
+        const waveAmp = 1 + (stateState.temp - 0) / 100 * 2.5; 
+        for (let x = beakerX + 2; x <= beakerX + beakerW - 2; x++) {
+          const wave = Math.sin(x * 0.05 + time) * waveAmp;
+          stateCtx.lineTo(x, liquidY + wave);
+        }
+        stateCtx.lineTo(beakerX + beakerW - 2, beakerY - 2);
+        stateCtx.closePath();
+        stateCtx.fill();
+
+        if (p === "solidifying") {
+          // Draw solidifying crystalline needles on edges
+          stateCtx.fillStyle = isWater ? "rgba(255,255,255,0.4)" : "rgba(241,245,249,0.9)";
+          stateCtx.fillRect(beakerX + 2, beakerY - 15 * scale, beakerW - 4, 13 * scale);
+          stateCtx.fillRect(beakerX + 2, liquidY, 15 * scale, fillHeight);
+          stateCtx.fillRect(beakerX + beakerW - 17 * scale, liquidY, 15 * scale, fillHeight);
+        }
+      } else if (p === "waterBoiling") {
+        // Draw boiling water filled with bubbles
+        const time = Date.now() * 0.005;
+        stateCtx.fillStyle = "rgba(14, 165, 233, 0.45)";
+        
+        const fillHeight = beakerH * 0.55;
+        const liquidY = beakerY - fillHeight;
+
+        stateCtx.beginPath();
+        stateCtx.moveTo(beakerX + 2, beakerY - 2);
+        stateCtx.lineTo(beakerX + 2, liquidY);
+        for (let x = beakerX + 2; x <= beakerX + beakerW - 2; x++) {
+          const wave = Math.sin(x * 0.06 + time) * 4;
+          stateCtx.lineTo(x, liquidY + wave);
+        }
+        stateCtx.lineTo(beakerX + beakerW - 2, beakerY - 2);
+        stateCtx.closePath();
+        stateCtx.fill();
+
+        // Draw boiling water bubbles rising
+        stateCtx.fillStyle = "rgba(255, 255, 255, 0.4)";
+        stateCtx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+        stateCtx.lineWidth = 1;
+
+        stateState.bubbles.forEach((b, idx) => {
+          b.y -= b.speed;
+          b.x += Math.sin(b.y * 0.1) * 0.5;
+          
+          stateCtx.beginPath();
+          stateCtx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          stateCtx.fill();
+          stateCtx.stroke();
+
+          if (b.y < liquidY) {
+            stateState.bubbles.splice(idx, 1);
+          }
+        });
+
+        // Steam particles above
+        stateCtx.fillStyle = "rgba(255, 255, 255, 0.25)";
+        if (Math.random() < 0.4) {
+          stateState.steamParticles.push({
+            x: beakerX + 10 * scale + Math.random() * (beakerW - 20 * scale),
+            y: liquidY - 5 * scale,
+            vx: -0.5 + Math.random() * 1.0,
+            vy: -1.0 - Math.random() * 2.0,
+            alpha: 1.0
+          });
+        }
+
+        stateState.steamParticles.forEach((sp, idx) => {
+          sp.x += sp.vx;
+          sp.y += sp.vy;
+          sp.alpha -= 0.02;
+          
+          stateCtx.fillStyle = `rgba(226, 232, 240, ${sp.alpha * 0.25})`;
+          stateCtx.beginPath();
+          stateCtx.arc(sp.x, sp.y, (6 + (1 - sp.alpha) * 10) * scale, 0, Math.PI * 2);
+          stateCtx.fill();
+
+          if (sp.alpha <= 0 || sp.y < beakerY - beakerH) {
+            stateState.steamParticles.splice(idx, 1);
+          }
+        });
+      } else if (p === "steamHeating") {
+        // Closed sealed system showing hot gas steam waves
+        const time = Date.now() * 0.003;
+        const tempFactor = Math.min(1.5, Math.max(0.5, (stateState.temp - 100) / 40));
+        stateCtx.strokeStyle = `rgba(239, 68, 68, ${0.15 + tempFactor * 0.15})`;
+        stateCtx.lineWidth = 1.5 + tempFactor;
+        
+        for (let i = 0; i < 6; i++) {
+          const sx = beakerX + 20 * scale + i * 25 * scale + Math.sin(time * (1 + tempFactor * 0.4) + i) * 5 * scale;
+          stateCtx.beginPath();
+          for (let sy = beakerY - 10 * scale; sy >= beakerY - beakerH + 10 * scale; sy -= 15 * scale) {
+            const waveX = sx + Math.sin(sy * 0.05 + time) * 6 * scale;
+            if (sy === beakerY - 10) stateCtx.moveTo(waveX, sy);
+            else stateCtx.lineTo(waveX, sy);
+          }
+          stateCtx.stroke();
+        }
+      } else if (p === "solidCooling") {
+        // Draw solid crystalline block representing cold ice or solid naphthalene
+        stateCtx.fillStyle = isWater ? "rgba(186, 230, 253, 0.45)" : "rgba(226, 232, 240, 0.7)";
+        stateCtx.fillRect(beakerX + 2, beakerY - beakerH * 0.55, beakerW - 4, beakerH * 0.55 - 2);
+        
+        // draw crack details inside solid block representing freezing
+        stateCtx.strokeStyle = "rgba(255,255,255,0.5)";
+        stateCtx.lineWidth = 1.5;
+        stateCtx.beginPath();
+        stateCtx.moveTo(centerX - 40 * scale, beakerY - 20 * scale);
+        stateCtx.lineTo(centerX - 10 * scale, beakerY - 45 * scale);
+        stateCtx.lineTo(centerX + 30 * scale, beakerY - 30 * scale);
+        stateCtx.moveTo(centerX + 20 * scale, beakerY - 55 * scale);
+        stateCtx.lineTo(centerX - 15 * scale, beakerY - 70 * scale);
+        stateCtx.stroke();
+      }
+
+      // Drawing Beaker glass envelope
+      stateCtx.strokeStyle = "rgba(226, 232, 240, 0.9)";
+      stateCtx.lineWidth = 4 * scale;
+      stateCtx.beginPath();
+      stateCtx.ellipse(centerX, beakerY, beakerW / 2, 10 * scale, 0, 0, Math.PI);
+      stateCtx.lineTo(beakerX, beakerY - beakerH);
+      stateCtx.moveTo(beakerX + beakerW, beakerY);
+      stateCtx.lineTo(beakerX + beakerW, beakerY - beakerH);
+      stateCtx.stroke();
+
+      stateCtx.beginPath();
+      stateCtx.ellipse(centerX, beakerY - beakerH, beakerW / 2, 15 * scale, 0, 0, Math.PI * 2);
+      stateCtx.stroke();
+
+      if (stateState.isSealed) {
+        // Sealed Container LID and PRESSURE GAUGE drawing
+        stateCtx.fillStyle = "rgba(71, 85, 105, 0.95)";
+        stateCtx.strokeStyle = "#1e293b";
+        stateCtx.lineWidth = 2.5 * scale;
+        stateCtx.beginPath();
+        stateCtx.ellipse(centerX, beakerY - beakerH, beakerW / 2 + 5 * scale, 12 * scale, 0, 0, Math.PI * 2);
+        stateCtx.fill();
+        stateCtx.stroke();
+
+        // Pressure Gauge display
+        const gaugeX = centerX;
+        const gaugeY = beakerY - beakerH - 25 * scale;
+        const gaugeR = 16 * scale;
+        
+        stateCtx.fillStyle = "#ffffff";
+        stateCtx.strokeStyle = "#334155";
+        stateCtx.lineWidth = 2;
+        stateCtx.beginPath();
+        stateCtx.arc(gaugeX, gaugeY, gaugeR, 0, Math.PI * 2);
+        stateCtx.fill();
+        stateCtx.stroke();
+
+        // Dynamic needle indicator based on pressure (linked directly to temp)
+        const steamPressure = p === "steamHeating" ? 1.0 + (stateState.temp - 100) * 0.08 : 1.0;
+        const needleAngle = Math.PI + (Math.min(3.5, steamPressure) / 4.0) * Math.PI;
+
+        stateCtx.strokeStyle = "#ef4444";
+        stateCtx.lineWidth = 2.5;
+        stateCtx.beginPath();
+        stateCtx.moveTo(gaugeX, gaugeY);
+        stateCtx.lineTo(gaugeX + Math.cos(needleAngle) * (gaugeR - 4), gaugeY + Math.sin(needleAngle) * (gaugeR - 4));
+        stateCtx.stroke();
+
+        // Dial indicator pin
+        stateCtx.fillStyle = "#334155";
+        stateCtx.beginPath();
+        stateCtx.arc(gaugeX, gaugeY, 3, 0, Math.PI * 2);
+        stateCtx.fill();
+      }
+    }
+
+    function chartXYData() {
+      return stateState.chartData.labels.map((t, i) => ({
+        x: t,
+        y: stateState.chartData.temps[i],
+      }));
+    }
+
+    function getChartXMax() {
+      const t = Math.max(stateState.timeElapsed || 0, 1);
+      // Full water heating ~ several minutes; keep headroom so early segment stays visible
+      return Math.max(120, Math.ceil(t * 1.25));
+    }
+
+    function getChartYRange() {
+      const sub = stateState.substance;
+      const mode = stateState.mode;
+      const sealed = stateState.isSealed;
+      if (sub === 'water') {
+        if (mode === 'heating') {
+          return { yMin: -15, yMax: sealed ? 155 : 120 };
+        }
+        return { yMin: -25, yMax: 115 };
+      }
+      if (mode === 'heating') {
+        return { yMin: 0, yMax: 230 };
+      }
+      return { yMin: 0, yMax: 120 };
+    }
+
+    function initChart() {
+      sizeChartContainer();
+      const wrap = document.querySelector('.lab-viz-chart-wrap');
+      if (!wrap || wrap.clientHeight <= 0) {
+        requestAnimationFrame(initChart);
+        return;
+      }
+      const canvas = document.getElementById("stateChartCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      
+      if (stateChart) {
+        stateChart.destroy();
+      }
+
+      const isEn = currentLang === "en";
+      const { yMin, yMax } = getChartYRange();
+      const xMax = getChartXMax();
+
+      stateChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: stateState.substance === "water" ? (isEn ? "Water Temp (°C)" : "水溫 (°C)") : (isEn ? "Naphthalene Temp (°C)" : "萘溫 (°C)"),
+            data: chartXYData(),
+            showLine: true,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+            borderWidth: 2.5,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            tension: 0,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          layout: {
+            padding: { top: 6, right: 10, bottom: 4, left: 2 },
+          },
+          scales: {
+            x: {
+              type: 'linear',
+              position: 'bottom',
+              min: 0,
+              max: xMax,
+              title: {
+                display: true,
+                text: isEn ? "Time (s)" : "時間 (秒)",
+                font: { size: 10, weight: 'bold' }
+              },
+              grid: { color: 'rgba(148, 163, 184, 0.15)' },
+              ticks: { maxTicksLimit: 8 }
+            },
+            y: {
+              min: yMin,
+              max: yMax,
+              grace: 0,
+              title: {
+                display: true,
+                text: isEn ? "Temperature (°C)" : "溫度 (°C)",
+                font: { size: 10, weight: 'bold' }
+              },
+              grid: { color: 'rgba(148, 163, 184, 0.15)' },
+              ticks: { autoSkip: true, maxTicksLimit: 12 }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function updateChart() {
+      if (stateChart) {
+        const { yMin, yMax } = getChartYRange();
+        stateChart.data.datasets[0].data = chartXYData();
+        stateChart.options.scales.x.max = getChartXMax();
+        stateChart.options.scales.y.min = yMin;
+        stateChart.options.scales.y.max = yMax;
+        stateChart.update('none');
+      }
+    }
+
+    function updateStateSteps() {
+      const stepsContainer = document.getElementById("stateSteps");
+      stepsContainer.innerHTML = "";
+
+      const p = stateState.phase;
+      const sub = stateState.substance;
+      const subData = substanceC_water[sub];
+      const m = stateState.mass;
+      const Ti = stateState.initTemp;
+      const Tf = stateState.temp;
+      const E = stateState.energy;
+      const P = stateState.power;
+      const isLive = stateState.running;
+
+      const cS = subData.cSolid;
+      const cL = subData.cLiquid;
+      const cG = subData.cGas;
+      const Lf = subData.lFusion;
+      const Lv = subData.lVapor;
+      const Tm = subData.tMelting;
+      const Tb = subData.tBoiling;
+
+      const keyEl = document.getElementById("stateKeyResults");
+      if (keyEl) {
+        const labels = currentLang === 'en'
+          ? { phase: 'phase', temp: 'T', energy: 'E', time: 't', loss: 'P_loss' }
+          : { phase: '階段', temp: '溫度 T', energy: '能量 E', time: '時間 t', loss: '散失功率 P_loss' };
+
+        keyEl.innerHTML = `
+          <div class="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
+            <span><span class="text-slate-500">${labels.phase}</span> <span class="font-semibold">${p}</span></span>
+            <span><span class="text-slate-500">${labels.temp}</span> <span class="font-extrabold text-orange-700">${Tf.toFixed(1)}°C</span></span>
+            <span><span class="text-slate-500">${labels.energy}</span> <span class="font-bold">${Math.round(E).toLocaleString()} J</span></span>
+            <span><span class="text-slate-500">${labels.time}</span> <span class="font-bold">${stateState.timeElapsed.toFixed(1)} s</span></span>
+            ${stateState.enableLoss ? `<span><span class="text-slate-500">${labels.loss}</span> <span class="font-bold text-red-700">${Math.round(stateState.heatLossPower || 0)} W</span></span>` : ''}
+          </div>
+        `;
+      }
+
+      const E1 = m * cS * (Tm - Ti);
+      const E2 = E1 + m * Lf;
+      const E3 = E2 + m * cL * (Tb - Tm);
+      const E4 = E3 + m * Lv;
+
+      // Define equations for steps cards based on active stage
+      let steps = [];
+
+      function addPhase(titleEn, titleZh, formula, sub, descEn, descZh, active) {
+        steps.push({
+          title: currentLang === 'en' ? titleEn : titleZh,
+          formula,
+          sub,
+          desc: currentLang === 'en' ? descEn : descZh,
+          active
+        });
+      }
+
+      if (stateState.mode === "heating") {
+        // PHASE 1: Solid Heating up
+        addPhase(
+          "Phase 1: Solid Heating (T < Melting Pt)",
+          "階段 1: 固態升溫 (溫度未達熔點)",
+          "E_1 = m \\cdot c_s \\cdot (T_m - T_i)",
+          `E_1 = ${m}\\text{ kg} \\cdot ${cS} \\cdot (${Tm} - (${Ti})) = ${Math.round(E1).toLocaleString()}\\text{ J}`,
+          `Energy required to warm the solid structure to its melting temperature (${Tm} °C). Current temperature: ${Tf.toFixed(1)} °C.`,
+          `將固體加熱至熔點 (${Tm} °C) 所需的能量。當前實時溫度：${Tf.toFixed(1)} °C。`,
+          p === "iceHeating" || p === "solidHeating"
+        );
+
+        // PHASE 2: Melting Latent heat
+        addPhase(
+          "Phase 2: Solid Melting (Latent Heat of Fusion)",
+          "階段 2: 固態熔化 (熔化潛熱吸收)",
+          "E_{\\text{fusion}} = m \\cdot l_f",
+          `E_{\\text{fusion}} = ${m}\\text{ kg} \\cdot ${formatSciKaTeX(Lf)}\\text{ J kg}^{-1} = ${Math.round(m * Lf).toLocaleString()}\\text{ J}`,
+          `Latent heat required to break molecular bonds to change phase from solid to liquid at melting point. Melting progress: ${p === "iceMelting" ? Math.round(Math.min(100, Math.max(0, (E - E1) / (m * Lf) * 100))) : (E >= E2 ? 100 : 0)}%.`,
+          `在熔點時打破分子鍵以將其由固態轉變為液態所需的能量（比熔化潛熱）。熔化進度：${p === "iceMelting" ? Math.round(Math.min(100, Math.max(0, (E - E1) / (m * Lf) * 100))) : (E >= E2 ? 100 : 0)}%。`,
+          p === "iceMelting"
+        );
+
+        // PHASE 3: Liquid Heating up
+        addPhase(
+          "Phase 3: Liquid Heating (Melting Pt to Boiling Pt)",
+          "階段 3: 液態升溫 (熔點至沸點之間)",
+          "E_3 = m \\cdot c_l \\cdot (T_b - T_m)",
+          `E_3 = ${m}\\text{ kg} \\cdot ${cL} \\cdot (${Tb} - ${Tm}) = ${Math.round(E3 - E2).toLocaleString()}\\text{ J}`,
+          `Energy required to heat liquid from melting temperature (${Tm} °C) to boiling temperature (${Tb} °C).`,
+          `將液體從熔點 (${Tm} °C) 加熱至沸點 (${Tb} °C) 所需的能量。`,
+          p === "waterHeating" || p === "liquidHeating"
+        );
+
+        if (sub === "water") {
+          // PHASE 4: Water Boiling Latent Heat
+          addPhase(
+            "Phase 4: Liquid Boiling (Latent Heat of Vaporization)",
+            "階段 4: 液體沸騰 (汽化潛熱吸收)",
+            "E_{\\text{vapor}} = m \\cdot l_v",
+            `E_{\\text{vapor}} = ${m}\\text{ kg} \\cdot ${formatSciKaTeX(Lv)}\\text{ J kg}^{-1} = ${Math.round(m * Lv).toLocaleString()}\\text{ J}`,
+            `Latent heat required to completely transform liquid into gas at boiling point. Boiling progress: ${p === "waterBoiling" ? Math.round(Math.min(100, Math.max(0, (E - E3) / (m * Lv) * 100))) : (E >= E4 ? 100 : 0)}%.`,
+            `在沸點時完全將液體汽化轉變為氣體分子所需的潛熱能。汽化沸騰進度：${p === "waterBoiling" ? Math.round(Math.min(100, Math.max(0, (E - E3) / (m * Lv) * 100))) : (E >= E4 ? 100 : 0)}%。`,
+            p === "waterBoiling"
+          );
+
+          // PHASE 5: Steam Heating (Sealed)
+          addPhase(
+            "Phase 5: Steam Heating (Superheated Gas)",
+            "階段 5: 氣態升溫 (密閉超熱蒸汽)",
+            "E_5 = m \\cdot c_g \\cdot (T_{\\text{final}} - T_b)",
+            `E_5 = ${m}\\text{ kg} \\cdot ${cG} \\cdot (140 - ${Tb}) = ${Math.round(m * cG * (140 - Tb)).toLocaleString()}\\text{ J}`,
+            `Superheating steam gas inside the closed container beyond boiling point up to 140 °C. Only enabled in Sealed System.`,
+            `在密閉容器中將水蒸氣受熱加熱至沸點以上高達 140 °C 的過程（超熱蒸汽）。僅在密閉系統中啟用。`,
+            p === "steamHeating"
+          );
+        }
+      } else {
+        // Cooling mode equations
+        addPhase(
+          "Phase 1: Liquid Cooling (T_i to Solidification Pt)",
+          "階段 1: 液態冷卻 (初始溫度至凝固點)",
+          "E_{\\text{cool1}} = m \\cdot c_l \\cdot (T_i - T_m)",
+          `E_{\\text{cool1}} = ${m}\\text{ kg} \\cdot ${cL} \\cdot (${Ti} - ${Tm}) = ${Math.round(E1).toLocaleString()}\\text{ J}`,
+          `Heat removed to cool liquid down to its freezing / solidification temperature (${Tm} °C).`,
+          `將高溫液體冷卻至凝固點/冰點 (${Tm} °C) 所需釋放移除的熱量。當前溫度：${Tf.toFixed(1)} °C。`,
+          p === "liquidCooling"
+        );
+
+        addPhase(
+          "Phase 2: Solidifying (Latent Heat Released)",
+          "階段 2: 凝固放熱 (物態熔化潛熱釋出)",
+          "E_{\\text{freeze}} = m \\cdot l_f",
+          `E_{\\text{freeze}} = ${m}\\text{ kg} \\cdot ${formatSciKaTeX(Lf)}\\text{ J kg}^{-1} = ${Math.round(m * Lf).toLocaleString()}\\text{ J}`,
+          `Latent heat released as liquid solidifies into crystalline lattice structures. Freezing progress: ${p === "solidifying" ? Math.round(Math.min(100, Math.max(0, (E - E1) / (m * Lf) * 100))) : (E >= E2 ? 100 : 0)}%.`,
+          `液態凝固結晶成固態晶格結構時向外界釋放的潛熱能量。凝固進度：${p === "solidifying" ? Math.round(Math.min(100, Math.max(0, (E - E1) / (m * Lf) * 100))) : (E >= E2 ? 100 : 0)}%。`,
+          p === "solidifying"
+        );
+
+        addPhase(
+          "Phase 3: Solid Cooling (Below Solidification Pt)",
+          "階段 3: 固態冷卻 (低於凝固點繼續放熱)",
+          "E_{\\text{cool2}} = m \\cdot c_s \\cdot (T_m - (-20))",
+          `E_{\\text{cool2}} = ${m}\\text{ kg} \\cdot ${cS} \\cdot (${Tm} - (-20)) = ${Math.round(E3 - E2).toLocaleString()}\\text{ J}`,
+          `Heat removed to further cool down solid below freezing point to -20 °C.`,
+          `將固體物體進一步冷卻放熱至凝固點以下低達 -20 °C 所需散失的熱量。`,
+          p === "solidCooling"
+        );
+      }
+
+      steps.forEach((step) => {
+        const card = document.createElement("div");
+        card.className = `p-3 rounded-xl border transition-all duration-300 space-y-1.5 ${
+          step.active
+            ? 'bg-blue-50/50 border-blue-200 ring-2 ring-blue-500/10 shadow-sm shadow-blue-500/5 translate-x-1 border-l-4 border-l-blue-500'
+            : 'bg-slate-50 border-slate-100'
+        }`;
+        
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "flex justify-between items-center";
+        titleDiv.innerHTML = `
+          <span class="font-bold text-slate-700 text-base">${step.title}</span>
+          ${step.active ? `<span class="text-[9px] bg-blue-500 text-white px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white"></span>${currentLang === 'en' ? 'Active' : '進行中'}</span>` : ''}
+        `;
+        card.appendChild(titleDiv);
+
+        const formulaDiv = document.createElement("div");
+        formulaDiv.className = "my-1 text-center";
+        card.appendChild(formulaDiv);
+
+        const subDiv = document.createElement("div");
+        subDiv.className = "my-1 text-center text-sm text-blue-700 font-semibold";
+        card.appendChild(subDiv);
+
+        stepsContainer.appendChild(card);
+
+        try {
+          katex.render(step.formula, formulaDiv, { throwOnError: false, displayMode: true });
+          katex.render(step.sub, subDiv, { throwOnError: false, displayMode: true });
+        } catch (err) {
+          formulaDiv.textContent = step.formula;
+          subDiv.textContent = step.sub;
+        }
+      });
+    }
+
+    initLabControlsCollapse();
+    bindLayoutObserver();
+    lucide.createIcons();
+    updateLanguage();
+
+    requestAnimationFrame(() => {
+      layoutLabCanvases();
+      updateStateDefaults();
+      setTimeout(layoutLabCanvases, 150);
+      setTimeout(layoutLabCanvases, 400);
+    });
+
+  </script>
+</body>
+</html>

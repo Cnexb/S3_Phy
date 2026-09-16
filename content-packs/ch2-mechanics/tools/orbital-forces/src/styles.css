@@ -1,0 +1,400 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&display=swap');
+
+:root {
+  --bg: #f8f9fa;
+  --panel: #ffffff;
+  --surface2: #f1f3f5;
+  --border: #e8eaed;
+  --text: #1a1c2c;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --success: #16a34a;
+  --orange: #dc2626;
+  --cyan: #2563eb;
+  --btn: #e9ecef;
+  --btn-hover: #dee2e6;
+  --radius: 14px;
+  --font-display: 'Montserrat', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', 'Noto Sans TC', sans-serif;
+  --font-mono: 'Inter', ui-monospace, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 16px 16px;
+  gap: 10px;
+}
+
+.app--embed {
+  max-width: none;
+  padding: 8px 10px 10px;
+}
+
+.app--embed .tagline {
+  display: none;
+}
+
+.app--embed h1 {
+  font-size: 1.15rem;
+}
+
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, #fbbf24, #d97706 55%, transparent 56%),
+    radial-gradient(circle at 70% 60%, #38bdf8, #0284c7);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+  flex-shrink: 0;
+}
+
+.brand h1 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+  background: linear-gradient(90deg, #2563eb, #16a34a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.tagline {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.95rem;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  color: var(--text);
+  border-color: #ced4da;
+  background: var(--btn-hover);
+}
+
+.tab.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.app-main {
+  flex: 1;
+  min-height: 0;
+}
+
+.lab-layout {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 340px);
+  gap: 12px;
+  height: calc(100vh - 120px);
+  max-height: 720px;
+  min-height: 420px;
+}
+
+.canvas-wrap {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #ffffff;
+  background-image:
+    linear-gradient(rgba(26, 28, 44, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 28, 44, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  box-shadow: 0 2px 8px rgba(26, 28, 44, 0.04);
+  min-height: 280px;
+}
+
+.canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.control-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  overflow: auto;
+  box-shadow: 0 2px 8px rgba(26, 28, 44, 0.04);
+}
+
+.panel-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 0.3rem;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.panel-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.slider {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.slider-value {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.slider input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  flex: 1;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--btn);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--btn-hover);
+  border-color: #ced4da;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.formula-block {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem 0.9rem;
+}
+
+.formula-block h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.formula-body .eq {
+  margin: 0.35rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.35;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.35rem;
+}
+
+.formula-body .eq.sub {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.formula-body .eq.result {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Stacked fraction: numerator / vinculum / denominator */
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin: 0 0.12em;
+  line-height: 1.05;
+}
+
+.frac-num,
+.frac-den {
+  padding: 0.05em 0.28em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.frac-bar {
+  display: block;
+  align-self: stretch;
+  height: 0;
+  border-top: 1.75px solid currentColor;
+  margin: 0.06em 0;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.swatch.orange {
+  background: var(--orange);
+}
+
+.swatch.cyan {
+  background: var(--cyan);
+}
+
+@media (max-width: 860px) {
+  .lab-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+  }
+
+  .canvas-wrap {
+    min-height: 300px;
+    aspect-ratio: 4 / 3;
+  }
+
+  .brand h1 {
+    font-size: 1.15rem;
+  }
+
+  .mode-tabs {
+    width: 100%;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}

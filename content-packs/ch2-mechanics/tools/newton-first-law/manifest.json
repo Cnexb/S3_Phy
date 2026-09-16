@@ -1,0 +1,8 @@
+{
+  "slug": "newton-first-law",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

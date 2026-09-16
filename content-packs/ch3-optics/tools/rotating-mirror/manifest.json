@@ -1,0 +1,8 @@
+{
+  "slug": "rotating-mirror",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

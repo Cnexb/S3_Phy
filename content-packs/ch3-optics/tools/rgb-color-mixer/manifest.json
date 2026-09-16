@@ -1,0 +1,8 @@
+{
+  "slug": "rgb-color-mixer",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}
