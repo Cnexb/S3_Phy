@@ -6,6 +6,6 @@ export function createDomesticCircuitLab(t) {
     slug: 'domestic-circuit',
     titleKey: 'tools.domesticCircuit.title',
     className: 'tool-domestic-circuit-lab',
-    extraParams: () => '&v=20260904a',
+    extraParams: () => '&v=20260913_n1_em',
   });
 }

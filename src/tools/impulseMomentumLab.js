@@ -6,6 +6,6 @@ export function createImpulseMomentumLab(t) {
     slug: 'impulse-momentum',
     titleKey: 'tools.impulseMomentum.title',
     className: 'tool-impulse-momentum-lab',
-    extraParams: () => '&v=20260906_impulse_momentum',
+    extraParams: () => '&v=20260913_n1_art2',
   });
 }

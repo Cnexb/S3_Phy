@@ -1,6 +1,36 @@
 import { t } from '../i18n.js';
-import { hydrateNoteCards } from './hubHelpers.js';
+import { cleanupLabInstance, hydrateNoteCards, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell, resolveHubSection } from '../hubShell.js';
+import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
+
+const TOOL_STORAGE_KEY = 's3phy.gas.tool';
+const TOOL_ORDER = [
+  'boylesLaw',
+  'charlesLaw',
+  'pressureLaw',
+  'connectedContainers',
+  'kineticTheory',
+];
+
+const TOOL_LOADERS = {
+  boylesLaw: () => import('../tools/boylesLawLab.js').then((m) => m.createBoylesLawLab),
+  charlesLaw: () => import('../tools/charlesLawLab.js').then((m) => m.createCharlesLawLab),
+  pressureLaw: () => import('../tools/pressureLawLab.js').then((m) => m.createPressureLawLab),
+  connectedContainers: () =>
+    import('../tools/connectedContainersLab.js').then((m) => m.createConnectedContainersLab),
+  kineticTheory: () => import('../tools/kineticTheoryLab.js').then((m) => m.createKineticTheoryLab),
+};
+
+function toolLabel(id) {
+  const map = {
+    boylesLaw: 'tools.boylesLaw.title',
+    charlesLaw: 'tools.charlesLaw.title',
+    pressureLaw: 'tools.pressureLaw.title',
+    connectedContainers: 'tools.connectedContainers.title',
+    kineticTheory: 'tools.kineticTheory.title',
+  };
+  return t(map[id] || id);
+}
 
 const GAS_TOPICS = [
   {
@@ -19,8 +49,25 @@ const GAS_TOPICS = [
 
 export function mountGasHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.gas.section'));
+  let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'boylesLaw');
   let shell = null;
   let el = { main: null };
+  let activeLabInstance = null;
+
+  function cleanupActiveLab() {
+    cleanupLabInstance(activeLabInstance);
+    activeLabInstance = null;
+  }
+
+  async function mountActiveTool(stage) {
+    stage.innerHTML = '';
+    cleanupActiveLab();
+    const loader = TOOL_LOADERS[toolId];
+    if (!loader) return;
+    const factory = await loader();
+    activeLabInstance = factory(t);
+    stage.appendChild(activeLabInstance);
+  }
 
   function renderMain() {
     if (!el.main) return;
@@ -28,6 +75,25 @@ export function mountGasHub(root) {
     if (section === 'notes') {
       el.main.innerHTML = renderNotesShell();
       void hydrateNotes();
+    } else if (section === 'tools') {
+      el.main.innerHTML = renderToolsShell({
+        toolOrder: TOOL_ORDER,
+        toolId,
+        getLabel: toolLabel,
+        t,
+      });
+      hydrateToolsShell(root, {
+        getLabel: toolLabel,
+        t,
+        getActiveToolId: () => toolId,
+        onSelectTool: (id) => {
+          toolId = id;
+          saveToolId(TOOL_STORAGE_KEY, toolId);
+        },
+        mountTool: (stage) => {
+          void mountActiveTool(stage);
+        },
+      });
     } else {
       el.main.innerHTML = `
         <section class="panel">
@@ -51,6 +117,9 @@ export function mountGasHub(root) {
       subtitleKey: 'strand.gas.subtitle',
       activeSection: section,
       onSection: (id) => {
+        if (section === 'tools' && id !== 'tools') {
+          cleanupActiveLab();
+        }
         section = id;
         sessionStorage.setItem('s3phy.gas.section', id);
         shell.updateSection(section);
@@ -95,6 +164,7 @@ export function mountGasHub(root) {
 
   return () => {
     window.removeEventListener('s3phy:lang', onLangChange);
+    cleanupActiveLab();
     shell?.destroy();
   };
 }

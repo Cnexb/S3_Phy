@@ -1,0 +1,1 @@
+function r(e){var t,i;const a=String(e).replace(/^\.\//,"").replace(/^\//,""),n=typeof window<"u"&&((t=window.location)!=null&&t.origin)?window.location.origin:"http://127.0.0.1",o=(typeof window<"u"&&((i=window.location)!=null&&i.pathname)?window.location.pathname:"/").match(/^(.*\/dist)(?:\/|$)/),c=o?`${n}${o[1]}/`:`${n}/`;return new URL(a,c).href}export{r as e};

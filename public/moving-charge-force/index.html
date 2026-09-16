@@ -8,30 +8,31 @@
   <script src="../shared/s3phy-embed-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="../shared/s3phy-n1-draw.js"></script>
   <style>
     :root {
-      --bg: #f3f7fb;
-      --bg2: #e8eef6;
+      --bg: #f8fafc;
+      --bg2: #f8fafc;
       --surface: #ffffff;
-      --surface2: #f5f8fc;
-      --ink: #152033;
-      --muted: #5b6b82;
-      --line: #c9d5e6;
-      --teal: #0d7c74;
-      --teal-bright: #12a396;
-      --force: #e05a2b;
-      --field: #2b6be4;
-      --vel: #168a56;
-      --ok: #168a56;
-      --warn: #c36b2e;
-      --danger: #d14343;
-      --plus: #e24535;
-      --minus: #3b82f6;
+      --surface2: #f1f5f9;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --teal: #6366f1;
+      --teal-bright: #818cf8;
+      --force: #f97316;
+      --field: #6366f1;
+      --vel: #0284c7;
+      --ok: #059669;
+      --warn: #f97316;
+      --danger: #e11d48;
+      --plus: #f97316;
+      --minus: #0284c7;
       --radius: 16px;
-      --shadow: 0 12px 36px rgba(21, 32, 51, 0.08);
-      --font: "Nunito Sans", system-ui, sans-serif;
-      --display: "Bricolage Grotesque", Georgia, sans-serif;
+      --shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+      --font: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+      --display: "Montserrat", "Plus Jakarta Sans", sans-serif;
       --mono: "JetBrains Mono", ui-monospace, monospace;
     }
 
@@ -53,9 +54,8 @@
       font-family: var(--font);
       color: var(--ink);
       background:
-        radial-gradient(1000px 520px at 0% -5%, rgba(18, 163, 150, 0.14), transparent 55%),
-        radial-gradient(900px 480px at 100% 0%, rgba(224, 90, 43, 0.10), transparent 50%),
-        radial-gradient(700px 400px at 50% 100%, rgba(43, 107, 228, 0.08), transparent 55%),
+        radial-gradient(1000px 520px at 25% -5%, rgba(99, 102, 241, 0.16), transparent 55%),
+        radial-gradient(900px 480px at 75% 0%, rgba(5, 150, 105, 0.10), transparent 50%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       min-height: 100vh;
       line-height: 1.5;
@@ -146,10 +146,10 @@
     }
     .tab:hover { color: var(--ink); border-color: #a8bdd6; }
     .tab.active {
-      background: linear-gradient(135deg, #e8f8f4, #dff0fb);
-      color: var(--ink);
-      border-color: var(--teal-bright);
-      box-shadow: 0 0 0 1px rgba(18, 163, 150, 0.22);
+      background: #eef2ff;
+      color: #312e81;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.28);
     }
 
     .panel { display: none; }
@@ -425,18 +425,18 @@
       <div class="brand">
         <div class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 40 40" fill="none">
-            <circle cx="12" cy="12" r="2.2" fill="#2b6be4"/>
-            <circle cx="20" cy="12" r="2.2" fill="#2b6be4"/>
-            <circle cx="28" cy="12" r="2.2" fill="#2b6be4"/>
-            <circle cx="12" cy="20" r="2.2" fill="#2b6be4"/>
-            <circle cx="20" cy="20" r="2.2" fill="#2b6be4"/>
-            <circle cx="28" cy="20" r="2.2" fill="#2b6be4"/>
-            <circle cx="12" cy="28" r="2.2" fill="#2b6be4"/>
-            <circle cx="20" cy="28" r="2.2" fill="#2b6be4"/>
-            <circle cx="28" cy="28" r="2.2" fill="#2b6be4"/>
-            <path d="M8 32 L32 8" stroke="#e05a2b" stroke-width="2.4" stroke-linecap="round"/>
-            <path d="M28 8 L32 8 L32 12" stroke="#e05a2b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="10" cy="34" r="3.2" fill="#168a56"/>
+            <circle cx="12" cy="12" r="2.2" fill="#0284c7"/>
+            <circle cx="20" cy="12" r="2.2" fill="#0284c7"/>
+            <circle cx="28" cy="12" r="2.2" fill="#0284c7"/>
+            <circle cx="12" cy="20" r="2.2" fill="#0284c7"/>
+            <circle cx="20" cy="20" r="2.2" fill="#0284c7"/>
+            <circle cx="28" cy="20" r="2.2" fill="#0284c7"/>
+            <circle cx="12" cy="28" r="2.2" fill="#0284c7"/>
+            <circle cx="20" cy="28" r="2.2" fill="#0284c7"/>
+            <circle cx="28" cy="28" r="2.2" fill="#0284c7"/>
+            <path d="M8 32 L32 8" stroke="#f97316" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M28 8 L32 8 L32 12" stroke="#f97316" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="10" cy="34" r="3.2" fill="#0284c7"/>
           </svg>
         </div>
         <div>
@@ -495,9 +495,9 @@
                 <canvas id="circleCanvas" width="1000" height="600"></canvas>
               </div>
               <div class="legend">
-                <span><i style="background:#2b6be4"></i><span class="en">B into paper · F<sub>B</sub> to centre</span><span class="zh">B 入紙 · F<sub>B</sub> 指向中心</span></span>
-                <span><i style="background:#e05a2b"></i><span class="en">path / radius r</span><span class="zh">軌跡 / 半徑 r</span></span>
-                <span><i style="background:#168a56"></i><span class="en">v velocity</span><span class="zh">v 速度</span></span>
+                <span><i style="background:#0284c7"></i><span class="en">B into paper · F<sub>B</sub> to centre</span><span class="zh">B 入紙 · F<sub>B</sub> 指向中心</span></span>
+                <span><i style="background:#f97316"></i><span class="en">path / radius r</span><span class="zh">軌跡 / 半徑 r</span></span>
+                <span><i style="background:#0284c7"></i><span class="en">v velocity</span><span class="zh">v 速度</span></span>
               </div>
             </div>
             <div class="controls">
@@ -577,8 +577,8 @@
               </div>
               <div class="legend">
                 <span><i style="background:#c99212"></i><span class="en">E (plates)</span><span class="zh">E（平行板）</span></span>
-                <span><i style="background:#2b6be4"></i><span class="en">B into paper</span><span class="zh">B 入紙</span></span>
-                <span><i style="background:#168a56"></i><span class="en">beam</span><span class="zh">粒子束</span></span>
+                <span><i style="background:#0284c7"></i><span class="en">B into paper</span><span class="zh">B 入紙</span></span>
+                <span><i style="background:#0284c7"></i><span class="en">beam</span><span class="zh">粒子束</span></span>
               </div>
             </div>
             <div class="controls">
@@ -859,8 +859,10 @@
     const w = cCanvas.width, h = cCanvas.height;
     const ctx = cctx;
     ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
 
-    ctx.strokeStyle = "rgba(43,107,228,0.28)";
+    ctx.strokeStyle = "rgba(99,102,241,0.28)";
     ctx.lineWidth = 1.2;
     for (let x = 30; x < w; x += 32) {
       for (let y = 40; y < h; y += 32) {
@@ -877,7 +879,7 @@
     const cx = w / 2, cy = h / 2 + 8;
 
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = "#e05a2b";
+    ctx.strokeStyle = "#f97316";
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.arc(cx, cy, rpx, 0, Math.PI * 2);
@@ -902,10 +904,10 @@
 
     ctx.beginPath();
     ctx.arc(px, py, 10, 0, Math.PI * 2);
-    ctx.fillStyle = cState.part === "proton" ? "#e24535" : "#3b82f6";
+    ctx.fillStyle = cState.part === "proton" ? "#f97316" : "#0284c7";
     ctx.fill();
     ctx.fillStyle = "#fff";
-    ctx.font = "700 13px Bricolage Grotesque";
+    ctx.font = "700 13px Montserrat";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(cState.part === "proton" ? "+" : "−", px, py + 1);
@@ -914,19 +916,19 @@
     const fLen = Math.min(58, Math.max(28, rpx * 0.5));
     const fEndX = px + ((cx - px) / rpx) * fLen;
     const fEndY = py + ((cy - py) / rpx) * fLen;
-    drawArrow(ctx, px, py, fEndX, fEndY, "#2b6be4", 2.8);
+    drawArrow(ctx, px, py, fEndX, fEndY, "#f97316", 2.8);
     {
       const mx = (px + fEndX) / 2;
       const my = (py + fEndY) / 2;
       // offset label slightly off the arrow
       const ox = -((cy - py) / rpx) * 14;
       const oy = ((cx - px) / rpx) * 14;
-      ctx.fillStyle = "#2b6be4";
+      ctx.fillStyle = "#f97316";
       ctx.textAlign = "left";
       ctx.textBaseline = "alphabetic";
-      ctx.font = "700 15px Nunito Sans";
+      ctx.font = "700 15px Plus Jakarta Sans";
       ctx.fillText("F", mx + ox - 2, my + oy + 4);
-      ctx.font = "700 10px Nunito Sans";
+      ctx.font = "700 10px Plus Jakarta Sans";
       ctx.fillText("B", mx + ox + 9, my + oy + 7);
     }
 
@@ -935,9 +937,9 @@
     const ty = Math.cos(sense * ang) * sense;
     const vEndX = px + tx * 50;
     const vEndY = py + ty * 50;
-    drawArrow(ctx, px, py, vEndX, vEndY, "#168a56", 2.5);
-    ctx.fillStyle = "#168a56";
-    ctx.font = "700 15px Nunito Sans";
+    drawArrow(ctx, px, py, vEndX, vEndY, "#0284c7", 2.5);
+    ctx.fillStyle = "#0284c7";
+    ctx.font = "700 15px Plus Jakarta Sans";
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
     ctx.fillText("v", vEndX + tx * 10, vEndY + ty * 10 - 2);
@@ -945,7 +947,7 @@
     ctx.fillStyle = "rgba(21,32,51,0.75)";
     ctx.fillRect(0, 0, w, 34);
     ctx.fillStyle = "#fff";
-    ctx.font = "600 13px Nunito Sans";
+    ctx.font = "600 13px Plus Jakarta Sans";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(
@@ -1091,6 +1093,8 @@
     const w = sCanvas.width, h = sCanvas.height;
     const ctx = sctx;
     ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
 
     const { top, bot, mid, gapPx, dCm } = selectorPlateLayout();
     const plateH = 14;
@@ -1102,7 +1106,7 @@
     ctx.fillRect(plateL, top - plateH, plateW, plateH);
     ctx.fillRect(plateL, bot, plateW, plateH);
     ctx.fillStyle = "#6b4e28";
-    ctx.font = "700 13px Nunito Sans";
+    ctx.font = "700 13px Plus Jakarta Sans";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
     ctx.fillText("+", plateL + 8, top - plateH - 6);
@@ -1129,7 +1133,7 @@
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
     ctx.fillText("d", bx + 8, mid - 8);
-    ctx.font = "600 11px Nunito Sans";
+    ctx.font = "600 11px Plus Jakarta Sans";
     ctx.fillText(dCm.toFixed(1) + " cm", bx + 8, mid + 10);
 
     // E arrows down between plates
@@ -1154,7 +1158,7 @@
     ctx.fillRect(0, mid - 18, 100, 36);
     ctx.fillRect(w - 100, mid - 18, 100, 36);
     ctx.fillStyle = "#7dffd4";
-    ctx.font = "600 11px Nunito Sans";
+    ctx.font = "600 11px Plus Jakarta Sans";
     ctx.textAlign = "center";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(isZh() ? "入口" : "in", 50, mid + 4);
@@ -1172,10 +1176,10 @@
     sAnim.particles.forEach((pt) => {
       ctx.beginPath();
       ctx.arc(pt.x, pt.y, 7, 0, Math.PI * 2);
-      ctx.fillStyle = "#3b82f6";
+      ctx.fillStyle = "#0284c7";
       ctx.fill();
       ctx.fillStyle = "#fff";
-      ctx.font = "700 11px Bricolage Grotesque";
+      ctx.font = "700 11px Montserrat";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("−", pt.x, pt.y + 1);
@@ -1184,7 +1188,7 @@
     ctx.fillStyle = "rgba(21,32,51,0.75)";
     ctx.fillRect(0, 0, w, 34);
     ctx.fillStyle = "#fff";
-    ctx.font = "600 13px Nunito Sans";
+    ctx.font = "600 13px Plus Jakarta Sans";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(isZh() ? "平行板間 E 向下 · B 入紙 · 電子向右" : "E downward between plates · B into · electron →", 14, 22);
@@ -1290,7 +1294,7 @@
     const L = massLayout(p);
     const { box, cx, cy, rpx, entryX, entryY, exitX, exitY } = L;
 
-    ctx.fillStyle = "#f7f9fc";
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, w, h);
 
     // Magnetic field chamber (red border, × = B into paper)
@@ -1310,8 +1314,8 @@
         ctx.stroke();
       }
     }
-    ctx.fillStyle = "#2b6be4";
-    ctx.font = "700 12px Nunito Sans";
+    ctx.fillStyle = "#0284c7";
+    ctx.font = "700 12px Plus Jakarta Sans";
     ctx.textAlign = "right";
     ctx.fillText("B ×", box.x + box.w - 12, box.y + 22);
 
@@ -1330,7 +1334,7 @@
     ctx.fillRect(box.x - 10, entryY - 6, 10, 12);
     ctx.fillRect(box.x - 10, exitY - 6, 10, 12);
     ctx.fillStyle = "#5b6575";
-    ctx.font = "600 11px Nunito Sans";
+    ctx.font = "600 11px Plus Jakarta Sans";
     ctx.textAlign = "right";
     ctx.fillText(isZh() ? "入口" : "in", box.x - 14, entryY + 4);
     ctx.fillText(isZh() ? "探測" : "det", box.x - 14, exitY + 4);
@@ -1343,7 +1347,7 @@
     ctx.lineTo(cx + rpx, cy);
     ctx.stroke();
     ctx.setLineDash([]);
-    ctx.fillStyle = "#e05a2b";
+    ctx.fillStyle = "#f97316";
     ctx.font = "700 13px JetBrains Mono";
     ctx.textAlign = "center";
     ctx.fillText("r", cx + rpx / 2, cy - 8);
@@ -1353,9 +1357,9 @@
     const vNorm = (vSlider - 2) / 6;
     const vLen = 28 + vNorm * 90; // 28 → 118 px
     const vThick = 2 + vNorm * 2.5;
-    drawArrow(ctx, entryX + 14, entryY, entryX + 14 + vLen, entryY, "#168a56", vThick);
-    ctx.fillStyle = "#168a56";
-    ctx.font = "700 " + Math.round(13 + vNorm * 6) + "px Nunito Sans";
+    drawArrow(ctx, entryX + 14, entryY, entryX + 14 + vLen, entryY, "#0284c7", vThick);
+    ctx.fillStyle = "#0284c7";
+    ctx.font = "700 " + Math.round(13 + vNorm * 6) + "px Plus Jakarta Sans";
     ctx.textAlign = "left";
     ctx.textBaseline = "bottom";
     ctx.fillText("v", entryX + 18 + vLen, entryY - 4);
@@ -1377,7 +1381,7 @@
     ctx.lineWidth = 1.5 + mNorm;
     ctx.stroke();
     ctx.fillStyle = "#fff";
-    ctx.font = "700 " + plusSize + "px Bricolage Grotesque";
+    ctx.font = "700 " + plusSize + "px Montserrat";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("+", px, py + 1);
@@ -1385,7 +1389,7 @@
     ctx.fillStyle = "rgba(21,32,51,0.75)";
     ctx.fillRect(0, 0, w, 34);
     ctx.fillStyle = "#fff";
-    ctx.font = "600 13px Nunito Sans";
+    ctx.font = "600 13px Plus Jakarta Sans";
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
     ctx.fillText(

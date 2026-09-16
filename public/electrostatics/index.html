@@ -8,27 +8,28 @@
   <script src="../shared/s3phy-embed-init.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="../shared/s3phy-n1-draw.js"></script>
   <style>
     :root {
-      --bg: #ffffff;
-      --bg2: #f7f9fc;
+      --bg: #f8fafc;
+      --bg2: #f8fafc;
       --surface: #ffffff;
-      --surface2: #f3f6fb;
-      --ink: #1a2333;
-      --muted: #5c6b82;
-      --line: #d8e0ec;
-      --plus: #e24535;
-      --minus: #3b82f6;
-      --accent: #c99212;
-      --ok: #1a9a5c;
-      --warn: #d97706;
-      --danger: #e24535;
+      --surface2: #f1f5f9;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --plus: #f97316;
+      --minus: #0284c7;
+      --accent: #6366f1;
+      --ok: #059669;
+      --warn: #f97316;
+      --danger: #e11d48;
       --radius: 16px;
-      --shadow: 0 10px 32px rgba(26, 35, 51, 0.08);
-      --font: "IBM Plex Sans", system-ui, sans-serif;
-      --display: "Fraunces", Georgia, serif;
-      --mono: "IBM Plex Mono", ui-monospace, monospace;
+      --shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+      --font: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
+      --display: "Montserrat", "Plus Jakarta Sans", sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
     }
 
     * { box-sizing: border-box; }
@@ -50,9 +51,8 @@
       font-family: var(--font);
       color: var(--ink);
       background:
-        radial-gradient(900px 500px at 0% 0%, rgba(59, 130, 246, 0.10), transparent 55%),
-        radial-gradient(800px 480px at 100% 10%, rgba(226, 69, 53, 0.08), transparent 50%),
-        radial-gradient(700px 400px at 50% 100%, rgba(201, 146, 18, 0.07), transparent 55%),
+        radial-gradient(900px 500px at 25% 0%, rgba(99, 102, 241, 0.16), transparent 55%),
+        radial-gradient(800px 480px at 75% 0%, rgba(5, 150, 105, 0.10), transparent 50%),
         linear-gradient(180deg, var(--bg), var(--bg2));
       min-height: 100vh;
       line-height: 1.5;
@@ -167,10 +167,10 @@
     }
     .tab:hover { color: var(--ink); border-color: #b8c5d8; }
     .tab.active {
-      background: linear-gradient(135deg, #fff8e8, #fff3d1);
-      color: var(--ink);
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(201, 146, 18, 0.2);
+      background: #eef2ff;
+      color: #312e81;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.28);
     }
 
     .panel { display: none; }
@@ -226,8 +226,7 @@
 
     .stage {
       position: relative;
-      background:
-        linear-gradient(180deg, #ffffff, #f5f8fc);
+      background: #ffffff;
       border: 1px solid var(--line);
       border-radius: 14px;
       min-height: 340px;
@@ -316,28 +315,28 @@
     }
     .btn:hover { border-color: #b8c5d8; background: #e9eef6; }
     .btn.primary {
-      background: linear-gradient(135deg, #f0c14b, #d4a52e);
-      color: #1a1408;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: #fff;
       border-color: transparent;
     }
     .btn.primary:hover { filter: brightness(1.05); }
     .btn.blue {
-      background: #faf0d2;
-      color: #8a6808;
-      border-color: #e0c06a;
+      background: #e0f2fe;
+      color: #0369a1;
+      border-color: #7dd3fc;
     }
-    .btn.blue:hover { background: #f5e4b0; border-color: #d4a52e; }
+    .btn.blue:hover { background: #bae6fd; border-color: #38bdf8; }
     .btn.blue.active-mode {
-      background: linear-gradient(135deg, #f0c14b, #d4a52e);
-      color: #1a1408;
-      border-color: #c99212;
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+      color: #fff;
+      border-color: #4338ca;
     }
-    .btn.ghost-plus { border-color: rgba(226,69,53,0.4); color: var(--plus); background: rgba(226,69,53,0.06); }
-    .btn.ghost-minus { border-color: rgba(59,130,246,0.4); color: var(--minus); background: rgba(59,130,246,0.06); }
+    .btn.ghost-plus { border-color: rgba(249,115,22,0.45); color: var(--plus); background: rgba(249,115,22,0.08); }
+    .btn.ghost-minus { border-color: rgba(2,132,199,0.45); color: var(--minus); background: rgba(2,132,199,0.08); }
     .btn.active-mode {
-      background: rgba(201, 146, 18, 0.12);
+      background: rgba(99, 102, 241, 0.12);
       border-color: var(--accent);
-      color: #8a6808;
+      color: #3730a3;
     }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
@@ -373,12 +372,12 @@
       border-left: 1px solid var(--line);
     }
     .probe-sign-toggle .btn.active-mode.ghost-plus {
-      background: rgba(226, 69, 53, 0.16);
+      background: rgba(249, 115, 22, 0.16);
       border-color: var(--plus);
       color: var(--plus);
     }
     .probe-sign-toggle .btn.active-mode.ghost-minus {
-      background: rgba(59, 130, 246, 0.18);
+      background: rgba(2, 132, 199, 0.16);
       border-color: var(--minus);
       color: var(--minus);
     }
@@ -493,30 +492,30 @@
       font-size: 0.82rem;
       font-weight: 900;
       line-height: 1;
-      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
       transition: opacity 0.35s ease;
       will-change: left, top;
       border-radius: 50%;
-      border: 2px solid #111;
-      color: #111;
-      box-shadow: none;
+      border: 2px solid rgba(255,255,255,0.7);
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
       pointer-events: none;
     }
     .particle.proton {
-      background: #ff9a9a;
+      background: #f97316;
     }
     .particle.electron {
-      background: #90caf9;
+      background: #0284c7;
     }
     .obj.pos {
-      background: #fff;
-      border-color: var(--plus);
-      box-shadow: 0 0 0 6px rgba(226, 69, 53, 0.08), 0 10px 28px rgba(226, 69, 53, 0.12);
+      background: linear-gradient(180deg, #fb923c, #c2410c);
+      border-color: #ea580c;
+      box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.14), 0 10px 28px rgba(249, 115, 22, 0.22);
     }
     .obj.neg {
-      background: #fff;
-      border-color: var(--minus);
-      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.08), 0 10px 28px rgba(59, 130, 246, 0.12);
+      background: linear-gradient(180deg, #38bdf8, #0369a1);
+      border-color: #0284c7;
+      box-shadow: 0 0 0 6px rgba(2, 132, 199, 0.14), 0 10px 28px rgba(2, 132, 199, 0.22);
     }
     .obj.neu {
       background: #fff;
@@ -634,8 +633,8 @@
       place-items: center;
       font-weight: 800;
       font-size: 1rem;
-      background: #c99212;
-      color: #1a1408;
+      background: #6366f1;
+      color: #fff;
     }
     .charge-step-guide.done .charge-step-num {
       background: var(--ok);
@@ -1906,22 +1905,28 @@
   }
 
   function drawSphere(ctx, x, y, r, charge, label, omitSigns) {
-    const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
-    if (charge === "pos") {
-      g.addColorStop(0, "#ff8a7a"); g.addColorStop(1, "#c44536");
-    } else if (charge === "neg") {
-      g.addColorStop(0, "#90caf9"); g.addColorStop(1, "#3b82f6");
+    const Art = window.N1Art;
+    if (Art) {
+      if (charge === "pos") Art.drawGlowingBall(ctx, x, y, r, "#fb923c", "#c2410c", "#ea580c");
+      else if (charge === "neg") Art.drawGlowingBall(ctx, x, y, r, Art.C.skyTop, Art.C.skyBot, Art.C.skyStroke);
+      else Art.drawGlowingBall(ctx, x, y, r, Art.C.slateTop, Art.C.slateBot, Art.C.slateStroke);
     } else {
-      // neu / polarized — overall neutral body color
-      g.addColorStop(0, "#dfe6f0"); g.addColorStop(1, "#8a9bb5");
+      const g = ctx.createRadialGradient(x - r * 0.3, y - r * 0.3, r * 0.1, x, y, r);
+      if (charge === "pos") {
+        g.addColorStop(0, "#fb923c"); g.addColorStop(1, "#c2410c");
+      } else if (charge === "neg") {
+        g.addColorStop(0, "#38bdf8"); g.addColorStop(1, "#0369a1");
+      } else {
+        g.addColorStop(0, "#e2e8f0"); g.addColorStop(1, "#64748b");
+      }
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.55)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
     }
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = g;
-    ctx.fill();
-    ctx.strokeStyle = "rgba(255,255,255,0.45)";
-    ctx.lineWidth = 2;
-    ctx.stroke();
     if (!omitSigns) {
       ctx.save();
       ctx.beginPath();
@@ -1931,8 +1936,8 @@
       ctx.restore();
     }
     if (label) {
-      ctx.font = "600 13px IBM Plex Sans, sans-serif";
-      ctx.fillStyle = "#5c6b82";
+      ctx.font = "800 13px Plus Jakarta Sans, sans-serif";
+      ctx.fillStyle = "#64748b";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(label, x, y + r + 18);
@@ -1945,12 +1950,12 @@
     const isPlus = kind === "pos" || kind === "proton" || kind === "+";
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = isPlus ? "#ff9a9a" : "#90caf9";
+    ctx.fillStyle = isPlus ? "#f97316" : "#0284c7";
     ctx.fill();
     ctx.lineWidth = Math.max(1.5, radius * 0.22);
-    ctx.strokeStyle = "#111";
+    ctx.strokeStyle = "rgba(255,255,255,0.7)";
     ctx.stroke();
-    ctx.strokeStyle = "#111";
+    ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = Math.max(1.6, radius * 0.28);
     ctx.lineCap = "round";
     const arm = radius * 0.42;
@@ -2074,9 +2079,9 @@
   const CLOTH_PLUS_SLOTS = [0, 2, 4, 6, 8];
 
   function chargePalette(charge) {
-    if (charge === "pos") return { a: "#ff9a8c", b: "#c44536", stroke: "#9e2f24", kind: "pos" };
-    if (charge === "neg") return { a: "#90caf9", b: "#3b82f6", stroke: "#1d4ed8", kind: "neg" };
-    return { a: "#e8e2da", b: "#a89a8a", stroke: "#6a5c4e", kind: "neu" };
+    if (charge === "pos") return { a: "#fb923c", b: "#c2410c", stroke: "#ea580c", kind: "pos" };
+    if (charge === "neg") return { a: "#38bdf8", b: "#0369a1", stroke: "#0284c7", kind: "neg" };
+    return { a: "#e2e8f0", b: "#64748b", stroke: "#475569", kind: "neu" };
   }
 
   /** Soft folded cloth / rag for friction lab */
@@ -2153,7 +2158,7 @@
     ctx.restore();
 
     if (label) {
-      ctx.font = "600 13px IBM Plex Sans, sans-serif";
+      ctx.font = "600 13px Plus Jakarta Sans, sans-serif";
       ctx.fillStyle = "#5c6b82";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -2214,7 +2219,7 @@
     ctx.restore();
 
     if (label) {
-      ctx.font = "600 13px IBM Plex Sans, sans-serif";
+      ctx.font = "600 13px Plus Jakarta Sans, sans-serif";
       ctx.fillStyle = "#5c6b82";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -2294,21 +2299,21 @@
     points.forEach(([x, y]) => {
       ctx.beginPath();
       ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = "#3b82f6";
+      ctx.fillStyle = "#0284c7";
       ctx.fill();
     });
     ctx.globalAlpha = 1;
   }
 
   function drawPlusRod(ctx, x, y) {
-    ctx.fillStyle = "#e24535";
+    ctx.fillStyle = "#f97316";
     roundRect(ctx, x, y - 60, 28, 120, 8);
     ctx.fill();
     drawChargeBadge(ctx, x + 14, y, "pos", 9);
   }
 
   function drawEarthSymbol(ctx, x, y) {
-    ctx.strokeStyle = "#3b82f6";
+    ctx.strokeStyle = "#0284c7";
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(x - 40, y); ctx.lineTo(x + 40, y);
@@ -2316,7 +2321,7 @@
     ctx.moveTo(x - 16, y + 24); ctx.lineTo(x + 16, y + 24);
     ctx.stroke();
     ctx.fillStyle = "#5c6b82";
-    ctx.font = "600 12px IBM Plex Sans";
+    ctx.font = "600 12px Plus Jakarta Sans";
     ctx.textAlign = "center";
     ctx.fillText(t("Earth", "地球"), x, y + 42);
   }
@@ -2542,7 +2547,9 @@
     const ctx = chargeCtx;
     const W = chargeCv.width, H = chargeCv.height;
     ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = "rgba(216,224,236,0.9)";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = "rgba(148,163,184,0.28)";
     ctx.lineWidth = 1;
     for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
     for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
@@ -2560,15 +2567,15 @@
       drawFrictionRubCharges(ctx, f);
       if ((f.jumping >= 0 || (f.transferred > 0 && f.transferred < frictionElectronCount())) &&
           chargePhase !== "done" && isClothTouchingRod(f.clothX, f.clothY)) {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 14px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 14px Plus Jakarta Sans";
         ctx.textAlign = "center";
         const midX = (f.clothX + ROD_FIXED.x) / 2;
         ctx.fillText(t("e⁻ jumping: rod → cloth", "e⁻ 跳躍：棒 → 布"), midX, 100);
       }
       if (chargePhase === "done") {
         ctx.fillStyle = "#1a9a5c";
-        ctx.font = "600 14px IBM Plex Sans";
+        ctx.font = "600 14px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("|Q| equal & opposite", "|Q| 等量異號"), 320, 330);
       }
@@ -2579,14 +2586,14 @@
       drawSphere(ctx, s.aX, s.aY, 55, aCh, "A");
       drawSphere(ctx, SHARE_B.x, SHARE_B.y, SHARE_B.r, bCh, "B");
       if (transferAnim) {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 13px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 13px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("electrons share / redistribute", "電子重新分配"), 320, 110);
       }
       if (chargePhase === "done") {
         ctx.fillStyle = "#1a9a5c";
-        ctx.font = "600 13px IBM Plex Sans";
+        ctx.font = "600 13px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("Both positively charged, evenly", "兩者均勻帶正電"), 320, 330);
       }
@@ -2596,7 +2603,7 @@
       if (chargePhase === "done") ch = "neu";
       drawSphere(ctx, EARTH_OBJ.x, EARTH_OBJ.y, EARTH_OBJ.r, ch, t("Object", "物體"));
       drawEarthSymbol(ctx, 280, 330);
-      ctx.strokeStyle = "#3b82f6";
+      ctx.strokeStyle = "#0284c7";
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(EARTH_OBJ.x, EARTH_OBJ.y + EARTH_OBJ.r);
@@ -2604,17 +2611,17 @@
       ctx.stroke();
       ctx.beginPath();
       ctx.arc(e.tipX, e.tipY, 8, 0, Math.PI * 2);
-      ctx.fillStyle = e.connected ? "#1a9a5c" : "#c99212";
+      ctx.fillStyle = e.connected ? "#059669" : "#f97316";
       ctx.fill();
       if (transferAnim) {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 13px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 13px Plus Jakarta Sans";
         ctx.textAlign = "left";
         ctx.fillText(t("e⁻ flow UP from Earth", "電子由地球向上流入"), 340, 270);
       }
       if (chargePhase === "done") {
         ctx.fillStyle = "#1a9a5c";
-        ctx.font = "600 14px IBM Plex Sans";
+        ctx.font = "600 14px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("Fully discharged → neutral", "完全放電 → 中性"), 280, 90);
       }
@@ -2645,41 +2652,41 @@
       drawSphere(ctx, ind.yX, 200, IND_R, chR, "Y", omit);
       drawInductionAnimCharges(ctx);
       if (animating && inductionAnim.kind === "polarize") {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 12px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 12px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("X and Y as one conductor — charges shifting…", "X、Y 如同一導體 — 電荷正在移動…"), 340, 90);
       } else if (animating && inductionAnim.kind === "separate") {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 12px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 12px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("+ spread on Y · − stay on left of X", "+ 在 Y 均勻分佈 · − 留在 X 左側"), 340, 90);
       } else if (animating && inductionAnim.kind === "redistribute") {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 12px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 12px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("Rod gone — electrons spreading evenly on X", "棒已離開 — 電子在 X 上均勻散開"), 340, 90);
       } else if ((ind.polarDone || near) && !ind.separated && chargePhase === "action" && !transferAnim) {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 12px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 12px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("One conductor: − on X (near rod), + on Y (far end)", "同一導體：− 在 X（近棒），+ 在 Y（遠端）"), 340, 90);
       }
       if (ind.separated && !ind.complete && chargePhase === "action" && !transferAnim && !animating) {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 13px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 13px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("Separated — − still on left of X (rod near). Now remove the rod.", "已分開 — 棒仍近，− 仍在 X 左側。現在移走棒。"), 340, 90);
       }
       if (transferAnim) {
-        ctx.fillStyle = "#c99212";
-        ctx.font = "600 13px IBM Plex Sans";
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "600 13px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("Charges locked in on X and Y", "電荷已固定在 X 與 Y"), 340, 90);
       }
       if (chargePhase === "done") {
         ctx.fillStyle = "#1a9a5c";
-        ctx.font = "600 14px IBM Plex Sans";
+        ctx.font = "600 14px Plus Jakarta Sans";
         ctx.textAlign = "center";
         ctx.fillText(t("X negative · Y positive — permanently", "X 負 · Y 正 — 永久帶電"), 340, 330);
       }
@@ -2760,7 +2767,7 @@
         ex: s.aX + 10 + (i % 3) * 8,
         ey: s.aY - 20 + Math.floor(i / 3) * 24,
         sym: "−",
-        color: "#3b82f6",
+        color: "#0284c7",
         delay: i * 0.12,
         arc: 22
       });
@@ -2782,7 +2789,7 @@
         ex: EARTH_OBJ.x + ((i % 3) - 1) * 14,
         ey: EARTH_OBJ.y + 10 + (i % 4) * 8,
         sym: "−",
-        color: "#3b82f6",
+        color: "#0284c7",
         delay: i * 0.11,
         arc: 8
       });
@@ -3106,8 +3113,8 @@
           // tiny arrow head
         }
       }
-      const hue = 195 + (si % 5) * 6;
-      ctx.strokeStyle = `hsla(${hue}, 55%, 42%, 0.5)`;
+      const hue = 210 + (si % 5) * 4;
+      ctx.strokeStyle = `hsla(${hue}, 82%, 48%, 0.45)`;
       ctx.stroke();
     });
   }
@@ -3116,7 +3123,7 @@
     const ctx = fieldCtx;
     const W = fieldCv.width, H = fieldCv.height;
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = "#f7fafc";
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, W, H);
 
     drawFieldLines(ctx);
@@ -3127,15 +3134,21 @@
 
     // test charge probe — yellow +q / blue −q
     const isPlusProbe = probeSign > 0;
-    ctx.beginPath();
-    ctx.arc(probe.x, probe.y, 14, 0, Math.PI * 2);
-    ctx.fillStyle = isPlusProbe ? "#f0c14b" : "#7dd3fc";
-    ctx.fill();
-    ctx.strokeStyle = "#1a2333";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.fillStyle = "#1a2333";
-    ctx.font = "bold 18px Fraunces, serif";
+    const Art = window.N1Art;
+    if (Art) {
+      if (isPlusProbe) Art.drawGlowingBall(ctx, probe.x, probe.y, 14, "#fb923c", "#c2410c", "#ea580c");
+      else Art.drawGlowingBall(ctx, probe.x, probe.y, 14, Art.C.skyTop, Art.C.skyBot, Art.C.skyStroke);
+    } else {
+      ctx.beginPath();
+      ctx.arc(probe.x, probe.y, 14, 0, Math.PI * 2);
+      ctx.fillStyle = isPlusProbe ? "#f97316" : "#38bdf8";
+      ctx.fill();
+      ctx.strokeStyle = "#0f172a";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "800 18px Montserrat, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(isPlusProbe ? "+" : "−", probe.x, probe.y + 1);
@@ -3154,8 +3167,8 @@
       const y1 = probe.y + uy * probeR;
       const x2 = probe.x + ux * (probeR + len);
       const y2 = probe.y + uy * (probeR + len);
-      ctx.strokeStyle = isPlusProbe ? "#c99212" : "#0284c7";
-      ctx.fillStyle = isPlusProbe ? "#c99212" : "#0284c7";
+      ctx.strokeStyle = isPlusProbe ? "#f97316" : "#0284c7";
+      ctx.fillStyle = isPlusProbe ? "#f97316" : "#0284c7";
       ctx.lineWidth = thick;
       arrow(ctx, x1, y1, x2, y2, head);
     }

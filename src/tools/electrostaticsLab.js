@@ -6,6 +6,6 @@ export function createElectrostaticsLab(t) {
     slug: 'electrostatics',
     titleKey: 'tools.electrostatics.title',
     className: 'tool-electrostatics-lab',
-    extraParams: () => '&v=20260904a',
+    extraParams: () => '&v=20260913_n1_em',
   });
 }

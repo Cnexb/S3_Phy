@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function r(a){return e(a,{slug:"boyles-law",titleKey:"tools.boylesLaw.title",className:"tool-boyles-law-lab",extraParams:()=>"&v=20260913_zip_labs"})}export{r as createBoylesLawLab};

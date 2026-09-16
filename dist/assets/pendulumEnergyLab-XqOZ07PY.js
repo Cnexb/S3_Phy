@@ -1,0 +1,1 @@
+import{c as r}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function m(e){return r(e,{slug:"pendulum-energy",titleKey:"tools.pendulumEnergy.title",className:"tool-pendulum-energy-lab",extraParams:()=>"&v=20260913_zip_labs"})}export{m as createPendulumEnergyLab};

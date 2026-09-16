@@ -6,6 +6,6 @@ export function createCrashTrackMomentumLab(t) {
     slug: 'crash-track-momentum',
     titleKey: 'tools.crashTrackMomentum.title',
     className: 'tool-crash-track-momentum-lab',
-    extraParams: () => '&v=20260906_crash_track',
+    extraParams: () => '&v=20260913_n1_art2',
   });
 }

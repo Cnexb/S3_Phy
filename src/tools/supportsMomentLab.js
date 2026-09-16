@@ -6,6 +6,6 @@ export function createSupportsMomentLab(t) {
     slug: 'supports-moment',
     titleKey: 'tools.supportsMoment.title',
     className: 'tool-supports-moment-lab',
-    extraParams: () => '&v=20260906_supports_moment',
+    extraParams: () => '&v=20260913_n1_art2',
   });
 }

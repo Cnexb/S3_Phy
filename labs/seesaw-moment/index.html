@@ -5,176 +5,65 @@
   <meta name="google" content="notranslate">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <link rel="stylesheet" href="../shared/s3phy-n1-sim.css">
   <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="../shared/s3phy-n1-draw.js"></script>
   <title>Seesaw Lab | Moment Lab</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;0,6..12,700;1,6..12,400&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #f6efe4; --bg2: #efe4d2; --surface: #fffdf8; --surface2: #f7f0e4;
-      --ink: #2a2118; --muted: #6b5b4a; --line: #e0d0b6; --wood: #b45309;
-      --teal: #0f7a6c; --ccw: #0f7a6c; --cw: #c2410c; --ok: #168a56; --danger: #c2410c;
-      --radius: 16px; --shadow: 0 12px 36px rgba(42, 33, 24, 0.08);
-      --font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
-      --display: "Bricolage Grotesque", Georgia, sans-serif;
-      --mono: "JetBrains Mono", ui-monospace, monospace;
-    }
-    html, body { height: 100%; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: var(--font); color: var(--ink);
-      background:
-        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
-        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-      min-height: 100vh; min-height: 100dvh; line-height: 1.5;
-    }
-    button, input { font: inherit; color: inherit; }
-    button { cursor: pointer; }
-    .wrap {
-      width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
-      margin: 0 auto; padding: 0.7rem 0.8rem 0.8rem;
-      display: flex; flex-direction: column;
-    }
-    .wrap:fullscreen, .wrap:-webkit-full-screen {
-      width: 100%; height: 100%; padding: 0.7rem 0.8rem 0.8rem;
-      background:
-        radial-gradient(900px 480px at 0% -8%, rgba(20, 163, 145, 0.16), transparent 55%),
-        radial-gradient(800px 420px at 100% 0%, rgba(194, 65, 12, 0.10), transparent 50%),
-        linear-gradient(180deg, var(--bg), var(--bg2));
-    }
-    .topbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; flex-shrink: 0; }
-    .brand { display: flex; align-items: center; gap: 0.9rem; }
-    .brand-mark {
-      width: 54px; height: 54px; border-radius: 14px;
-      background: linear-gradient(145deg, #fff, #f3e6d2);
-      border: 1px solid var(--line); display: grid; place-items: center; box-shadow: var(--shadow);
-    }
-    .brand h1 { margin: 0; font-family: var(--display); font-size: clamp(1.3rem, 2.6vw, 1.85rem); letter-spacing: -0.02em; line-height: 1.15; }
-    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.92rem; }
-    .top-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; }
-    .lang-toggle { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
-    .lang-toggle button { border: 0; background: transparent; padding: 0.42rem 0.85rem; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.85rem; }
-    .lang-toggle button.active { background: var(--ink); color: #fff; }
-    html[lang="en"] .zh { display: none !important; }
-    html[lang="zh-HK"] .en { display: none !important; }
-    .card {
-      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-      box-shadow: var(--shadow); overflow: hidden; flex: 1; min-height: 0;
-      display: flex; flex-direction: column;
-    }
-    .card-hd { padding: 0.75rem 1rem 0.55rem; border-bottom: 1px solid var(--line); flex-shrink: 0; }
-    .card-hd h2 { margin: 0; font-family: var(--display); font-size: 1.15rem; }
-    .card-hd p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.9rem; }
-    .card-bd { padding: 0.8rem; flex: 1; min-height: 0; display: flex; flex-direction: column; }
-    .stage {
-      position: relative; flex: 1; min-height: 0; height: 100%;
-      background: linear-gradient(180deg, #eaf4fb 0%, #eaf4fb 62%, #d8eccf 62%, #cfe6c4 100%);
-      border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
-    }
-    canvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
-    canvas.dragging { cursor: grabbing; }
-    .hint-chip { position: absolute; left: 10px; top: 10px; z-index: 2; background: rgba(255,253,248,0.92); border: 1px solid var(--line); border-radius: 999px; padding: 0.28rem 0.7rem; font-size: 0.78rem; font-weight: 700; color: var(--muted); }
-    .side {
-      position: absolute; top: 10px; right: 10px; z-index: 3;
-      width: min(260px, calc(100% - 24px));
-      display: flex; flex-direction: column; align-items: flex-end; gap: 0.45rem;
-    }
-    .fs-btn { border: 1px solid var(--line); background: rgba(255,253,248,0.92); border-radius: 10px; padding: 0.35rem 0.55rem; font-weight: 700; font-size: 0.75rem; }
-    .box {
-      width: 100%; background: rgba(255,253,248,0.94); border: 1px solid var(--line);
-      border-radius: 12px; padding: 0.75rem; box-shadow: var(--shadow);
-    }
-    .box h3 { margin: 0 0 0.45rem; font-size: 0.82rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
-    .eq { font-family: var(--mono); font-size: 0.92rem; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.55rem 0.65rem; margin: 0 0 0.45rem; }
-    .readout { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
-    .stat { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 0.45rem 0.55rem; }
-    .stat span { display: block; font-size: 0.72rem; color: var(--muted); font-weight: 700; }
-    .stat b { font-family: var(--mono); font-size: 1.02rem; }
-    .stat.cw b { color: var(--cw); } .stat.ccw b { color: var(--ccw); }
-    .stat.ok b { color: var(--ok); } .stat.bad b { color: var(--danger); }
-    .slider-wrap { display: flex; flex-direction: column; gap: 0.18rem; margin: 0.45rem 0; }
-    .slider-head { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; }
-    .slider-head em { font-style: normal; font-family: var(--mono); color: var(--wood); }
-    input[type=range] { width: 100%; accent-color: var(--wood); cursor: pointer; }
-    .btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-    .btn { border: 0; background: var(--ink); color: #fff; border-radius: 10px; padding: 0.48rem 0.75rem; font-weight: 700; font-size: 0.82rem; }
-    .btn.sec { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-    .btn.teal { background: var(--teal); }
-    .btn:hover { filter: brightness(1.08); }
-    .coach { border-left: 4px solid var(--teal); background: #fff; border-radius: 10px; padding: 0.6rem 0.7rem; font-size: 0.88rem; }
-    .coach.alert { border-left-color: var(--danger); }
-    .coach.win { border-left-color: var(--ok); background: #f0faf4; }
-    .bars { display: flex; flex-direction: column; gap: 0.35rem; }
-    .bar-row { display: grid; grid-template-columns: 102px 1fr 58px; gap: 0.35rem; align-items: center; font-size: 0.75rem; font-weight: 700; }
-    .bar { height: 10px; background: #efe4d2; border-radius: 99px; overflow: hidden; }
-    .bar > i { display: block; height: 100%; border-radius: 99px; width: 0; transition: width 0.15s; }
-    .bar > i.ccw { background: var(--ccw); } .bar > i.cw { background: var(--cw); }
-    .btn[disabled] { opacity: 0.4; cursor: not-allowed; filter: none; }
-    .predict { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; margin-top: 0.45rem; }
-    .predict input { width: 88px; border: 1px solid var(--line); border-radius: 8px; padding: 0.35rem 0.45rem; font-family: var(--mono); }
-
-    html.s3phy-embed,
-    html.s3phy-embed body {
-      height: 100% !important;
-      min-height: 0 !important;
-      overflow: hidden !important;
-    }
-    html.s3phy-embed .wrap {
-      min-height: 0 !important;
-      height: 100% !important;
-    }
-    html.s3phy-embed .lang-toggle { display: none; }
-    html.s3phy-embed .fs-btn { display: none !important; }
-</style>
+    .n1-sim canvas { cursor: grab; }
+  </style>
 </head>
-<body>
+<body class="n1-lab n1-sim">
+  <div class="deco-blob deco-blob--accent" aria-hidden="true"></div>
+  <div class="deco-blob deco-blob--emerald" aria-hidden="true"></div>
   <div class="wrap" id="labShell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <path d="M6 24h20" stroke="#7c3f12" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M16 24V8" stroke="#b45309" stroke-width="2.4" stroke-linecap="round"/>
-            <circle cx="16" cy="8" r="3.2" fill="#0f7a6c"/>
-            <path d="M16 8c7 1 11 6 12 12" stroke="#c2410c" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+    <header class="n1-header">
+      <div class="n1-header__inner">
+        <div class="n1-brand">
+          <div class="n1-icon" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none">
+              <path d="M5 20h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 20V8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              <rect x="5" y="6" width="7" height="5" rx="1.6" fill="#34d399"/>
+              <rect x="16" y="6" width="7" height="5" rx="1.6" fill="#38bdf8"/>
+            </svg>
+          </div>
+          <div>
+            <div class="n1-title-row">
+              <h1><span class="en">Seesaw Lab</span><span class="zh">蹺蹺板實驗</span></h1>
+              <span class="n1-chip">HKDSE Physics</span>
+            </div>
+            <p class="n1-sub"><span class="en">HKDSE Physics · Moments · clockwise = anticlockwise</span><span class="zh">HKDSE 物理 · 力矩 · 順時針 = 逆時針</span></p>
+          </div>
         </div>
-        <div>
-          <h1><span class="en">Seesaw Lab</span><span class="zh">蹺蹺板實驗</span></h1>
-          <p><span class="en">Principle of moments · clockwise = anticlockwise</span><span class="zh">力矩原理 · 順時針 = 逆時針</span></p>
-        </div>
-      </div>
-      <div class="top-actions">
-        <div class="lang-toggle" role="group" aria-label="Language">
+        <div class="lang" role="group" aria-label="Language">
           <button type="button" id="btn-en" class="active">EN</button>
-          <button type="button" id="btn-zh">中文</button>
+          <button type="button" id="btn-zh">繁中</button>
         </div>
       </div>
     </header>
-
-    <section class="card">
+    <main class="n1-main">
+    <section class="card glass-panel">
       <div class="card-hd">
         <h2><span class="en">Principle of moments</span><span class="zh">力矩原理</span></h2>
         <p>
-          <span class="en">A body balances when total clockwise moment equals total anticlockwise moment. Drag the two friends along the plank.</span>
-          <span class="zh">當順時針力矩總和等於逆時針力矩總和，物體便平衡。拖曳兩位朋友沿木板移動。</span>
+          <span class="en">A body balances when total clockwise moment equals total anticlockwise moment. Drag the two boxes along the plank.</span>
+          <span class="zh">當順時針力矩總和等於逆時針力矩總和，物體便平衡。拖曳兩箱沿木板移動。</span>
         </p>
       </div>
       <div class="card-bd">
         <div class="stage">
-          <div class="hint-chip"><span class="en">Drag the people along the plank.</span><span class="zh">沿木板拖曳人物。</span></div>
+          <div class="hint-chip"><span class="en">Drag the boxes along the plank.</span><span class="zh">沿木板拖曳箱子。</span></div>
           <div class="side">
             <button class="fs-btn" type="button" data-fs="labShell"><span class="en">Full screen</span><span class="zh">全螢幕</span></button>
             <div class="box">
               <h3><span class="en">Weights</span><span class="zh">重量</span></h3>
               <div class="slider-wrap">
-                <div class="slider-head"><span class="en">Left friend</span><span class="zh">左邊朋友</span><em id="val-WL">450 N</em></div>
+                <div class="slider-head"><span class="en">Left box</span><span class="zh">左箱</span><em id="val-WL">450 N</em></div>
                 <input type="range" id="sl-WL" min="150" max="800" step="10" value="450" />
               </div>
               <div class="slider-wrap">
-                <div class="slider-head"><span class="en">Right friend</span><span class="zh">右邊朋友</span><em id="val-WR">300 N</em></div>
+                <div class="slider-head"><span class="en">Right box</span><span class="zh">右箱</span><em id="val-WR">300 N</em></div>
                 <input type="range" id="sl-WR" min="150" max="800" step="10" value="300" />
               </div>
               <div class="btns">
@@ -186,7 +75,7 @@
         </div>
       </div>
     </section>
-
+    </main>
   </div>
 <script>
 (function () {
@@ -241,45 +130,15 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     return { ctx, w, h };
   }
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-  }
-  function drawPerson(ctx, x, y, scale, shirt, flip) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(flip ? -1 : 1, 1);
-    ctx.lineJoin = "round"; ctx.lineCap = "round";
-    ctx.strokeStyle = "#2a2118"; ctx.lineWidth = 2;
-    ctx.fillStyle = "#f3d2b3";
-    ctx.beginPath(); ctx.arc(0, -38 * scale, 8 * scale, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = shirt;
-    ctx.beginPath();
-    ctx.moveTo(-10 * scale, -28 * scale); ctx.lineTo(10 * scale, -28 * scale);
-    ctx.lineTo(8 * scale, -6 * scale); ctx.lineTo(-8 * scale, -6 * scale);
-    ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(-8 * scale, -6 * scale); ctx.lineTo(-6 * scale, 8 * scale);
-    ctx.moveTo(8 * scale, -6 * scale); ctx.lineTo(6 * scale, 8 * scale);
-    ctx.stroke();
-    ctx.restore();
+  const Art = window.N1Art;
+  function roundRect(ctx, x, y, w, h, r) { Art.roundRect(ctx, x, y, w, h, r); }
+  function drawMassBox(ctx, x, bottomY, palette, label) {
+    const bw = 54, bh = 40;
+    Art.drawGlowingBox(ctx, x - bw / 2, bottomY - bh, bw, bh, palette.top, palette.bot, palette.stroke);
+    Art.labelBox(ctx, x - bw / 2, bottomY - bh, bw, bh, label);
   }
   function arrow(ctx, x1, y1, x2, y2, color, width) {
-    const ang = Math.atan2(y2 - y1, x2 - x1);
-    const head = Math.max(8, (width || 3) * 3.4);
-    ctx.strokeStyle = color; ctx.fillStyle = color;
-    ctx.lineWidth = width || 3; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - head * Math.cos(ang - 0.4), y2 - head * Math.sin(ang - 0.4));
-    ctx.lineTo(x2 - head * Math.cos(ang + 0.4), y2 - head * Math.sin(ang + 0.4));
-    ctx.closePath(); ctx.fill();
+    Art.drawArrow(ctx, x1, y1, x2, y2, color, width || 3.2);
   }
   function forceLen(F, ref) {
     return 32 + Math.min(62, (F / (ref || 600)) * 62);
@@ -287,7 +146,7 @@
   function labeledForce(ctx, x1, y1, x2, y2, color, label, align) {
     arrow(ctx, x1, y1, x2, y2, color, 3);
     ctx.fillStyle = color;
-    ctx.font = "700 12px Nunito Sans, sans-serif";
+    ctx.font = Art.font(800, 13);
     ctx.textAlign = align || "left";
     ctx.textBaseline = "middle";
     const pad = 8;
@@ -303,7 +162,7 @@
     ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
     arrow(ctx, left + 12, y, left, y, color, 1.6);
     arrow(ctx, right - 12, y, right, y, color, 1.6);
-    ctx.font = "600 11px JetBrains Mono, monospace";
+    ctx.font = Art.mono(700, 11);
     ctx.textAlign = "center";
     ctx.fillText(label, (left + right) / 2, y - 7);
   }
@@ -359,25 +218,23 @@
   }
   function drawSeesaw() {
     const { ctx, w, h } = fitCanvas(cvS);
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "#9ccc65"; ctx.fillRect(0, h * 0.78, w, h);
-    ctx.fillStyle = "#7cb342"; ctx.fillRect(0, h * 0.78, w, 8);
+    const floorY = h * 0.78;
+    Art.drawFloor(ctx, w, h, floorY, lang === "zh" ? "光滑地面" : "Smooth floor");
     const m = seeMoments();
     const target = m.bal ? 0 : Math.max(-0.22, Math.min(0.22, m.net / 4000));
     see.tilt += (target - see.tilt) * 0.12;
     const L = seeLayout(w, h);
-    ctx.fillStyle = "#6d4c41";
+    ctx.fillStyle = "#475569";
     ctx.beginPath();
     ctx.moveTo(L.pivot.x, L.pivot.y + 8);
-    ctx.lineTo(L.pivot.x - 22, h * 0.78);
-    ctx.lineTo(L.pivot.x + 22, h * 0.78);
+    ctx.lineTo(L.pivot.x - 22, floorY);
+    ctx.lineTo(L.pivot.x + 22, floorY);
     ctx.closePath(); ctx.fill();
     ctx.save();
     ctx.translate(L.pivot.x, L.pivot.y);
     ctx.rotate(see.tilt);
-    ctx.fillStyle = "#c48a3a"; roundRect(ctx, -L.half, -10, L.half * 2, 18, 6); ctx.fill();
-    ctx.fillStyle = "#e0b56a"; roundRect(ctx, -L.half, -10, L.half * 2, 7, 6); ctx.fill();
-    ctx.fillStyle = "#2a2118"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+    Art.slateBar(ctx, -L.half, -10, L.half * 2, 18);
+    ctx.fillStyle = "#0f172a"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
     function world(localX, localY) {
       const c = Math.cos(see.tilt), s = Math.sin(see.tilt);
@@ -385,35 +242,35 @@
     }
     const a = world((see.xL / (LEN / 2)) * L.half, -10);
     const b = world((see.xR / (LEN / 2)) * L.half, -10);
-    drawPerson(ctx, a.x, a.y, 1.05, "#1d8a7a", false);
-    drawPerson(ctx, b.x, b.y, 1.05, "#c2410c", true);
+    drawMassBox(ctx, a.x, a.y, { top: Art.C.greenTop, bot: Art.C.greenBot, stroke: Art.C.greenStroke }, "A");
+    drawMassBox(ctx, b.x, b.y, { top: Art.C.skyTop, bot: Art.C.skyBot, stroke: Art.C.skyStroke }, "B");
     const lenL = forceLen(see.WL, 800);
     const lenR = forceLen(see.WR, 800);
     const R = see.WL + see.WR;
     const lenN = forceLen(R, 1600);
-    const footLY = a.y + 8 * 1.05;
-    const footRY = b.y + 8 * 1.05;
+    const footLY = a.y;
+    const footRY = b.y;
     const roomL = Math.max(28, h * 0.86 - footLY - 10);
     const roomR = Math.max(28, h * 0.86 - footRY - 10);
-    labeledForce(ctx, a.x, footLY, a.x, footLY + Math.min(lenL, roomL), "#0f7a6c", see.WL + " N", "right");
-    labeledForce(ctx, b.x, footRY, b.x, footRY + Math.min(lenR, roomR), "#c2410c", see.WR + " N", "left");
-    labeledForce(ctx, L.pivot.x, L.pivot.y - 6, L.pivot.x, L.pivot.y - 6 - lenN, "#6a1b9a",
+    labeledForce(ctx, a.x, footLY, a.x, footLY + Math.min(lenL, roomL), Art.C.greenBot, see.WL + " N", "right");
+    labeledForce(ctx, b.x, footRY, b.x, footRY + Math.min(lenR, roomR), Art.C.skyStroke, see.WR + " N", "left");
+    labeledForce(ctx, L.pivot.x, L.pivot.y - 6, L.pivot.x, L.pivot.y - 6 - lenN, Art.C.violet,
       (lang === "zh" ? "支點 R " : "pivot R ") + R + " N", "left");
-    ctx.fillStyle = "#2a2118";
+    ctx.fillStyle = Art.C.ink;
     ctx.beginPath(); ctx.arc(L.pivot.x, L.pivot.y, 6, 0, Math.PI * 2); ctx.fill();
     const leftEnd = world(-L.half + 8, -22);
     const rightEnd = world(L.half - 8, -22);
-    momentArc(ctx, leftEnd.x - 22, leftEnd.y, -1, "#0f7a6c");
-    momentArc(ctx, rightEnd.x + 22, rightEnd.y, 1, "#c2410c");
-    ctx.font = "700 12px Nunito Sans, sans-serif";
+    momentArc(ctx, leftEnd.x - 22, leftEnd.y, -1, Art.C.greenBot);
+    momentArc(ctx, rightEnd.x + 22, rightEnd.y, 1, Art.C.orange);
+    ctx.font = Art.font(800, 12);
     ctx.textAlign = "center";
-    ctx.fillStyle = "#0f7a6c";
+    ctx.fillStyle = Art.C.greenBot;
     ctx.fillText(lang === "zh" ? "逆時針" : "anticlockwise", Math.max(52, leftEnd.x - 22), leftEnd.y - 38);
-    ctx.fillStyle = "#c2410c";
+    ctx.fillStyle = Art.C.orange;
     ctx.fillText(lang === "zh" ? "順時針" : "clockwise", Math.min(w - 52, rightEnd.x + 22), rightEnd.y - 38);
     const dimY = h * 0.875;
-    dimArrow(ctx, L.pivot.x, a.x, dimY, Math.abs(see.xL).toFixed(1) + " m", "#5b6b9a");
-    dimArrow(ctx, L.pivot.x, b.x, dimY, see.xR.toFixed(1) + " m", "#5b6b9a");
+    dimArrow(ctx, L.pivot.x, a.x, dimY, Math.abs(see.xL).toFixed(1) + " m", Art.C.muted);
+    dimArrow(ctx, L.pivot.x, b.x, dimY, see.xR.toFixed(1) + " m", Art.C.muted);
     ctx.textAlign = "left";
   }
   function seeFromPointer(ev) {

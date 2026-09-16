@@ -1,5 +1,5 @@
 import { t } from '../i18n.js';
-import { cleanupLabInstance, hydrateNoteCards, loadToolId, saveToolId } from './hubHelpers.js';
+import { cleanupLabInstance, loadToolId, saveToolId } from './hubHelpers.js';
 import { mountHubShell, resolveHubSection } from '../hubShell.js';
 import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 
@@ -33,39 +33,6 @@ function toolLabel(id) {
   return t(map[id] || id);
 }
 
-const ELECTRICITY_TOPICS = [
-  {
-    id: 'electrostatics',
-    titleKey: 'topic.electrostatics',
-    fileEn: 'electrostatics-en.pdf',
-    fileZh: 'electrostatics-zhHant.pdf',
-  },
-  {
-    id: 'electricCircuits',
-    titleKey: 'topic.electricCircuits',
-    fileEn: 'electric-circuits-en.pdf',
-    fileZh: 'electric-circuits-zhHant.pdf',
-  },
-  {
-    id: 'domesticElectricity',
-    titleKey: 'topic.domesticElectricity',
-    fileEn: 'domestic-electricity-en.pdf',
-    fileZh: 'domestic-electricity-zhHant.pdf',
-  },
-  {
-    id: 'electromagnetism',
-    titleKey: 'topic.electromagnetism',
-    fileEn: 'electromagnetism-en.pdf',
-    fileZh: 'electromagnetism-zhHant.pdf',
-  },
-  {
-    id: 'electromagneticInduction',
-    titleKey: 'topic.electromagneticInduction',
-    fileEn: 'electromagnetic-induction-en.pdf',
-    fileZh: 'electromagnetic-induction-zhHant.pdf',
-  },
-];
-
 export function mountElectricityHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.electricity.section'));
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'electrostatics');
@@ -92,8 +59,14 @@ export function mountElectricityHub(root) {
     if (!el.main) return;
 
     if (section === 'notes') {
-      el.main.innerHTML = renderNotesShell();
-      void hydrateNotes();
+      el.main.innerHTML = `
+        <section class="panel">
+          <h2>${t('notes.title')}</h2>
+          <div class="card" style="padding: 2rem; text-align: center; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+            <p class="lead" style="margin-bottom: 0;">${t('notes.comingSoon')}</p>
+          </div>
+        </section>
+      `;
     } else if (section === 'tools') {
       el.main.innerHTML = renderToolsShell({
         toolOrder: TOOL_ORDER,
@@ -149,32 +122,6 @@ export function mountElectricityHub(root) {
     el.main = shell.main;
     shell.updateSection(section);
     renderMain();
-  }
-
-  function renderNotesShell() {
-    return `
-      <section class="panel">
-        <h2>${t('notes.title')}</h2>
-        <p class="lead">${t('notes.embedHint')}</p>
-        <div class="grid cols-2" data-notes-grid>
-          ${ELECTRICITY_TOPICS.map(
-            (r) => `
-            <div class="card" data-note-card="${r.id}">
-              <h3>${t(`notes.card.${r.id}`)}</h3>
-              <div data-note-body></div>
-            </div>`,
-          ).join('')}
-        </div>
-      </section>`;
-  }
-
-  async function hydrateNotes() {
-    const rows = ELECTRICITY_TOPICS.map((r) => ({
-      key: r.id,
-      fileEn: r.fileEn,
-      fileZh: r.fileZh,
-    }));
-    await hydrateNoteCards(root, rows);
   }
 
   window.addEventListener('s3phy:lang', onLangChange);

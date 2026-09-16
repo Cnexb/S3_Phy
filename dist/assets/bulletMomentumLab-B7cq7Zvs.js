@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function u(t){return e(t,{slug:"bullet-momentum",titleKey:"tools.bulletMomentum.title",className:"tool-bullet-momentum-lab",extraParams:()=>"&v=20260906_bullet_momentum"})}export{u as createBulletMomentumLab};

@@ -14,13 +14,13 @@
 
 ### 🧭 Dual-Strand Hub
 
-- **Optics** and **Heat** strands for HKDSE Secondary 3 Physics
+- **Light and Optics** and **Heat** strands for HKDSE Secondary 3 Physics
 - Entry splash → strand picker → shared hub navigation
 - Seven sections in every strand: **Topics**, **Notes**, **Tools**, **Worksheets**, **Quiz**, **Flashcards**, **Summary**
 - UI in **English** and **Traditional Chinese** (persisted in browser)
 - Deep links: `#/optics` and `#/heat`
 
-### 🔭 Optics — Light & Waves
+### 🔭 Light and Optics — Light & Waves
 
 Topics: reflection, refraction, total internal reflection, convex and concave lenses, electromagnetic waves.
 
@@ -213,7 +213,7 @@ Uni+ follows modern design principles:
 
 - **HKDSE Secondary 3 Physics students**
 - **Teachers** looking for labs, worksheets, flashcards, and summary posters
-- **Self-learners** reviewing Optics and Heat topics
+- **Self-learners** reviewing Light and Optics and Heat topics
 - **Anyone** interested in visual physics learning
 
 ---
