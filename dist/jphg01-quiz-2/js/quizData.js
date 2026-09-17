@@ -40,8 +40,8 @@ export const QUIZ_ITEMS = [
     answer: "B",
     hint: "The reading 120 °C comes from the solid (linear) scale, so the measured resistance is 100 Ω. On the actual (dotted) curve, R = 100 Ω occurs at a temperature higher than 120 °C.",
     image: {
-      src: "./assets/jphg01-2-q1-platinum-rt.svg",
-      alt: "Graph of resistance R against temperature T. The solid line is the linear calibration through the two fixed points. The dotted curve is the actual R–T variation and lies below the solid line between the fixed points. A reading of 120 °C corresponds to 100 ohm on the solid line.",
+      src: "./assets/jphg01-2-q1-platinum-rt.png",
+      alt: "Graph of resistance R against temperature T, with a solid linear calibration line and a dotted actual curve.",
       caption: "Fig · R–T graph of the platinum resistance thermometer",
     },
   },
@@ -75,8 +75,8 @@ export const QUIZ_ITEMS = [
     answer: "A",
     hint: "A narrower tube gives a larger column rise for the same volume expansion. A longer tube mainly affects range. A liquid that expands less makes the column rise less, so sensitivity falls.",
     image: {
-      src: "./assets/jphg01-2-q3-liquid-in-glass.svg",
-      alt: "Liquid-in-glass thermometer with labels for narrow glass tube, scale, liquid, and bulb.",
+      src: "./assets/jphg01-2-q3-liquid-in-glass.png",
+      alt: "Liquid-in-glass thermometer labelled narrow glass tube, scale, liquid, and bulb.",
       caption: "Fig · Structure of a liquid-in-glass thermometer",
     },
   },

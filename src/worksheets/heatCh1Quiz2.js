@@ -1,7 +1,7 @@
 import { getLang } from '../i18n.js';
 import { embedPageUrl } from '../tools/embedPageUrl.js';
 
-const JPHG01_QUIZ_2_VERSION = '20260917jphg01q2';
+const JPHG01_QUIZ_2_VERSION = '20260917jphg01q2img';
 
 /** @param {(key: string) => string} t */
 export function createHeatCh1Quiz2(t) {
