@@ -1,0 +1,350 @@
+{
+  "packId": "phy-ch1-heat-and-gases-v1",
+  "subject": "PHY",
+  "chapter": "CH1 Heat and Gases",
+  "chapterCode": "CH1",
+  "scope": "heat",
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "notes": [
+    {
+      "topicCode": "JPHG01",
+      "symbol": "HG01",
+      "title": {
+        "en": "Temperature and thermometer",
+        "zhHant": "溫度與溫度計"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG01-en.pdf",
+        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG01-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPHG02",
+      "symbol": "HG02",
+      "title": {
+        "en": "Heat and internal energy",
+        "zhHant": "熱與內能"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG02-en.pdf",
+        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG02-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPHG03",
+      "symbol": "HG03",
+      "title": {
+        "en": "Change of state",
+        "zhHant": "物態變化"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG03-en.pdf",
+        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG03-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPHG04",
+      "symbol": "HG04",
+      "title": {
+        "en": "Transfer process",
+        "zhHant": "傳熱過程"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG04-en.pdf",
+        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG04-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPHG05",
+      "symbol": "HG05",
+      "title": {
+        "en": "Gases",
+        "zhHant": "氣體"
+      },
+      "files": {
+        "en": "content-packs/ch1-heat-and-gases/notes/SPHG05-en.pdf",
+        "zhHant": "content-packs/ch1-heat-and-gases/notes/SPHG05-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPHG05.5",
+      "symbol": "HG05",
+      "title": {
+        "en": "Kinetic theory",
+        "zhHant": "動理學理論"
+      },
+      "includedBecause": "Hub ships kinetic-theory as a second PDF under CSV Topic SPHG05 Gases.",
+      "files": {
+        "en": "content-packs/ch1-heat-and-gases/notes/SPHG05.5-en.pdf",
+        "zhHant": "content-packs/ch1-heat-and-gases/notes/SPHG05.5-zhHant.pdf"
+      }
+    }
+  ],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "thermometer",
+      "path": "content-packs/ch1-heat-and-gases/tools/thermometer",
+      "toolId": "liquid",
+      "title": {
+        "en": "Thermometer design",
+        "zhHant": "溫度計設計"
+      },
+      "query": "embed=1&mode=liquid"
+    },
+    {
+      "slug": "boiling-water",
+      "path": "content-packs/ch1-heat-and-gases/tools/boiling-water",
+      "toolId": "boilingWater",
+      "title": {
+        "en": "Boiling water",
+        "zhHant": "沸水"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "boiling-water",
+      "path": "content-packs/ch1-heat-and-gases/tools/boiling-water",
+      "toolId": "heatingMaterials",
+      "title": {
+        "en": "The relationship between specific heat capacity and temperature difference",
+        "zhHant": "比熱容量與溫度差之間的關係"
+      },
+      "query": "embed=1&mode=heatCapacity"
+    },
+    {
+      "slug": "change-of-state",
+      "path": "content-packs/ch1-heat-and-gases/tools/change-of-state",
+      "toolId": "changeOfState",
+      "title": {
+        "en": "Change of State Lab",
+        "zhHant": "物態變化實驗室"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "heat-flow",
+      "path": "content-packs/ch1-heat-and-gases/tools/heat-flow",
+      "toolId": "heatFlow",
+      "title": {
+        "en": "Heat Flow & Thermal Equilibrium",
+        "zhHant": "熱能流動與熱平衡"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "heat-transfer",
+      "path": "content-packs/ch1-heat-and-gases/tools/heat-transfer",
+      "toolId": "heatTransfer",
+      "title": {
+        "en": "Heat Transfer Laboratory",
+        "zhHant": "熱的轉移實驗室"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "specific-heat",
+      "path": "content-packs/ch1-heat-and-gases/tools/specific-heat",
+      "title": {
+        "en": "Specific heat",
+        "zhHant": "比熱"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "thermal-mixing",
+      "path": "content-packs/ch1-heat-and-gases/tools/thermal-mixing",
+      "title": {
+        "en": "Thermal mixing",
+        "zhHant": "熱混合"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "boyles-law",
+      "path": "content-packs/ch1-heat-and-gases/tools/boyles-law",
+      "title": {
+        "en": "Boyle's law",
+        "zhHant": "波義耳定律"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "charles-law",
+      "path": "content-packs/ch1-heat-and-gases/tools/charles-law",
+      "title": {
+        "en": "Charles' law",
+        "zhHant": "查理定律"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "connected-containers",
+      "path": "content-packs/ch1-heat-and-gases/tools/connected-containers",
+      "title": {
+        "en": "Connected containers",
+        "zhHant": "連通容器"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "kinetic-theory",
+      "path": "content-packs/ch1-heat-and-gases/tools/kinetic-theory",
+      "title": {
+        "en": "Kinetic theory",
+        "zhHant": "分子運動論"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "pressure-law",
+      "path": "content-packs/ch1-heat-and-gases/tools/pressure-law",
+      "title": {
+        "en": "Pressure law",
+        "zhHant": "壓強定律"
+      },
+      "query": "embed=1"
+    }
+  ],
+  "quiz": [
+    {
+      "slug": "heat-ch1",
+      "path": "content-packs/ch1-heat-and-gases/quiz/heat-ch1",
+      "title": {
+        "en": "JPHG01 Temperature and thermometer",
+        "zhHant": "JPHG01 溫度與溫度計"
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "summaryId": "thermometer",
+      "images": {
+        "en": "content-packs/ch1-heat-and-gases/summaries/thermometer-en.webp",
+        "zhHant": "content-packs/ch1-heat-and-gases/summaries/thermometer-zhHant.webp"
+      },
+      "pdfs": null,
+      "title": {
+        "en": "Thermometer",
+        "zhHant": "溫度計"
+      }
+    },
+    {
+      "summaryId": "heat-internal-energy",
+      "images": {
+        "en": "content-packs/ch1-heat-and-gases/summaries/heat-internal-energy-en.webp",
+        "zhHant": "content-packs/ch1-heat-and-gases/summaries/heat-internal-energy-zhHant.webp"
+      },
+      "pdfs": null,
+      "title": {
+        "en": "Heat and internal energy",
+        "zhHant": "熱與內能"
+      }
+    },
+    {
+      "summaryId": "change-of-state",
+      "images": {
+        "en": "content-packs/ch1-heat-and-gases/summaries/change-of-state-en.webp",
+        "zhHant": "content-packs/ch1-heat-and-gases/summaries/change-of-state-zhHant.webp"
+      },
+      "pdfs": null,
+      "title": {
+        "en": "Change of state",
+        "zhHant": "物態變化"
+      }
+    },
+    {
+      "summaryId": "heat-transfer",
+      "images": {
+        "en": "content-packs/ch1-heat-and-gases/summaries/heat-transfer-en.webp",
+        "zhHant": "content-packs/ch1-heat-and-gases/summaries/heat-transfer-zhHant.webp"
+      },
+      "pdfs": null,
+      "title": {
+        "en": "Heat transfer",
+        "zhHant": "熱傳入"
+      }
+    }
+  ],
+  "flashcards": [
+    {
+      "deckId": "all",
+      "title": {
+        "en": "All topics",
+        "zhHant": "全部課題"
+      },
+      "sources": [
+        {
+          "file": "flashcards-heat-ch1.json"
+        }
+      ]
+    },
+    {
+      "deckId": "thermometry",
+      "title": {
+        "en": "Thermometry (all types)",
+        "zhHant": "溫度計（各類）"
+      },
+      "sources": [
+        {
+          "file": "flashcards-heat-ch1.json",
+          "topics": [
+            "thermometry"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "heatInternalEnergy",
+      "title": {
+        "en": "Heat and internal energy",
+        "zhHant": "熱與內能"
+      },
+      "sources": [
+        {
+          "file": "flashcards-heat-ch1.json",
+          "topics": [
+            "heatInternalEnergy"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "changeOfState",
+      "title": {
+        "en": "Change of state",
+        "zhHant": "物態變化"
+      },
+      "sources": [
+        {
+          "file": "flashcards-heat-ch1.json",
+          "topics": [
+            "changeOfState"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "heatTransfer",
+      "title": {
+        "en": "Heat transfer",
+        "zhHant": "熱傳入"
+      },
+      "sources": [
+        {
+          "file": "flashcards-heat-ch1.json",
+          "topics": [
+            "heatTransfer"
+          ]
+        }
+      ]
+    }
+  ],
+  "published": true,
+  "title": {
+    "en": "Heat and Gases",
+    "zhHant": "熱學與氣體"
+  },
+  "topics": [],
+  "order": 1
+}

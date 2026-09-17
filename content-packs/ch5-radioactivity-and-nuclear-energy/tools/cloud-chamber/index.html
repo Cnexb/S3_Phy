@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Chamber Laboratory (HKDSE Physics)</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap");
+
+:root {
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+  --s3-radius: 14px;
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --tab-accent: #f43f5e;
+  --tab-accent-glow: rgba(244, 63, 94, 0.35);
+  --glass-bg: rgba(255, 255, 255, 0.82);
+}
+
+html { scrollbar-gutter: stable; }
+body {
+  font-family: "Plus Jakarta Sans", var(--s3-font), sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+.mono { font-family: "JetBrains Mono", monospace; }
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+}
+.cdn-warning {
+  background: linear-gradient(90deg, #b45309, #d97706);
+  color: #fffbeb;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 12px;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+
+.bg-slate-950, canvas.bg-slate-950 {
+  background-color: #ffffff !important;
+}
+.bg-slate-950\/40 { background-color: rgba(255, 255, 255, 0.72) !important; }
+.bg-slate-900, .bg-slate-900\/95, .bg-slate-900\/60 {
+  background-color: #f1f5f9 !important;
+}
+.border-slate-800, .border-slate-800\/80, .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+.text-slate-100, .text-slate-200, .text-slate-300, h1.text-white, h3.text-white {
+  color: #0f172a !important;
+}
+.text-slate-400 { color: #475569 !important; }
+.text-slate-500 { color: #64748b !important; }
+.bg-slate-800 { background-color: #e2e8f0 !important; color: #0f172a !important; }
+.bg-slate-800:hover { background-color: #cbd5e1 !important; }
+.lang-btn { color: #475569 !important; }
+.lang-btn:hover { color: #0f172a !important; background-color: #cbd5e1 !important; }
+.lang-active {
+  background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.1) !important;
+}
+
+.ctrl-on {
+  border-color: #6366f1 !important;
+  background: #e0e7ff !important;
+  color: #312e81 !important;
+}
+.species-on-alpha { border-color: #ef4444 !important; background: #fee2e2 !important; color: #9f1239 !important; }
+.species-on-beta { border-color: #3b82f6 !important; background: #dbeafe !important; color: #1e3a8a !important; }
+.species-on-gamma { border-color: #ca8a04 !important; background: #fef9c3 !important; color: #854d0e !important; }
+
+#btn-show-controls { display: none; }
+#cloud-fs-root:fullscreen #btn-show-controls,
+#cloud-fs-root:-webkit-full-screen #btn-show-controls {
+  display: inline-flex;
+}
+#cloud-fs-root:fullscreen,
+#cloud-fs-root:-webkit-full-screen {
+  background: #f8fafc;
+  padding: 12px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+#cloud-fs-root:fullscreen .cloud-fs-grid,
+#cloud-fs-root:-webkit-full-screen .cloud-fs-grid {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  gap: 0;
+  align-items: stretch;
+}
+#cloud-fs-root:fullscreen .cloud-sim-col,
+#cloud-fs-root:-webkit-full-screen .cloud-sim-col {
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+#cloud-fs-root:fullscreen .cloud-sim-card,
+#cloud-fs-root:-webkit-full-screen .cloud-sim-card {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+#cloud-fs-root:fullscreen #cloud-side-panel,
+#cloud-fs-root:-webkit-full-screen #cloud-side-panel {
+  display: none;
+}
+#cloud-fs-root:fullscreen #cloud-canvas-wrap,
+#cloud-fs-root:-webkit-full-screen #cloud-canvas-wrap {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+}
+#cloud-fs-root:fullscreen.show-fs-controls .cloud-fs-grid,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls .cloud-fs-grid {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+}
+#cloud-fs-root:fullscreen.show-fs-controls .cloud-sim-col,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls .cloud-sim-col {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: calc(100% - 24px);
+  box-sizing: border-box;
+}
+#cloud-fs-root:fullscreen.show-fs-controls .cloud-sim-card,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls .cloud-sim-card {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+#cloud-fs-root:fullscreen.show-fs-controls #cloud-canvas-wrap,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls #cloud-canvas-wrap {
+  overflow: hidden;
+}
+#cloud-fs-root:fullscreen.show-fs-controls #cloud-side-panel,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls #cloud-side-panel {
+  display: flex;
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  width: min(190px, 18vw);
+  height: calc(100% - 24px);
+  flex-shrink: 0;
+  overflow-y: auto;
+  z-index: auto;
+  box-sizing: border-box;
+  gap: 0.75rem;
+}
+#cloud-fs-root:fullscreen.show-fs-controls #cloud-side-panel .glass-panel,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls #cloud-side-panel .glass-panel {
+  padding: 0.75rem;
+}
+#cloud-fs-root:fullscreen.show-fs-controls #species-grid,
+#cloud-fs-root:-webkit-full-screen.show-fs-controls #species-grid {
+  grid-template-columns: 1fr;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping, .animate-pulse { animation: none !important; }
+}
+button:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+html.s3phy-embed header,
+html.s3phy-embed footer,
+body.embed-mode header,
+body.embed-mode footer { display: none !important; }
+html.s3phy-embed body,
+body.embed-mode {
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+html.s3phy-embed main,
+body.embed-mode main {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+html.s3phy-embed #cloud-canvas-wrap,
+body.embed-mode #cloud-canvas-wrap {
+  height: calc(100dvh - 8rem);
+}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <div id="cdn-warning" class="cdn-warning hidden" role="alert">Some CDN resources failed to load. Please connect to the internet and refresh.</div>
+  <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-40" style="background: var(--tab-accent-glow);"></div>
+  <div class="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-2.5 bg-rose-500/10 rounded-2xl border border-rose-500/20 text-rose-500 shadow-inner">
+          <i data-lucide="cloud" class="w-7 h-7 animate-pulse text-rose-500"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-white" data-i18n="app.title">Cloud Chamber Laboratory</h1>
+            <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 border border-rose-500/30 rounded text-[10px] font-bold tracking-wider uppercase">HKDSE Physics</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-0.5" data-i18n="app.subtitle">HKDSE Physics · Tracks of α, β, γ in a cloud chamber</p>
+        </div>
+      </div>
+      <div class="flex bg-slate-900/95 p-1 rounded-xl border border-slate-800/80">
+        <button type="button" onclick="setLanguage('en')" id="lang-en" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active">EN</button>
+        <button type="button" onclick="setLanguage('zh-Hant')" id="lang-zh" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div id="cloud-fs-root" class="relative">
+    <div class="cloud-fs-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="cloud-sim-col lg:col-span-8 flex flex-col gap-6 w-full">
+        <div class="cloud-sim-card glass-panel rounded-2xl p-5 flex flex-col relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+              <h3 class="font-bold text-sm tracking-wide text-slate-200" data-i18n="sim.title">Cloud Chamber Sandbox</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" id="btn-show-controls" onclick="toggleFsControls()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold border border-indigo-700">
+                <span id="lbl-show-controls" data-i18n="common.showControls">Show controls</span>
+              </button>
+              <button type="button" id="btn-fullscreen" onclick="toggleFullscreen()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-700">
+                <span id="lbl-fullscreen" data-i18n="common.fullscreen">Full screen</span>
+              </button>
+            </div>
+          </div>
+          <div id="cloud-canvas-wrap" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-[calc(100dvh-12.5rem)] min-h-[24rem]">
+            <canvas id="cloudCanvas" class="w-full h-full block bg-slate-950"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="cloud-side-panel" class="lg:col-span-4 flex flex-col gap-4">
+        <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-rose-500">
+          <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.species">Radiation emitted</h4>
+          <div id="species-grid" class="grid grid-cols-3 gap-2">
+            <button type="button" id="btn-alpha" onclick="toggleSpecies('alpha')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">α</button>
+            <button type="button" id="btn-beta" onclick="toggleSpecies('beta')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">β</button>
+            <button type="button" id="btn-gamma" onclick="toggleSpecies('gamma')" class="px-2 py-2.5 rounded-xl border text-xs font-bold">γ</button>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-2" data-i18n="ctrl.speciesHint">Turn each on or off. All three can fire together.</p>
+        </div>
+
+        <button type="button" onclick="resetAll()" class="w-full px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.reset">Reset</button>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 text-slate-500 py-5 text-center text-xs mt-auto">
+    <span data-i18n="app.footer">© 2026 Cloud Chamber Lab · HKDSE Physics classroom suite</span>
+  </footer>
+
+  <script>
+(function () {
+  'use strict';
+
+  const VW = 800;
+  const VH = 560;
+  const SPEED = 2.8;
+  const CH = { cx: 400, cy: 280, r: 190 };
+  const SOURCE = { x: 760, y: CH.cy };
+  const CHAMBER_LEFT = CH.cx - CH.r;
+  const CHAMBER_RIGHT = CH.cx + CH.r;
+  const ALPHA_FAN = 70 * Math.PI / 180;
+
+  const SPECIES = {
+    alpha: {
+      color: '#ef4444',
+      rgb: [239, 68, 68],
+      range: 162,
+      spread: 3.2,
+      dropR: 5.2,
+      mistCount: 6,
+      life: 64,
+      lineW: 9.5,
+      radius: 14.8,
+      glow: 28,
+      stroke: 'rgba(255,220,220,0.8)'
+    },
+    beta: {
+      color: '#3b82f6',
+      rgb: [59, 130, 246],
+      range: 340,
+      spread: 2.2,
+      dropR: 2.0,
+      mistCount: 2,
+      life: 56,
+      lineW: 2.2,
+      radius: 9.36,
+      glow: 22,
+      stroke: 'rgba(186,230,253,0.85)'
+    }
+  };
+
+  const I18N = {
+    en: {
+      app: {
+        title: 'Cloud Chamber Laboratory',
+        subtitle: 'HKDSE Physics · Tracks of α, β, γ in a cloud chamber',
+        pageTitle: 'Cloud Chamber Laboratory (HKDSE Physics)',
+        footer: '© 2026 Cloud Chamber Lab · HKDSE Physics classroom suite'
+      },
+      sim: { title: 'Cloud Chamber Sandbox' },
+      common: { fullscreen: 'Full screen', exitFullscreen: 'Exit', showControls: 'Show controls', hideControls: 'Hide controls', reset: 'Reset' },
+      ctrl: {
+        species: 'Radiation emitted',
+        speciesHint: 'Turn each on or off. All three can fire together.',
+        reset: 'Reset'
+      },
+      draw: {
+        source: 'SOURCE',
+        chamber: 'CLOUD CHAMBER'
+      }
+    },
+    'zh-Hant': {
+      app: {
+        title: '雲室實驗室',
+        subtitle: 'HKDSE 物理 · α、β、γ 在雲室中的徑跡',
+        pageTitle: '雲室實驗室 (HKDSE Physics)',
+        footer: '© 2026 雲室實驗室 · HKDSE 物理課堂套件'
+      },
+      sim: { title: '雲室沙盒' },
+      common: { fullscreen: '全畫面', exitFullscreen: '離開', showControls: '顯示控制', hideControls: '隱藏控制', reset: '重設' },
+      ctrl: {
+        species: '放出的輻射',
+        speciesHint: '可各自開關，亦可三種一齊放出。',
+        reset: '重設'
+      },
+      draw: {
+        source: '放射源',
+        chamber: '雲室'
+      }
+    }
+  };
+
+  let currentLang = 'en';
+  const pageParams = new URLSearchParams(location.search);
+  const langParam = pageParams.get('lang');
+  if (langParam === 'zh' || langParam === 'zh-Hant' || langParam === 'zhHant') currentLang = 'zh-Hant';
+  else if (langParam === 'en') currentLang = 'en';
+
+  let emitAlpha = true;
+  let emitBeta = true;
+  let emitGamma = true;
+  let running = true;
+  let animId = 0;
+  let particles = [];
+  let droplets = [];
+  let fadingTracks = [];
+  let gammaSpecks = [];
+  let emitClock = 0;
+  let fsControlsOpen = false;
+  let canvas, ctx;
+  let gammaSegs = [];
+  let viewRect = { width: VW, height: VH };
+
+  function t(path) {
+    const parts = path.split('.');
+    let node = I18N[currentLang];
+    for (const p of parts) node = node && node[p];
+    return node || path;
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = currentLang === 'zh-Hant' ? 'zh-Hant' : 'en';
+    document.title = t('app.pageTitle');
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.getElementById('lang-en').classList.toggle('lang-active', currentLang === 'en');
+    document.getElementById('lang-zh').classList.toggle('lang-active', currentLang === 'zh-Hant');
+    refreshControls();
+    syncFsUi();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  window.setLanguage = function (lang) {
+    currentLang = lang === 'zh-Hant' || lang === 'zhHant' || lang === 'zh' ? 'zh-Hant' : 'en';
+    applyLanguage();
+  };
+
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 's3phy:lang') {
+      window.setLanguage(event.data.lang);
+    }
+  });
+
+  function isFullscreen() {
+    const root = document.getElementById('cloud-fs-root');
+    return document.fullscreenElement === root || document.webkitFullscreenElement === root;
+  }
+
+  function syncFsUi() {
+    const root = document.getElementById('cloud-fs-root');
+    const fs = isFullscreen();
+    const fsLbl = document.getElementById('lbl-fullscreen');
+    const showLbl = document.getElementById('lbl-show-controls');
+    if (fsLbl) fsLbl.textContent = fs ? t('common.exitFullscreen') : t('common.fullscreen');
+    if (!fs) {
+      fsControlsOpen = false;
+      if (root) root.classList.remove('show-fs-controls');
+    }
+    if (showLbl) showLbl.textContent = fsControlsOpen ? t('common.hideControls') : t('common.showControls');
+  }
+
+  window.toggleFsControls = function () {
+    if (!isFullscreen()) return;
+    fsControlsOpen = !fsControlsOpen;
+    document.getElementById('cloud-fs-root').classList.toggle('show-fs-controls', fsControlsOpen);
+    syncFsUi();
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  };
+
+  window.resetAll = function () {
+    emitAlpha = true;
+    emitBeta = true;
+    emitGamma = true;
+    particles = [];
+    droplets = [];
+    fadingTracks = [];
+    gammaSpecks = [];
+    emitClock = 0;
+    gammaSegs = [];
+    refreshControls();
+  };
+
+  window.toggleFullscreen = function () {
+    const root = document.getElementById('cloud-fs-root');
+    if (!isFullscreen()) {
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document);
+    }
+  };
+
+  function refreshControls() {
+    const idle = 'px-2 py-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-xs font-bold text-slate-500';
+    document.getElementById('btn-alpha').className = emitAlpha ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-alpha' : idle;
+    document.getElementById('btn-beta').className = emitBeta ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-beta' : idle;
+    document.getElementById('btn-gamma').className = emitGamma ? 'px-2 py-2.5 rounded-xl border text-xs font-bold species-on-gamma' : idle;
+  }
+
+  window.toggleSpecies = function (kind) {
+    if (kind === 'alpha') emitAlpha = !emitAlpha;
+    if (kind === 'beta') emitBeta = !emitBeta;
+    if (kind === 'gamma') emitGamma = !emitGamma;
+    refreshControls();
+  };
+
+  function setupCanvas(el) {
+    if (!el) return null;
+    const c = el.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = el.getBoundingClientRect();
+    const nextW = Math.max(1, Math.round(rect.width * dpr));
+    const nextH = Math.max(1, Math.round(rect.height * dpr));
+    if (el.width !== nextW || el.height !== nextH) {
+      el.width = nextW;
+      el.height = nextH;
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.scale(dpr, dpr);
+    return { ctx: c, rect, dpr };
+  }
+
+  function viewMap(rect) {
+    const s = Math.min(rect.width / VW, rect.height / VH);
+    const ox = (rect.width - VW * s) / 2;
+    const oy = (rect.height - VH * s) / 2;
+    return { s, ox, oy };
+  }
+
+  function toScreen(x, y, vm) {
+    return { x: vm.ox + x * vm.s, y: vm.oy + y * vm.s };
+  }
+
+  function inChamber(x, y) {
+    const dx = x - CH.cx;
+    const dy = y - CH.cy;
+    return dx * dx + dy * dy <= CH.r * CH.r;
+  }
+
+  function spawn(type) {
+    const spec = SPECIES[type];
+    particles.push({
+      type,
+      x: SOURCE.x,
+      y: SOURCE.y,
+      vx: -SPEED,
+      vy: 0,
+      distInside: 0,
+      range: spec.range,
+      inside: false,
+      alive: true,
+      track: null
+    });
+  }
+
+  function emit() {
+    emitClock += 1;
+    const slot = emitClock % 18;
+    if (emitAlpha && slot === 1) spawn('alpha');
+    if (emitBeta && slot === 10) spawn('beta');
+  }
+
+  function addMist(p) {
+    const spec = SPECIES[p.type];
+    if (!inChamber(p.x, p.y)) return;
+    for (let i = 0; i < spec.mistCount; i++) {
+      droplets.push({
+        x: p.x + (Math.random() - 0.5) * spec.spread,
+        y: p.y + (Math.random() - 0.5) * spec.spread,
+        r: spec.dropR * (0.55 + Math.random() * 0.9),
+        life: spec.life * (0.75 + Math.random() * 0.35),
+        maxLife: spec.life,
+        rgb: spec.rgb
+      });
+    }
+  }
+
+  function appendTrack(p) {
+    const spec = SPECIES[p.type];
+    if (!p.track) {
+      p.track = { type: p.type, pts: [], growing: true, life: spec.life, maxLife: spec.life };
+      fadingTracks.push(p.track);
+    }
+    p.track.pts.push({ x: p.x, y: p.y });
+  }
+
+  function finishTrack(p) {
+    if (p.track) p.track.growing = false;
+  }
+
+  function stepParticle(p) {
+    if (!p.alive) return;
+    if (!p.inside && inChamber(p.x, p.y)) {
+      p.inside = true;
+      if (p.type === 'alpha') {
+        const ang = Math.PI + (Math.random() * 2 - 1) * ALPHA_FAN;
+        p.vx = SPEED * Math.cos(ang);
+        p.vy = SPEED * Math.sin(ang);
+      }
+    }
+
+    if (p.inside && p.type === 'beta') {
+      const kink = (Math.random() - 0.5) * 0.38;
+      const c = Math.cos(kink);
+      const s = Math.sin(kink);
+      const nvx = p.vx * c - p.vy * s;
+      const nvy = p.vx * s + p.vy * c;
+      const sp = Math.hypot(nvx, nvy) || SPEED;
+      p.vx = nvx * SPEED / sp;
+      p.vy = nvy * SPEED / sp;
+    }
+
+    p.x += p.vx;
+    p.y += p.vy;
+
+    if (p.inside) {
+      if (!inChamber(p.x, p.y) || p.distInside >= p.range) {
+        p.alive = false;
+        finishTrack(p);
+        return;
+      }
+      p.distInside += Math.hypot(p.vx, p.vy);
+      addMist(p);
+      appendTrack(p);
+    }
+  }
+
+  function stepDroplets() {
+    const next = [];
+    for (let i = 0; i < droplets.length; i++) {
+      const d = droplets[i];
+      d.life -= 1;
+      if (d.life > 0) next.push(d);
+    }
+    droplets = next;
+  }
+
+  function stepTracks() {
+    const next = [];
+    for (let i = 0; i < fadingTracks.length; i++) {
+      const tr = fadingTracks[i];
+      if (!tr.growing) tr.life -= 1;
+      if (tr.life > 0 && tr.pts.length > 1) next.push(tr);
+    }
+    fadingTracks = next;
+  }
+
+  function stepGammaScatter() {
+    if (emitGamma && gammaSpecks.length < 4 && Math.random() < 0.035) {
+      const ang = Math.random() * Math.PI * 2;
+      const rad = Math.sqrt(Math.random()) * CH.r * 0.88;
+      const life = 36 + Math.random() * 22;
+      gammaSpecks.push({
+        x: CH.cx + Math.cos(ang) * rad,
+        y: CH.cy + Math.sin(ang) * rad,
+        heading: Math.random() * Math.PI * 2,
+        len: 16 + Math.random() * 36,
+        isDot: Math.random() < 0.35,
+        life: life,
+        maxLife: life
+      });
+    }
+    const next = [];
+    for (let i = 0; i < gammaSpecks.length; i++) {
+      const s = gammaSpecks[i];
+      s.life -= 1;
+      if (s.life > 0) next.push(s);
+    }
+    gammaSpecks = next;
+  }
+
+  function stepGamma() {
+    if (emitGamma) {
+      let attached = null;
+      for (let i = 0; i < gammaSegs.length; i++) {
+        if (gammaSegs[i].attached) {
+          attached = gammaSegs[i];
+          break;
+        }
+      }
+      if (!attached) {
+        attached = { front: SOURCE.x, rear: SOURCE.x, attached: true };
+        gammaSegs.push(attached);
+      }
+      attached.rear = SOURCE.x;
+      attached.front = Math.max(CHAMBER_RIGHT, attached.front - SPEED);
+    } else {
+      for (let i = 0; i < gammaSegs.length; i++) gammaSegs[i].attached = false;
+    }
+    const next = [];
+    for (let i = 0; i < gammaSegs.length; i++) {
+      const s = gammaSegs[i];
+      if (!s.attached) {
+        s.front = Math.max(CHAMBER_RIGHT, s.front - SPEED);
+        s.rear = Math.max(s.front, s.rear - SPEED);
+      }
+      if (s.rear > CHAMBER_RIGHT + 0.5 && s.rear - s.front >= 0.5) next.push(s);
+    }
+    gammaSegs = next;
+  }
+
+  function drawGammaRay(vm, fieldUnit) {
+    const y = toScreen(0, SOURCE.y, vm).y;
+    const thick = 12 * fieldUnit;
+    ctx.save();
+    ctx.lineCap = 'round';
+    for (let i = 0; i < gammaSegs.length; i++) {
+      const s = gammaSegs[i];
+      if (s.rear - s.front < 2) continue;
+      const x1 = toScreen(Math.max(s.front, CHAMBER_RIGHT), SOURCE.y, vm).x;
+      const x2 = toScreen(s.rear, SOURCE.y, vm).x;
+      if (x2 <= x1) continue;
+      ctx.strokeStyle = '#eab308';
+      ctx.shadowColor = '#eab308';
+      ctx.shadowBlur = 12 * fieldUnit;
+      ctx.lineWidth = thick;
+      ctx.beginPath();
+      ctx.moveTo(x1, y);
+      ctx.lineTo(x2, y);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = 'rgba(254, 240, 138, 0.95)';
+      ctx.lineWidth = thick * 0.45;
+      ctx.beginPath();
+      ctx.moveTo(x1, y);
+      ctx.lineTo(x2, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function clipChamber(vm) {
+    const c = toScreen(CH.cx, CH.cy, vm);
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, CH.r * vm.s, 0, Math.PI * 2);
+    ctx.clip();
+  }
+
+  function drawTracks(vm, fieldUnit) {
+    ctx.save();
+    clipChamber(vm);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    for (let i = 0; i < fadingTracks.length; i++) {
+      const tr = fadingTracks[i];
+      if (tr.pts.length < 2) continue;
+      const spec = SPECIES[tr.type];
+      const fade = tr.growing ? 1 : Math.max(0, tr.life / tr.maxLife);
+      ctx.strokeStyle = spec.color;
+      ctx.globalAlpha = 0.55 + 0.4 * fade;
+      ctx.lineWidth = spec.lineW * fieldUnit;
+      ctx.beginPath();
+      const p0 = toScreen(tr.pts[0].x, tr.pts[0].y, vm);
+      ctx.moveTo(p0.x, p0.y);
+      for (let j = 1; j < tr.pts.length; j++) {
+        const p = toScreen(tr.pts[j].x, tr.pts[j].y, vm);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function drawDroplets(vm, fieldUnit) {
+    ctx.save();
+    clipChamber(vm);
+    for (let i = 0; i < droplets.length; i++) {
+      const d = droplets[i];
+      if (!inChamber(d.x, d.y)) continue;
+      const p = toScreen(d.x, d.y, vm);
+      const fade = Math.max(0, d.life / d.maxLife);
+      const r = d.r * fieldUnit;
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(' + d.rgb[0] + ',' + d.rgb[1] + ',' + d.rgb[2] + ',' + (0.14 + 0.32 * fade) + ')';
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawGammaSpecks(vm, fieldUnit) {
+    ctx.save();
+    clipChamber(vm);
+    ctx.lineCap = 'round';
+    for (let i = 0; i < gammaSpecks.length; i++) {
+      const s = gammaSpecks[i];
+      const fade = Math.max(0, s.life / s.maxLife);
+      const p = toScreen(s.x, s.y, vm);
+      ctx.globalAlpha = 0.32 + 0.38 * fade;
+      ctx.strokeStyle = '#eab308';
+      ctx.fillStyle = '#eab308';
+      if (s.isDot) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4.5 * fieldUnit, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        const half = (s.len * fieldUnit) / 2;
+        ctx.lineWidth = 4.2 * fieldUnit;
+        ctx.beginPath();
+        ctx.moveTo(p.x - Math.cos(s.heading) * half, p.y - Math.sin(s.heading) * half);
+        ctx.lineTo(p.x + Math.cos(s.heading) * half, p.y + Math.sin(s.heading) * half);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function drawDot(p, vm, fieldUnit) {
+    const spec = SPECIES[p.type];
+    const pos = toScreen(p.x, p.y, vm);
+    const u = fieldUnit;
+    const r = spec.radius * u;
+    ctx.save();
+    ctx.shadowColor = spec.color;
+    ctx.shadowBlur = spec.glow * u;
+    ctx.fillStyle = spec.color;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = spec.stroke;
+    ctx.lineWidth = 1.4 * u;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    const arm = r * 0.55;
+    const thick = Math.max(1.6, r * 0.22);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(pos.x - arm, pos.y - thick / 2, arm * 2, thick);
+    if (p.type === 'alpha') {
+      ctx.fillRect(pos.x - thick / 2, pos.y - arm, thick, arm * 2);
+    }
+    ctx.restore();
+  }
+
+  function leadRect(x, y, w, h, u) {
+    ctx.fillStyle = '#94a3b8';
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = Math.max(1.2, 1.6 * u);
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  function housingGeom(src, u) {
+    const slitH = 20 * u;
+    const inner = 22 * u;
+    const bodyH = 24 * u;
+    const backW = 16 * u;
+    const bodyLeft = src.x - inner;
+    const bodyRight = src.x + inner + backW;
+    const top = src.y - slitH - bodyH;
+    const bot = src.y + slitH + bodyH;
+    return { slitH, inner, bodyH, backW, bodyLeft, bodyRight, top, bot };
+  }
+
+  function drawLeadHousing(src, u) {
+    const g = housingGeom(src, u);
+    leadRect(g.bodyLeft, src.y - g.slitH - g.bodyH, g.bodyRight - g.bodyLeft, g.bodyH, u);
+    leadRect(g.bodyLeft, src.y + g.slitH, g.bodyRight - g.bodyLeft, g.bodyH, u);
+    leadRect(src.x + g.inner, src.y - g.slitH, g.backW, g.slitH * 2, u);
+  }
+
+  function drawScene(rect) {
+    const vm = viewMap(rect);
+    const fieldUnit = vm.s;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+
+    const c = toScreen(CH.cx, CH.cy, vm);
+    const r = CH.r * vm.s;
+
+    ctx.beginPath();
+    ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(241, 245, 249, 0.95)';
+    ctx.fill();
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([6, 5]);
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(t('draw.chamber'), c.x, c.y + r + 28 * fieldUnit);
+
+    const src = toScreen(SOURCE.x, SOURCE.y, vm);
+    const rim = toScreen(CHAMBER_RIGHT, SOURCE.y, vm);
+    const hg = housingGeom(src, fieldUnit);
+    ctx.strokeStyle = 'rgba(100, 116, 139, 0.4)';
+    ctx.setLineDash([4, 6]);
+    ctx.lineWidth = 1.2 * fieldUnit;
+    ctx.beginPath();
+    ctx.moveTo(hg.bodyLeft, src.y);
+    ctx.lineTo(rim.x, rim.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    drawGammaRay(vm, fieldUnit);
+    drawTracks(vm, fieldUnit);
+    drawDroplets(vm, fieldUnit);
+    drawGammaSpecks(vm, fieldUnit);
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.alive && !p.inside && !inChamber(p.x, p.y)) drawDot(p, vm, fieldUnit);
+    }
+
+    drawLeadHousing(src, fieldUnit);
+
+    const grd = ctx.createRadialGradient(src.x, src.y, 2, src.x, src.y, 20 * fieldUnit);
+    grd.addColorStop(0, 'rgba(245, 158, 11, 0.85)');
+    grd.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(src.x, src.y, 20 * fieldUnit, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#d97706';
+    ctx.beginPath();
+    ctx.arc(src.x, src.y, 8 * fieldUnit, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#92400e';
+    ctx.font = 'bold ' + (10 * fieldUnit) + 'px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(t('draw.source'), src.x, hg.bot + 16 * fieldUnit);
+  }
+
+  function loop() {
+    if (!running) return;
+    const setup = setupCanvas(canvas);
+    if (!setup) {
+      animId = requestAnimationFrame(loop);
+      return;
+    }
+    ctx = setup.ctx;
+    viewRect = setup.rect;
+    emit();
+    stepGamma();
+    stepGammaScatter();
+    const next = [];
+    for (const p of particles) {
+      stepParticle(p);
+      if (!p.alive) continue;
+      if (p.x < CHAMBER_LEFT - 8 || p.x > VW + 40 || p.y < -50 || p.y > VH + 50) {
+        finishTrack(p);
+        continue;
+      }
+      next.push(p);
+    }
+    particles = next;
+    stepDroplets();
+    stepTracks();
+    drawScene(setup.rect);
+    animId = requestAnimationFrame(loop);
+  }
+
+  function checkCDN() {
+    const warn = document.getElementById('cdn-warning');
+    if (typeof lucide === 'undefined' && warn) warn.classList.remove('hidden');
+  }
+
+  window.addEventListener('resize', () => {
+    if (canvas) setupCanvas(canvas);
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    syncFsUi();
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    syncFsUi();
+    requestAnimationFrame(() => { if (canvas) setupCanvas(canvas); });
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (pageParams.get('embed') === '1' || pageParams.get('embed') === 'true' || window.self !== window.top) {
+      document.documentElement.classList.add('s3phy-embed');
+      document.body.classList.add('embed-mode');
+    }
+    canvas = document.getElementById('cloudCanvas');
+    applyLanguage();
+    refreshControls();
+    checkCDN();
+    setTimeout(checkCDN, 400);
+    loop();
+  });
+})();
+  </script>
+</body>
+</html>

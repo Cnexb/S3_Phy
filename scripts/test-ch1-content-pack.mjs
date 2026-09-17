@@ -6,11 +6,11 @@ import { loadChapterNotesPack } from "./load-chapter-notes-pack.mjs";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const pack = loadChapterNotesPack(repoRoot, {
-  manifestRelative: "content-packs/ch1-heat/manifest.json",
+  manifestRelative: "content-packs/ch1-heat-and-gases/manifest.json",
   subject: "PHY",
   chapter: "CH1 Heat and Gases",
   scope: "heat",
-  prefix: "content-packs/ch1-heat/notes/",
+  prefix: "content-packs/ch1-heat-and-gases/notes/",
 });
 
 assert.deepEqual(

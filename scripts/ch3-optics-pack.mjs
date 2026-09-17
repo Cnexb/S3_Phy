@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const MANIFEST_RELATIVE = "content-packs/ch3-optics/manifest.json";
+const MANIFEST_RELATIVE = "content-packs/ch3-wave-motion-and-optics/manifest.json";
 
 export function loadCh3OpticsNotesPack(repoRoot) {
   const manifestPath = path.join(repoRoot, MANIFEST_RELATIVE);
@@ -20,7 +20,7 @@ export function loadCh3OpticsNotesPack(repoRoot) {
   for (const note of pack.notes) {
     for (const locale of ["en", "zhHant"]) {
       const relative = note.files[locale];
-      if (!relative.startsWith("content-packs/ch3-optics/notes/")) {
+      if (!relative.startsWith("content-packs/ch3-wave-motion-and-optics/notes/")) {
         throw new Error(`${note.topicCode} ${locale} must live under the chapter pack notes/`);
       }
       const absolute = path.join(repoRoot, relative);

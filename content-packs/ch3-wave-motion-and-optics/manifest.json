@@ -1,0 +1,604 @@
+{
+  "packId": "phy-ch3-wave-motion-and-optics-v1",
+  "subject": "PHY",
+  "chapter": "CH3 Wave Motion and Optics",
+  "chapterCode": "CH3",
+  "scope": "optics",
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "notes": [
+    {
+      "topicCode": "JPWM01",
+      "symbol": "WM01",
+      "title": {
+        "en": "Nature of waves",
+        "zhHant": "波的性質"
+      },
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM01-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM01-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM02",
+      "symbol": "WM02",
+      "title": {
+        "en": "Wave phenomenon",
+        "zhHant": "波動現象"
+      },
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM02-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM02-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM03",
+      "symbol": "WM03",
+      "title": {
+        "en": "Stationary wave",
+        "zhHant": "駐波"
+      },
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM03-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM03-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM04",
+      "symbol": "WM04",
+      "title": {
+        "en": "Electromagnetic waves",
+        "zhHant": "電磁波"
+      },
+      "subtopics": [
+        "JPWM04.1",
+        "JPWM04.2",
+        "JPWM04.3",
+        "JPWM04.4"
+      ],
+      "includedBecause": "Optics hub already ships emwaves PDFs. CSV places JPWM04 in Senior S4 CH3.",
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM04-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM04-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM05",
+      "symbol": "WM05",
+      "title": {
+        "en": "Sound wave",
+        "zhHant": "聲波"
+      },
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM05-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM05-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM06",
+      "symbol": "WM06",
+      "title": {
+        "en": "Light reflection",
+        "zhHant": "光的反射"
+      },
+      "subtopics": [
+        "JPWM06.1",
+        "JPWM06.2",
+        "JPWM06.3",
+        "JPWM06.4"
+      ],
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM06-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM06-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM07",
+      "symbol": "WM07",
+      "title": {
+        "en": "Light refraction",
+        "zhHant": "光的折射"
+      },
+      "subtopics": [
+        "JPWM07.1",
+        "JPWM07.2",
+        "JPWM07.3",
+        "JPWM07.4",
+        "JPWM07.5"
+      ],
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM07-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM07-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM08",
+      "symbol": "WM08",
+      "title": {
+        "en": "Total internal reflection",
+        "zhHant": "全內反射"
+      },
+      "subtopics": [
+        "JPWM08.1",
+        "JPWM08.2",
+        "JPWM08.3"
+      ],
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM08-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM08-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM09",
+      "symbol": "WM09",
+      "title": {
+        "en": "Convex lens",
+        "zhHant": "凸透鏡"
+      },
+      "subtopics": [
+        "JPWM09.1",
+        "JPWM09.2"
+      ],
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM09-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM09-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPWM11",
+      "symbol": "WM11",
+      "title": {
+        "en": "Concave lens",
+        "zhHant": "凹透鏡"
+      },
+      "subtopics": [
+        "JPWM11.1",
+        "JPWM11.2"
+      ],
+      "files": {
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM11-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM11-zhHant.pdf"
+      }
+    }
+  ],
+  "topics": [
+    {
+      "topicCode": "JPWM01",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM02",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM03",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM04",
+      "level": "(S4)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM05",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM06",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM07",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM08",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM09",
+      "level": "(S3)",
+      "notes": "published"
+    },
+    {
+      "topicCode": "JPWM10",
+      "level": "(S3)",
+      "title": {
+        "en": "Magnification and lens formula",
+        "zhHant": "放大率與透鏡公式"
+      },
+      "subtopics": [
+        "JPWM10.1",
+        "JPWM10.2"
+      ],
+      "notes": null
+    },
+    {
+      "topicCode": "JPWM11",
+      "level": "(S3)",
+      "notes": "published"
+    }
+  ],
+  "comics": [
+    {
+      "comicId": "initialD",
+      "title": {
+        "en": "Initial D: Gutter Run — Reflection & Refraction",
+        "zhHant": "頭文字 D：排水溝過彎 — 反射與折射"
+      },
+      "pages": [
+        "content-packs/ch3-wave-motion-and-optics/comics/initial-d-gutter-run-1.webp",
+        "content-packs/ch3-wave-motion-and-optics/comics/initial-d-gutter-run-2.webp",
+        "content-packs/ch3-wave-motion-and-optics/comics/initial-d-gutter-run-3.webp"
+      ],
+      "pdf": "content-packs/ch3-wave-motion-and-optics/comics/initial-d-gutter-run.pdf"
+    }
+  ],
+  "tools": [
+    {
+      "slug": "rotating-mirror",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/rotating-mirror",
+      "toolId": "rotatingMirror",
+      "title": {
+        "en": "Rotating plane mirror",
+        "zhHant": "旋轉平面鏡"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "plane-mirror-lab",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorLab",
+      "title": {
+        "en": "Plane mirror lab",
+        "zhHant": "平面鏡反射實驗室"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "reflection-3d",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/reflection-3d",
+      "toolId": "reflection3d",
+      "title": {
+        "en": "3D Reflection Lab",
+        "zhHant": "3D 反射實驗室"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "refraction",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/refraction",
+      "toolId": "refraction",
+      "title": {
+        "en": "Refraction — Snell’s law",
+        "zhHant": "折射 — 司乃耳定律"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "tir-escape",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/tir-escape",
+      "toolId": "refractionTir",
+      "title": {
+        "en": "Prison Break lab — refraction, Snell & TIR",
+        "zhHant": "逃獄遊戲 — 折射、司乃耳與全內反射"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "lens-simulator",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/lens-simulator",
+      "toolId": "lens",
+      "title": {
+        "en": "Lens ray sketch",
+        "zhHant": "透鏡 — 光線示意"
+      },
+      "query": "embed=1&defaultLens=convex"
+    },
+    {
+      "slug": "rgb-color-mixer",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/rgb-color-mixer",
+      "toolId": "rgbMixer",
+      "title": {
+        "en": "RGB colour mixer",
+        "zhHant": "RGB 顏色混合"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "em-spectrum",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/em-spectrum",
+      "toolId": "em",
+      "title": {
+        "en": "Electromagnetic spectrum",
+        "zhHant": "電磁波譜"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "ray-diagram",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/ray-diagram",
+      "toolId": "rayDiagram",
+      "title": {
+        "en": "Image formed by plane mirror",
+        "zhHant": "平面鏡成像"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "mirage",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/mirage",
+      "query": "embed=1"
+    },
+    {
+      "slug": "diffraction-grating-compare",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/diffraction-grating-compare",
+      "query": "embed=1"
+    },
+    {
+      "slug": "longitudinal-wave",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/longitudinal-wave",
+      "query": "embed=1"
+    },
+    {
+      "slug": "ripple-tank",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/ripple-tank",
+      "query": "embed=1"
+    },
+    {
+      "slug": "sound-refraction-shadow",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/sound-refraction-shadow",
+      "query": "embed=1"
+    },
+    {
+      "slug": "spectral-overlap",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/spectral-overlap",
+      "query": "embed=1"
+    },
+    {
+      "slug": "thin-film-interference",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/thin-film-interference",
+      "query": "embed=1"
+    },
+    {
+      "slug": "ultrasound-reflection",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/ultrasound-reflection",
+      "query": "embed=1"
+    },
+    {
+      "slug": "wave-diffraction",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/wave-diffraction",
+      "query": "embed=1"
+    },
+    {
+      "slug": "wave-interference",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/wave-interference",
+      "query": "embed=1"
+    },
+    {
+      "slug": "wave-motion",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/wave-motion",
+      "query": "embed=1"
+    },
+    {
+      "slug": "stationary-wave",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/stationary-wave",
+      "title": {
+        "en": "Stationary wave",
+        "zhHant": "駐波"
+      },
+      "query": "embed=1"
+    }
+  ],
+  "quiz": [
+    {
+      "slug": "optics-ch3",
+      "path": "content-packs/ch3-wave-motion-and-optics/quiz/optics-ch3",
+      "title": {
+        "en": "JPWM06 Light reflection",
+        "zhHant": "JPWM06 光的反射"
+      }
+    },
+    {
+      "slug": "optics-ch4-em-wave",
+      "path": "content-packs/ch3-wave-motion-and-optics/quiz/optics-ch4-em-wave"
+    }
+  ],
+  "summaries": [
+    {
+      "summaryId": "reflection",
+      "images": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/reflection-en.webp",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/reflection-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/reflection-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/reflection-zhHant.pdf"
+      },
+      "title": {
+        "en": "Reflection",
+        "zhHant": "反射"
+      }
+    },
+    {
+      "summaryId": "refraction",
+      "images": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/refraction-en.webp",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/refraction-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/refraction-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/refraction-zhHant.pdf"
+      },
+      "title": {
+        "en": "Refraction and Snell’s law",
+        "zhHant": "折射與司乃耳定律"
+      }
+    },
+    {
+      "summaryId": "tir",
+      "images": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/tir-en.webp",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/tir-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/tir-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/tir-zhHant.pdf"
+      },
+      "title": {
+        "en": "Total internal reflection",
+        "zhHant": "全內反射"
+      }
+    },
+    {
+      "summaryId": "convex",
+      "images": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/convex-en.webp",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/convex-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/convex-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/convex-zhHant.pdf"
+      },
+      "title": {
+        "en": "Convex lens",
+        "zhHant": "凸透鏡"
+      }
+    },
+    {
+      "summaryId": "concave",
+      "images": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/concave-en.webp",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/concave-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/concave-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/concave-zhHant.pdf"
+      },
+      "title": {
+        "en": "Concave lens",
+        "zhHant": "凹透鏡"
+      }
+    },
+    {
+      "summaryId": "em",
+      "images": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/em-en.webp",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/em-zhHant.webp"
+      },
+      "pdfs": {
+        "en": "content-packs/ch3-wave-motion-and-optics/summaries/em-en.pdf",
+        "zhHant": "content-packs/ch3-wave-motion-and-optics/summaries/em-zhHant.pdf"
+      },
+      "title": {
+        "en": "Electromagnetic waves",
+        "zhHant": "電磁波"
+      }
+    }
+  ],
+  "flashcards": [
+    {
+      "deckId": "all",
+      "title": {
+        "en": "All topics",
+        "zhHant": "全部課題"
+      },
+      "sources": [
+        {
+          "file": "flashcards-light-ch3.json"
+        },
+        {
+          "file": "flashcards-optics-definitions.json"
+        }
+      ]
+    },
+    {
+      "deckId": "reflection",
+      "title": {
+        "en": "Reflection",
+        "zhHant": "反射"
+      },
+      "sources": [
+        {
+          "file": "flashcards-light-ch3.json",
+          "topics": [
+            "reflection"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "refractionTir",
+      "title": {
+        "en": "Refraction & TIR",
+        "zhHant": "折射與全內反射"
+      },
+      "sources": [
+        {
+          "file": "flashcards-light-ch3.json",
+          "topics": [
+            "refraction",
+            "tir"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "convex",
+      "title": {
+        "en": "Convex lens",
+        "zhHant": "凸透鏡"
+      },
+      "sources": [
+        {
+          "file": "flashcards-optics-definitions.json",
+          "topics": [
+            "convex"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "concave",
+      "title": {
+        "en": "Concave lens",
+        "zhHant": "凹透鏡"
+      },
+      "sources": [
+        {
+          "file": "flashcards-optics-definitions.json",
+          "topics": [
+            "concave"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "em",
+      "title": {
+        "en": "Electromagnetic waves",
+        "zhHant": "電磁波"
+      },
+      "sources": [
+        {
+          "file": "flashcards-optics-definitions.json",
+          "topics": [
+            "em"
+          ]
+        }
+      ]
+    }
+  ],
+  "published": true,
+  "title": {
+    "en": "Wave Motion and Optics",
+    "zhHant": "波動與光學"
+  },
+  "order": 3
+}

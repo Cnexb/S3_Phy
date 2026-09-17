@@ -1,0 +1,560 @@
+{
+  "packId": "phy-ch2-force-and-motion-v1",
+  "subject": "PHY",
+  "chapter": "CH2 Force and Motion",
+  "chapterCode": "CH2",
+  "scope": "mechanics",
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "notes": [
+    {
+      "topicCode": "JPFM01",
+      "symbol": "FM01",
+      "title": {
+        "en": "Position and movement",
+        "zhHant": "位置與運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM01-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM01-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM02",
+      "symbol": "FM02",
+      "title": {
+        "en": "Linear motion",
+        "zhHant": "勻加速直線運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM02-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM02-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM03",
+      "symbol": "FM03",
+      "title": {
+        "en": "Vertical motion",
+        "zhHant": "垂直運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM03-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM03-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM04",
+      "symbol": "FM04",
+      "title": {
+        "en": "Motion graph",
+        "zhHant": "運動圖像"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM04-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM04-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM05",
+      "symbol": "FM05",
+      "title": {
+        "en": "Force (I)",
+        "zhHant": "力 (I)"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM05-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM05-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM06",
+      "symbol": "FM06",
+      "title": {
+        "en": "Force (II)",
+        "zhHant": "力 (II)"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM06-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM06-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM07",
+      "symbol": "FM07",
+      "title": {
+        "en": "Force (III)",
+        "zhHant": "力 (III)"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM07-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM07-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "JPFM08",
+      "symbol": "FM08",
+      "title": {
+        "en": "Moment of force",
+        "zhHant": "力矩"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/JPFM08-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/JPFM08-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM09",
+      "symbol": "FM09",
+      "title": {
+        "en": "Work, energy and power",
+        "zhHant": "功、能量與功率"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/SPFM09-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/SPFM09-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM10",
+      "symbol": "FM10",
+      "title": {
+        "en": "Momentum",
+        "zhHant": "動量"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/SPFM10-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/SPFM10-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM11",
+      "symbol": "FM11",
+      "title": {
+        "en": "Projectile motion",
+        "zhHant": "拋體運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/SPFM11-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/SPFM11-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM12",
+      "symbol": "FM12",
+      "title": {
+        "en": "Circular motion",
+        "zhHant": "圓周運動"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/SPFM12-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/SPFM12-zhHant.pdf"
+      }
+    },
+    {
+      "topicCode": "SPFM13",
+      "symbol": "FM13",
+      "title": {
+        "en": "Gravitation",
+        "zhHant": "萬有引力"
+      },
+      "files": {
+        "en": "content-packs/ch2-force-and-motion/notes/SPFM13-en.pdf",
+        "zhHant": "content-packs/ch2-force-and-motion/notes/SPFM13-zhHant.pdf"
+      }
+    }
+  ],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "vector-tool",
+      "path": "content-packs/ch2-force-and-motion/tools/vector-tool",
+      "toolId": "vectorTool",
+      "title": {
+        "en": "Vector lab — decomposition",
+        "zhHant": "矢量實驗室 — 分解"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "newton-first-law",
+      "path": "content-packs/ch2-force-and-motion/tools/newton-first-law",
+      "toolId": "newtonFirstLaw",
+      "title": {
+        "en": "Newton’s first law — smooth floor",
+        "zhHant": "牛頓第一定律 — 光滑地面"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "elevator-weight",
+      "path": "content-packs/ch2-force-and-motion/tools/elevator-weight",
+      "toolId": "elevatorWeight",
+      "title": {
+        "en": "Elevator — normal force & acceleration",
+        "zhHant": "電梯 — 法向力與加速度"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "stacked-boxes",
+      "path": "content-packs/ch2-force-and-motion/tools/stacked-boxes",
+      "toolId": "stackedBoxes",
+      "title": {
+        "en": "Stacked boxes — Newton’s laws & friction",
+        "zhHant": "疊箱 — 牛頓定律與摩擦力"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "seesaw-moment",
+      "path": "content-packs/ch2-force-and-motion/tools/seesaw-moment",
+      "toolId": "seesawMoment",
+      "title": {
+        "en": "Seesaw — principle of moments",
+        "zhHant": "蹺蹺板 — 力矩原理"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "ladder-moment",
+      "path": "content-packs/ch2-force-and-motion/tools/ladder-moment",
+      "toolId": "ladderMoment",
+      "title": {
+        "en": "Ladder — moments and equilibrium",
+        "zhHant": "梯子 — 力矩與平衡"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "supports-moment",
+      "path": "content-packs/ch2-force-and-motion/tools/supports-moment",
+      "toolId": "supportsMoment",
+      "title": {
+        "en": "Supports — moments and reactions",
+        "zhHant": "支架 — 力矩與反作用力"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "impulse-momentum",
+      "path": "content-packs/ch2-force-and-motion/tools/impulse-momentum",
+      "toolId": "impulseMomentum",
+      "title": {
+        "en": "Impulse and change in momentum",
+        "zhHant": "衝量與動量變化"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "crash-track-momentum",
+      "path": "content-packs/ch2-force-and-motion/tools/crash-track-momentum",
+      "toolId": "crashTrackMomentum",
+      "title": {
+        "en": "Crash track — collisions",
+        "zhHant": "碰撞軌道"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "bullet-momentum",
+      "path": "content-packs/ch2-force-and-motion/tools/bullet-momentum",
+      "toolId": "bulletMomentum",
+      "title": {
+        "en": "Bullet swing — ballistic pendulum",
+        "zhHant": "子彈擺 — 彈道擺"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "projectile-motion",
+      "path": "content-packs/ch2-force-and-motion/tools/projectile-motion",
+      "toolId": "projectileMotion",
+      "title": {
+        "en": "Projectile motion",
+        "zhHant": "拋體運動"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "orbital-forces",
+      "path": "content-packs/ch2-force-and-motion/tools/orbital-forces",
+      "toolId": "orbitalForces",
+      "title": {
+        "en": "Orbital Forces Lab — gravity & centripetal",
+        "zhHant": "軌道力實驗室 — 萬有引力與向心力"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "aircraft-turn",
+      "path": "content-packs/ch2-force-and-motion/tools/aircraft-turn",
+      "title": {
+        "en": "Aircraft turn",
+        "zhHant": "飛機轉彎"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "bungee-energy",
+      "path": "content-packs/ch2-force-and-motion/tools/bungee-energy",
+      "title": {
+        "en": "Bungee energy",
+        "zhHant": "彈繩能量"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "conical-pendulum",
+      "path": "content-packs/ch2-force-and-motion/tools/conical-pendulum",
+      "title": {
+        "en": "Conical pendulum",
+        "zhHant": "圓錐擺"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "diving-energy",
+      "path": "content-packs/ch2-force-and-motion/tools/diving-energy",
+      "title": {
+        "en": "Diving energy",
+        "zhHant": "跳水能量"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "pendulum-energy",
+      "path": "content-packs/ch2-force-and-motion/tools/pendulum-energy",
+      "title": {
+        "en": "Pendulum energy",
+        "zhHant": "擺錘能量"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "skate-park-energy",
+      "path": "content-packs/ch2-force-and-motion/tools/skate-park-energy",
+      "title": {
+        "en": "Skate-park energy",
+        "zhHant": "滑板場能量"
+      },
+      "query": "embed=1"
+    }
+  ],
+  "quiz": [],
+  "summaries": [],
+  "flashcards": [
+    {
+      "deckId": "all",
+      "title": {
+        "en": "All topics",
+        "zhHant": "全部課題"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json"
+        }
+      ]
+    },
+    {
+      "deckId": "positionMovement",
+      "title": {
+        "en": "Position and movement",
+        "zhHant": "位置和移動"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "positionMovement"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "equationOfMotion",
+      "title": {
+        "en": "Equations of motion",
+        "zhHant": "運動方程"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "equationOfMotion"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "verticalMotion",
+      "title": {
+        "en": "Vertical motion",
+        "zhHant": "鉛直運動"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "verticalMotion"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "motionGraph",
+      "title": {
+        "en": "Motion graphs",
+        "zhHant": "運動圖像"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "motionGraph"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "forceI",
+      "title": {
+        "en": "Force I",
+        "zhHant": "力 I"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "forceI"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "forceII",
+      "title": {
+        "en": "Force II",
+        "zhHant": "力 II"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "forceII"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "forceIII",
+      "title": {
+        "en": "Force III",
+        "zhHant": "力 III"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "forceIII"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "moment",
+      "title": {
+        "en": "Moment of a force",
+        "zhHant": "力矩"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "moment"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "workEnergyPower",
+      "title": {
+        "en": "Work, energy and power",
+        "zhHant": "功、能量和功率"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "workEnergyPower"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "momentum",
+      "title": {
+        "en": "Momentum",
+        "zhHant": "動量"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "momentum"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "projectileMotion",
+      "title": {
+        "en": "Projectile motion",
+        "zhHant": "拋體運動"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "projectileMotion"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "circularMotion",
+      "title": {
+        "en": "Circular motion",
+        "zhHant": "圓周運動"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "circularMotion"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "gravitationalForce",
+      "title": {
+        "en": "Gravitational force",
+        "zhHant": "萬有引力"
+      },
+      "sources": [
+        {
+          "file": "flashcards-mechanics.json",
+          "topics": [
+            "gravitationalForce"
+          ]
+        }
+      ]
+    }
+  ],
+  "published": true,
+  "title": {
+    "en": "Force and Motion",
+    "zhHant": "力與運動"
+  },
+  "order": 2
+}

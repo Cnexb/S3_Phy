@@ -1,0 +1,66 @@
+{
+  "subject": "PHY",
+  "notes": [],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "domestic-circuit",
+      "path": "content-packs/ch4-electricity-and-magnetism/tools/domestic-circuit",
+      "title": {
+        "en": "Domestic circuit",
+        "zhHant": "家居電路"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "electrostatics",
+      "path": "content-packs/ch4-electricity-and-magnetism/tools/electrostatics",
+      "title": {
+        "en": "Electrostatics",
+        "zhHant": "靜電學"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "fleming-hand-rules",
+      "path": "content-packs/ch4-electricity-and-magnetism/tools/fleming-hand-rules",
+      "title": {
+        "en": "Fleming hand rules",
+        "zhHant": "夫林明手定則"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "magnetic-effect",
+      "path": "content-packs/ch4-electricity-and-magnetism/tools/magnetic-effect",
+      "title": {
+        "en": "Magnetic effect",
+        "zhHant": "磁效應"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "moving-charge-force",
+      "path": "content-packs/ch4-electricity-and-magnetism/tools/moving-charge-force",
+      "title": {
+        "en": "Force on a moving charge",
+        "zhHant": "運動電荷受力"
+      },
+      "query": "embed=1"
+    }
+  ],
+  "quiz": [],
+  "summaries": [],
+  "flashcards": [],
+  "topics": [],
+  "packId": "phy-ch4-electricity-and-magnetism-v1",
+  "chapter": "CH4 Electricity and Magnetism",
+  "chapterCode": "CH4",
+  "scope": "electricity-and-magnetism",
+  "title": {
+    "en": "Electricity and Magnetism",
+    "zhHant": "電和磁"
+  },
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "order": 4
+}

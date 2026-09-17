@@ -1,5 +1,5 @@
 {
-  "packId": "phy-ch0-foundation-notes-v1",
+  "packId": "phy-ch0-foundation-v1",
   "subject": "PHY",
   "chapter": "CH0 Foundation",
   "chapterCode": "CH0",
@@ -37,7 +37,13 @@
   "tools": [
     {
       "slug": "si-units",
-      "path": "content-packs/ch0-foundation/tools/si-units"
+      "path": "content-packs/ch0-foundation/tools/si-units",
+      "toolId": "siUnits",
+      "title": {
+        "en": "Quantities and units",
+        "zhHant": "物理量與單位"
+      },
+      "query": "embed=1"
     }
   ],
   "quiz": [
@@ -57,7 +63,11 @@
         "en": "content-packs/ch0-foundation/summaries/quantities-units-en.webp",
         "zhHant": "content-packs/ch0-foundation/summaries/quantities-units-zhHant.webp"
       },
-      "pdfs": null
+      "pdfs": null,
+      "title": {
+        "en": "Quantities and units",
+        "zhHant": "物理量與單位"
+      }
     },
     {
       "summaryId": "useful-mathematics",
@@ -65,12 +75,61 @@
         "en": "content-packs/ch0-foundation/summaries/useful-mathematics-en.webp",
         "zhHant": "content-packs/ch0-foundation/summaries/useful-mathematics-zhHant.webp"
       },
-      "pdfs": null
+      "pdfs": null,
+      "title": {
+        "en": "Useful mathematics in physics",
+        "zhHant": "物理中常用的數學"
+      }
     }
   ],
   "flashcards": [
     {
-      "file": "content-packs/ch0-foundation/flashcards/flashcards-foundations.json"
+      "deckId": "all",
+      "title": {
+        "en": "All topics",
+        "zhHant": "全部課題"
+      },
+      "sources": [
+        {
+          "file": "flashcards-foundations.json"
+        }
+      ]
+    },
+    {
+      "deckId": "quantitiesUnits",
+      "title": {
+        "en": "Quantities and units",
+        "zhHant": "物理量與單位"
+      },
+      "sources": [
+        {
+          "file": "flashcards-foundations.json",
+          "topics": [
+            "quantitiesUnits"
+          ]
+        }
+      ]
+    },
+    {
+      "deckId": "usefulMaths",
+      "title": {
+        "en": "Useful mathematics in physics",
+        "zhHant": "物理中常用的數學"
+      },
+      "sources": [
+        {
+          "file": "flashcards-foundations.json",
+          "topics": [
+            "usefulMaths"
+          ]
+        }
+      ]
     }
-  ]
+  ],
+  "published": true,
+  "title": {
+    "en": "Foundation",
+    "zhHant": "物理基礎"
+  },
+  "order": 0
 }

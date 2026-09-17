@@ -1,0 +1,5 @@
+{
+  "slug": "moving-charge-force",
+  "syncAll": true,
+  "exclude": ["manifest.json", "README.md"]
+}

@@ -41,7 +41,7 @@ check("every published note PDF exists on disk", () => {
     for (const locale of ["en", "zhHant"]) {
       const filePath = path.join(repoRoot, note.files[locale]);
       assert.ok(
-        note.files[locale].startsWith("content-packs/ch3-optics/notes/"),
+        note.files[locale].startsWith("content-packs/ch3-wave-motion-and-optics/notes/"),
         note.topicCode,
       );
       assert.equal(fsExists(filePath), true, filePath);

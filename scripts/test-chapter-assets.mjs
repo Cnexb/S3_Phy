@@ -11,9 +11,11 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), ".."
 
 const PACKS = [
   "content-packs/ch0-foundation/manifest.json",
-  "content-packs/ch1-heat/manifest.json",
-  "content-packs/ch2-mechanics/manifest.json",
-  "content-packs/ch3-optics/manifest.json",
+  "content-packs/ch1-heat-and-gases/manifest.json",
+  "content-packs/ch2-force-and-motion/manifest.json",
+  "content-packs/ch3-wave-motion-and-optics/manifest.json",
+  "content-packs/ch4-electricity-and-magnetism/manifest.json",
+  "content-packs/ch5-radioactivity-and-nuclear-energy/manifest.json",
 ];
 
 function exists(relative) {
@@ -74,8 +76,18 @@ for (const relative of PACKS) {
   }
 
   for (const deck of pack.flashcards) {
-    assert.ok(deck.file.startsWith(`${chapterDir}/flashcards/`), deck.file);
-    assert.equal(isFile(deck.file), true, deck.file);
+    if (deck.file) {
+      assert.ok(deck.file.startsWith(`${chapterDir}/flashcards/`), deck.file);
+      assert.equal(isFile(deck.file), true, deck.file);
+      continue;
+    }
+    assert.ok(Array.isArray(deck.sources) && deck.sources.length > 0, JSON.stringify(deck));
+    for (const source of deck.sources) {
+      const relative = source.file.startsWith(`${chapterDir}/`)
+        ? source.file
+        : `${chapterDir}/flashcards/${source.file.split("/").at(-1)}`;
+      assert.equal(isFile(relative), true, relative);
+    }
   }
 
   for (const comic of pack.comics) {
@@ -103,13 +115,20 @@ for (const relative of PACKS) {
   console.log("ok  " + pack.scope + " chapter folders");
 }
 
-assert.equal(exists("content-packs/ch3-optics/comics/initial-d-gutter-run-1.webp"), true);
-assert.equal(exists("content-packs/ch1-heat/summaries/thermometer-en.webp"), true);
-assert.equal(exists("content-packs/ch3-optics/summaries/reflection-en.pdf"), true);
-assert.equal(exists("content-packs/ch3-optics/flashcards/flashcards-light-ch3.json"), true);
 assert.equal(
-  exists("content-packs/ch3-optics/flashcards/optics-definitions/convex1_p2_img2.png"),
+  exists("content-packs/ch3-wave-motion-and-optics/comics/initial-d-gutter-run-1.webp"),
   true,
 );
-assert.equal(PACKS.length, 4);
+assert.equal(exists("content-packs/ch1-heat-and-gases/summaries/thermometer-en.webp"), true);
+assert.equal(exists("content-packs/ch3-wave-motion-and-optics/summaries/reflection-en.pdf"), true);
+assert.equal(
+  exists("content-packs/ch3-wave-motion-and-optics/flashcards/flashcards-light-ch3.json"),
+  true,
+);
+assert.equal(
+  exists("content-packs/ch3-wave-motion-and-optics/flashcards/optics-definitions/convex1_p2_img2.png"),
+  true,
+);
+assert.equal(exists("content-packs/ch5-radioactivity-and-nuclear-energy/notes/SPRN01-en.pdf"), true);
+assert.equal(PACKS.length, 6);
 console.log("all chapter asset checks passed");

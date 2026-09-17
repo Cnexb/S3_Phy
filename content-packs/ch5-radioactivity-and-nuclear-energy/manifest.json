@@ -1,0 +1,52 @@
+{
+  "subject": "PHY",
+  "notes": [
+    {
+      "topicCode": "SPRN01",
+      "symbol": "RN01",
+      "title": {
+        "en": "Nuclear radiation",
+        "zhHant": "核輻射"
+      },
+      "files": {
+        "en": "content-packs/ch5-radioactivity-and-nuclear-energy/notes/SPRN01-en.pdf",
+        "zhHant": "content-packs/ch5-radioactivity-and-nuclear-energy/notes/SPRN01-zhHant.pdf"
+      }
+    }
+  ],
+  "comics": [],
+  "tools": [
+    {
+      "slug": "cloud-chamber",
+      "path": "content-packs/ch5-radioactivity-and-nuclear-energy/tools/cloud-chamber",
+      "title": {
+        "en": "Cloud chamber",
+        "zhHant": "雲室"
+      },
+      "query": "embed=1"
+    },
+    {
+      "slug": "radiation-deflection",
+      "path": "content-packs/ch5-radioactivity-and-nuclear-energy/tools/radiation-deflection",
+      "title": {
+        "en": "Radiation deflection",
+        "zhHant": "輻射偏轉"
+      },
+      "query": "embed=1"
+    }
+  ],
+  "quiz": [],
+  "summaries": [],
+  "flashcards": [],
+  "topics": [],
+  "packId": "phy-ch5-radioactivity-and-nuclear-energy-v1",
+  "chapter": "CH5 Radioactivity and Nuclear energy",
+  "chapterCode": "CH5",
+  "scope": "radioactivity-and-nuclear-energy",
+  "title": {
+    "en": "Radioactivity and Nuclear energy",
+    "zhHant": "放射現象與核能"
+  },
+  "source": "Chapter pack copies. Hub labs/, quizzes/, and public/ stay for vendor Pages.",
+  "order": 5
+}

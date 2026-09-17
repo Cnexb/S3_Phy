@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <link rel="stylesheet" href="../shared/s3phy-n1-sim.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="../shared/s3phy-n1-draw.js"></script>
+  <title>Seesaw Lab | Moment Lab</title>
+  <style>
+    .n1-sim canvas { cursor: grab; }
+  </style>
+</head>
+<body class="n1-lab n1-sim">
+  <div class="deco-blob deco-blob--accent" aria-hidden="true"></div>
+  <div class="deco-blob deco-blob--emerald" aria-hidden="true"></div>
+  <div class="wrap" id="labShell">
+    <header class="n1-header">
+      <div class="n1-header__inner">
+        <div class="n1-brand">
+          <div class="n1-icon" aria-hidden="true">
+            <svg viewBox="0 0 28 28" fill="none">
+              <path d="M5 20h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M14 20V8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              <rect x="5" y="6" width="7" height="5" rx="1.6" fill="#34d399"/>
+              <rect x="16" y="6" width="7" height="5" rx="1.6" fill="#38bdf8"/>
+            </svg>
+          </div>
+          <div>
+            <div class="n1-title-row">
+              <h1><span class="en">Seesaw Lab</span><span class="zh">蹺蹺板實驗</span></h1>
+              <span class="n1-chip">HKDSE Physics</span>
+            </div>
+            <p class="n1-sub"><span class="en">HKDSE Physics · Moments · clockwise = anticlockwise</span><span class="zh">HKDSE 物理 · 力矩 · 順時針 = 逆時針</span></p>
+          </div>
+        </div>
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" id="btn-en" class="active">EN</button>
+          <button type="button" id="btn-zh">繁中</button>
+        </div>
+      </div>
+    </header>
+    <main class="n1-main">
+    <section class="card glass-panel">
+      <div class="card-hd">
+        <h2><span class="en">Principle of moments</span><span class="zh">力矩原理</span></h2>
+        <p>
+          <span class="en">A body balances when total clockwise moment equals total anticlockwise moment. Drag the two boxes along the plank.</span>
+          <span class="zh">當順時針力矩總和等於逆時針力矩總和，物體便平衡。拖曳兩箱沿木板移動。</span>
+        </p>
+      </div>
+      <div class="card-bd">
+        <div class="stage">
+          <div class="hint-chip"><span class="en">Drag the boxes along the plank.</span><span class="zh">沿木板拖曳箱子。</span></div>
+          <div class="side">
+            <button class="fs-btn" type="button" data-fs="labShell"><span class="en">Full screen</span><span class="zh">全螢幕</span></button>
+            <div class="box">
+              <h3><span class="en">Weights</span><span class="zh">重量</span></h3>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Left box</span><span class="zh">左箱</span><em id="val-WL">450 N</em></div>
+                <input type="range" id="sl-WL" min="150" max="800" step="10" value="450" />
+              </div>
+              <div class="slider-wrap">
+                <div class="slider-head"><span class="en">Right box</span><span class="zh">右箱</span><em id="val-WR">300 N</em></div>
+                <input type="range" id="sl-WR" min="150" max="800" step="10" value="300" />
+              </div>
+              <div class="btns">
+                <button class="btn sec" type="button" id="btn-see-reset"><span class="en">Reset</span><span class="zh">重設</span></button>
+              </div>
+            </div>
+          </div>
+          <canvas id="cv-seesaw" width="900" height="460"></canvas>
+        </div>
+      </div>
+    </section>
+    </main>
+  </div>
+<script>
+(function () {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  let lang = "en";
+  function setLang(next) {
+    lang = next;
+    document.documentElement.lang = next === "zh" ? "zh-HK" : "en";
+    $("btn-en").classList.toggle("active", next === "en");
+    $("btn-zh").classList.toggle("active", next === "zh");
+    if (typeof updateUI === "function") updateUI();
+  }
+  $("btn-en").onclick = () => setLang("en");
+  $("btn-zh").onclick = () => setLang("zh");
+  function applyLangFromHub(raw) {
+    const next = (raw === "zh-Hant" || raw === "zhHant" || raw === "zh" || raw === "zh-HK") ? "zh" : "en";
+    setLang(next);
+  }
+  try {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q) applyLangFromHub(q);
+  } catch (e) { /* ignore */ }
+  window.addEventListener("message", (ev) => {
+    if (ev.data && ev.data.type === "s3phy:lang") applyLangFromHub(ev.data.lang);
+  });
+
+  document.querySelectorAll("[data-fs]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const el = $(btn.dataset.fs);
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      } else {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      }
+    });
+  });
+  const canvasCache = new WeakMap();
+  function fitCanvas(canvas) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(320, rect.width || 320);
+    const h = Math.max(300, rect.height || 460);
+    const prev = canvasCache.get(canvas);
+    const ctx = canvas.getContext("2d");
+    if (!prev || prev.w !== w || prev.h !== h || prev.dpr !== dpr) {
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      canvasCache.set(canvas, { w, h, dpr });
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx, w, h };
+  }
+  const Art = window.N1Art;
+  function roundRect(ctx, x, y, w, h, r) { Art.roundRect(ctx, x, y, w, h, r); }
+  function drawMassBox(ctx, x, bottomY, palette, label) {
+    const bw = 54, bh = 40;
+    Art.drawGlowingBox(ctx, x - bw / 2, bottomY - bh, bw, bh, palette.top, palette.bot, palette.stroke);
+    Art.labelBox(ctx, x - bw / 2, bottomY - bh, bw, bh, label);
+  }
+  function arrow(ctx, x1, y1, x2, y2, color, width) {
+    Art.drawArrow(ctx, x1, y1, x2, y2, color, width || 3.2);
+  }
+  function forceLen(F, ref) {
+    return 32 + Math.min(62, (F / (ref || 600)) * 62);
+  }
+  function labeledForce(ctx, x1, y1, x2, y2, color, label, align) {
+    arrow(ctx, x1, y1, x2, y2, color, 3);
+    ctx.fillStyle = color;
+    ctx.font = Art.font(800, 13);
+    ctx.textAlign = align || "left";
+    ctx.textBaseline = "middle";
+    const pad = 8;
+    const lx = align === "right" ? Math.min(x1, x2) - pad : Math.max(x1, x2) + pad;
+    ctx.fillText(label, lx, (y1 + y2) / 2);
+    ctx.textBaseline = "alphabetic";
+  }
+  function dimArrow(ctx, x1, x2, y, label, color) {
+    const left = Math.min(x1, x2), right = Math.max(x1, x2);
+    if (right - left < 22) return;
+    ctx.strokeStyle = color; ctx.fillStyle = color;
+    ctx.lineWidth = 1.6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(right, y); ctx.stroke();
+    arrow(ctx, left + 12, y, left, y, color, 1.6);
+    arrow(ctx, right - 12, y, right, y, color, 1.6);
+    ctx.font = Art.mono(700, 11);
+    ctx.textAlign = "center";
+    ctx.fillText(label, (left + right) / 2, y - 7);
+  }
+  function momentArc(ctx, cx, cy, dir, color) {
+    const r = 28;
+    const a0 = dir < 0 ? -0.45 : Math.PI + 0.45;
+    const a1 = dir < 0 ? 3.45 : -0.45;
+    const ccw = dir < 0;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3.2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, a0, a1, ccw);
+    ctx.stroke();
+    const ux = ccw ? Math.sin(a1) : -Math.sin(a1);
+    const uy = ccw ? -Math.cos(a1) : Math.cos(a1);
+    const tx = cx + r * Math.cos(a1);
+    const ty = cy + r * Math.sin(a1);
+    const nx = -uy, ny = ux;
+    ctx.beginPath();
+    ctx.moveTo(tx + ux * 12, ty + uy * 12);
+    ctx.lineTo(tx - nx * 7 - ux * 2, ty - ny * 7 - uy * 2);
+    ctx.lineTo(tx + nx * 7 - ux * 2, ty + ny * 7 - uy * 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+
+  const see = { WL: 450, WR: 300, xL: -3.0, xR: 4.5, tilt: 0, drag: null };
+  const LEN = 12;
+  const cvS = $("cv-seesaw");
+  function seeMoments() {
+    const dL = Math.abs(Math.min(0, see.xL));
+    const dR = Math.max(0, see.xR);
+    const ccw = see.WL * dL;
+    const cw = see.WR * dR;
+    const net = cw - ccw;
+    return { ccw, cw, net, dL, dR, bal: Math.abs(net) < 18 };
+  }
+  function updateUI() {
+    $("val-WL").textContent = see.WL + " N";
+    $("val-WR").textContent = see.WR + " N";
+  }
+  function seeLayout(w, h) {
+    const pivot = { x: w * 0.5, y: h * 0.62 };
+    const half = Math.min(w * 0.42, 380);
+    const xToPx = (x) => pivot.x + (x / (LEN / 2)) * half;
+    return { pivot, half, xToPx };
+  }
+  function drawSeesaw() {
+    const { ctx, w, h } = fitCanvas(cvS);
+    const floorY = h * 0.78;
+    Art.drawFloor(ctx, w, h, floorY, lang === "zh" ? "光滑地面" : "Smooth floor");
+    const m = seeMoments();
+    const target = m.bal ? 0 : Math.max(-0.22, Math.min(0.22, m.net / 4000));
+    see.tilt += (target - see.tilt) * 0.12;
+    const L = seeLayout(w, h);
+    ctx.fillStyle = "#475569";
+    ctx.beginPath();
+    ctx.moveTo(L.pivot.x, L.pivot.y + 8);
+    ctx.lineTo(L.pivot.x - 22, floorY);
+    ctx.lineTo(L.pivot.x + 22, floorY);
+    ctx.closePath(); ctx.fill();
+    ctx.save();
+    ctx.translate(L.pivot.x, L.pivot.y);
+    ctx.rotate(see.tilt);
+    Art.slateBar(ctx, -L.half, -10, L.half * 2, 18);
+    ctx.fillStyle = "#0f172a"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+    function world(localX, localY) {
+      const c = Math.cos(see.tilt), s = Math.sin(see.tilt);
+      return { x: L.pivot.x + localX * c - localY * s, y: L.pivot.y + localX * s + localY * c };
+    }
+    const a = world((see.xL / (LEN / 2)) * L.half, -10);
+    const b = world((see.xR / (LEN / 2)) * L.half, -10);
+    drawMassBox(ctx, a.x, a.y, { top: Art.C.greenTop, bot: Art.C.greenBot, stroke: Art.C.greenStroke }, "A");
+    drawMassBox(ctx, b.x, b.y, { top: Art.C.skyTop, bot: Art.C.skyBot, stroke: Art.C.skyStroke }, "B");
+    const lenL = forceLen(see.WL, 800);
+    const lenR = forceLen(see.WR, 800);
+    const R = see.WL + see.WR;
+    const lenN = forceLen(R, 1600);
+    const footLY = a.y;
+    const footRY = b.y;
+    const roomL = Math.max(28, h * 0.86 - footLY - 10);
+    const roomR = Math.max(28, h * 0.86 - footRY - 10);
+    labeledForce(ctx, a.x, footLY, a.x, footLY + Math.min(lenL, roomL), Art.C.greenBot, see.WL + " N", "right");
+    labeledForce(ctx, b.x, footRY, b.x, footRY + Math.min(lenR, roomR), Art.C.skyStroke, see.WR + " N", "left");
+    labeledForce(ctx, L.pivot.x, L.pivot.y - 6, L.pivot.x, L.pivot.y - 6 - lenN, Art.C.violet,
+      (lang === "zh" ? "支點 R " : "pivot R ") + R + " N", "left");
+    ctx.fillStyle = Art.C.ink;
+    ctx.beginPath(); ctx.arc(L.pivot.x, L.pivot.y, 6, 0, Math.PI * 2); ctx.fill();
+    const leftEnd = world(-L.half + 8, -22);
+    const rightEnd = world(L.half - 8, -22);
+    momentArc(ctx, leftEnd.x - 22, leftEnd.y, -1, Art.C.greenBot);
+    momentArc(ctx, rightEnd.x + 22, rightEnd.y, 1, Art.C.orange);
+    ctx.font = Art.font(800, 12);
+    ctx.textAlign = "center";
+    ctx.fillStyle = Art.C.greenBot;
+    ctx.fillText(lang === "zh" ? "逆時針" : "anticlockwise", Math.max(52, leftEnd.x - 22), leftEnd.y - 38);
+    ctx.fillStyle = Art.C.orange;
+    ctx.fillText(lang === "zh" ? "順時針" : "clockwise", Math.min(w - 52, rightEnd.x + 22), rightEnd.y - 38);
+    const dimY = h * 0.875;
+    dimArrow(ctx, L.pivot.x, a.x, dimY, Math.abs(see.xL).toFixed(1) + " m", Art.C.muted);
+    dimArrow(ctx, L.pivot.x, b.x, dimY, see.xR.toFixed(1) + " m", Art.C.muted);
+    ctx.textAlign = "left";
+  }
+  function seeFromPointer(ev) {
+    const rect = cvS.getBoundingClientRect();
+    const L = seeLayout(rect.width, rect.height);
+    const x = ev.clientX - rect.left;
+    let meter = ((x - L.pivot.x) / L.half) * (LEN / 2);
+    meter = Math.max(-5.6, Math.min(5.6, meter));
+    if (see.drag === "L") see.xL = Math.min(-0.4, meter);
+    if (see.drag === "R") see.xR = Math.max(0.4, meter);
+    updateUI();
+  }
+  cvS.addEventListener("pointerdown", (ev) => {
+    const rect = cvS.getBoundingClientRect();
+    const L = seeLayout(rect.width, rect.height);
+    const x = ev.clientX - rect.left;
+    see.drag = Math.abs(x - L.xToPx(see.xL)) < Math.abs(x - L.xToPx(see.xR)) ? "L" : "R";
+    cvS.classList.add("dragging"); cvS.setPointerCapture(ev.pointerId); seeFromPointer(ev);
+  });
+  cvS.addEventListener("pointermove", (ev) => { if (see.drag) seeFromPointer(ev); });
+  cvS.addEventListener("pointerup", () => { see.drag = null; cvS.classList.remove("dragging"); });
+  $("sl-WL").addEventListener("input", () => { see.WL = +$("sl-WL").value; updateUI(); });
+  $("sl-WR").addEventListener("input", () => { see.WR = +$("sl-WR").value; updateUI(); });
+  $("btn-see-reset").onclick = () => {
+    see.WL = 450; see.WR = 300; see.xL = -3.0; see.xR = 4.5;
+    $("sl-WL").value = "450"; $("sl-WR").value = "300";
+    updateUI();
+  };
+  updateUI();
+  function loop() { drawSeesaw(); requestAnimationFrame(loop); }
+  window.addEventListener("resize", drawSeesaw);
+  requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

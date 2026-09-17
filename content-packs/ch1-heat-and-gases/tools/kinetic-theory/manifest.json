@@ -1,0 +1,8 @@
+{
+  "slug": "kinetic-theory",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

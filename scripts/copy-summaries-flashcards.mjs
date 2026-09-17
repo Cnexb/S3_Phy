@@ -18,19 +18,19 @@ const CHAPTERS = {
     json: ["flashcards-foundations.json"],
     diagrams: [],
   },
-  "ch1-heat": {
+  "ch1-heat-and-gases": {
     posters: ["thermometer", "heat-internal-energy", "change-of-state", "heat-transfer"],
     pdfs: [],
     json: ["flashcards-heat-ch1.json"],
     diagrams: ["thermometer", "heat-internal-energy", "change-of-state", "heat-transfer"],
   },
-  "ch2-mechanics": {
+  "ch2-force-and-motion": {
     posters: [],
     pdfs: [],
     json: ["flashcards-mechanics.json"],
     diagrams: [],
   },
-  "ch3-optics": {
+  "ch3-wave-motion-and-optics": {
     posters: ["reflection", "refraction", "tir", "convex", "concave", "em"],
     pdfs: ["reflection", "refraction", "tir", "convex", "concave", "em"],
     json: ["flashcards-light-ch3.json", "flashcards-optics-definitions.json"],
