@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function f(e){return t(e,{slug:"magnetic-effect",titleKey:"tools.magneticEffect.title",className:"tool-magnetic-effect-lab",extraParams:()=>"&v=20260913_n1_em"})}export{f as createMagneticEffectLab};

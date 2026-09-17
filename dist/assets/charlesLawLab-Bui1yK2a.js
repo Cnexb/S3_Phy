@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function s(a){return e(a,{slug:"charles-law",titleKey:"tools.charlesLaw.title",className:"tool-charles-law-lab",extraParams:()=>"&v=20260913_n1_canvas"})}export{s as createCharlesLawLab};

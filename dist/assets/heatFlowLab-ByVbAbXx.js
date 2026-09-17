@@ -1,1 +1,0 @@
-import{c as e}from"./createLabIframe-MeoI5VBv.js";import"./index-DAhv2-VN.js";import"./embedPageUrl-DWRMbVg6.js";function l(t){return e(t,{slug:"heat-flow",titleKey:"tools.heatFlow.title",className:"tool-heat-flow",extraParams:()=>"&v=41"})}export{l as createHeatFlowLab};

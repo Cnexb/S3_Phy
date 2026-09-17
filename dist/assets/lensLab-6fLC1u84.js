@@ -1,0 +1,1 @@
+import{c as a}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function l(e,t={}){const o=t.defaultKind==="concave"?"concave":"convex";return a(e,{slug:"lens-simulator",titleKey:"tools.lens.title",className:"tool-lens-simulator",extraParams:()=>`&defaultLens=${encodeURIComponent(o)}&v=2`})}export{l as createLensLab};

@@ -1,1 +1,0 @@
-import{c as t}from"./createLabIframe-MeoI5VBv.js";import"./index-DAhv2-VN.js";import"./embedPageUrl-DWRMbVg6.js";function l(e){return t(e,{slug:"reflection-3d",titleKey:"tools.reflection3d.title",className:"tool-reflection-3d-lab",extraParams:()=>"&v=20260718"})}export{l as createReflection3dLab};

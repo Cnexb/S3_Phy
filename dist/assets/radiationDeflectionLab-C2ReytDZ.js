@@ -1,0 +1,1 @@
+import{c as a}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function r(t){return a(t,{slug:"radiation-deflection",titleKey:"tools.radiationDeflection.title",className:"tool-radiation-deflection-lab",extraParams:()=>"&v=20260901-hc"})}export{r as createRadiationDeflectionLab};
