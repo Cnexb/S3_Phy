@@ -1,0 +1,1 @@
+import{c as a}from"./createLabIframe-BwKAVkID.js";import"./index-D6w956O8.js";import"./embedPageUrl-DWRMbVg6.js";function n(t){return a(t,{slug:"newton-first-law",titleKey:"tools.newtonFirstLaw.title",className:"tool-newton-first-law-lab",extraParams:()=>"&v=20260827_newton_first_law_v1"})}export{n as createNewtonFirstLawLab};

@@ -1783,6 +1783,13 @@ iframe.note-preview {
   min-height: var(--tool-viewport-min-h);
 }
 
+.panel--quiz-embed .worksheet-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .worksheet-picker {
   flex-shrink: 0;
   padding: var(--vp-pad) var(--vp-pad) 0;
@@ -1800,6 +1807,7 @@ iframe.note-preview {
 .panel--worksheets-embed .tool-heat-final-exam-quiz,
 .panel--worksheets-embed .tool-foundations-notes-quiz,
 .panel--quiz-embed .tool-heat-ch1-quiz,
+.panel--quiz-embed .tool-jphg01-quiz-2,
 .panel--quiz-embed .tool-optics-ch3-quiz,
 .panel--quiz-embed .tool-foundations-quantities-quiz {
   width: 100%;

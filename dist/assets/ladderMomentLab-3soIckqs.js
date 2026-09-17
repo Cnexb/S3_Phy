@@ -1,1 +1,0 @@
-import{c as t}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function o(e){return t(e,{slug:"ladder-moment",titleKey:"tools.ladderMoment.title",className:"tool-ladder-moment-lab",extraParams:()=>"&v=20260906_ladder_moment"})}export{o as createLadderMomentLab};

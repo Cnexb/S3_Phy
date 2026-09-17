@@ -57,6 +57,8 @@ const TOOL_ORDER = [
   'liquid', 'boilingWater', 'heatingMaterials', 'changeOfState', 'heatFlow', 'heatTransfer',
 ];
 const TOOL_STORAGE_KEY = 's3phy.heat.tool';
+const QUIZ_ORDER = ['jphg01', 'jphg01-2'];
+const QUIZ_STORAGE_KEY = 's3phy.heat.quiz';
 
 const TOOL_LOADERS = {
   liquid: () => import('../tools/thermometerLab.js').then((m) => m.createThermometerLab),
@@ -79,9 +81,18 @@ function toolLabel(id) {
   return t(map[id] || id);
 }
 
+function quizLabel(id) {
+  const map = {
+    jphg01: 'quiz.jphg01Quiz1',
+    'jphg01-2': 'quiz.jphg01Quiz2',
+  };
+  return t(map[id] || id);
+}
+
 export function mountHeatHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.heat.section'), 'notes');
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'liquid');
+  let quizPickId = loadToolId(QUIZ_STORAGE_KEY, QUIZ_ORDER, 'jphg01');
 
   let shell = null;
   let el = { main: null };
@@ -119,11 +130,37 @@ export function mountHeatHub(root) {
     destroyWorksheet = node._heatFinalExamWorksheetCleanup || null;
   }
 
-  async function mountQuiz(panel) {
+  async function mountActiveQuiz(stage) {
+    if (!stage) return;
+    destroyWorksheet?.();
+    destroyWorksheet = null;
+    stage.innerHTML = '';
+    if (quizPickId === 'jphg01-2') {
+      const { createHeatCh1Quiz2 } = await import('../worksheets/heatCh1Quiz2.js');
+      const node = createHeatCh1Quiz2(t);
+      stage.appendChild(node);
+      destroyWorksheet = node._heatCh1Quiz2Cleanup || null;
+      return;
+    }
     const { createHeatCh1Quiz } = await import('../worksheets/heatCh1Quiz.js');
     const node = createHeatCh1Quiz(t);
-    panel.appendChild(node);
+    stage.appendChild(node);
     destroyWorksheet = node._heatCh1QuizCleanup || null;
+  }
+
+  function renderQuiz() {
+    const buttons = QUIZ_ORDER.map(
+      (id) =>
+        `<button type="button" data-heat-quiz="${id}" class="${quizPickId === id ? 'active' : ''}">${quizLabel(id)}</button>`,
+    ).join('');
+    return `
+      <section class="panel panel--quiz-embed">
+        <div class="worksheet-picker">
+          <p class="lead">${t('quiz.pick')}</p>
+          <div class="tool-list" data-heat-quiz-list>${buttons}</div>
+        </div>
+        <div class="worksheet-stage" data-heat-quiz-stage></div>
+      </section>`;
   }
 
   function renderMain() {
@@ -148,9 +185,8 @@ export function mountHeatHub(root) {
       const panel = el.main.querySelector('.panel--worksheets-embed');
       void mountWorksheet(panel);
     } else if (section === 'quiz') {
-      el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
-      const panel = el.main.querySelector('.panel--quiz-embed');
-      void mountQuiz(panel);
+      el.main.innerHTML = renderQuiz();
+      void mountActiveQuiz(el.main.querySelector('[data-heat-quiz-stage]'));
     } else if (section === 'flashcards') {
       destroyFlashcards = mountFlashcardStudy(el.main, {
         deckOptions: HEAT_DECK_OPTIONS.map((o) => ({
@@ -253,15 +289,31 @@ export function mountHeatHub(root) {
     await hydrateSummaryCards(root, HEAT_SUMMARY_ROWS);
   }
 
+  function onMainClick(ev) {
+    const btn = ev.target.closest('[data-heat-quiz]');
+    if (btn && section === 'quiz') {
+      const id = btn.getAttribute('data-heat-quiz');
+      if (id && id !== quizPickId && QUIZ_ORDER.includes(id)) {
+        quizPickId = id;
+        saveToolId(QUIZ_STORAGE_KEY, quizPickId);
+        renderMain();
+      }
+    }
+  }
+
   const onLang = onLangChange;
+  const onClick = (ev) => onMainClick(ev);
 
   window.addEventListener('s3phy:lang', onLang);
+  root.addEventListener('click', onClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLang);
+    root.removeEventListener('click', onClick);
     destroyFlashcards?.();
+    destroyWorksheet?.();
     cleanupActiveLab();
     shell?.destroy();
   };
