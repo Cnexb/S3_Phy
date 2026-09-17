@@ -1,1 +1,0 @@
-import{c as a}from"./createLabIframe-BwKAVkID.js";import"./index-D6w956O8.js";import"./embedPageUrl-DWRMbVg6.js";function m(e){return a(e,{slug:"fleming-hand-rules",titleKey:"tools.flemingHandRules.title",className:"tool-fleming-hand-rules-lab",extraParams:()=>"&v=20260913_n1_em"})}export{m as createFlemingHandRulesLab};

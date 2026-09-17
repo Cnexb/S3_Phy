@@ -35,5 +35,38 @@ assert.doesNotMatch(main, /uni-tracker|quizId/);
 const opticsQuiz = read('src/worksheets/opticsCh3Quiz.js');
 assert.match(opticsQuiz, /embedPageUrl\(`optics-ch3-quiz\/quiz\.html/);
 assert.match(opticsQuiz, /s3phy:lang/);
+assert.doesNotMatch(opticsQuiz, /uni-tracker|uniplus:quizAnswer|quizId/);
+
+const quiz2App = read('quizzes/jpwm06-2/js/quizApp.js');
+assert.match(quiz2App, /quizId:\s*QUIZ_META\.quizId/);
+assert.match(quiz2App, /type:\s*"uniplus:quizAnswer"/);
+assert.match(quiz2App, /questionId:\s*String\(q\.id\)/);
+assert.match(quiz2App, /section:\s*q\.section/);
+assert.match(quiz2App, /reportPhyAttempt/);
+assert.doesNotMatch(quiz2App, /embedPageUrl/);
+
+const quiz2Data = read('quizzes/jpwm06-2/js/quizData.js');
+assert.match(quiz2Data, /quizId:\s*"phy-jpwm06-2"/);
+
+const quiz1Ids = [...quizData.matchAll(/id:\s*"(jpwm06-[^"]+)"/g)].map((m) => m[1]);
+const quiz2Ids = [...quiz2Data.matchAll(/id:\s*"(jpwm06-[^"]+)"/g)].map((m) => m[1]);
+assert.ok(quiz1Ids.length >= 4, 'JPWM06 quiz 1 needs question ids');
+assert.ok(quiz2Ids.length >= 4, 'JPWM06 quiz 2 needs question ids');
+assert.equal(new Set(quiz1Ids).size, quiz1Ids.length, 'JPWM06 quiz 1 question ids must be unique');
+assert.equal(new Set(quiz2Ids).size, quiz2Ids.length, 'JPWM06 quiz 2 question ids must be unique');
+for (const id of quiz2Ids) {
+  assert.ok(!quiz1Ids.includes(id), `question id ${id} collides with quiz 1`);
+}
+assert.equal([...quiz2Data.matchAll(/section:\s*"JPWM06\./g)].length, quiz2Ids.length, 'every quiz 2 item needs a JPWM06 subtopic section');
+
+const opticsQuiz2 = read('src/worksheets/opticsCh3Quiz2.js');
+assert.match(opticsQuiz2, /embedPageUrl\(`jpwm06-quiz-2\/quiz\.html/);
+assert.match(opticsQuiz2, /s3phy:lang/);
+assert.doesNotMatch(opticsQuiz2, /uni-tracker|uniplus:quizAnswer|quizId/);
+
+const opticsHub = read('src/strands/opticsHub.js');
+assert.match(opticsHub, /createOpticsCh3Quiz2/);
+assert.match(opticsHub, /jpwm06-2/);
 
 console.log('ok  embed loop fix leaves tracker / quizId wiring untouched');
+console.log('ok  JPWM06 quiz 1 and quiz 2 post distinct quizId and questionId values');

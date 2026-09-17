@@ -1,0 +1,1 @@
+import{c as e}from"./createLabIframe-MeoI5VBv.js";import"./index-DAhv2-VN.js";import"./embedPageUrl-DWRMbVg6.js";function o(t){return e(t,{slug:"kinetic-theory",titleKey:"tools.kineticTheory.title",className:"tool-kinetic-theory-lab",extraParams:()=>"&v=20260913_n1_canvas"})}export{o as createKineticTheoryLab};

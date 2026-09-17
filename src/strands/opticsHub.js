@@ -15,6 +15,8 @@ import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
 const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em', 'rayDiagram'];
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
+const QUIZ_ORDER = ['jpwm06', 'jpwm06-2'];
+const QUIZ_STORAGE_KEY = 's3phy.optics.quiz';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
 const COMICS_ASSET_VERSION = '20260825-initial-d-v3';
@@ -92,10 +94,19 @@ function worksheetLabel(id) {
   return t(map[id] || id);
 }
 
+function quizLabel(id) {
+  const map = {
+    jpwm06: 'quiz.jpwm06Quiz1',
+    'jpwm06-2': 'quiz.jpwm06Quiz2',
+  };
+  return t(map[id] || id);
+}
+
 export function mountOpticsHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.optics.section'), 'notes', OPTICS_HUB_SECTIONS);
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'rotatingMirror');
   let worksheetId = 'lightLens';
+  let quizPickId = loadToolId(QUIZ_STORAGE_KEY, QUIZ_ORDER, 'jpwm06');
   let lensDefaultKind = 'convex';
 
   let shell = null;
@@ -145,11 +156,37 @@ export function mountOpticsHub(root) {
       null;
   }
 
-  async function mountQuiz(panel) {
+  async function mountActiveQuiz(stage) {
+    if (!stage) return;
+    destroyWorksheet?.();
+    destroyWorksheet = null;
+    stage.innerHTML = '';
+    if (quizPickId === 'jpwm06-2') {
+      const { createOpticsCh3Quiz2 } = await import('../worksheets/opticsCh3Quiz2.js');
+      const node = createOpticsCh3Quiz2(t);
+      stage.appendChild(node);
+      destroyWorksheet = node._opticsCh3Quiz2Cleanup || null;
+      return;
+    }
     const { createOpticsCh3Quiz } = await import('../worksheets/opticsCh3Quiz.js');
     const node = createOpticsCh3Quiz(t);
-    panel.appendChild(node);
+    stage.appendChild(node);
     destroyWorksheet = node._opticsCh3QuizCleanup || null;
+  }
+
+  function renderQuiz() {
+    const buttons = QUIZ_ORDER.map(
+      (id) =>
+        `<button type="button" data-optics-quiz="${id}" class="${quizPickId === id ? 'active' : ''}">${quizLabel(id)}</button>`,
+    ).join('');
+    return `
+      <section class="panel panel--quiz-embed">
+        <div class="worksheet-picker">
+          <p class="lead">${t('quiz.pick')}</p>
+          <div class="tool-list" data-optics-quiz-list>${buttons}</div>
+        </div>
+        <div class="worksheet-stage" data-optics-quiz-stage></div>
+      </section>`;
   }
 
   function renderWorksheets() {
@@ -189,9 +226,8 @@ export function mountOpticsHub(root) {
       void mountActiveWorksheet(el.main.querySelector('[data-worksheet-stage]'));
     }
     else if (section === 'quiz') {
-      el.main.innerHTML = '<section class="panel panel--quiz-embed"></section>';
-      const panel = el.main.querySelector('.panel--quiz-embed');
-      void mountQuiz(panel);
+      el.main.innerHTML = renderQuiz();
+      void mountActiveQuiz(el.main.querySelector('[data-optics-quiz-stage]'));
     }
     else if (section === 'flashcards') {
       destroyFlashcards = mountFlashcardStudy(el.main, {
@@ -259,6 +295,15 @@ export function mountOpticsHub(root) {
       const id = ws.getAttribute('data-worksheet');
       if (id && id !== worksheetId && WORKSHEET_LOADERS[id]) {
         worksheetId = id;
+        renderMain();
+      }
+    }
+    const quizBtn = ev.target.closest('[data-optics-quiz]');
+    if (quizBtn && section === 'quiz') {
+      const id = quizBtn.getAttribute('data-optics-quiz');
+      if (id && id !== quizPickId && QUIZ_ORDER.includes(id)) {
+        quizPickId = id;
+        saveToolId(QUIZ_STORAGE_KEY, quizPickId);
         renderMain();
       }
     }

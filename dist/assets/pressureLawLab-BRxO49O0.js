@@ -1,0 +1,1 @@
+import{c as r}from"./createLabIframe-MeoI5VBv.js";import"./index-DAhv2-VN.js";import"./embedPageUrl-DWRMbVg6.js";function o(e){return r(e,{slug:"pressure-law",titleKey:"tools.pressureLaw.title",className:"tool-pressure-law-lab",extraParams:()=>"&v=20260913_n1_canvas"})}export{o as createPressureLawLab};
