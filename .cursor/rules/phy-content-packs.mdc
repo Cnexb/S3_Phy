@@ -1,0 +1,49 @@
+---
+description: How All-In-One finds Physics packs — add content here so it appears automatically
+alwaysApply: true
+---
+
+# Content packs (All-In-One)
+
+Uni+ Learning Tools reads **only** `content-packs/` through content-api. A pack appears when this file exists:
+
+`content-packs/<pack-folder>/manifest.json`
+
+Do **not** nest packs in `S1/` / `S3/` or any year folder. Do **not** add teaching files under `public/`, `dist/`, `src/`, `labs/`, root `quizzes/`, or `worksheets/` (old hub).
+
+## Folder shape (one Textbook Chapter = one pack)
+
+```
+content-packs/ch1-heat-and-gases/
+  manifest.json
+  notes/JPHG01-en.pdf
+  notes/JPHG01-zhHant.pdf
+  tools/<slug>/index.html
+  quiz/<slug>/js/quizData.js
+  summaries/
+  flashcards-*.json
+```
+
+Keep **CH1** as one pack (S3 heat + S4 gases). Tag items with syllabus **Symbol** from `content/topics/physics-topics.json` (`F01`, `HG01`, `HG05`). Do not split into `hg05-gases/` until the platform owner says Topic Cursor is live.
+
+## New chapter
+
+1. Copy an existing pack folder. Rename it (`ch6-…`).
+2. In `manifest.json`: `subject` `"PHY"`, unique lowercase `scope`, `chapterCode`, `published: true`.
+3. List every note, tool, quiz, summary, and flashcard. Unlisted files are invisible.
+
+## New Topic inside a chapter
+
+Add `notes[]` with `topicCode` (e.g. `JPHG01`) and `symbol` (e.g. `HG01`). Add `en` + `zhHant` PDFs. Add tools/quizzes the same way. Do not invent Symbols.
+
+## Quizzes
+
+Edit `content-packs/<pack>/quiz/<slug>/js/quizData.js`. Keep old `id` values; new items get new ids. List the quiz in `manifest.json` `quiz[]`.
+
+## HTML to keep
+
+`content-packs/<pack>/tools/<slug>/index.html` (and its JS/CSS) — All-In-One embeds this.
+
+## Stop
+
+Duplicate `scope`, year-folder wrappers, Topic-level folder splits, or quiz runner / tracking changes → ask the technical owner. Do not push.
