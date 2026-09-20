@@ -14,8 +14,7 @@
         "zhHant": "溫度與溫度計"
       },
       "files": {
-        "en": "content-packs/ch1-heat-and-gases/notes/JPHG01-en.pdf",
-        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG01-zhHant.pdf"
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG01-en.pdf"
       }
     },
     {
@@ -26,8 +25,7 @@
         "zhHant": "熱與內能"
       },
       "files": {
-        "en": "content-packs/ch1-heat-and-gases/notes/JPHG02-en.pdf",
-        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG02-zhHant.pdf"
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG02-en.pdf"
       }
     },
     {
@@ -38,8 +36,7 @@
         "zhHant": "物態變化"
       },
       "files": {
-        "en": "content-packs/ch1-heat-and-gases/notes/JPHG03-en.pdf",
-        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG03-zhHant.pdf"
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG03-en.pdf"
       }
     },
     {
@@ -50,8 +47,7 @@
         "zhHant": "傳熱過程"
       },
       "files": {
-        "en": "content-packs/ch1-heat-and-gases/notes/JPHG04-en.pdf",
-        "zhHant": "content-packs/ch1-heat-and-gases/notes/JPHG04-zhHant.pdf"
+        "en": "content-packs/ch1-heat-and-gases/notes/JPHG04-en.pdf"
       }
     },
     {
@@ -62,8 +58,7 @@
         "zhHant": "氣體"
       },
       "files": {
-        "en": "content-packs/ch1-heat-and-gases/notes/SPHG05-en.pdf",
-        "zhHant": "content-packs/ch1-heat-and-gases/notes/SPHG05-zhHant.pdf"
+        "en": "content-packs/ch1-heat-and-gases/notes/SPHG05-en.pdf"
       }
     },
     {
@@ -75,8 +70,7 @@
       },
       "includedBecause": "Hub ships kinetic-theory as a second PDF under CSV Topic SPHG05 Gases.",
       "files": {
-        "en": "content-packs/ch1-heat-and-gases/notes/SPHG05.5-en.pdf",
-        "zhHant": "content-packs/ch1-heat-and-gases/notes/SPHG05.5-zhHant.pdf"
+        "en": "content-packs/ch1-heat-and-gases/notes/SPHG05.5-en.pdf"
       }
     }
   ],

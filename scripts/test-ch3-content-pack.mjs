@@ -38,14 +38,13 @@ check("JPWM10 is listed without note files", () => {
 
 check("every published note PDF exists on disk", () => {
   for (const note of pack.notes) {
-    for (const locale of ["en", "zhHant"]) {
-      const filePath = path.join(repoRoot, note.files[locale]);
-      assert.ok(
-        note.files[locale].startsWith("content-packs/ch3-wave-motion-and-optics/notes/"),
-        note.topicCode,
-      );
-      assert.equal(fsExists(filePath), true, filePath);
-    }
+    const filePath = path.join(repoRoot, note.files.en);
+    assert.equal(note.files.zhHant, undefined, note.topicCode);
+    assert.ok(
+      note.files.en.startsWith("content-packs/ch3-wave-motion-and-optics/notes/"),
+      note.topicCode,
+    );
+    assert.equal(fsExists(filePath), true, filePath);
   }
 });
 

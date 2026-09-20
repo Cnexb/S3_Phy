@@ -16,8 +16,7 @@ Do **not** nest packs in `S1/` / `S3/` or any year folder. Do **not** add teachi
 ```
 content-packs/ch1-heat-and-gases/
   manifest.json
-  notes/JPHG01-en.pdf
-  notes/JPHG01-zhHant.pdf
+    notes/JPHG01-en.pdf
   tools/<slug>/index.html
   quiz/<slug>/js/quizData.js
   summaries/
@@ -34,7 +33,7 @@ Keep **CH1** as one pack (S3 heat + S4 gases). Tag items with syllabus **Symbol*
 
 ## New Topic inside a chapter
 
-Add `notes[]` with `topicCode` (e.g. `JPHG01`) and `symbol` (e.g. `HG01`). Add `en` + `zhHant` PDFs. Add tools/quizzes the same way. Do not invent Symbols.
+Add `notes[]` with `topicCode` (e.g. `JPHG01`) and `symbol` (e.g. `HG01`). Add one English PDF (`files.en` only). Do not add a `zhHant` notes PDF. Add tools/quizzes the same way. Do not invent Symbols.
 
 ## Quizzes
 

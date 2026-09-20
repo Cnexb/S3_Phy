@@ -14,8 +14,7 @@
         "zhHant": "波的性質"
       },
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM01-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM01-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM01-en.pdf"
       }
     },
     {
@@ -26,8 +25,7 @@
         "zhHant": "波動現象"
       },
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM02-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM02-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM02-en.pdf"
       }
     },
     {
@@ -38,8 +36,7 @@
         "zhHant": "駐波"
       },
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM03-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM03-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM03-en.pdf"
       }
     },
     {
@@ -57,8 +54,7 @@
       ],
       "includedBecause": "Optics hub already ships emwaves PDFs. CSV places JPWM04 in Senior S4 CH3.",
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM04-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM04-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM04-en.pdf"
       }
     },
     {
@@ -69,8 +65,7 @@
         "zhHant": "聲波"
       },
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM05-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM05-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM05-en.pdf"
       }
     },
     {
@@ -87,8 +82,7 @@
         "JPWM06.4"
       ],
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM06-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM06-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM06-en.pdf"
       }
     },
     {
@@ -106,8 +100,7 @@
         "JPWM07.5"
       ],
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM07-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM07-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM07-en.pdf"
       }
     },
     {
@@ -123,8 +116,7 @@
         "JPWM08.3"
       ],
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM08-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM08-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM08-en.pdf"
       }
     },
     {
@@ -139,8 +131,7 @@
         "JPWM09.2"
       ],
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM09-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM09-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM09-en.pdf"
       }
     },
     {
@@ -155,8 +146,7 @@
         "JPWM11.2"
       ],
       "files": {
-        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM11-en.pdf",
-        "zhHant": "content-packs/ch3-wave-motion-and-optics/notes/JPWM11-zhHant.pdf"
+        "en": "content-packs/ch3-wave-motion-and-optics/notes/JPWM11-en.pdf"
       }
     }
   ],

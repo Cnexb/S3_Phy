@@ -28,11 +28,10 @@ check("notes keys are CSV Topic codes JPF01 and JPF02", () => {
 
 check("every published note PDF exists on disk", () => {
   for (const note of pack.notes) {
-    for (const locale of ["en", "zhHant"]) {
-      const filePath = path.join(repoRoot, note.files[locale]);
-      assert.ok(note.files[locale].startsWith("content-packs/ch0-foundation/notes/"));
-      assert.equal(fs.existsSync(filePath), true, filePath);
-    }
+    const filePath = path.join(repoRoot, note.files.en);
+    assert.equal(note.files.zhHant, undefined);
+    assert.ok(note.files.en.startsWith("content-packs/ch0-foundation/notes/"));
+    assert.equal(fs.existsSync(filePath), true, filePath);
   }
 });
 

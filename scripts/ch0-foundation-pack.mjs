@@ -23,15 +23,16 @@ export function loadCh0FoundationNotesPack(repoRoot) {
   }
 
   for (const note of pack.notes) {
-    for (const locale of ["en", "zhHant"]) {
-      const relative = note.files[locale];
-      if (!relative.startsWith("content-packs/ch0-foundation/notes/")) {
-        throw new Error(`${note.topicCode} ${locale} must live under the chapter pack notes/`);
-      }
-      const absolute = path.join(repoRoot, relative);
-      if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) {
-        throw new Error(`Missing note PDF: ${relative}`);
-      }
+    if (note.files.zhHant) {
+      throw new Error(`${note.topicCode} must not list a zhHant notes PDF`);
+    }
+    const relative = note.files.en;
+    if (!relative.startsWith("content-packs/ch0-foundation/notes/")) {
+      throw new Error(`${note.topicCode} en must live under the chapter pack notes/`);
+    }
+    const absolute = path.join(repoRoot, relative);
+    if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) {
+      throw new Error(`Missing note PDF: ${relative}`);
     }
   }
 
