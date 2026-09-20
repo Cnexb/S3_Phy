@@ -1,1 +1,0 @@
-import{c as a}from"./createLabIframe-9eJBFeHt.js";import"./index-D5HkfLN5.js";import"./embedPageUrl-DWRMbVg6.js";function s(e){return a(e,{slug:"skate-park-energy",titleKey:"tools.skateParkEnergy.title",className:"tool-skate-park-energy-lab",extraParams:()=>"&v=20260913_zip_labs"})}export{s as createSkateParkEnergyLab};

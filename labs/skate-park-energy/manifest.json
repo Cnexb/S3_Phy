@@ -1,8 +1,0 @@
-{
-  "slug": "skate-park-energy",
-  "syncAll": true,
-  "exclude": [
-    "manifest.json",
-    "README.md"
-  ]
-}

@@ -1,8 +1,0 @@
-{
-  "slug": "seesaw-moment",
-  "syncAll": true,
-  "exclude": [
-    "manifest.json",
-    "README.md"
-  ]
-}

@@ -1,5 +1,0 @@
-{
-  "slug": "ray-diagram",
-  "syncAll": true,
-  "exclude": ["manifest.json", "README.md", "LICENSE.ray-studio", "NOTICE"]
-}

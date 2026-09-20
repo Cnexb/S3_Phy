@@ -1,8 +1,0 @@
-{
-  "slug": "spectral-overlap",
-  "syncAll": true,
-  "exclude": [
-    "manifest.json",
-    "README.md"
-  ]
-}

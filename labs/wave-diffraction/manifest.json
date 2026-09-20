@@ -1,5 +1,0 @@
-{
-  "slug": "wave-diffraction",
-  "syncAll": true,
-  "exclude": ["manifest.json", "README.md"]
-}

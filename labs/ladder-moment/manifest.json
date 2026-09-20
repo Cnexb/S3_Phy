@@ -1,8 +1,0 @@
-{
-  "slug": "ladder-moment",
-  "syncAll": true,
-  "exclude": [
-    "manifest.json",
-    "README.md"
-  ]
-}

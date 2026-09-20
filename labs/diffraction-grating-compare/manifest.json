@@ -1,8 +1,0 @@
-{
-  "slug": "diffraction-grating-compare",
-  "syncAll": true,
-  "exclude": [
-    "manifest.json",
-    "README.md"
-  ]
-}

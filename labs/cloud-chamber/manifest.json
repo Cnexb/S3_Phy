@@ -1,5 +1,0 @@
-{
-  "slug": "cloud-chamber",
-  "syncAll": true,
-  "exclude": ["manifest.json"]
-}

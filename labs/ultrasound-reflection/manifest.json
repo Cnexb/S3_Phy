@@ -1,8 +1,0 @@
-{
-  "slug": "ultrasound-reflection",
-  "syncAll": true,
-  "exclude": [
-    "manifest.json",
-    "README.md"
-  ]
-}

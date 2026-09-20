@@ -1,6 +1,0 @@
-{
-  "slug": "orbital-forces",
-  "build": "build.cjs",
-  "syncAll": false,
-  "exclude": ["manifest.json", "README.md", "package.json", "package-lock.json", "node_modules", "src", "dist"]
-}

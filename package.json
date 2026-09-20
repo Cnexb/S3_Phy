@@ -1,25 +1,9 @@
 {
-  "name": "s3-phy-hkdse",
+  "name": "s3-phy-content-packs",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build:content": "node scripts/build-content.cjs",
-    "build": "npm run build:content && vite build",
-    "build:plane-mirror-lab": "node scripts/build-plane-mirror-lab.cjs",
-    "preview": "vite preview",
-    "export:heat-flashcards": "node scripts/export-heat-ch1-flashcards.js",
-    "export:light-flashcards": "node scripts/export-light-ch3-flashcards.js",
-    "export:optics-definitions-flashcards": "python scripts/export-optics-definitions-flashcards.py",
-    "test:ch3-pack": "node scripts/test-ch3-content-pack.mjs",
-    "test:ch0-pack": "node scripts/test-ch0-content-pack.mjs",
-    "test:ch1-pack": "node scripts/test-ch1-content-pack.mjs",
-    "test:ch2-pack": "node scripts/test-ch2-content-pack.mjs",
-    "test:chapter-assets": "node scripts/test-chapter-assets.mjs"
-  },
-  "devDependencies": {
-    "playwright": "^1.61.1",
-    "vite": "^6.3.5"
+    "test": "node scripts/test-chapter-assets.mjs && node scripts/test-ch0-content-pack.mjs && node scripts/test-ch1-content-pack.mjs && node scripts/test-ch2-content-pack.mjs && node scripts/test-ch3-content-pack.mjs"
   }
 }

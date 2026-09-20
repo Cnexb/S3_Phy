@@ -1,5 +1,0 @@
-{
-  "slug": "domestic-circuit",
-  "syncAll": true,
-  "exclude": ["manifest.json", "README.md"]
-}
