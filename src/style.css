@@ -1612,6 +1612,7 @@ body:has([data-hub-fullscreen]) .hub-fs-btn {
 .tool-optics-light-lens-quiz,
 .tool-optics-ch3-quiz,
 .tool-jpwm06-quiz-2,
+.tool-jpwm06-quiz-3,
 .tool-optics-ch4-em-quiz,
 .tool-heat-final-exam-quiz,
 .tool-heat-ch1-quiz,
@@ -1641,6 +1642,7 @@ body:has([data-hub-fullscreen]) .hub-fs-btn {
 .tool-optics-light-lens-quiz iframe,
 .tool-optics-ch3-quiz iframe,
 .tool-jpwm06-quiz-2 iframe,
+.tool-jpwm06-quiz-3 iframe,
 .tool-optics-ch4-em-quiz iframe,
 .tool-heat-final-exam-quiz iframe,
 .tool-heat-ch1-quiz iframe,
@@ -1782,7 +1784,9 @@ iframe.note-preview {
 }
 
 .panel--quiz-embed {
-  min-height: var(--tool-viewport-min-h);
+  height: calc(100dvh - var(--nav-offset) - 8px - var(--s3-safe-bottom));
+  max-height: calc(100dvh - var(--nav-offset) - 8px - var(--s3-safe-bottom));
+  min-height: 420px;
 }
 
 .panel--quiz-embed .worksheet-stage {
@@ -1790,6 +1794,34 @@ iframe.note-preview {
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+.panel--quiz-embed .worksheet-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 12px;
+}
+
+.panel--quiz-embed .worksheet-picker .lead {
+  margin: 0;
+  flex: 0 0 auto;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.panel--quiz-embed .tool-list {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel--quiz-embed .tool-list button {
+  width: auto;
+  padding: 6px 14px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .worksheet-picker {
@@ -1813,12 +1845,12 @@ iframe.note-preview {
 .panel--quiz-embed .tool-jphg01-quiz-3,
 .panel--quiz-embed .tool-optics-ch3-quiz,
 .panel--quiz-embed .tool-jpwm06-quiz-2,
+.panel--quiz-embed .tool-jpwm06-quiz-3,
 .panel--quiz-embed .tool-foundations-quantities-quiz {
   width: 100%;
   flex: 1 1 auto;
+  height: auto;
   min-height: 0;
-  height: var(--tool-viewport-min-h);
-  min-height: var(--tool-viewport-min-h);
   display: flex;
   flex-direction: column;
 }
