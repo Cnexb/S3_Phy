@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-DTyJpp7o.js";import"./index-BpHNBf2w.js";import"./embedPageUrl-DWRMbVg6.js";function l(r){return t(r,{slug:"orbital-forces",titleKey:"tools.orbitalForces.title",className:"tool-orbital-forces-lab",extraParams:()=>"&v=20260724_orbital_forces_v1"})}export{l as createOrbitalForcesLab};

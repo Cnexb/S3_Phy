@@ -1,0 +1,1 @@
+import{c as r}from"./createLabIframe-DTyJpp7o.js";import"./index-BpHNBf2w.js";import"./embedPageUrl-DWRMbVg6.js";function o(e){return r(e,{slug:"wave-interference",titleKey:"tools.waveInterference.title",className:"tool-wave-interference-lab",extraParams:()=>"&v=20260904b"})}export{o as createWaveInterferenceLab};

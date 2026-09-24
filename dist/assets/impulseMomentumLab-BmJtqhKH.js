@@ -1,1 +1,0 @@
-import{c as e}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function r(m){return e(m,{slug:"impulse-momentum",titleKey:"tools.impulseMomentum.title",className:"tool-impulse-momentum-lab",extraParams:()=>"&v=20260913_n1_art2"})}export{r as createImpulseMomentumLab};

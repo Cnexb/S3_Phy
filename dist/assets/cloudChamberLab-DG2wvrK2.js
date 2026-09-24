@@ -1,1 +1,0 @@
-import{c as e}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function l(a){return e(a,{slug:"cloud-chamber",titleKey:"tools.cloudChamber.title",className:"tool-cloud-chamber-lab",extraParams:()=>"&v=20260913-cloud"})}export{l as createCloudChamberLab};

@@ -1,0 +1,16 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./electrostaticsLab-CDquGovh.js","./createLabIframe-DTyJpp7o.js","./index-BpHNBf2w.js","./index-CTpxNbny.css","./embedPageUrl-DWRMbVg6.js","./domesticCircuitLab-DFaV35XG.js","./magneticEffectLab-CN3NBpMB.js","./flemingHandRulesLab-D4TmcIL1.js","./movingChargeForceLab-LA8R7rr3.js"])))=>i.map(i=>d[i]);
+import{t as n,_ as c}from"./index-BpHNBf2w.js";import{r as b,l as L,m as E,c as h,a as y,h as T,s as O}from"./toolsShell-DAO1QOBV.js";const g="s3phy.electricity.tool",p=["electrostatics","domesticCircuit","magneticEffect","flemingHandRules","movingChargeForce"],S={electrostatics:()=>c(()=>import("./electrostaticsLab-CDquGovh.js"),__vite__mapDeps([0,1,2,3,4]),import.meta.url).then(e=>e.createElectrostaticsLab),domesticCircuit:()=>c(()=>import("./domesticCircuitLab-DFaV35XG.js"),__vite__mapDeps([5,1,2,3,4]),import.meta.url).then(e=>e.createDomesticCircuitLab),magneticEffect:()=>c(()=>import("./magneticEffectLab-CN3NBpMB.js"),__vite__mapDeps([6,1,2,3,4]),import.meta.url).then(e=>e.createMagneticEffectLab),flemingHandRules:()=>c(()=>import("./flemingHandRulesLab-D4TmcIL1.js"),__vite__mapDeps([7,1,2,3,4]),import.meta.url).then(e=>e.createFlemingHandRulesLab),movingChargeForce:()=>c(()=>import("./movingChargeForceLab-LA8R7rr3.js"),__vite__mapDeps([8,1,2,3,4]),import.meta.url).then(e=>e.createMovingChargeForceLab)};function _(e){return n({electrostatics:"tools.electrostatics.title",domesticCircuit:"tools.domesticCircuit.title",magneticEffect:"tools.magneticEffect.title",flemingHandRules:"tools.flemingHandRules.title",movingChargeForce:"tools.movingChargeForce.title"}[e]||e)}function H(e){let i=b(sessionStorage.getItem("s3phy.electricity.section")),r=L(g,p,"electrostatics"),t=null,a={main:null},l=null;function s(){h(l),l=null}async function f(o){o.innerHTML="",s();const u=S[r];if(!u)return;l=(await u())(n),o.appendChild(l)}function m(){a.main&&(i==="notes"?a.main.innerHTML=`
+        <section class="panel">
+          <h2>${n("notes.title")}</h2>
+          <div class="card" style="padding: 2rem; text-align: center; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+            <p class="lead" style="margin-bottom: 0;">${n("notes.comingSoon")}</p>
+          </div>
+        </section>
+      `:i==="tools"?(a.main.innerHTML=y({toolOrder:p,toolId:r,getLabel:_,t:n}),T(e,{getLabel:_,t:n,getActiveToolId:()=>r,onSelectTool:o=>{r=o,O(g,r)},mountTool:o=>{f(o)}})):a.main.innerHTML=`
+        <section class="panel">
+          <h2>${n(`nav.${i}`)}</h2>
+          <div class="card" style="padding: 2rem; text-align: center; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border);">
+            <p class="lead" style="margin-bottom: 0;">${n("electricity.comingSoon")}</p>
+          </div>
+        </section>
+      `)}function d(){t==null||t.refreshLabels(),m()}function v(){t==null||t.destroy(),t=E(e,{subtitleKey:"strand.electricity.subtitle",activeSection:i,onSection:o=>{i==="tools"&&o!=="tools"&&s(),i=o,sessionStorage.setItem("s3phy.electricity.section",o),t.updateSection(i),m()},onLang:d}),a.main=t.main,t.updateSection(i),m()}return window.addEventListener("s3phy:lang",d),v(),()=>{window.removeEventListener("s3phy:lang",d),s(),t==null||t.destroy()}}export{H as mountElectricityHub};

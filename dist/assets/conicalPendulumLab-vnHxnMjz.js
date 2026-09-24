@@ -1,1 +1,0 @@
-import{c as e}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function n(a){return e(a,{slug:"conical-pendulum",titleKey:"tools.conicalPendulum.title",className:"tool-conical-pendulum-lab",extraParams:()=>"&v=20260913_n1_skin"})}export{n as createConicalPendulumLab};

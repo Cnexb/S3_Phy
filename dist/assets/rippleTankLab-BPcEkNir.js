@@ -1,0 +1,1 @@
+import{c as a}from"./createLabIframe-DTyJpp7o.js";import"./index-BpHNBf2w.js";import"./embedPageUrl-DWRMbVg6.js";function l(t){return a(t,{slug:"ripple-tank",titleKey:"tools.rippleTank.title",className:"tool-ripple-tank-lab",extraParams:()=>"&v=20260906_ripple_tank"})}export{l as createRippleTankLab};

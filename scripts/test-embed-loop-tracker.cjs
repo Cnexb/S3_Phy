@@ -68,5 +68,41 @@ const opticsHub = read('src/strands/opticsHub.js');
 assert.match(opticsHub, /createOpticsCh3Quiz2/);
 assert.match(opticsHub, /jpwm06-2/);
 
+const jphg01Quiz3App = read('quizzes/jphg01-3/js/quizApp.js');
+assert.match(jphg01Quiz3App, /quizId:\s*QUIZ_META\.quizId/);
+assert.match(jphg01Quiz3App, /type:\s*"uniplus:quizAnswer"/);
+assert.match(jphg01Quiz3App, /questionId:\s*String\(q\.id\)/);
+assert.match(jphg01Quiz3App, /section:\s*q\.section/);
+assert.match(jphg01Quiz3App, /reportPhyAttempt/);
+assert.match(jphg01Quiz3App, /window\.parent\.postMessage\(payload, "\*"\)/);
+assert.doesNotMatch(jphg01Quiz3App, /embedPageUrl/);
+
+const jphg01Quiz3Data = read('quizzes/jphg01-3/js/quizData.js');
+assert.match(jphg01Quiz3Data, /quizId:\s*"phy-jphg01-3"/);
+assert.match(jphg01Quiz3Data, /subject:\s*"PHY"/);
+
+const jphg01Quiz1Data = read('quizzes/heat-ch1/js/quizData.js');
+const jphg01Quiz2Data = read('quizzes/jphg01-2/js/quizData.js');
+const jphg01Quiz1Ids = [...jphg01Quiz1Data.matchAll(/id:\s*"(jphg01-[^"]+)"/g)].map((m) => m[1]);
+const jphg01Quiz2Ids = [...jphg01Quiz2Data.matchAll(/id:\s*"(jphg01-[^"]+)"/g)].map((m) => m[1]);
+const jphg01Quiz3Ids = [...jphg01Quiz3Data.matchAll(/id:\s*"(jphg01-3-[^"]+)"/g)].map((m) => m[1]);
+assert.deepEqual(jphg01Quiz3Ids, ['jphg01-3-1', 'jphg01-3-2', 'jphg01-3-3']);
+assert.equal(new Set(jphg01Quiz3Ids).size, jphg01Quiz3Ids.length);
+for (const id of jphg01Quiz3Ids) {
+  assert.ok(!jphg01Quiz1Ids.includes(id), `question id ${id} collides with quiz 1`);
+  assert.ok(!jphg01Quiz2Ids.includes(id), `question id ${id} collides with quiz 2`);
+}
+assert.equal([...jphg01Quiz3Data.matchAll(/section:\s*"JPHG01\./g)].length, jphg01Quiz3Ids.length);
+
+const heatQuiz3 = read('src/worksheets/heatCh1Quiz3.js');
+assert.match(heatQuiz3, /embedPageUrl\(`jphg01-quiz-3\/quiz\.html/);
+assert.match(heatQuiz3, /s3phy:lang/);
+assert.doesNotMatch(heatQuiz3, /uni-tracker|uniplus:quizAnswer|quizId/);
+
+const heatHub = read('src/strands/heatHub.js');
+assert.match(heatHub, /createHeatCh1Quiz3/);
+assert.match(heatHub, /jphg01-3/);
+
 console.log('ok  embed loop fix leaves tracker / quizId wiring untouched');
 console.log('ok  JPWM06 quiz 1 and quiz 2 post distinct quizId and questionId values');
+console.log('ok  JPHG01 quiz 3 posts phy-jphg01-3 with distinct question ids');

@@ -1,0 +1,1 @@
+import{c as t}from"./createLabIframe-DTyJpp7o.js";import"./index-BpHNBf2w.js";import"./embedPageUrl-DWRMbVg6.js";function o(a){return t(a,{slug:"boiling-water",titleKey:"tools.heatingMaterials.title",className:"tool-heating-materials",extraParams:()=>"&mode=heatCapacity&v=21"})}export{o as createHeatingMaterialsLab};

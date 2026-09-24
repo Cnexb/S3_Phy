@@ -1,1 +1,0 @@
-import{c as i}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function o(t){return i(t,{slug:"domestic-circuit",titleKey:"tools.domesticCircuit.title",className:"tool-domestic-circuit-lab",extraParams:()=>"&v=20260913_n1_em"})}export{o as createDomesticCircuitLab};

@@ -1,1 +1,0 @@
-import{c as r}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function o(a){return r(a,{slug:"ray-diagram",titleKey:"tools.rayDiagram.title",className:"tool-ray-diagram",extraParams:()=>"&v=20260911_ray_diagram_notop"})}export{o as createRayDiagramLab};

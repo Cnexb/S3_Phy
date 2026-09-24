@@ -1,1 +1,0 @@
-import{c as t}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function r(e){return t(e,{slug:"connected-containers",titleKey:"tools.connectedContainers.title",className:"tool-connected-containers-lab",extraParams:()=>"&v=20260913_n1_canvas"})}export{r as createConnectedContainersLab};

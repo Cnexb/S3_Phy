@@ -1,1 +1,0 @@
-import{c as r}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function g(e){return r(e,{slug:"bungee-energy",titleKey:"tools.bungeeEnergy.title",className:"tool-bungee-energy-lab",extraParams:()=>"&v=20260913_n1_energy"})}export{g as createBungeeEnergyLab};

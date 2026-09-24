@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 720" width="720" height="720" role="img" aria-label="Four graphs of resistance R against temperature T. A curves upward. B curves downward. C is a straight line. D is horizontal.">
+  <rect width="720" height="720" fill="#ffffff"/>
+  <g font-family="Times New Roman, Times, serif" fill="#191c1e">
+    <text x="28" y="40" font-size="22">A.</text>
+    <text x="150" y="32" font-size="16">R/&#937;</text>
+    <line x1="108" y1="250" x2="108" y2="52" stroke="#191c1e" stroke-width="1.6"/>
+    <line x1="108" y1="250" x2="330" y2="250" stroke="#191c1e" stroke-width="1.6"/>
+    <polygon points="108,44 103,56 113,56" fill="#191c1e"/>
+    <polygon points="338,250 326,245 326,255" fill="#191c1e"/>
+    <text x="300" y="274" font-size="16">T/&#176;C</text>
+    <path d="M 148,214 C 198,208 236,186 268,150 C 292,118 308,90 318,72" fill="none" stroke="#191c1e" stroke-width="2.2"/>
+
+    <text x="390" y="40" font-size="22">B.</text>
+    <text x="512" y="32" font-size="16">R/&#937;</text>
+    <line x1="470" y1="250" x2="470" y2="52" stroke="#191c1e" stroke-width="1.6"/>
+    <line x1="470" y1="250" x2="692" y2="250" stroke="#191c1e" stroke-width="1.6"/>
+    <polygon points="470,44 465,56 475,56" fill="#191c1e"/>
+    <polygon points="700,250 688,245 688,255" fill="#191c1e"/>
+    <text x="662" y="274" font-size="16">T/&#176;C</text>
+    <path d="M 470,250 C 530,164 588,112 640,88 C 666,76 684,70 692,66" fill="none" stroke="#191c1e" stroke-width="2.2"/>
+
+    <text x="28" y="400" font-size="22">C.</text>
+    <text x="150" y="392" font-size="16">R/&#937;</text>
+    <line x1="108" y1="610" x2="108" y2="412" stroke="#191c1e" stroke-width="1.6"/>
+    <line x1="108" y1="610" x2="330" y2="610" stroke="#191c1e" stroke-width="1.6"/>
+    <polygon points="108,404 103,416 113,416" fill="#191c1e"/>
+    <polygon points="338,610 326,605 326,615" fill="#191c1e"/>
+    <text x="300" y="634" font-size="16">T/&#176;C</text>
+    <line x1="146" y1="572" x2="318" y2="448" stroke="#191c1e" stroke-width="2.2"/>
+
+    <text x="390" y="400" font-size="22">D.</text>
+    <text x="512" y="392" font-size="16">R/&#937;</text>
+    <line x1="470" y1="610" x2="470" y2="412" stroke="#191c1e" stroke-width="1.6"/>
+    <line x1="470" y1="610" x2="692" y2="610" stroke="#191c1e" stroke-width="1.6"/>
+    <polygon points="470,404 465,416 475,416" fill="#191c1e"/>
+    <polygon points="700,610 688,605 688,615" fill="#191c1e"/>
+    <text x="662" y="634" font-size="16">T/&#176;C</text>
+    <line x1="520" y1="500" x2="660" y2="500" stroke="#191c1e" stroke-width="2.2"/>
+  </g>
+</svg>

@@ -1,1 +1,0 @@
-import{c as a}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function o(t){return a(t,{slug:"crash-track-momentum",titleKey:"tools.crashTrackMomentum.title",className:"tool-crash-track-momentum-lab",extraParams:()=>"&v=20260913_n1_art2"})}export{o as createCrashTrackMomentumLab};

@@ -1,1 +1,0 @@
-import{c as t}from"./createLabIframe-4BGk7J14.js";import"./index-zsDP7smh.js";import"./embedPageUrl-DWRMbVg6.js";function i(a){return t(a,{slug:"stationary-wave",titleKey:"tools.stationaryWave.title",className:"tool-stationary-wave-lab",extraParams:()=>"&v=20260915_stationary"})}export{i as createStationaryWaveLab};
