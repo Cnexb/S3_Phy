@@ -1,0 +1,8 @@
+{
+  "slug": "jpwm06-3",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}

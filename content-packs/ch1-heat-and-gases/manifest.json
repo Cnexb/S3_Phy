@@ -208,6 +208,22 @@
         "en": "JPHG01 Temperature and thermometer",
         "zhHant": "JPHG01 溫度與溫度計"
       }
+    },
+    {
+      "slug": "jphg01-2",
+      "path": "content-packs/ch1-heat-and-gases/quiz/jphg01-2",
+      "title": {
+        "en": "JPHG01 Temperature and thermometer (Quiz 2)",
+        "zhHant": "JPHG01 溫度與溫度計（測驗 2）"
+      }
+    },
+    {
+      "slug": "jphg01-3",
+      "path": "content-packs/ch1-heat-and-gases/quiz/jphg01-3",
+      "title": {
+        "en": "JPHG01 Temperature and thermometer (Quiz 3)",
+        "zhHant": "JPHG01 溫度與溫度計（測驗 3）"
+      }
     }
   ],
   "summaries": [

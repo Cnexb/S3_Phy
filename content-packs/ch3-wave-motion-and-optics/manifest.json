@@ -396,6 +396,22 @@
       }
     },
     {
+      "slug": "jpwm06-2",
+      "path": "content-packs/ch3-wave-motion-and-optics/quiz/jpwm06-2",
+      "title": {
+        "en": "JPWM06 Light reflection (Quiz 2)",
+        "zhHant": "JPWM06 光的反射（測驗 2）"
+      }
+    },
+    {
+      "slug": "jpwm06-3",
+      "path": "content-packs/ch3-wave-motion-and-optics/quiz/jpwm06-3",
+      "title": {
+        "en": "JPWM06 Light reflection (Quiz 3)",
+        "zhHant": "JPWM06 光的反射（測驗 3）"
+      }
+    },
+    {
       "slug": "optics-ch4-em-wave",
       "path": "content-packs/ch3-wave-motion-and-optics/quiz/optics-ch4-em-wave"
     }
