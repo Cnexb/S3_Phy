@@ -202,8 +202,8 @@
   ],
   "quiz": [
     {
-      "slug": "heat-ch1",
-      "path": "content-packs/ch1-heat-and-gases/quiz/heat-ch1",
+      "slug": "jphg01-1",
+      "path": "content-packs/ch1-heat-and-gases/quiz/jphg01-1",
       "title": {
         "en": "JPHG01 Temperature and thermometer",
         "zhHant": "JPHG01 溫度與溫度計"
