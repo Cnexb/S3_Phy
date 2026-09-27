@@ -7,8 +7,6 @@ candidate: junior, no coding experience expected
 
 time:
   make: 140 minutes
-  presentation: about 15 to 20 minutes
-  window: about 2 to 3 hours in total
 
 provided tools: paid Cursor account, this brief site, and the starter_kit folder
 not provided: YouMind, a second agent, Manim, or a comic task
@@ -38,13 +36,10 @@ notes: authored markdown in the task folder (no SPEM07 PDF on the S3 hub).
   DSE-EM-induction-practice-(ANS).md
 
 page structure:
-  part one (make):
-    01 demonstration
-    02 the task
-    03 getting started, including a Using Cursor guide (one agent)
-  part two (show):
-    04 your demonstration
-  no rubric, no score bar, no checklist
+  01 demonstration (stacked boxes, a different topic)
+  02 the task
+  03 getting started, including a Using Cursor guide (one agent)
+  no presentation section, no rubric, no score bar, no checklist
 
 language: English + Traditional Chinese
 level: HKDSE Physics, SPEM07
