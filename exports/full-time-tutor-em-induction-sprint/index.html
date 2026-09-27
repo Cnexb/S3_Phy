@@ -1,0 +1,2971 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="description" content="UniPlus Education full-time Physics tutor second interview — one Electromagnetic induction interactive tool, about 2.5 hours, then a short demonstration.">
+ <title>UniPlus · Electromagnetic induction interview</title>
+ <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%234f46e5'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='4.6' fill='none' stroke='%2367e8f9' stroke-width='2'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='4.6' fill='none' stroke='%2367e8f9' stroke-width='2' transform='rotate(60 16 16)'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='4.6' fill='none' stroke='%2367e8f9' stroke-width='2' transform='rotate(-60 16 16)'/%3E%3Ccircle cx='16' cy='16' r='3' fill='white'/%3E%3C/svg%3E">
+<style>
+ :root {
+ --ink: #0f172a;
+ --muted: #5b6778;
+ --paper: #eef2f6;
+ --card: #f8fafc;
+ --line: #d4dbe6;
+ --green: #4f46e5;
+ --green-dark: #1e1b4b;
+ --green-soft: #e0e7ff;
+ --lime: #67e8f9;
+ --orange: #ea580c;
+ --orange-soft: #ffedd5;
+ --blue: #0284c7;
+ --blue-soft: #e0f2fe;
+ --yellow: #fbbf24;
+ --shadow: 0 12px 40px rgba(15, 23, 42, .08);
+ --radius: 22px;
+ --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+ --sans: Inter, Aptos, "Segoe UI", Arial, sans-serif;
+ --display: Georgia, "Times New Roman", serif;
+ }
+
+ * {
+ box-sizing: border-box;
+ }
+
+ html {
+ scroll-behavior: smooth;
+ scroll-padding-top: 86px;
+ }
+
+ body {
+ margin: 0;
+ color: var(--ink);
+ background:
+ radial-gradient(circle at 8% 4%, rgba(79, 70, 229, .16), transparent 25rem),
+ radial-gradient(circle at 92% 8%, rgba(103, 232, 249, .12), transparent 22rem),
+ linear-gradient(rgba(15, 23, 42, .03) 1px, transparent 1px),
+ linear-gradient(90deg, rgba(15, 23, 42, .03) 1px, transparent 1px),
+ var(--paper);
+ background-size: auto, auto, 28px 28px, 28px 28px, auto;
+ font-family: var(--sans);
+ line-height: 1.55;
+ }
+
+ button,
+ a {
+ -webkit-tap-highlight-color: transparent;
+ }
+
+ button,
+ input {
+ font: inherit;
+ }
+
+ a {
+ color: inherit;
+ }
+
+ button:focus-visible,
+ a:focus-visible,
+ summary:focus-visible {
+ outline: 3px solid var(--yellow);
+ outline-offset: 3px;
+ }
+
+ .skip-link {
+ position: fixed;
+ top: 8px;
+ left: 8px;
+ z-index: 1000;
+ padding: 10px 14px;
+ color: white;
+ background: var(--green-dark);
+ border-radius: 10px;
+ transform: translateY(-150%);
+ }
+
+ .skip-link:focus {
+ transform: translateY(0);
+ }
+
+ .topbar {
+ position: sticky;
+ top: 0;
+ z-index: 100;
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 18px;
+ min-height: 68px;
+ padding: 10px max(24px, calc((100vw - 1180px) / 2));
+ border-bottom: 1px solid rgba(15, 23, 42, .11);
+ background: rgba(238, 242, 246, .91);
+ backdrop-filter: blur(14px);
+ }
+
+ .brand {
+ display: inline-flex;
+ align-items: center;
+ gap: 10px;
+ flex: 0 0 auto;
+ font-weight: 850;
+ letter-spacing: -.02em;
+ text-decoration: none;
+ }
+
+ .brand-mark {
+ display: grid;
+ place-items: center;
+ width: 34px;
+ height: 34px;
+ color: white;
+ background: var(--green);
+ border-radius: 50% 50% 48% 52% / 55% 45% 55% 45%;
+ transform: rotate(-7deg);
+ }
+
+ .brand-mark span {
+ transform: rotate(7deg);
+ font-family: var(--display);
+ font-size: 18px;
+ }
+
+ .nav-links {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 6px;
+ }
+
+ .nav-links a {
+ padding: 8px 11px;
+ color: var(--muted);
+ border-radius: 999px;
+ font-size: 14px;
+ font-weight: 700;
+ text-decoration: none;
+ }
+
+ .nav-links a:hover {
+ color: var(--ink);
+ background: rgba(255, 255, 255, .72);
+ }
+
+ .topbar-actions {
+ display: inline-flex;
+ align-items: center;
+ flex: 0 0 auto;
+ gap: 8px;
+ }
+
+ .lang-toggle {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 8px 13px;
+ color: var(--ink);
+ border: 1px solid rgba(15, 23, 42, .28);
+ border-radius: 999px;
+ background: rgba(248, 250, 252, .8);
+ cursor: pointer;
+ font-size: 13px;
+ font-weight: 850;
+ white-space: nowrap;
+ }
+
+ .lang-toggle:hover {
+ color: white;
+ background: var(--green);
+ border-color: var(--green);
+ }
+
+ .timer-chip {
+ display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ min-width: 122px;
+ padding: 8px 12px;
+ color: white;
+ border: 0;
+ border-radius: 999px;
+ background: var(--ink);
+ cursor: pointer;
+ font-family: var(--mono);
+ font-size: 13px;
+ font-weight: 800;
+ }
+
+ /* Georgia and Inter carry no CJK glyphs, and the tight negative tracking
+ tuned for Latin display type looks broken on Chinese characters. */
+ html[lang="zh-Hant"] {
+ --display: "Noto Serif TC", "Source Han Serif TC", "Songti TC", "PMingLiU", Georgia, serif;
+ --sans: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", "Heiti TC", Inter, sans-serif;
+ }
+
+ html[lang="zh-Hant"] h1,
+ html[lang="zh-Hant"] h2,
+ html[lang="zh-Hant"] .sheet-title,
+ html[lang="zh-Hant"] .demo-copy h3,
+ html[lang="zh-Hant"] .task-copy h3,
+ html[lang="zh-Hant"] .lane h3,
+ html[lang="zh-Hant"] .tool-guide h3,
+ html[lang="zh-Hant"] .rubric-card h3,
+ html[lang="zh-Hant"] .presentation-card h3 {
+ letter-spacing: normal;
+ line-height: 1.25;
+ }
+
+ html[lang="zh-Hant"] h1 {
+ font-size: clamp(46px, 5.6vw, 78px);
+ }
+
+ /* CJK breaks between any two characters, which would split the highlighted
+ phrase and its underline across two lines. */
+ html[lang="zh-Hant"] h1 em {
+ white-space: nowrap;
+ }
+
+ html[lang="zh-Hant"] h2 {
+ font-size: clamp(34px, 4vw, 52px);
+ }
+
+ html[lang="zh-Hant"] .eyebrow,
+ html[lang="zh-Hant"] .section-label,
+ html[lang="zh-Hant"] .detail-title,
+ html[lang="zh-Hant"] .workflow-title,
+ html[lang="zh-Hant"] .materials-title,
+ html[lang="zh-Hant"] .sheet-kicker,
+ html[lang="zh-Hant"] .tool-tag,
+ html[lang="zh-Hant"] .idea-list b,
+ html[lang="zh-Hant"] .example-label {
+ letter-spacing: .04em;
+ }
+
+ .timer-dot {
+ width: 8px;
+ height: 8px;
+ background: var(--lime);
+ border-radius: 50%;
+ box-shadow: 0 0 0 3px rgba(103, 232, 249, .22);
+ }
+
+ .timer-chip.running .timer-dot {
+ animation: pulse 1.4s infinite;
+ }
+
+ @keyframes pulse {
+ 50% { opacity: .45; }
+ }
+
+ main {
+ overflow: hidden;
+ }
+
+ .container {
+ width: min(1180px, calc(100% - 48px));
+ margin-inline: auto;
+ }
+
+ .hero {
+ position: relative;
+ display: grid;
+ grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
+ align-items: center;
+ gap: 70px;
+ min-height: 670px;
+ padding-block: 80px 72px;
+ }
+
+ .eyebrow {
+ display: inline-flex;
+ align-items: center;
+ gap: 9px;
+ margin: 0 0 18px;
+ color: var(--green-dark);
+ font-size: 12px;
+ font-weight: 900;
+ letter-spacing: .15em;
+ text-transform: uppercase;
+ }
+
+ .eyebrow::before {
+ content: "";
+ width: 28px;
+ height: 2px;
+ background: currentColor;
+ }
+
+ h1,
+ h2,
+ h3,
+ p {
+ margin-top: 0;
+ }
+
+ h1 {
+ max-width: 780px;
+ margin-bottom: 24px;
+ font-family: var(--display);
+ font-size: clamp(58px, 7.2vw, 104px);
+ font-weight: 500;
+ letter-spacing: -.065em;
+ line-height: .9;
+ }
+
+ h1 em {
+ position: relative;
+ color: var(--green);
+ font-weight: inherit;
+ text-decoration: none;
+ }
+
+ h1 em::after {
+ content: "";
+ position: absolute;
+ right: 1%;
+ bottom: -.09em;
+ left: 1%;
+ height: .09em;
+ background: var(--lime);
+ border-radius: 50%;
+ transform: rotate(-2deg);
+ z-index: -1;
+ }
+
+ .hero-lede {
+ max-width: 650px;
+ margin-bottom: 30px;
+ color: var(--muted);
+ font-size: clamp(18px, 2vw, 22px);
+ line-height: 1.5;
+ }
+
+ .hero-lede strong {
+ color: var(--ink);
+ }
+
+ .button-row {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 12px;
+ }
+
+ .button {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ gap: 9px;
+ min-height: 48px;
+ padding: 11px 18px;
+ border: 1px solid var(--ink);
+ border-radius: 999px;
+ font-weight: 850;
+ text-decoration: none;
+ transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+ cursor: pointer;
+ }
+
+ .button:hover {
+ transform: translateY(-2px);
+ box-shadow: 0 8px 18px rgba(15, 23, 42, .12);
+ }
+
+ .button.primary {
+ color: white;
+ background: var(--green);
+ border-color: var(--green);
+ }
+
+ .button.secondary {
+ background: rgba(248, 250, 252, .75);
+ }
+
+ .hero-note {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ margin-top: 22px;
+ color: var(--muted);
+ font-size: 14px;
+ font-weight: 650;
+ }
+
+ .hero-note svg {
+ flex: 0 0 auto;
+ }
+
+ .hero-board {
+ position: relative;
+ padding: 20px;
+ background: #e2e8f0;
+ border: 1px solid #cbd5e1;
+ border-radius: 30px;
+ box-shadow: var(--shadow);
+ transform: rotate(1.4deg);
+ }
+
+ .hero-board::before {
+ content: "";
+ position: absolute;
+ top: -12px;
+ left: 42%;
+ width: 94px;
+ height: 28px;
+ background: rgba(245, 200, 91, .7);
+ transform: rotate(-4deg);
+ }
+
+ .board-sheet {
+ position: relative;
+ min-height: 440px;
+ padding: 30px 30px 106px;
+ background: var(--card);
+ border-radius: 14px;
+ overflow: hidden;
+ }
+
+ .sheet-top {
+ display: flex;
+ justify-content: space-between;
+ padding-bottom: 22px;
+ border-bottom: 2px solid var(--ink);
+ }
+
+ .sheet-kicker {
+ font-size: 11px;
+ font-weight: 900;
+ letter-spacing: .14em;
+ text-transform: uppercase;
+ }
+
+ .sheet-number {
+ color: var(--green);
+ font-family: var(--display);
+ font-size: 44px;
+ line-height: .8;
+ }
+
+ .sheet-title {
+ margin: 26px 0 6px;
+ font-family: var(--display);
+ font-size: 32px;
+ line-height: 1.08;
+ }
+
+ .sheet-subtitle {
+ color: var(--muted);
+ font-size: 14px;
+ }
+
+ .sheet-options {
+ display: grid;
+ gap: 10px;
+ margin-top: 28px;
+ }
+
+ .sheet-option {
+ display: grid;
+ grid-template-columns: 34px 1fr auto;
+ align-items: center;
+ gap: 12px;
+ padding: 12px;
+ border: 1px solid var(--line);
+ border-radius: 12px;
+ }
+
+ .sheet-option > span:first-child {
+ display: grid;
+ place-items: center;
+ width: 34px;
+ height: 34px;
+ border-radius: 9px;
+ font-weight: 900;
+ }
+
+ .sheet-option:nth-child(1) > span:first-child { background: var(--green-soft); }
+ .sheet-option:nth-child(2) > span:first-child { background: var(--blue-soft); }
+ .sheet-option:nth-child(3) > span:first-child { background: var(--orange-soft); }
+
+ .sheet-option strong {
+ display: block;
+ font-size: 13px;
+ }
+
+ .sheet-option small {
+ color: var(--muted);
+ font-size: 11px;
+ }
+
+ .sheet-option > b {
+ color: var(--muted);
+ font-size: 18px;
+ }
+
+ .sheet-stamp {
+ position: absolute;
+ right: 26px;
+ bottom: 22px;
+ padding: 12px 18px;
+ color: var(--green);
+ border: 3px solid var(--green);
+ border-radius: 50%;
+ font-size: 13px;
+ font-weight: 950;
+ letter-spacing: .08em;
+ text-align: center;
+ text-transform: uppercase;
+ transform: rotate(-12deg);
+ }
+
+ .format-strip {
+ position: relative;
+ z-index: 2;
+ color: white;
+ background: var(--ink);
+ }
+
+ .format-grid {
+ display: grid;
+ grid-template-columns: 1.15fr 1fr 1fr 1fr;
+ align-items: stretch;
+ }
+
+ .format-intro,
+ .format-item {
+ padding: 32px 28px;
+ }
+
+ .format-intro {
+ padding-left: 0;
+ }
+
+ .format-intro p {
+ margin: 0;
+ color: #94a3b8;
+ font-size: 13px;
+ font-weight: 800;
+ letter-spacing: .12em;
+ text-transform: uppercase;
+ }
+
+ .format-intro strong {
+ display: block;
+ margin-top: 5px;
+ font-family: var(--display);
+ font-size: 27px;
+ font-weight: 500;
+ letter-spacing: -.02em;
+ }
+
+ .format-item {
+ border-left: 1px solid rgba(255, 255, 255, .13);
+ }
+
+ .format-item span {
+ display: block;
+ color: var(--lime);
+ font-family: var(--display);
+ font-size: 34px;
+ line-height: 1;
+ }
+
+ .format-item strong {
+ display: block;
+ margin: 7px 0 3px;
+ font-size: 14px;
+ }
+
+ .format-item small {
+ color: #94a3b8;
+ font-size: 12px;
+ }
+
+ .section {
+ padding-block: 96px;
+ }
+
+ .section.tight {
+ padding-block: 72px;
+ }
+
+ .section-head {
+ display: grid;
+ grid-template-columns: minmax(260px, .82fr) minmax(300px, 1.18fr);
+ align-items: end;
+ gap: 52px;
+ margin-bottom: 42px;
+ }
+
+ .section-label {
+ margin-bottom: 13px;
+ color: var(--green);
+ font-size: 12px;
+ font-weight: 900;
+ letter-spacing: .15em;
+ text-transform: uppercase;
+ }
+
+ h2 {
+ margin-bottom: 0;
+ font-family: var(--display);
+ font-size: clamp(42px, 5vw, 66px);
+ font-weight: 500;
+ letter-spacing: -.045em;
+ line-height: .98;
+ }
+
+ .section-head > p {
+ margin-bottom: 4px;
+ color: var(--muted);
+ font-size: 18px;
+ line-height: 1.6;
+ }
+
+ .task-picker {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 18px;
+ margin-bottom: 28px;
+ }
+
+ .task-tab {
+ position: relative;
+ min-height: 148px;
+ padding: 22px;
+ color: var(--ink);
+ text-align: left;
+ border: 2px solid transparent;
+ border-radius: 20px;
+ background: rgba(248, 250, 252, .72);
+ box-shadow: 0 6px 22px rgba(15, 23, 42, .05);
+ cursor: pointer;
+ transition: border .18s ease, transform .18s ease, background .18s ease;
+ }
+
+ .task-tab:hover {
+ transform: translateY(-3px);
+ }
+
+ .task-tab[aria-selected="true"] {
+ border-color: var(--ink);
+ background: var(--card);
+ }
+
+ .task-tab[aria-selected="true"]::after {
+ content: "";
+ position: absolute;
+ bottom: -8px;
+ left: calc(50% - 8px);
+ width: 14px;
+ height: 14px;
+ background: var(--card);
+ border-right: 2px solid var(--ink);
+ border-bottom: 2px solid var(--ink);
+ transform: rotate(45deg);
+ }
+
+ .task-tab-top {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 10px;
+ margin-bottom: 16px;
+ }
+
+ .task-no {
+ color: var(--muted);
+ font-family: var(--mono);
+ font-size: 12px;
+ font-weight: 800;
+ }
+
+ .tool-tag {
+ padding: 5px 9px;
+ border-radius: 999px;
+ font-size: 11px;
+ font-weight: 900;
+ letter-spacing: .04em;
+ text-transform: uppercase;
+ }
+
+ .tool-tag.cursor { color: var(--green-dark); background: var(--green-soft); }
+ .tool-tag.manim { color: #075985; background: var(--blue-soft); }
+ .tool-tag.youmind { color: #9a3412; background: var(--orange-soft); }
+
+ .task-tab strong {
+ display: block;
+ font-family: var(--display);
+ font-size: 25px;
+ font-weight: 500;
+ letter-spacing: -.02em;
+ line-height: 1.08;
+ }
+
+ .task-panel {
+ display: none;
+ border: 1px solid var(--line);
+ border-radius: 28px;
+ background: var(--card);
+ box-shadow: var(--shadow);
+ overflow: hidden;
+ }
+
+ .task-panel.active {
+ display: block;
+ animation: reveal .32s ease both;
+ }
+
+ @keyframes reveal {
+ from { opacity: 0; transform: translateY(9px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
+
+ .task-hero {
+ display: grid;
+ grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+ min-height: 420px;
+ }
+
+ .task-copy {
+ padding: 48px;
+ }
+
+ .task-badges {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 8px;
+ margin-bottom: 20px;
+ }
+
+ .badge {
+ padding: 6px 10px;
+ color: var(--muted);
+ border: 1px solid var(--line);
+ border-radius: 999px;
+ background: white;
+ font-size: 12px;
+ font-weight: 800;
+ }
+
+ .task-copy h3 {
+ max-width: 580px;
+ margin-bottom: 16px;
+ font-family: var(--display);
+ font-size: clamp(34px, 4.3vw, 56px);
+ font-weight: 500;
+ letter-spacing: -.045em;
+ line-height: 1;
+ }
+
+ .task-copy > p {
+ max-width: 600px;
+ color: var(--muted);
+ font-size: 17px;
+ }
+
+ .brief-box {
+ margin-top: 26px;
+ padding: 18px 20px;
+ border-left: 4px solid var(--green);
+ background: #eef2ff;
+ border-radius: 0 14px 14px 0;
+ }
+
+ .brief-box strong {
+ display: block;
+ margin-bottom: 4px;
+ font-size: 13px;
+ letter-spacing: .07em;
+ text-transform: uppercase;
+ }
+
+ .brief-box p {
+ margin: 0;
+ font-size: 15px;
+ }
+
+ .task-visual {
+ position: relative;
+ display: grid;
+ place-items: center;
+ min-height: 420px;
+ padding: 28px;
+ overflow: hidden;
+ }
+
+ .demo-row-wide {
+ grid-template-columns: 1fr;
+ }
+
+ .demo-row-wide .demo-copy {
+ padding-bottom: 8px;
+ }
+
+ .demo-row-wide .task-visual {
+ min-height: 0;
+ padding: 0 28px 28px;
+ place-items: stretch;
+ }
+
+ .tool-visual {
+ background: var(--green-soft);
+ }
+
+ .manim-visual {
+ background: var(--blue-soft);
+ }
+
+ .comic-visual {
+ background: var(--orange-soft);
+ }
+
+ .example-frame {
+ width: 100%;
+ border: 1px solid rgba(15, 23, 42, .16);
+ border-radius: 16px;
+ background: var(--card);
+ box-shadow: 0 16px 36px rgba(15, 23, 42, .13);
+ overflow: hidden;
+ }
+
+ .example-bar {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 12px;
+ padding: 11px 14px;
+ border-bottom: 1px solid var(--line);
+ background: rgba(255, 255, 255, .72);
+ flex-shrink: 0;
+ }
+
+ .example-label {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ color: var(--muted);
+ font-size: 11px;
+ font-weight: 900;
+ letter-spacing: .09em;
+ line-height: 1.35;
+ text-transform: uppercase;
+ }
+
+ .example-label::before {
+ content: "";
+ flex: 0 0 auto;
+ width: 8px;
+ height: 8px;
+ background: var(--green);
+ border-radius: 50%;
+ }
+
+ .example-link {
+ flex: 0 0 auto;
+ color: var(--green-dark);
+ font-size: 12px;
+ font-weight: 850;
+ text-underline-offset: 3px;
+ white-space: nowrap;
+ }
+
+ .example-embed {
+ position: relative;
+ aspect-ratio: 4 / 3;
+ background: #e2e8f0;
+ overflow: hidden;
+ }
+
+ .example-embed iframe {
+ position: absolute;
+ inset: 0;
+ width: 100%;
+ height: 100%;
+ border: 0;
+ }
+
+ .example-embed video {
+ display: block;
+ position: relative;
+ width: 100%;
+ height: auto;
+ pointer-events: auto;
+ background: #0f172a;
+ }
+
+ .example-embed.tall {
+ aspect-ratio: 3 / 4;
+ }
+
+ .example-embed.wide {
+ aspect-ratio: auto;
+ background: #0f172a;
+ overflow: visible;
+ }
+
+ .task-recording {
+ padding: 0 48px 36px;
+ }
+
+ /* Full interactive lab — same size as the S3 hub embed, no scale, no crop. */
+ .example-embed.lab {
+ height: min(72vh, 720px);
+ min-height: 560px;
+ aspect-ratio: auto;
+ background: #f8fafc;
+ }
+
+ .example-embed.lab iframe {
+ inset: 0;
+ width: 100% !important;
+ height: 100% !important;
+ transform: none !important;
+ }
+
+ .example-body {
+ display: grid;
+ place-items: center;
+ padding: 14px;
+ background: #e2e8f0;
+ }
+
+ .example-shot {
+ display: block;
+ width: auto;
+ height: auto;
+ max-width: 100%;
+ max-height: 620px;
+ border-radius: 6px;
+ box-shadow: 0 8px 20px rgba(15, 23, 42, .18);
+ }
+
+ .example-note {
+ padding: 12px 14px;
+ border-top: 1px solid var(--line);
+ color: var(--muted);
+ font-size: 12px;
+ line-height: 1.55;
+ flex-shrink: 0;
+ }
+
+ .example-note strong {
+ color: var(--ink);
+ }
+
+ .example-note a {
+ font-weight: 800;
+ text-underline-offset: 3px;
+ }
+
+ .workflow {
+ margin-bottom: 26px;
+ padding: 26px;
+ border: 1px dashed rgba(15, 23, 42, .24);
+ border-radius: 24px;
+ background: rgba(248, 250, 252, .5);
+ }
+
+ .demo-stack {
+ display: grid;
+ gap: 26px;
+ }
+
+ .demo-row {
+ display: grid;
+ grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+ border: 1px solid var(--line);
+ border-radius: 28px;
+ background: var(--card);
+ box-shadow: var(--shadow);
+ overflow: hidden;
+ }
+
+ .demo-copy {
+ padding: 42px 40px;
+ }
+
+ .demo-head {
+ display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ gap: 10px;
+ margin-bottom: 15px;
+ }
+
+ .demo-no {
+ color: var(--muted);
+ font-family: var(--mono);
+ font-size: 12px;
+ font-weight: 800;
+ }
+
+ .demo-copy h3 {
+ margin-bottom: 11px;
+ font-family: var(--display);
+ font-size: clamp(26px, 3vw, 35px);
+ font-weight: 500;
+ letter-spacing: -.032em;
+ line-height: 1.05;
+ }
+
+ .demo-copy > p {
+ color: var(--muted);
+ font-size: 15.5px;
+ }
+
+ .task-side {
+ display: grid;
+ align-content: start;
+ gap: 15px;
+ padding: 34px 30px;
+ }
+
+ .materials-card {
+ padding: 22px;
+ border: 1px solid rgba(15, 23, 42, .14);
+ border-radius: 18px;
+ background: var(--card);
+ box-shadow: 0 10px 26px rgba(15, 23, 42, .09);
+ }
+
+ .materials-title {
+ margin-bottom: 10px;
+ color: var(--muted);
+ font-size: 11px;
+ font-weight: 900;
+ letter-spacing: .12em;
+ text-transform: uppercase;
+ }
+
+ .materials-path {
+ display: block;
+ margin-bottom: 17px;
+ padding: 9px 11px;
+ border-radius: 9px;
+ background: #f1f5f9;
+ font-family: var(--mono);
+ font-size: 12.5px;
+ font-weight: 700;
+ overflow-wrap: anywhere;
+ }
+
+ .materials-list {
+ display: grid;
+ gap: 11px;
+ margin: 0;
+ padding: 0;
+ list-style: none;
+ }
+
+ .materials-list li {
+ display: grid;
+ grid-template-columns: 48px 1fr;
+ align-items: start;
+ gap: 11px;
+ }
+
+ .materials-list li > span {
+ display: grid;
+ place-items: center;
+ padding: 5px 0;
+ color: var(--green-dark);
+ background: var(--green-soft);
+ border-radius: 7px;
+ font-size: 10px;
+ font-weight: 900;
+ letter-spacing: .05em;
+ }
+
+ .materials-list strong {
+ display: block;
+ font-size: 13px;
+ line-height: 1.3;
+ overflow-wrap: anywhere;
+ }
+
+ .materials-list small {
+ color: var(--muted);
+ font-size: 12px;
+ }
+
+ .materials-note {
+ margin: 17px 0 0;
+ color: var(--muted);
+ font-size: 12.5px;
+ line-height: 1.55;
+ }
+
+ .jump-link {
+ display: inline-flex;
+ align-items: center;
+ gap: 7px;
+ justify-self: start;
+ padding: 10px 15px;
+ color: var(--ink);
+ border: 1px solid rgba(15, 23, 42, .22);
+ border-radius: 999px;
+ background: rgba(248, 250, 252, .85);
+ font-size: 12.5px;
+ font-weight: 850;
+ text-decoration: none;
+ cursor: pointer;
+ }
+
+ .jump-link:hover {
+ background: white;
+ }
+
+ .idea-list {
+ display: grid;
+ gap: 12px;
+ margin: 0;
+ padding: 0;
+ list-style: none;
+ }
+
+ .idea-list li {
+ padding: 14px 16px;
+ border: 1px solid var(--line);
+ border-radius: 13px;
+ background: rgba(248, 250, 252, .62);
+ font-size: 14.5px;
+ line-height: 1.5;
+ }
+
+ .idea-list b {
+ display: block;
+ margin-bottom: 3px;
+ color: var(--green-dark);
+ font-size: 12px;
+ font-weight: 900;
+ letter-spacing: .07em;
+ text-transform: uppercase;
+ }
+
+ .prompt-swap {
+ display: flex;
+ align-items: flex-start;
+ gap: 10px;
+ margin: 0 0 16px;
+ padding: 12px 14px;
+ border-left: 3px solid var(--lime);
+ border-radius: 0 10px 10px 0;
+ background: rgba(255, 255, 255, .07);
+ color: #a5f3fc;
+ font-size: 12.5px;
+ line-height: 1.55;
+ }
+
+ .prompt-swap code {
+ color: white;
+ font-family: var(--mono);
+ overflow-wrap: anywhere;
+ }
+
+ .workflow-title {
+ margin-bottom: 18px;
+ color: var(--muted);
+ font-size: 12px;
+ font-weight: 900;
+ letter-spacing: .13em;
+ text-transform: uppercase;
+ }
+
+ .workflow-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 14px;
+ }
+
+ .lane {
+ padding: 20px;
+ border: 1px solid var(--line);
+ border-radius: 16px;
+ background: var(--card);
+ }
+
+ .lane-head {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 8px;
+ margin-bottom: 13px;
+ }
+
+ .lane-no {
+ color: var(--muted);
+ font-family: var(--mono);
+ font-size: 11px;
+ font-weight: 800;
+ letter-spacing: .06em;
+ text-transform: uppercase;
+ }
+
+ .lane h3 {
+ margin-bottom: 6px;
+ font-family: var(--display);
+ font-size: 22px;
+ font-weight: 500;
+ letter-spacing: -.02em;
+ line-height: 1.1;
+ }
+
+ .lane p {
+ margin: 0;
+ color: var(--muted);
+ font-size: 13px;
+ }
+
+ .workflow-hint {
+ display: flex;
+ align-items: flex-start;
+ gap: 11px;
+ margin: 16px 0 0;
+ padding: 15px 17px;
+ border-left: 4px solid var(--orange);
+ border-radius: 0 12px 12px 0;
+ background: var(--orange-soft);
+ font-size: 14px;
+ line-height: 1.55;
+ }
+
+ .workflow-hint strong {
+ display: block;
+ margin-bottom: 2px;
+ }
+
+ .task-details {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ border-top: 1px solid var(--line);
+ }
+
+ .task-details.three {
+ grid-template-columns: repeat(3, minmax(0, 1fr));
+ }
+
+ .detail-col {
+ padding: 42px 48px;
+ }
+
+ .task-details.three .detail-col {
+ padding: 38px 32px;
+ }
+
+ .detail-col + .detail-col {
+ border-left: 1px solid var(--line);
+ }
+
+ .detail-title {
+ margin-bottom: 20px;
+ color: var(--muted);
+ font-size: 12px;
+ font-weight: 900;
+ letter-spacing: .13em;
+ text-transform: uppercase;
+ }
+
+ .requirement-list,
+ .timeline-list {
+ margin: 0;
+ padding: 0;
+ list-style: none;
+ }
+
+ .requirement-list {
+ display: grid;
+ gap: 13px;
+ }
+
+ .requirement-list li {
+ position: relative;
+ padding-left: 29px;
+ }
+
+ .requirement-list li::before {
+ content: "✓";
+ position: absolute;
+ top: 1px;
+ left: 0;
+ display: grid;
+ place-items: center;
+ width: 19px;
+ height: 19px;
+ color: white;
+ background: var(--green);
+ border-radius: 50%;
+ font-size: 11px;
+ font-weight: 900;
+ }
+
+ .timeline-list {
+ counter-reset: minute;
+ display: grid;
+ gap: 15px;
+ }
+
+ .timeline-list li {
+ display: grid;
+ grid-template-columns: 66px 1fr;
+ gap: 12px;
+ font-size: 14px;
+ }
+
+ .timeline-list strong {
+ color: var(--green);
+ font-family: var(--mono);
+ font-size: 12px;
+ }
+
+ .prompt-wrap {
+ padding: 0 48px 48px;
+ }
+
+ .prompt-card {
+ position: relative;
+ padding: 26px;
+ color: #e2e8f0;
+ border-radius: 18px;
+ background: var(--ink);
+ }
+
+ .prompt-head {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 14px;
+ margin-bottom: 17px;
+ }
+
+ .prompt-head strong {
+ font-size: 13px;
+ letter-spacing: .09em;
+ text-transform: uppercase;
+ }
+
+ .copy-button {
+ padding: 7px 11px;
+ color: var(--ink);
+ border: 0;
+ border-radius: 999px;
+ background: var(--lime);
+ font-size: 12px;
+ font-weight: 900;
+ cursor: pointer;
+ }
+
+ .copy-button:hover {
+ background: white;
+ }
+
+ .prompt-text {
+ margin: 0;
+ color: #cbd5e1;
+ font-family: var(--mono);
+ font-size: 13px;
+ line-height: 1.7;
+ white-space: pre-wrap;
+ overflow-wrap: anywhere;
+ }
+
+ .file-output {
+ display: flex;
+ align-items: flex-start;
+ gap: 12px;
+ margin-top: 18px;
+ padding-top: 18px;
+ border-top: 1px solid rgba(255,255,255,.15);
+ color: #94a3b8;
+ font-size: 12px;
+ }
+
+ .file-output code {
+ color: white;
+ font-family: var(--mono);
+ overflow-wrap: anywhere;
+ }
+
+ .setup-section {
+ background: #e8eef6;
+ }
+
+ .setup-grid {
+ display: grid;
+ grid-template-columns: .76fr 1.24fr;
+ gap: 72px;
+ align-items: start;
+ }
+
+ .setup-sticky {
+ position: sticky;
+ top: 100px;
+ }
+
+ .setup-sticky h2 {
+ margin-bottom: 22px;
+ }
+
+ .setup-sticky > p {
+ color: var(--muted);
+ font-size: 17px;
+ }
+
+ .path-card {
+ margin-top: 26px;
+ padding: 18px;
+ border: 1px solid #cbd5e1;
+ border-radius: 16px;
+ background: rgba(248, 250, 252, .58);
+ }
+
+ .path-card span {
+ display: block;
+ margin-bottom: 7px;
+ color: var(--muted);
+ font-size: 11px;
+ font-weight: 900;
+ letter-spacing: .1em;
+ text-transform: uppercase;
+ }
+
+ .path-card code {
+ font-family: var(--mono);
+ font-size: 13px;
+ font-weight: 700;
+ overflow-wrap: anywhere;
+ }
+
+ .path-card + .path-card {
+ margin-top: 12px;
+ }
+
+ .path-note {
+ margin-top: 16px;
+ color: var(--muted);
+ font-size: 13.5px;
+ line-height: 1.6;
+ }
+
+ .step-list {
+ position: relative;
+ display: grid;
+ gap: 16px;
+ }
+
+ .step-card {
+ display: grid;
+ grid-template-columns: 54px 1fr;
+ gap: 19px;
+ padding: 26px;
+ border: 1px solid var(--line);
+ border-radius: 18px;
+ background: var(--card);
+ }
+
+ .step-number {
+ display: grid;
+ place-items: center;
+ width: 48px;
+ height: 48px;
+ color: white;
+ background: var(--green);
+ border-radius: 50%;
+ font-family: var(--display);
+ font-size: 24px;
+ }
+
+ .step-card h3 {
+ margin-bottom: 7px;
+ font-size: 18px;
+ }
+
+ .step-card p {
+ margin-bottom: 10px;
+ color: var(--muted);
+ font-size: 14px;
+ }
+
+ .step-card p:last-child {
+ margin-bottom: 0;
+ }
+
+ .ui-callout {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 4px 7px;
+ color: var(--ink);
+ border: 1px solid var(--line);
+ border-radius: 7px;
+ background: #f1f5f9;
+ font-family: var(--mono);
+ font-size: 12px;
+ font-weight: 700;
+ }
+
+ .tool-guide-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 20px;
+ margin-top: 52px;
+ }
+
+ .tool-guide {
+ padding: 30px;
+ border-radius: 20px;
+ background: var(--card);
+ box-shadow: 0 8px 28px rgba(15, 23, 42, .06);
+ }
+
+ .tool-guide-icon {
+ display: grid;
+ place-items: center;
+ width: 46px;
+ height: 46px;
+ margin-bottom: 22px;
+ border-radius: 14px;
+ font-family: var(--display);
+ font-size: 22px;
+ font-weight: 700;
+ }
+
+ .tool-guide:first-child .tool-guide-icon {
+ color: white;
+ background: var(--ink);
+ }
+
+ .tool-guide:last-child .tool-guide-icon {
+ color: #9a3412;
+ background: var(--orange-soft);
+ }
+
+ .tool-guide h3 {
+ margin-bottom: 10px;
+ font-family: var(--display);
+ font-size: 28px;
+ font-weight: 500;
+ }
+
+ .tool-guide > p {
+ color: var(--muted);
+ font-size: 14px;
+ }
+
+ .mini-steps {
+ display: grid;
+ gap: 10px;
+ margin-top: 20px;
+ }
+
+ .mini-step {
+ display: flex;
+ gap: 10px;
+ font-size: 13px;
+ }
+
+ .mini-step b {
+ flex: 0 0 auto;
+ color: var(--green);
+ font-family: var(--mono);
+ }
+
+ .rules-grid {
+ display: grid;
+ grid-template-columns: 1.1fr .9fr;
+ gap: 22px;
+ }
+
+ .rubric-card,
+ .presentation-card {
+ padding: 36px;
+ border: 1px solid var(--line);
+ border-radius: 22px;
+ background: var(--card);
+ box-shadow: 0 7px 24px rgba(15, 23, 42, .05);
+ }
+
+ .rubric-card h3,
+ .presentation-card h3 {
+ margin-bottom: 7px;
+ font-family: var(--display);
+ font-size: 31px;
+ font-weight: 500;
+ }
+
+ .card-intro {
+ color: var(--muted);
+ font-size: 14px;
+ }
+
+ .rubric-list {
+ display: grid;
+ gap: 12px;
+ margin-top: 26px;
+ }
+
+ .rubric-row {
+ display: grid;
+ grid-template-columns: 1fr auto;
+ gap: 20px;
+ padding: 15px 0;
+ border-top: 1px solid var(--line);
+ }
+
+ .rubric-row strong {
+ display: block;
+ font-size: 15px;
+ }
+
+ .rubric-row span {
+ color: var(--muted);
+ font-size: 13px;
+ }
+
+ .score {
+ align-self: center;
+ color: var(--green);
+ font-family: var(--display);
+ font-size: 25px;
+ }
+
+ .presentation-list {
+ counter-reset: talk;
+ display: grid;
+ gap: 4px;
+ margin: 25px 0 0;
+ padding: 0;
+ list-style: none;
+ }
+
+ .presentation-list li {
+ display: grid;
+ grid-template-columns: 32px 13.5rem minmax(0, 1fr);
+ gap: 8px 16px;
+ align-items: start;
+ padding: 12px 0;
+ border-top: 1px solid var(--line);
+ }
+
+ .presentation-list li:first-child {
+ border-top: 0;
+ padding-top: 4px;
+ }
+
+ .presentation-list li::before {
+ counter-increment: talk;
+ content: counter(talk);
+ display: grid;
+ place-items: center;
+ width: 28px;
+ height: 28px;
+ margin-top: 1px;
+ color: white;
+ background: var(--orange);
+ border-radius: 50%;
+ font-size: 12px;
+ font-weight: 900;
+ }
+
+ .presentation-list strong {
+ display: block;
+ padding-top: 5px;
+ font-size: 14px;
+ line-height: 1.35;
+ }
+
+ .presentation-list span {
+ display: block;
+ padding-top: 5px;
+ color: var(--muted);
+ font-size: 14px;
+ line-height: 1.45;
+ }
+
+ html[lang="zh-Hant"] .presentation-list li {
+ grid-template-columns: 32px 8.5rem minmax(0, 1fr);
+ }
+
+ .ready-card {
+ position: relative;
+ display: grid;
+ grid-template-columns: 1.1fr .9fr;
+ gap: 40px;
+ align-items: center;
+ padding: 58px;
+ color: white;
+ border-radius: 30px;
+ background: var(--green-dark);
+ overflow: hidden;
+ }
+
+ .ready-card::after {
+ content: "60";
+ position: absolute;
+ right: 4%;
+ bottom: -28%;
+ color: rgba(255,255,255,.06);
+ font-family: var(--display);
+ font-size: 310px;
+ line-height: 1;
+ }
+
+ .ready-copy,
+ .countdown {
+ position: relative;
+ z-index: 1;
+ }
+
+ .ready-copy h2 {
+ margin-bottom: 17px;
+ font-size: clamp(40px, 5vw, 60px);
+ }
+
+ .ready-copy p {
+ max-width: 580px;
+ margin-bottom: 25px;
+ color: #c7d2fe;
+ }
+
+ .ready-card .button.primary {
+ color: var(--ink);
+ background: var(--lime);
+ border-color: var(--lime);
+ }
+
+ .countdown {
+ padding: 30px;
+ border: 1px solid rgba(255,255,255,.15);
+ border-radius: 22px;
+ background: rgba(0,0,0,.12);
+ text-align: center;
+ }
+
+ .countdown-label {
+ margin-bottom: 8px;
+ color: #c7d2fe;
+ font-size: 11px;
+ font-weight: 900;
+ letter-spacing: .13em;
+ text-transform: uppercase;
+ }
+
+ .countdown-time {
+ margin-bottom: 22px;
+ font-family: var(--mono);
+ font-size: clamp(46px, 6vw, 76px);
+ font-weight: 800;
+ letter-spacing: -.07em;
+ line-height: 1;
+ }
+
+ .timer-controls {
+ display: flex;
+ justify-content: center;
+ gap: 8px;
+ }
+
+ .timer-button {
+ min-width: 84px;
+ padding: 8px 12px;
+ color: white;
+ border: 1px solid rgba(255,255,255,.26);
+ border-radius: 999px;
+ background: transparent;
+ font-size: 12px;
+ font-weight: 850;
+ cursor: pointer;
+ }
+
+ .timer-button:hover {
+ color: var(--ink);
+ background: white;
+ }
+
+ .timer-message {
+ min-height: 18px;
+ margin: 14px 0 0;
+ color: var(--lime);
+ font-size: 12px;
+ font-weight: 800;
+ }
+
+ footer {
+ padding: 42px 0 50px;
+ }
+
+ .footer-inner {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 20px;
+ padding-top: 24px;
+ border-top: 1px solid var(--line);
+ color: var(--muted);
+ font-size: 13px;
+ }
+
+ .footer-inner strong {
+ color: var(--ink);
+ }
+
+ .footer-inner a {
+ font-weight: 800;
+ text-underline-offset: 3px;
+ }
+
+ .toast {
+ position: fixed;
+ right: 20px;
+ bottom: 20px;
+ z-index: 200;
+ padding: 12px 17px;
+ color: white;
+ border-radius: 12px;
+ background: var(--ink);
+ box-shadow: var(--shadow);
+ font-size: 13px;
+ font-weight: 800;
+ opacity: 0;
+ pointer-events: none;
+ transform: translateY(12px);
+ transition: opacity .2s ease, transform .2s ease;
+ }
+
+ .toast.show {
+ opacity: 1;
+ transform: translateY(0);
+ }
+
+ @media (max-width: 980px) {
+ .nav-links {
+ display: none;
+ }
+
+ .hero {
+ grid-template-columns: 1fr;
+ gap: 54px;
+ }
+
+ .hero-board {
+ width: min(560px, 100%);
+ margin-inline: auto;
+ }
+
+ .format-grid {
+ grid-template-columns: 1fr 1fr 1fr;
+ }
+
+ .demo-row {
+ grid-template-columns: 1fr;
+ }
+
+ .demo-copy {
+ padding: 34px 32px;
+ }
+
+ .format-intro {
+ grid-column: 1 / -1;
+ padding: 24px 0 0;
+ }
+
+ .format-item:first-of-type {
+ border-left: 0;
+ }
+
+ .section-head,
+ .setup-grid {
+ grid-template-columns: 1fr;
+ gap: 22px;
+ }
+
+ .setup-sticky {
+ position: static;
+ }
+
+ .task-copy {
+ padding: 38px;
+ }
+
+ .detail-col {
+ padding: 36px 38px;
+ }
+
+ /* Three columns leave under 200px of content here, which wrecks the
+ timeline rows, so stack them while the hero is still side by side. */
+ .task-details.three {
+ grid-template-columns: 1fr;
+ }
+
+ .task-details.three .detail-col {
+ padding: 30px 38px;
+ }
+
+ .task-details.three .detail-col + .detail-col {
+ border-top: 1px solid var(--line);
+ border-left: 0;
+ }
+
+ .prompt-wrap,
+ .task-recording {
+ padding: 0 38px 38px;
+ }
+ }
+
+ @media (max-width: 760px) {
+ .presentation-list li {
+ grid-template-columns: 32px 1fr;
+ }
+
+ .presentation-list strong,
+ .presentation-list span {
+ grid-column: 2;
+ }
+
+ html[lang="zh-Hant"] .presentation-list li {
+ grid-template-columns: 32px 1fr;
+ }
+
+ .container {
+ width: min(100% - 30px, 1180px);
+ }
+
+ .topbar {
+ min-height: 60px;
+ padding-inline: 15px;
+ }
+
+ .brand-text {
+ display: none;
+ }
+
+ .hero {
+ min-height: 0;
+ padding-block: 54px;
+ }
+
+ h1 {
+ font-size: clamp(52px, 17vw, 78px);
+ }
+
+ .hero-lede {
+ font-size: 17px;
+ }
+
+ .board-sheet {
+ min-height: 410px;
+ padding: 23px 23px 100px;
+ }
+
+ .sheet-stamp {
+ right: 20px;
+ }
+
+ .format-grid {
+ grid-template-columns: 1fr;
+ }
+
+ .format-intro {
+ padding-bottom: 10px;
+ }
+
+ .format-item {
+ padding: 18px 0;
+ border-top: 1px solid rgba(255,255,255,.13);
+ border-left: 0;
+ }
+
+ .format-item span {
+ display: inline-block;
+ min-width: 70px;
+ }
+
+ .format-item strong {
+ display: inline;
+ }
+
+ .format-item small {
+ display: block;
+ margin-left: 74px;
+ }
+
+ .section {
+ padding-block: 72px;
+ }
+
+ .section-head {
+ margin-bottom: 30px;
+ }
+
+ .section-head > p {
+ font-size: 16px;
+ }
+
+ .task-picker {
+ grid-template-columns: 1fr;
+ }
+
+ .task-tab {
+ min-height: 116px;
+ }
+
+ .task-tab[aria-selected="true"]::after {
+ display: none;
+ }
+
+ .task-hero,
+ .task-details,
+ .task-details.three {
+ grid-template-columns: 1fr;
+ }
+
+ .task-copy,
+ .detail-col,
+ .prompt-wrap,
+ .task-recording,
+ .task-details.three .detail-col {
+ padding: 28px 24px;
+ }
+
+ .detail-col + .detail-col {
+ border-top: 1px solid var(--line);
+ border-left: 0;
+ }
+
+ .prompt-wrap,
+ .task-recording {
+ padding-top: 0;
+ }
+
+ .task-visual {
+ min-height: 0;
+ padding: 22px;
+ }
+
+ .workflow {
+ padding: 20px;
+ }
+
+ .workflow-grid {
+ grid-template-columns: 1fr;
+ }
+
+ .demo-copy {
+ padding: 28px 24px;
+ }
+
+ .task-side {
+ padding: 24px;
+ }
+
+ .example-shot {
+ max-height: 500px;
+ }
+
+ .tool-guide-grid,
+ .rules-grid,
+ .ready-card {
+ grid-template-columns: 1fr;
+ }
+
+ .step-card {
+ grid-template-columns: 42px 1fr;
+ gap: 14px;
+ padding: 21px;
+ }
+
+ .step-number {
+ width: 40px;
+ height: 40px;
+ }
+
+ .ready-card {
+ padding: 36px 25px;
+ }
+
+ .footer-inner {
+ align-items: flex-start;
+ flex-direction: column;
+ }
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+ *,
+ *::before,
+ *::after {
+ scroll-behavior: auto !important;
+ animation-duration: .01ms !important;
+ animation-iteration-count: 1 !important;
+ transition-duration: .01ms !important;
+ }
+ }
+
+ @media print {
+ :root {
+ --paper: white;
+ --card: white;
+ }
+
+ body {
+ background: white;
+ font-size: 10pt;
+ }
+
+ .topbar,
+ .button-row,
+ .timer-chip,
+ .copy-button,
+ .countdown,
+ .toast {
+ display: none !important;
+ }
+
+ .hero {
+ min-height: 0;
+ padding-block: 30px;
+ }
+
+ .hero-board {
+ box-shadow: none;
+ }
+
+ .section {
+ padding-block: 35px;
+ }
+
+ .task-picker {
+ display: none;
+ }
+
+ .task-panel {
+ display: block !important;
+ margin-bottom: 24px;
+ break-inside: avoid;
+ box-shadow: none;
+ }
+
+ .demo-row {
+ display: block;
+ break-inside: avoid;
+ box-shadow: none;
+ }
+
+ .jump-link {
+ display: none !important;
+ }
+
+ .example-embed,
+ .example-link {
+ display: none;
+ }
+
+ .task-visual {
+ min-height: 0;
+ padding: 0 24px 24px;
+ }
+
+ .example-frame,
+ .example-shot {
+ box-shadow: none;
+ }
+
+ .prompt-card {
+ color: var(--ink);
+ border: 1px solid var(--line);
+ background: white;
+ }
+
+ .prompt-text,
+ .file-output,
+ .prompt-swap {
+ color: var(--ink);
+ }
+
+ .prompt-swap {
+ border-left-color: var(--green);
+ background: #eef2ff;
+ }
+
+ .file-output code,
+ .prompt-swap code {
+ color: var(--ink);
+ }
+
+ .task-hero {
+ display: block;
+ min-height: 0;
+ }
+
+ .task-details.three {
+ grid-template-columns: 1fr 1fr;
+ }
+
+ .setup-sticky {
+ position: static;
+ }
+ }
+ </style>
+<style>
+ .tool-guide-grid { grid-template-columns: 1fr; }
+</style>
+</head>
+<body>
+ <a class="skip-link" href="#main" data-i18n="skip">Skip to the task</a>
+
+ <header class="topbar">
+ <a class="brand" href="#top" aria-label="UniPlus full-time tutor interview">
+ <span class="brand-mark" aria-hidden="true"><span>U+</span></span>
+ <span class="brand-text">UniPlus Education</span>
+ </a>
+ <nav class="nav-links" aria-label="Sections">
+ <a href="#demo" data-i18n="nav.demo">Demonstration</a>
+ <a href="#tasks" data-i18n="nav.tasks">The task</a>
+ <a href="#setup" data-i18n="nav.setup">Getting started</a>
+ <a href="#present" data-i18n="nav.present">Your demo</a>
+ </nav>
+ <div class="topbar-actions">
+ <button class="lang-toggle" id="langToggle" type="button" lang="zh-Hant" aria-label="切換至繁體中文">
+ <span id="langToggleText">繁體中文</span>
+ </button>
+ <button class="timer-chip" id="timerChip" type="button" aria-label="Jump to the timer">
+ <span class="timer-dot" aria-hidden="true"></span>
+ <span id="timerChipText">150:00 · Ready</span>
+ </button>
+ </div>
+ </header>
+
+ <main id="main">
+ <section class="hero container" id="top">
+ <div>
+ <p class="eyebrow" data-i18n="hero.eyebrow">Full-time Physics tutor · second interview</p>
+ <h1 data-i18n="hero.h1">Make induction <em>click.</em></h1>
+ <p class="hero-lede" data-i18n="hero.lede">
+ One interactive tool on <strong>Electromagnetic induction</strong> (HKDSE SPEM07).
+ About <strong>2.5 hours</strong> to make it, then a short presentation.
+ The topic and the notes are given. How you teach it is what we want to see.
+ </p>
+ <div class="button-row">
+ <a class="button primary" href="#demo">
+ <span data-i18n="hero.cta1">Start with the demonstration</span>
+ <span aria-hidden="true">↓</span>
+ </a>
+ <a class="button secondary" href="#tasks">
+ <span data-i18n="hero.cta2">Open the task</span>
+ <span aria-hidden="true">↓</span>
+ </a>
+ </div>
+ <p class="hero-note">
+ <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9 5.2v5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="13" r="1" fill="currentColor"/></svg>
+ <span data-i18n="hero.note">No coding experience is expected. You direct Cursor in plain English, then check the physics yourself.</span>
+ </p>
+ </div>
+ <div class="hero-board" aria-hidden="true">
+ <div class="board-sheet">
+ <div class="sheet-top">
+ <span class="sheet-kicker" data-i18n="sheet.kicker">Second interview<br>Candidate brief</span>
+ <span class="sheet-number">01</span>
+ </div>
+ <h2 class="sheet-title" data-i18n="sheet.title">One set task.</h2>
+ <p class="sheet-subtitle" data-i18n="sheet.subtitle">Electromagnetic induction is already assigned. Nothing to choose.</p>
+ <div class="sheet-options">
+ <div class="sheet-option">
+ <span>↗</span>
+ <span data-i18n="sheet.opt1"><strong>Interactive tool · Electromagnetic induction</strong><small>One Cursor agent</small></span>
+ <b>01</b>
+ </div>
+ </div>
+ <div class="sheet-stamp" data-i18n="sheet.stamp">150 min<br>make</div>
+ </div>
+ </div>
+ </section>
+
+ <div class="format-strip">
+ <div class="format-grid container">
+ <div class="format-intro">
+ <p data-i18n="format.kicker">Today’s format</p>
+ <strong data-i18n="format.total">Two parts, about 3 hours</strong>
+ </div>
+ <div class="format-item">
+ <span>01</span>
+ <strong data-i18n="format.1label">set task</strong>
+ <small data-i18n="format.1note">Electromagnetic induction · interactive HTML tool.</small>
+ </div>
+ <div class="format-item">
+ <span>150</span>
+ <strong data-i18n="format.2label">minutes · Create</strong>
+ <small data-i18n="format.2note">Part one. One Cursor agent.</small>
+ </div>
+ <div class="format-item">
+ <span>20</span>
+ <strong data-i18n="format.3label">minutes · Demonstrate</strong>
+ <small data-i18n="format.3note">Part two. Run the tool and talk us through it.</small>
+ </div>
+ </div>
+ </div>
+
+ <section class="section container" id="demo">
+ <div class="section-head">
+ <div>
+ <p class="section-label" data-i18n="demo.label">Part one · 01 · Demonstration</p>
+ <h2 data-i18n="demo.h2">See the standard first.</h2>
+ </div>
+ <p data-i18n="demo.intro">
+ This finished lab is on a <strong>different topic</strong> from your task. Study the standard of a tool a student can act on. Do not copy the physics.
+ </p>
+ </div>
+ <div class="demo-stack">
+ <article class="demo-row demo-row-wide" id="demo-tool">
+ <div class="demo-copy">
+ <div class="demo-head">
+ <span class="demo-no" data-i18n="demo.tool.no">DEMONSTRATION</span>
+ <span class="tool-tag cursor" data-i18n="demo.tool.tag">Interactive tool · not your topic</span>
+ </div>
+ <h3 data-i18n="demo.tool.h3">A tool the student can act on.</h3>
+ <p data-i18n="demo.tool.p">
+ A single HTML page a student opens in a browser. It does not just explain and stop — the student changes something and the picture answers back.
+ </p>
+ <ul class="idea-list">
+ <li data-i18n="demo.tool.n1"><b>What to notice</b> The student can start, reset and switch friction, so each run can look different.</li>
+ <li data-i18n="demo.tool.n2"><b>What to notice</b> The free-body diagrams and the motion update live.</li>
+ <li data-i18n="demo.tool.n3"><b>What to notice</b> One colour per force, all the way through. Your induction tool still needs a commit-then-feedback loop.</li>
+ </ul>
+ <p class="workflow-hint">
+ <span aria-hidden="true">◈</span>
+ <span data-i18n="demo.tool.hint"><strong>Different topic on purpose</strong> This is the S3 stacked-boxes lab (Force III). Your task is <strong>Electromagnetic induction</strong>. Copy the standard, not the content. Yours may be simpler than this.</span>
+ </p>
+ <a class="jump-link" href="#tasks"><span data-i18n="demo.tool.jump">Open the task brief</span> <span aria-hidden="true">↓</span></a>
+ </div>
+ <div class="task-visual tool-visual">
+ <div class="example-frame">
+ <div class="example-bar">
+ <span class="example-label" data-i18n="demo.tool.caption">Demonstration · S3 stacked boxes</span>
+ <a class="example-link" href="demos/stacked-boxes/index.html" target="_blank" rel="noopener" data-i18n="common.openfull" data-lab-open="stacked-boxes">Open full ↗</a>
+ </div>
+ <div class="example-embed lab">
+ <iframe id="stackedBoxesDemo" src="demos/stacked-boxes/index.html?embed=1&amp;lang=en" title="Demonstration: S3 Physics stacked-boxes laboratory" allow="fullscreen"></iframe>
+ </div>
+ <p class="example-note" data-i18n="demo.tool.note">
+ Toggle friction, start the run and watch the free-body diagrams. Your task is still electromagnetic induction.
+ </p>
+ </div>
+ </div>
+ </article>
+ </div>
+ </section>
+
+ <section class="section container" id="tasks">
+ <div class="section-head">
+ <div>
+ <p class="section-label" data-i18n="tasks.label">Part one · 02 · The task</p>
+ <h2 data-i18n="tasks.h2">One tool. One topic.</h2>
+ </div>
+ <p data-i18n="tasks.intro">
+ Build a browser tool that teaches electromagnetic induction. The student must be able to change something, commit to an answer, and be told whether it is right and why.
+ </p>
+ </div>
+
+ <article class="task-panel active" id="panel-tool">
+ <div class="task-hero">
+ <div class="task-copy">
+ <div class="task-badges">
+ <span class="badge" data-i18n="common.subject">DSE Physics</span>
+ <span class="badge" data-i18n="task.badge.topic">Topic: Electromagnetic induction · set</span>
+ <span class="badge" data-i18n="task.badge.deliverable">Deliverable: HTML</span>
+ </div>
+ <h3 data-i18n="task.h3">An interactive tool for Electromagnetic induction.</h3>
+ <p data-i18n="task.p">
+ Teach one idea from SPEM07: magnetic flux Φ = BA cos θ, Faraday’s law ε = −dΦ/dt, and Lenz’s law for direction. The student changes quantities, predicts, then sees whether they are right and why.
+ </p>
+ <div class="brief-box">
+ <strong data-i18n="common.goal">Learning goal</strong>
+ <p data-i18n="task.goal">After using your tool, a student should be able to find flux and induced emf for a simple change, and use Lenz’s law for the direction — and be corrected by the tool when they get it wrong.</p>
+ </div>
+ <p class="workflow-hint">
+ <span aria-hidden="true">◈</span>
+ <span data-i18n="task.hint"><strong>The topic is set, the teaching is yours</strong> Electromagnetic induction is fixed. How you teach it — flux sliders, a moving magnet, a changing loop — is your decision.</span>
+ </p>
+ </div>
+ <div class="task-side tool-visual">
+ <div class="materials-card">
+ <p class="materials-title" data-i18n="task.materials">Your materials</p>
+ <code class="materials-path">task_em_induction_interactive_tool\</code>
+ <ul class="materials-list">
+ <li>
+ <span>MD</span>
+ <div><strong>SPEM07-electromagnetic-induction-brief.md</strong><small data-i18n="task.file1">Teaching brief — flux, Faraday, Lenz</small></div>
+ </li>
+ <li>
+ <span>MD</span>
+ <div><strong>DSE-EM-induction-practice-(QUE).md</strong><small data-i18n="task.file2">Practice questions</small></div>
+ </li>
+ <li>
+ <span>MD</span>
+ <div><strong>DSE-EM-induction-practice-(ANS).md</strong><small data-i18n="task.file3">Practice answers — check your tool against these</small></div>
+ </li>
+ </ul>
+ <p class="materials-note" data-i18n="task.materialsnote">
+ Click any file in Cursor’s sidebar to open it. You do not have to read all of it — the starter prompt already tells Cursor to read the folder.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="task-details three">
+ <div class="detail-col">
+ <p class="detail-title" data-i18n="task.ideas">Build one of these</p>
+ <ul class="idea-list">
+ <li data-i18n="task.idea1"><b>Suggested</b>A flux explorer: the student sets B, A and θ, predicts Φ or the induced emf when one quantity changes, then sees the result and the reason.</li>
+ <li data-i18n="task.idea2"><b>Alternative</b>A magnet and coil: the student changes speed or which pole enters first, predicts the current direction with Lenz’s law, and is told why.</li>
+ <li data-i18n="task.idea3"><b>Alternative</b>A changing loop: the area grows or shrinks in a steady field. The student predicts the emf before the tool reveals it.</li>
+ </ul>
+ </div>
+ <div class="detail-col">
+ <p class="detail-title" data-i18n="task.reqtitle">Your tool must include</p>
+ <ul class="requirement-list">
+ <li data-i18n="task.req1">At least two things the student can change, not just a Next button.</li>
+ <li data-i18n="task.req2">A point where the student commits to an answer before seeing the result.</li>
+ <li data-i18n="task.req3">Feedback that says right or wrong <strong>and explains why</strong>, in plain English.</li>
+ <li data-i18n="task.req4">A worked example button, and a Try another button with fresh numbers.</li>
+ <li data-i18n="task.req5">One HTML file, no external libraries, readable on a laptop. Add Traditional Chinese labels beside the English where it helps a DSE student.</li>
+ </ul>
+ </div>
+ <div class="detail-col">
+ <p class="detail-title" data-i18n="common.timeline">Where this fits in the 2.5 hours</p>
+ <ol class="timeline-list">
+ <li><strong>0–15 min</strong><span data-i18n="task.t1">Read this brief, the demonstration, and skim the notes.</span></li>
+ <li><strong>15–30 min</strong><span data-i18n="task.t2">Paste the prompt into Cursor and let it build.</span></li>
+ <li><strong>30–90 min</strong><span data-i18n="task.t3">Test every control yourself. Report each problem in plain English.</span></li>
+ <li><strong>90–130 min</strong><span data-i18n="task.t4">Add the worked example and the Try another button. Check flux, Faraday and Lenz against the answers file.</span></li>
+ <li><strong>130–150 min</strong><span data-i18n="task.t5">Final browser check, then save and decide what to demo.</span></li>
+ </ol>
+ </div>
+ </div>
+ <div class="prompt-wrap">
+ <div class="prompt-card">
+ <div class="prompt-head">
+ <strong data-i18n="task.prompttitle">Starter prompt for Cursor</strong>
+ <button class="copy-button" type="button" data-copy="prompt-tool" data-i18n="common.copy">Copy prompt</button>
+ </div>
+ <p class="prompt-swap">
+ <span aria-hidden="true">◈</span>
+ <span data-i18n="task.promptnote">Paste this whole prompt exactly as it is. The topic and the folder are already filled in.</span>
+ </p>
+ <pre class="prompt-text" id="prompt-tool">TOPIC (set): Electromagnetic induction (HKDSE SPEM07) — magnetic flux Φ = BA cos θ, Faraday’s law ε = −dΦ/dt, and Lenz’s law for the direction of the induced current. Do not confuse this with the force on a current-carrying wire (Fleming’s left-hand rule).
+
+Read every file in the folder task_em_induction_interactive_tool of this project — the teaching brief and the practice set — and follow the way flux, Faraday and Lenz are taught there. Then create a single-file HTML teaching tool for a Hong Kong DSE physics student on the topic above. The tool must: (1) let the student change at least two things, for example B and A, or speed and pole; (2) ask the student for an answer or a prediction before it shows anything; (3) say clearly whether they are right or wrong AND explain why in one or two sentences; (4) have a “Show worked example” button; (5) have a “Try another” button that generates a fresh question with clean numbers. Use large readable text, keep the same colour for the same quantity throughout, write in plain English for a 16-year-old with Traditional Chinese labels beside the key terms, and use no external libraries. Save it as interactive-tool.html inside that same task_em_induction_interactive_tool folder, then open it in a browser so I can test it.</pre>
+ <div class="file-output">
+ <span aria-hidden="true">▣</span>
+ <span><span data-i18n="common.handin">Hand in:</span> <code>task_em_induction_interactive_tool\interactive-tool.html</code></span>
+ </div>
+ </div>
+ </div>
+ </article>
+ </section>
+
+ <section class="section setup-section" id="setup">
+ <div class="container">
+ <div class="setup-grid">
+ <div class="setup-sticky">
+ <p class="section-label" data-i18n="setup.label">Part one · 03 · Getting started</p>
+ <h2 data-i18n="setup.h2">One folder. One file back.</h2>
+ <p data-i18n="setup.intro">
+ Cursor’s left sidebar is a file explorer. Your notes are already in one folder. Your finished file goes back into that same folder.
+ </p>
+ <div class="path-card">
+ <span data-i18n="setup.p1t">Electromagnetic induction · tool</span>
+ <code>task_em_induction_interactive_tool\</code>
+ </div>
+ <p class="path-note" data-i18n="setup.pathnote">
+ That path is inside the <strong>starter_kit</strong> folder you were given.
+ </p>
+ </div>
+ <div class="step-list">
+ <article class="step-card">
+ <span class="step-number">1</span>
+ <div>
+ <h3 data-i18n="setup.s1h">Open the starter kit in Cursor</h3>
+ <p data-i18n="setup.s1p">Choose File → Open Folder…, select the <strong>starter_kit</strong> folder, then choose “Select Folder”.</p>
+ <p data-i18n="setup.s1n">The task folder appears in the <strong>left sidebar</strong>, already holding the notes.</p>
+ </div>
+ </article>
+ <article class="step-card">
+ <span class="step-number">2</span>
+ <div>
+ <h3 data-i18n="setup.s2h">Skim the notes</h3>
+ <p data-i18n="setup.s2p">Open <strong>task_em_induction_interactive_tool</strong> and skim the brief and one practice question so you know the material.</p>
+ <p data-i18n="setup.s2n">Do not try to read everything. Cursor reads the folder for you — the prompt already says so.</p>
+ </div>
+ </article>
+ <article class="step-card">
+ <span class="step-number">3</span>
+ <div>
+ <h3 data-i18n="setup.s3h">Use one Cursor agent</h3>
+ <p data-i18n="setup.s3p">Stay in one chat. This interview has one task, so you do not need a second agent tab.</p>
+ </div>
+ </article>
+ <article class="step-card">
+ <span class="step-number">4</span>
+ <div>
+ <h3 data-i18n="setup.s4h">Paste one clear request</h3>
+ <p data-i18n="setup.s4p">Copy the starter prompt above and paste it as it is. The topic and the folder are already written in.</p>
+ <p data-i18n="setup.s4n">Ask for changes in plain English, one at a time: “The student can see the answer before they predict. Hide the result until they press Check.”</p>
+ </div>
+ </article>
+ <article class="step-card">
+ <span class="step-number">5</span>
+ <div>
+ <h3 data-i18n="setup.s5h">Open and check the result yourself</h3>
+ <p data-i18n="setup.s5p"><strong>HTML:</strong> find <code>interactive-tool.html</code> in the sidebar, right-click it, choose “Reveal in File Explorer”, then double-click it to open in a browser.</p>
+ <p data-i18n="setup.s5n">Change every control. Predict before you look. Compare one number with the answers file.</p>
+ </div>
+ </article>
+ <article class="step-card">
+ <span class="step-number">6</span>
+ <div>
+ <h3 data-i18n="setup.s6h">Save, then get ready to present</h3>
+ <p data-i18n="setup.s6p">Check the physics. Fix the most important problem first, and keep a working version before asking for a risky change.</p>
+ <p data-i18n="setup.s6n">Stop creating when the timer ends. The final file is <code>interactive-tool.html</code> in <code>task_em_induction_interactive_tool</code>.</p>
+ </div>
+ </article>
+ </div>
+ </div>
+
+ <div class="tool-guide-grid">
+ <article class="tool-guide">
+ <div class="tool-guide-icon">C</div>
+ <h3 data-i18n="guide.cursor.h">Using Cursor</h3>
+ <p data-i18n="guide.cursor.p">Cursor can read the teaching notes, write code, run commands and fix its own errors. You direct it with normal sentences.</p>
+ <div class="mini-steps">
+ <div class="mini-step"><b>01</b><span data-i18n="guide.cursor.1">Keep the starter kit folder open so Cursor can read the task folder itself.</span></div>
+ <div class="mini-step"><b>02</b><span data-i18n="guide.cursor.2">Use <strong>one agent tab</strong> for the electromagnetic induction tool.</span></div>
+ <div class="mini-step"><b>03</b><span data-i18n="guide.cursor.3">Paste the full starter prompt first, then request small changes one at a time.</span></div>
+ <div class="mini-step"><b>04</b><span data-i18n="guide.cursor.4">Approve file creation and preview commands when Cursor asks permission.</span></div>
+ <div class="mini-step"><b>05</b><span data-i18n="guide.cursor.5">Open <code>interactive-tool.html</code> in a browser and check it yourself. If something is unfinished when the timer ends, say so in the presentation.</span></div>
+ </div>
+ </article>
+ </div>
+ </div>
+ </section>
+
+ <section class="section container" id="present">
+ <div class="section-head">
+ <div>
+ <p class="section-label" data-i18n="present.label">Part two · 04 · Your demonstration</p>
+ <h2 data-i18n="present.h2">Then you demonstrate.</h2>
+ </div>
+ <p data-i18n="present.intro">
+ When the 150 minutes end, part two begins: about <strong>15 to 20 minutes</strong> to run the tool and talk us through it. Open the real file. Do not use slides.
+ </p>
+ </div>
+ <div class="rules-grid">
+ <article class="presentation-card">
+ <h3 data-i18n="present.runh3">How the time runs</h3>
+ <p class="card-intro" data-i18n="present.runintro">A simple order so the demonstration fits.</p>
+ <ol class="presentation-list">
+ <li data-i18n="present.r1"><strong>2 min · Your plan</strong><span>What idea did you choose to teach, and why?</span></li>
+ <li data-i18n="present.r2"><strong>8 min · Run the tool</strong><span>Change the controls, make a wrong prediction, and show the feedback.</span></li>
+ <li data-i18n="present.r3"><strong>4 min · Your process</strong><span>Show one prompt and one correction you asked Cursor for.</span></li>
+ <li data-i18n="present.r4"><strong>3 min · The physics</strong><span>How did you check flux, Faraday and Lenz against the notes?</span></li>
+ <li data-i18n="present.r5"><strong>3 min · Questions</strong><span>What is unfinished, and what would confuse a DSE student?</span></li>
+ </ol>
+ </article>
+ <article class="presentation-card">
+ <h3 data-i18n="present.openh3">Have these open before you start</h3>
+ <p class="card-intro" data-i18n="present.openintro">Set the screen up before you start talking.</p>
+ <ul class="idea-list">
+ <li data-i18n="present.o1">A browser tab with <code>interactive-tool.html</code> already loaded.</li>
+ <li data-i18n="present.o2">The Cursor chat, scrolled to the prompt and one correction you asked for.</li>
+ <li data-i18n="present.o3">The practice answers file, in case we ask where a number came from.</li>
+ </ul>
+ <ul class="idea-list" style="margin-top:14px">
+ <li data-i18n="present.q1"><b>Expect us to ask</b> Where in the notes did this question come from?</li>
+ <li data-i18n="present.q2"><b>Expect us to ask</b> What did Cursor get wrong first, and how did you spot it?</li>
+ <li data-i18n="present.q3"><b>Expect us to ask</b> Which part of this would confuse a real DSE student?</li>
+ </ul>
+ </article>
+ </div>
+ </section>
+
+ <section class="section container" id="start">
+ <div class="ready-card">
+ <div class="ready-copy">
+ <p class="eyebrow" style="color:var(--lime)" data-i18n="ready.label">Ready when you are</p>
+ <h2 data-i18n="ready.h2">One task. Two and a half hours. Make it teach.</h2>
+ <p data-i18n="ready.p">
+ Open the starter kit in Cursor, paste the Electromagnetic induction prompt, then start the clock.
+ </p>
+ <a class="button primary" href="#tasks"><span data-i18n="ready.cta">Review the task ↑</span></a>
+ </div>
+ <div class="countdown">
+ <p class="countdown-label" data-i18n="ready.timerlabel">Creation time remaining</p>
+ <div class="countdown-time" id="countdownTime">150:00</div>
+ <div class="timer-controls">
+ <button class="timer-button" id="startTimer" type="button">Start</button>
+ <button class="timer-button" id="resetTimer" type="button">Reset</button>
+ </div>
+ <p class="timer-message" id="timerMessage">Timer has not started.</p>
+ </div>
+ </div>
+ </section>
+ </main>
+
+ <footer>
+ <div class="footer-inner container">
+ <p data-i18n="footer.left"><strong>UniPlus Education</strong> · Full-time Physics tutor · second interview · Hong Kong</p>
+ <p data-i18n="footer.right">Topic: Electromagnetic induction · SPEM07</p>
+ </div>
+ </footer>
+ <div class="toast" id="toast" role="status"></div>
+
+<script>
+(function () {
+ const ZH = {
+ "skip": "跳至任務",
+ "nav.demo": "示範",
+ "nav.tasks": "任務",
+ "nav.setup": "開始之前",
+ "nav.present": "你的示範",
+ "hero.eyebrow": "全職物理導師 · 第二次面試",
+ "hero.h1": "讓電磁感應<em>一目了然。</em>",
+ "hero.lede": "只需做一件事：一個關於<strong>電磁感應</strong>（HKDSE SPEM07）的互動工具。約 <strong>2.5 小時</strong>製作，然後作簡短示範。課題和筆記已給你。我們想看你怎樣教。",
+ "hero.cta1": "先看示範",
+ "hero.cta2": "打開任務",
+ "hero.note": "不要求你懂寫程式。你用日常英語指揮 Cursor，然後自己核對物理。",
+ "sheet.kicker": "第二次面試<br>考生簡介",
+ "sheet.title": "一個指定任務。",
+ "sheet.subtitle": "電磁感應已經指定。沒有其他選擇。",
+ "sheet.opt1": "<strong>互動工具 · 電磁感應</strong><small>一個 Cursor 代理</small>",
+ "sheet.stamp": "150 分鐘<br>製作",
+ "format.kicker": "今日安排",
+ "format.total": "兩部分，約 3 小時",
+ "format.1label": "指定任務",
+ "format.1note": "電磁感應 · 互動 HTML 工具。",
+ "format.2label": "分鐘 · 製作",
+ "format.2note": "第一部分。一個 Cursor 代理。",
+ "format.3label": "分鐘 · 示範",
+ "format.3note": "第二部分。運行工具並講解。",
+ "demo.label": "第一部分 · 01 · 示範",
+ "demo.h2": "先看標準。",
+ "demo.intro": "這個完成的實驗室用的是<strong>另一個課題</strong>。看的是「學生可以動手」的標準。不要抄內容。",
+ "demo.tool.no": "示範",
+ "demo.tool.tag": "互動工具 · 不是你的課題",
+ "demo.tool.h3": "學生可以動手的工具。",
+ "demo.tool.p": "學生在瀏覽器打開的單一 HTML 頁。它不是講完就停——學生改變一些東西，畫面會回應。",
+ "demo.tool.n1": "<b>留意</b>學生可以開始、重設和切換摩擦力，所以每次運行可以不同。",
+ "demo.tool.n2": "<b>留意</b>受力圖和運動會即時更新。",
+ "demo.tool.n3": "<b>留意</b>同一種力始終用同一顏色。你的電磁感應工具仍要有「先作答、再看回饋」。",
+ "demo.tool.hint": "<strong>故意用不同課題</strong>這是中三疊箱實驗室（力 III）。你的任務是<strong>電磁感應</strong>。抄標準，不抄內容。你的工具可以比這個簡單。",
+ "demo.tool.jump": "打開任務簡介",
+ "demo.tool.caption": "示範 · 中三疊箱",
+ "common.openfull": "全螢幕開啟 ↗",
+ "demo.tool.note": "切換摩擦力、開始運行，看受力圖。你的任務仍然是電磁感應。",
+ "tasks.label": "第一部分 · 02 · 任務",
+ "tasks.h2": "一個工具。一個課題。",
+ "tasks.intro": "做一個教電磁感應的瀏覽器工具。學生必須能改變一些量、先提交答案，然後知道對錯和原因。",
+ "common.subject": "DSE 物理",
+ "task.badge.topic": "課題：電磁感應 · 已指定",
+ "task.badge.deliverable": "交件：HTML",
+ "task.h3": "電磁感應互動工具。",
+ "task.p": "教 SPEM07 的一個想法：磁通量 Φ = BA cos θ、法拉第定律 ε = −dΦ/dt，以及決定方向的楞次定律。學生改變數值、先預測，再看到對錯和原因。",
+ "common.goal": "學習目標",
+ "task.goal": "用完你的工具後，學生應能就簡單變化求出磁通量和感應電動勢，並用楞次定律判斷方向；答錯時工具要糾正他。",
+ "task.hint": "<strong>課題已定，教法由你</strong>電磁感應是固定的。怎樣教——通量滑桿、移動磁鐵、改變線圈面積——由你決定。",
+ "task.materials": "你的材料",
+ "task.file1": "教學簡介 — 通量、法拉第、楞次",
+ "task.file2": "練習題",
+ "task.file3": "練習答案 — 用它核對你的工具",
+ "task.materialsnote": "在 Cursor 左側欄點任何檔案即可打開。你不必全部讀完——起始提示語已經叫 Cursor 讀整個資料夾。",
+ "task.ideas": "做其中一個",
+ "task.idea1": "<b>建議</b>通量探索：學生設定 B、A 和 θ，預測 Φ，或某個量改變時的感應電動勢，然後看到結果和原因。",
+ "task.idea2": "<b>另一選擇</b>磁鐵與線圈：學生改變速率或哪一極先進入，用楞次定律預測電流方向，並得到解釋。",
+ "task.idea3": "<b>另一選擇</b>面積改變的線圈：在穩定磁場中面積增大或縮小。學生在工具揭曉前預測電動勢。",
+ "task.reqtitle": "工具必須包括",
+ "task.req1": "至少兩個學生可以改變的量，不只是「下一題」按鈕。",
+ "task.req2": "學生要先提交答案，才看到結果。",
+ "task.req3": "回饋要說明對或錯，<strong>並解釋原因</strong>，用淺白英語。",
+ "task.req4": "一個「顯示詳解」按鈕，和一個用新數字出題的「再試一題」按鈕。",
+ "task.req5": "單一 HTML 檔，不用外部程式庫，手提電腦可讀。關鍵用語旁加上繁體中文。",
+ "common.timeline": "2.5 小時怎樣用",
+ "task.t1": "讀這份簡介、看示範，並略讀筆記。",
+ "task.t2": "把提示語貼進 Cursor，讓它開始做。",
+ "task.t3": "自己測試每個控制。用日常英語指出每個問題。",
+ "task.t4": "加上詳解和「再試一題」。用答案檔核對通量、法拉第和楞次。",
+ "task.t5": "最後在瀏覽器檢查，儲存，並決定示範甚麼。",
+ "task.prompttitle": "給 Cursor 的起始提示語",
+ "common.copy": "複製提示語",
+ "task.promptnote": "整段原樣貼上。課題和資料夾已經寫好。",
+ "common.handin": "交件：",
+ "setup.label": "第一部分 · 03 · 開始之前",
+ "setup.h2": "一個資料夾。交回一個檔。",
+ "setup.intro": "Cursor 左側欄是檔案總管。筆記已在一個資料夾裡。完成的檔放回同一個資料夾。",
+ "setup.p1t": "電磁感應 · 工具",
+ "setup.pathnote": "以上路徑在你收到的 <strong>starter_kit</strong> 資料夾內。",
+ "setup.s1h": "在 Cursor 打開 starter kit",
+ "setup.s1p": "選 File → Open Folder…，選 <strong>starter_kit</strong> 資料夾，再按 Select Folder。",
+ "setup.s1n": "任務資料夾會出現在<strong>左側欄</strong>，裡面已有筆記。",
+ "setup.s2h": "略讀筆記",
+ "setup.s2p": "打開 <strong>task_em_induction_interactive_tool</strong>，略讀簡介和一題練習，知道材料是甚麼。",
+ "setup.s2n": "不必全部讀完。Cursor 會替你讀資料夾——提示語已經這樣寫。",
+ "setup.s3h": "只用一個 Cursor 代理",
+ "setup.s3p": "留在同一個對話。這次面試只有一個任務，不需要第二個代理分頁。",
+ "setup.s4h": "貼上一句清楚的要求",
+ "setup.s4p": "複製上面的起始提示語，原樣貼上。課題和資料夾已經寫好。",
+ "setup.s4n": "之後每次只用日常英語改一件事，例如：「學生在預測之前就看到答案。按 Check 之前不要顯示結果。」",
+ "setup.s5h": "自己打開並檢查",
+ "setup.s5p": "<strong>HTML：</strong>在左側欄找到 <code>interactive-tool.html</code>，右鍵，選 Reveal in File Explorer，再雙擊用瀏覽器打開。",
+ "setup.s5n": "改每一個控制。先預測再看結果。用答案檔核對一個數字。",
+ "setup.s6h": "儲存，然後準備示範",
+ "setup.s6p": "檢查物理。先改最重要的問題。要求大改之前，先保留一個能用的版本。",
+ "setup.s6n": "計時結束就停止製作。最終檔是 <code>task_em_induction_interactive_tool</code> 裡的 <code>interactive-tool.html</code>。",
+ "guide.cursor.h": "使用 Cursor",
+ "guide.cursor.p": "Cursor 可以讀教學筆記、寫程式、執行指令，並修正自己的錯誤。你用普通句子指揮它。",
+ "guide.cursor.1": "保持 starter kit 資料夾打開，讓 Cursor 自己讀任務資料夾。",
+ "guide.cursor.2": "只用<strong>一個代理分頁</strong>做電磁感應工具。",
+ "guide.cursor.3": "先貼上完整起始提示語，然後每次只要求一個小修改。",
+ "guide.cursor.4": "Cursor 要求建立檔案或預覽時，批准它。",
+ "guide.cursor.5": "在瀏覽器打開 <code>interactive-tool.html</code> 並自己檢查。計時結束時如果未完成，在示範時說出來。",
+ "present.label": "第二部分 · 04 · 你的示範",
+ "present.h2": "然後你示範。",
+ "present.intro": "150 分鐘結束後是第二部分：約 <strong>15 至 20 分鐘</strong>運行工具並講解。打開真正的檔案。不要用簡報。",
+ "present.runh3": "時間怎樣用",
+ "present.runintro": "一個簡單順序，讓示範放得下。",
+ "present.r1": "<strong>2 分鐘 · 你的計劃</strong><span>你選擇教哪一個想法，為甚麼？</span>",
+ "present.r2": "<strong>8 分鐘 · 運行工具</strong><span>改變控制、故意預測錯一次，並展示回饋。</span>",
+ "present.r3": "<strong>4 分鐘 · 你的過程</strong><span>展示一則提示語，以及你要求 Cursor 改正的一次。</span>",
+ "present.r4": "<strong>3 分鐘 · 物理</strong><span>你怎樣用筆記核對通量、法拉第和楞次？</span>",
+ "present.r5": "<strong>3 分鐘 · 提問</strong><span>還有甚麼未完成？哪一部分會令 DSE 學生混淆？</span>",
+ "present.openh3": "開始前先打開這些",
+ "present.openintro": "開口之前先把畫面準備好。",
+ "present.o1": "一個已經載入 <code>interactive-tool.html</code> 的瀏覽器分頁。",
+ "present.o2": "Cursor 對話，捲到提示語和你要求的一次改正。",
+ "present.o3": "練習答案檔，以便我們問某個數字從哪裡來。",
+ "present.q1": "<b>我們可能會問</b>這題來自筆記哪一部分？",
+ "present.q2": "<b>我們可能會問</b>Cursor 第一次錯在哪裡，你怎樣發現？",
+ "present.q3": "<b>我們可能會問</b>哪一部分會令真正的 DSE 學生混淆？",
+ "ready.label": "準備好就可以開始",
+ "ready.h2": "一個任務。兩個半小時。讓它教得明白。",
+ "ready.p": "在 Cursor 打開 starter kit，貼上電磁感應提示語，然後開始計時。",
+ "ready.cta": "再看任務 ↑",
+ "ready.timerlabel": "剩餘製作時間",
+ "footer.left": "<strong>UniPlus Education</strong> · 全職物理導師 · 第二次面試 · 香港",
+ "footer.right": "課題：電磁感應 · SPEM07",
+ "btn.start": "開始",
+ "btn.pause": "暫停",
+ "btn.resume": "繼續",
+ "btn.restart": "重新開始",
+ "btn.reset": "重設",
+ "btn.copied": "已複製",
+ "msg.notstarted": "計時尚未開始。",
+ "msg.inprogress": "製作進行中。",
+ "msg.paused": "已暫停。",
+ "msg.reset": "已重設為 150:00。",
+ "msg.time": "時間到。停止製作，準備示範。",
+ "chip.ready": " · 準備",
+ "chip.running": " · 進行中",
+ "chip.aria": "跳至計時器",
+ "title": "UniPlus · 電磁感應面試任務",
+ "title.running": " · 剩餘",
+ "toast.copied": "已複製起始提示語。",
+ "toast.done": "時間到。",
+ "ms.half": "時間過了一半——應該已有一個可以打開的版本。",
+ "ms.ten": "剩十分鐘——把檔案存回任務資料夾。",
+ "ms.five": "剩五分鐘——停止製作，打開工具準備示範。"
+ };
+
+ let lang = "en";
+ const englishMarkup = new Map();
+ document.querySelectorAll("[data-i18n]").forEach((el) => englishMarkup.set(el, el.innerHTML));
+
+ const toast = document.getElementById("toast");
+ let toastTimeout;
+ function showToast(message) {
+ toast.textContent = message;
+ toast.classList.add("show");
+ clearTimeout(toastTimeout);
+ toastTimeout = setTimeout(() => toast.classList.remove("show"), 2200);
+ }
+
+ const copyLabelTimers = new WeakMap();
+ document.querySelectorAll("[data-copy]").forEach((button) => {
+ button.addEventListener("click", async () => {
+ const target = document.getElementById(button.dataset.copy);
+ const text = target.textContent.trim();
+ try {
+ await navigator.clipboard.writeText(text);
+ } catch (error) {
+ const selection = window.getSelection();
+ const range = document.createRange();
+ range.selectNodeContents(target);
+ selection.removeAllRanges();
+ selection.addRange(range);
+ try { document.execCommand("copy"); } finally { selection.removeAllRanges(); }
+ }
+ button.textContent = lang === "zh" ? ZH["btn.copied"] : "Copied";
+ showToast(lang === "zh" ? ZH["toast.copied"] : "Starter prompt copied.");
+ clearTimeout(copyLabelTimers.get(button));
+ copyLabelTimers.set(button, setTimeout(() => {
+ const translated = ZH[button.dataset.i18n];
+ button.innerHTML = lang === "zh" && translated ? translated : englishMarkup.get(button);
+ }, 1600));
+ });
+ });
+
+ const timerChip = document.getElementById("timerChip");
+ const timerChipText = document.getElementById("timerChipText");
+ const countdownTime = document.getElementById("countdownTime");
+ const startButton = document.getElementById("startTimer");
+ const resetButton = document.getElementById("resetTimer");
+ const timerMessage = document.getElementById("timerMessage");
+ const totalSeconds = 150 * 60;
+ const milestones = { 4500: "ms.half", 600: "ms.ten", 300: "ms.five" };
+ let secondsRemaining = totalSeconds;
+ let timerId = null;
+ let buttonKey = "btn.start";
+ let messageKey = "msg.notstarted";
+
+ const EN = {
+ "btn.start": "Start",
+ "btn.pause": "Pause",
+ "btn.resume": "Resume",
+ "btn.restart": "Restart",
+ "btn.reset": "Reset",
+ "msg.notstarted": "Timer has not started.",
+ "msg.inprogress": "Creation in progress.",
+ "msg.paused": "Paused.",
+ "msg.reset": "Reset to 150:00.",
+ "msg.time": "Time is up. Stop creating and get ready to present.",
+ "chip.ready": " · Ready",
+ "chip.running": " · Running",
+ "chip.aria": "Jump to the timer",
+ "title": "UniPlus · Electromagnetic induction interview task",
+ "title.running": " remaining",
+ "ms.half": "Halfway — you should have a version you can open.",
+ "ms.ten": "Ten minutes left — save the file back into the task folder.",
+ "ms.five": "Five minutes left — stop creating and open the tool for the demonstration.",
+ "toast.done": "Time is up."
+ };
+
+ function label(key) {
+ if (lang === "zh" && ZH[key]) return ZH[key];
+ return EN[key] || key;
+ }
+
+ function setButton(key) {
+ buttonKey = key;
+ startButton.textContent = label(key);
+ }
+
+ function setMessage(key) {
+ messageKey = key;
+ timerMessage.textContent = label(key);
+ }
+
+ function formatTime(seconds) {
+ const minutes = Math.floor(seconds / 60);
+ const remainder = seconds % 60;
+ return String(minutes).padStart(2, "0") + ":" + String(remainder).padStart(2, "0");
+ }
+
+ function renderTimer() {
+ const time = formatTime(secondsRemaining);
+ countdownTime.textContent = time;
+ timerChipText.textContent = time + label(timerId ? "chip.running" : "chip.ready");
+ document.title = timerId ? time + label("title.running") : label("title");
+ }
+
+ function stopTimer() {
+ clearInterval(timerId);
+ timerId = null;
+ timerChip.classList.remove("running");
+ setButton(secondsRemaining === totalSeconds ? "btn.start" : "btn.resume");
+ renderTimer();
+ }
+
+ function startTimer() {
+ if (timerId) {
+ stopTimer();
+ setMessage("msg.paused");
+ return;
+ }
+ if (secondsRemaining <= 0) secondsRemaining = totalSeconds;
+ timerChip.classList.add("running");
+ setButton("btn.pause");
+ setMessage("msg.inprogress");
+ timerId = setInterval(() => {
+ secondsRemaining -= 1;
+ renderTimer();
+ if (milestones[secondsRemaining]) {
+ setMessage(milestones[secondsRemaining]);
+ showToast(label(milestones[secondsRemaining]));
+ }
+ if (secondsRemaining <= 0) {
+ stopTimer();
+ setButton("btn.restart");
+ setMessage("msg.time");
+ showToast(label("toast.done"));
+ }
+ }, 1000);
+ renderTimer();
+ }
+
+ startButton.addEventListener("click", startTimer);
+ resetButton.addEventListener("click", () => {
+ stopTimer();
+ secondsRemaining = totalSeconds;
+ setButton("btn.start");
+ setMessage("msg.reset");
+ renderTimer();
+ });
+ timerChip.addEventListener("click", () => {
+ document.getElementById("start").scrollIntoView({ behavior: "smooth" });
+ });
+
+ const langToggle = document.getElementById("langToggle");
+ const langToggleText = document.getElementById("langToggleText");
+
+ function applyLanguage(next) {
+ lang = next === "zh" ? "zh" : "en";
+ const chinese = lang === "zh";
+ document.documentElement.lang = chinese ? "zh-Hant" : "en";
+ englishMarkup.forEach((html, el) => {
+ const translated = ZH[el.dataset.i18n];
+ el.innerHTML = chinese && translated ? translated : html;
+ });
+ langToggleText.textContent = chinese ? "English" : "繁體中文";
+ langToggle.setAttribute("lang", chinese ? "en" : "zh-Hant");
+ langToggle.setAttribute("aria-label", chinese ? "Switch to English" : "切換至繁體中文");
+ timerChip.setAttribute("aria-label", label("chip.aria"));
+ setButton(buttonKey);
+ setMessage(messageKey);
+ resetButton.textContent = label("btn.reset");
+ renderTimer();
+ syncStackedBoxesLang();
+ try { localStorage.setItem("uniplus-ft-lang", lang); } catch (error) {}
+ }
+
+ function syncStackedBoxesLang() {
+ const labLang = lang === "zh" ? "zh" : "en";
+ const hubLang = lang === "zh" ? "zh-Hant" : "en";
+ const iframe = document.getElementById("stackedBoxesDemo");
+ const openLink = document.querySelector('[data-lab-open="stacked-boxes"]');
+ const nextSrc = "demos/stacked-boxes/index.html?embed=1&lang=" + labLang;
+ if (iframe) {
+ try { iframe.contentWindow.postMessage({ type: "s3phy:lang", lang: hubLang }, "*"); } catch (error) {}
+ if (!iframe.getAttribute("src") || iframe.getAttribute("src").indexOf("lang=" + labLang) === -1) {
+ iframe.setAttribute("src", nextSrc);
+ }
+ }
+ if (openLink) openLink.setAttribute("href", "demos/stacked-boxes/index.html?lang=" + labLang);
+ }
+
+ langToggle.addEventListener("click", () => applyLanguage(lang === "zh" ? "en" : "zh"));
+
+ let requested = null;
+ try { requested = new URLSearchParams(window.location.search).get("lang"); } catch (error) { requested = null; }
+ if (!requested) {
+ try { requested = localStorage.getItem("uniplus-ft-lang"); } catch (error) { requested = null; }
+ }
+ applyLanguage(requested === "zh" ? "zh" : "en");
+}());
+</script>
+</body>
+</html>

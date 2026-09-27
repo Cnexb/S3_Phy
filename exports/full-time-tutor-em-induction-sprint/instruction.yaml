@@ -1,0 +1,50 @@
+# Full-time Physics tutor — second interview
+
+task: one interactive HTML learning tool
+company: UniPlus Education, Hong Kong
+role: full-time Physics tutor, second interview
+candidate: junior, no coding experience expected
+
+time:
+  make: 150 minutes (2.5 hours)
+  presentation: about 15 to 20 minutes
+  window: about 2 to 3 hours in total
+
+provided tools: paid Cursor account, this brief site, and the starter_kit folder
+not provided: YouMind, a second agent, Manim, or a comic task
+
+the task: FIXED. The candidate does not choose a topic.
+  1. an interactive HTML tool on ELECTROMAGNETIC INDUCTION (HKDSE SPEM07)
+     folder: starter_kit/task_em_induction_interactive_tool
+     hand-in: interactive-tool.html in that same folder
+
+learning goal: magnetic flux Phi = BA cos theta, Faraday emf = -dPhi/dt, and Lenz's law for direction. The student is corrected when wrong.
+
+tool requirements:
+  - change at least two quantities
+  - commit to an answer before the result is shown
+  - right or wrong, plus a short explanation
+  - Show worked example, and Try another with fresh clean numbers
+  - single HTML file, no external libraries
+  - English, with Traditional Chinese labels where useful
+  - readable on a laptop
+
+demonstration on the brief site: S3 stacked-boxes lab (Force III), a different topic, so it cannot be copied.
+  path: demos/stacked-boxes/index.html
+
+notes: authored markdown in the task folder (no SPEM07 PDF on the S3 hub).
+  SPEM07-electromagnetic-induction-brief.md
+  DSE-EM-induction-practice-(QUE).md
+  DSE-EM-induction-practice-(ANS).md
+
+page structure:
+  part one (make):
+    01 demonstration
+    02 the task
+    03 getting started, including a Using Cursor guide (one agent)
+  part two (show):
+    04 your demonstration
+  no rubric, no score bar, no checklist
+
+language: English + Traditional Chinese
+level: HKDSE Physics, SPEM07
