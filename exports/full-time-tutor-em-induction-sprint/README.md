@@ -1,6 +1,6 @@
 # Full-time Physics tutor — Electromagnetic induction interview
 
-Standalone brief for a second interview. One task: an interactive HTML tool on electromagnetic induction (HKDSE SPEM07). About 2.5 hours to make it, then a 15 to 20 minute demonstration.
+Standalone brief for a second interview. One task: an interactive HTML tool on electromagnetic induction (HKDSE SPEM07). 140 minutes to make it, then a 15 to 20 minute demonstration.
 
 This package is not wired into the S3 Physics hub.
 
