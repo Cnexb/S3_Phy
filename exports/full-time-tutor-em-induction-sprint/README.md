@@ -6,6 +6,10 @@ This package is not wired into the S3 Physics hub.
 
 ## Open the brief
 
+Hosted: https://cnexb.github.io/S3_Phy/full-time-tutor-em-induction-sprint/
+
+Local preview:
+
 ```bash
 node serve.mjs
 ```

@@ -61,8 +61,18 @@ function syncShared() {
   copyEntry(src, dest, DEFAULT_EXCLUDE, DEFAULT_EXCLUDE_DIRS);
 }
 
+function syncInterviewBrief() {
+  const src = path.join(repoRoot, 'exports', 'full-time-tutor-em-induction-sprint');
+  const dest = path.join(repoRoot, 'public', 'full-time-tutor-em-induction-sprint');
+  if (!fs.existsSync(src)) return;
+  console.log('[interview] full-time-tutor-em-induction-sprint -> public/');
+  fs.rmSync(dest, { recursive: true, force: true });
+  copyEntry(src, dest, DEFAULT_EXCLUDE, DEFAULT_EXCLUDE_DIRS);
+}
+
 function main() {
   syncShared();
+  syncInterviewBrief();
   let count = 0;
   for (const rootName of SOURCE_ROOTS) {
     const sourceRoot = path.join(repoRoot, rootName);
