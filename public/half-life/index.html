@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Half-life Laboratory (HKDSE Physics)</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap");
+
+:root {
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+  --s3-radius: 14px;
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --tab-accent: #f43f5e;
+  --tab-accent-glow: rgba(244, 63, 94, 0.35);
+  --glass-bg: rgba(255, 255, 255, 0.82);
+}
+
+html { scrollbar-gutter: stable; }
+body {
+  font-family: "Plus Jakarta Sans", var(--s3-font), sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+.mono { font-family: "JetBrains Mono", monospace; }
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+}
+.cdn-warning {
+  background: linear-gradient(90deg, #b45309, #d97706);
+  color: #fffbeb;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 12px;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+
+.bg-slate-950, canvas.bg-slate-950 {
+  background-color: #ffffff !important;
+}
+.bg-slate-950\/40 { background-color: rgba(255, 255, 255, 0.72) !important; }
+.bg-slate-900, .bg-slate-900\/95, .bg-slate-900\/60 {
+  background-color: #f1f5f9 !important;
+}
+.border-slate-800, .border-slate-800\/80, .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+.text-slate-100, .text-slate-200, .text-slate-300, h1.text-white, h3.text-white {
+  color: #0f172a !important;
+}
+.text-slate-400 { color: #475569 !important; }
+.text-slate-500 { color: #64748b !important; }
+.bg-slate-800 { background-color: #e2e8f0 !important; color: #0f172a !important; }
+.bg-slate-800:hover { background-color: #cbd5e1 !important; }
+.lang-btn { color: #475569 !important; }
+.lang-btn:hover { color: #0f172a !important; background-color: #cbd5e1 !important; }
+.lang-active {
+  background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.1) !important;
+}
+
+.btn-play {
+  background: #16a34a !important;
+  color: #ffffff !important;
+  border-color: #15803d !important;
+}
+.btn-play:hover { background: #15803d !important; }
+.btn-pause {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+}
+.btn-pause:hover { background: #b91c1c !important; }
+
+.btn-atomic {
+  background: #eab308 !important;
+  color: #0f172a !important;
+  border-color: #ca8a04 !important;
+}
+.btn-atomic:hover { background: #ca8a04 !important; }
+
+.btn-jump {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+.mode-grid .atomic-only { display: none !important; }
+.mode-atomic .grid-only { display: none !important; }
+
+.mode-grid #timer-card { padding: 0.65rem 0.85rem; }
+.mode-grid #timer-clock { font-size: 1.25rem; }
+.mode-grid #timer-hlives-row { margin-top: 0.35rem; font-size: 0.75rem; }
+.mode-grid #timer-halflives { font-size: 1.05rem; }
+
+.btn-jump:hover { background: #cbd5e1 !important; }
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: #e2e8f0;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f43f5e;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f43f5e;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+  cursor: pointer;
+}
+
+#btn-show-controls { display: none; }
+#hl-fs-root:fullscreen #btn-show-controls,
+#hl-fs-root:-webkit-full-screen #btn-show-controls {
+  display: inline-flex;
+}
+#hl-fs-root:fullscreen,
+#hl-fs-root:-webkit-full-screen {
+  background: #f8fafc;
+  padding: 12px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+#hl-fs-root:fullscreen .hl-fs-grid,
+#hl-fs-root:-webkit-full-screen .hl-fs-grid {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  gap: 0;
+  align-items: stretch;
+}
+#hl-fs-root:fullscreen .hl-sim-col,
+#hl-fs-root:-webkit-full-screen .hl-sim-col {
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+#hl-fs-root:fullscreen .hl-sim-card,
+#hl-fs-root:-webkit-full-screen .hl-sim-card {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+#hl-fs-root:fullscreen #hl-side-panel,
+#hl-fs-root:-webkit-full-screen #hl-side-panel {
+  display: none;
+}
+#hl-fs-root:fullscreen #hl-canvas-wrap,
+#hl-fs-root:-webkit-full-screen #hl-canvas-wrap {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+}
+#hl-fs-root:fullscreen.show-fs-controls .hl-fs-grid,
+#hl-fs-root:-webkit-full-screen.show-fs-controls .hl-fs-grid {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+}
+#hl-fs-root:fullscreen.show-fs-controls .hl-sim-col,
+#hl-fs-root:-webkit-full-screen.show-fs-controls .hl-sim-col {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: calc(100% - 24px);
+  box-sizing: border-box;
+}
+#hl-fs-root:fullscreen.show-fs-controls .hl-sim-card,
+#hl-fs-root:-webkit-full-screen.show-fs-controls .hl-sim-card {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+#hl-fs-root:fullscreen.show-fs-controls #hl-canvas-wrap,
+#hl-fs-root:-webkit-full-screen.show-fs-controls #hl-canvas-wrap {
+  overflow: hidden;
+}
+#hl-fs-root:fullscreen.show-fs-controls #hl-side-panel,
+#hl-fs-root:-webkit-full-screen.show-fs-controls #hl-side-panel {
+  display: flex;
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  width: min(380px, 36vw);
+  height: calc(100% - 24px);
+  flex-shrink: 0;
+  overflow-y: auto;
+  z-index: auto;
+  box-sizing: border-box;
+  gap: 0.75rem;
+}
+#hl-fs-root:fullscreen.show-fs-controls #hl-side-panel .glass-panel,
+#hl-fs-root:-webkit-full-screen.show-fs-controls #hl-side-panel .glass-panel {
+  padding: 0.75rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping, .animate-pulse { animation: none !important; }
+}
+html.s3phy-embed header,
+html.s3phy-embed footer,
+body.embed-mode header,
+body.embed-mode footer { display: none !important; }
+html.s3phy-embed body,
+body.embed-mode {
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+html.s3phy-embed main,
+body.embed-mode main {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+html.s3phy-embed #hl-canvas-wrap,
+body.embed-mode #hl-canvas-wrap {
+  height: calc(100dvh - 8rem);
+}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col mode-grid">
+  <div id="cdn-warning" class="cdn-warning hidden" role="alert">Some CDN resources failed to load. Please connect to the internet and refresh.</div>
+  <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-40" style="background: var(--tab-accent-glow);"></div>
+  <div class="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-2.5 bg-rose-500/10 rounded-2xl border border-rose-500/20 text-rose-500 shadow-inner">
+          <i data-lucide="hourglass" class="w-7 h-7 animate-pulse text-rose-500"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-white" data-i18n="app.title">Half-life Laboratory</h1>
+            <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 border border-rose-500/30 rounded text-[10px] font-bold tracking-wider uppercase">HKDSE Physics</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-0.5" data-i18n="app.subtitle">HKDSE Physics · Undecayed nuclei vs time</p>
+        </div>
+      </div>
+      <div class="flex bg-slate-900/95 p-1 rounded-xl border border-slate-800/80">
+        <button type="button" onclick="setLanguage('en')" id="lang-en" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active">EN</button>
+        <button type="button" onclick="setLanguage('zh-Hant')" id="lang-zh" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div id="hl-fs-root" class="relative">
+    <div class="hl-fs-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="hl-sim-col lg:col-span-8 flex flex-col gap-6 w-full">
+        <div class="hl-sim-card glass-panel rounded-2xl p-5 flex flex-col relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3 gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+              <h3 class="font-bold text-sm tracking-wide text-slate-200" data-i18n="sim.title">Half-life Sandbox</h3>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap justify-end">
+              <button type="button" id="btn-play" onclick="togglePlay()" class="btn-play inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold border">
+                <span id="play-icon-wrap" class="inline-flex"><i data-lucide="play" class="w-3.5 h-3.5"></i></span>
+                <span id="lbl-play" data-i18n="common.play">Play</span>
+              </button>
+              <button type="button" id="btn-atomic" onclick="toggleMode()" class="btn-atomic inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-bold border">
+                <span id="lbl-atomic" data-i18n="common.atomicView">Atomic view</span>
+              </button>
+              <button type="button" id="btn-show-controls" onclick="toggleFsControls()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold border border-indigo-700">
+                <span id="lbl-show-controls" data-i18n="common.showControls">Show controls</span>
+              </button>
+              <button type="button" id="btn-fullscreen" onclick="toggleFullscreen()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-700">
+                <span id="lbl-fullscreen" data-i18n="common.fullscreen">Full screen</span>
+              </button>
+            </div>
+          </div>
+          <div id="hl-canvas-wrap" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-[calc(100dvh-12.5rem)] min-h-[24rem]">
+            <canvas id="hlCanvas" class="w-full h-full block bg-slate-950" style="touch-action: none;"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="hl-side-panel" class="lg:col-span-4 flex flex-col gap-4">
+        <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-rose-500">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-bold text-sm text-slate-800" data-i18n="ctrl.halfLife">Half-life</h4>
+            <span id="hl-value" class="mono text-xs font-bold text-rose-600">10 s</span>
+          </div>
+          <input type="range" id="hl-slider" min="5" max="20" step="1" value="10" aria-label="Half-life" oninput="onHalfLifeInput(this.value)">
+        </div>
+
+        <div id="timer-card" class="glass-panel rounded-2xl p-5 border-l-4 border-l-amber-400">
+          <h4 class="font-bold text-sm text-slate-800 mb-2" data-i18n="ctrl.timer">Timer</h4>
+          <p id="timer-clock" class="mono text-2xl font-extrabold text-slate-800 tracking-wide">00:00</p>
+          <p id="timer-hlives-row" class="text-sm font-bold text-slate-700 mt-3 leading-relaxed">
+            <span data-i18n="ctrl.halfLivesPassed">Half-lives passed</span>:
+            <span id="timer-halflives" class="mono text-xl font-extrabold text-slate-800">0</span>
+          </p>
+        </div>
+
+        <div id="graph-card" class="grid-only glass-panel rounded-2xl p-3 border-l-4 border-l-violet-500">
+          <canvas id="graphCanvas" class="w-full block"></canvas>
+        </div>
+
+        <div id="pct-card" class="atomic-only glass-panel rounded-2xl p-5 border-l-4 border-l-emerald-500">
+          <h4 class="font-bold text-sm text-slate-800 mb-2" data-i18n="ctrl.percentage">Percentage of undecayed nuclei</h4>
+          <p id="pct-value" class="mono text-2xl font-extrabold text-slate-800 tracking-wide">100%</p>
+        </div>
+
+        <button type="button" onclick="jumpToHalfLives(1)" class="atomic-only btn-jump w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.jump1">1 half-life</button>
+        <button type="button" onclick="jumpToHalfLives(2)" class="atomic-only btn-jump w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.jump2">2 half-life</button>
+        <button type="button" onclick="jumpToHalfLives(3)" class="atomic-only btn-jump w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.jump3">3 half-life</button>
+
+        <button type="button" onclick="resetAll()" class="w-full px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.reset">Reset</button>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 text-slate-500 py-5 text-center text-xs mt-auto">
+    <span data-i18n="app.footer">© 2026 Half-life Lab · HKDSE Physics classroom suite</span>
+  </footer>
+
+  <script>
+(function () {
+  'use strict';
+
+  const VW = 800;
+  const VH = 560;
+  const COLS = 10;
+  const ROWS = 10;
+  const N0 = 100;
+  const PACKETS0 = 50;
+  const DEFAULT_T_GRID = 10;
+  const DEFAULT_T_ATOMIC = 30;
+  const CELL = 52;
+  const R_LIVE = 16;
+  const R_DEAD = 8.5;
+  const GLOW = 18;
+  const FADE_S = 1;
+  const LIVE_RGB = [239, 68, 68];
+  const DEAD_RGB = [148, 163, 184];
+  const N_YELLOW = [245, 158, 11];
+  const P_GREEN = [52, 211, 153];
+  const PURPLE = '#7e22ce';
+  const NUC_R = 20;
+  const BALL_R = 88;
+  let packRadius = 110;
+  const ALPHA_SPEED = 210;
+  const TET_SIZE = 11;
+
+  const I18N = {
+    en: {
+      app: {
+        title: 'Half-life Laboratory',
+        subtitle: 'HKDSE Physics · Undecayed nuclei vs time',
+        pageTitle: 'Half-life Laboratory (HKDSE Physics)',
+        footer: '© 2026 Half-life Lab · HKDSE Physics classroom suite'
+      },
+      sim: { title: 'Half-life Sandbox' },
+      common: {
+        fullscreen: 'Full screen',
+        exitFullscreen: 'Exit',
+        showControls: 'Show controls',
+        hideControls: 'Hide controls',
+        play: 'Play',
+        pause: 'Pause',
+        atomicView: 'Atomic view',
+        changeMode: 'Change mode'
+      },
+      ctrl: {
+        halfLife: 'Half-life',
+        timer: 'Timer',
+        halfLivesPassed: 'Half-lives passed',
+        percentage: 'Percentage of undecayed nuclei',
+        reset: 'Reset',
+        unitSec: 's',
+        jump1: '1 half-life',
+        jump2: '2 half-lives',
+        jump3: '3 half-lives',
+        undecayed: 'Undecayed %',
+        timeAxis: 'Time (s)',
+        neutron: 'Neutron',
+        proton: 'Proton'
+      }
+    },
+    'zh-Hant': {
+      app: {
+        title: '半衰期實驗室',
+        subtitle: 'HKDSE 物理 · 未衰變核的數目與時間',
+        pageTitle: '半衰期實驗室 (HKDSE Physics)',
+        footer: '© 2026 半衰期實驗室 · HKDSE 物理課堂套件'
+      },
+      sim: { title: '半衰期沙盒' },
+      common: {
+        fullscreen: '全畫面',
+        exitFullscreen: '離開',
+        showControls: '顯示控制',
+        hideControls: '隱藏控制',
+        play: '播放',
+        pause: '暫停',
+        atomicView: '原子視圖',
+        changeMode: '轉換模式'
+      },
+      ctrl: {
+        halfLife: '半衰期',
+        timer: '計時器',
+        halfLivesPassed: '已過半衰期次數',
+        percentage: '未衰變核的百分比',
+        reset: '重設',
+        unitSec: '秒',
+        jump1: '1 個半衰期',
+        jump2: '2 個半衰期',
+        jump3: '3 個半衰期',
+        undecayed: '未衰變 %',
+        timeAxis: '時間 (s)',
+        neutron: '中子',
+        proton: '質子'
+      }
+    }
+  };
+
+  let currentLang = 'en';
+  const pageParams = new URLSearchParams(location.search);
+  const langParam = pageParams.get('lang');
+  if (langParam === 'zh' || langParam === 'zh-Hant' || langParam === 'zhHant') currentLang = 'zh-Hant';
+  else if (langParam === 'en') currentLang = 'en';
+  let atomicMode = false;
+  let playing = false;
+  let halfLife = DEFAULT_T_GRID;
+  let elapsed = 0;
+  let bounceTime = 0;
+  let nTheory = N0;
+  let lastTs = 0;
+  let nuclei = [];
+  let nucleons = [];
+  let rotY = 0.55;
+  let rotX = 0.32;
+  let dragging = false;
+  let lastMX = 0;
+  let lastMY = 0;
+  let fsControlsOpen = false;
+  let canvas, ctx, graphCanvas, gctx;
+  let animId = 0;
+  let viewRect = { width: VW, height: VH };
+
+  function t(path) {
+    const parts = path.split('.');
+    let node = I18N[currentLang];
+    for (const p of parts) node = node && node[p];
+    return node || path;
+  }
+
+  function fmtSig3(x) {
+    if (!isFinite(x) || x === 0) return '0';
+    return Number(x).toPrecision(3);
+  }
+
+  function fmtSig2(x) {
+    if (!isFinite(x) || x === 0) return '0';
+    if (x >= 99.5) return '100';
+    return Number(x).toPrecision(2);
+  }
+
+  function fmtTime(sec) {
+    const s = Math.floor(Math.max(0, sec));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0');
+  }
+
+  function originX() {
+    return (VW - (COLS - 1) * CELL) / 2;
+  }
+
+  function originY() {
+    return (VH - (ROWS - 1) * CELL) / 2;
+  }
+
+  function makeNuclei() {
+    const list = [];
+    const ox = originX();
+    const oy = originY();
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        list.push({
+          hx: ox + c * CELL,
+          hy: oy + r * CELL,
+          phase: Math.random() * Math.PI * 2,
+          omega: 0.65 + Math.random() * 0.45,
+          amp: 1.8 + Math.random() * 0.7,
+          undecayed: true,
+          fade: 0
+        });
+      }
+    }
+    return list;
+  }
+
+  function makeNucleons() {
+    const types = [];
+    for (let i = 0; i < 100; i++) types.push('n');
+    for (let i = 0; i < 100; i++) types.push('p');
+    for (let i = types.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = types[i];
+      types[i] = types[j];
+      types[j] = tmp;
+    }
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    const shells = [
+      { n: 1, f: 0 },
+      { n: 12, f: 0.28 },
+      { n: 32, f: 0.52 },
+      { n: 55, f: 0.75 },
+      { n: 100, f: 1 }
+    ];
+    const list = [];
+    let maxR = 1;
+    let idx = 0;
+    for (let s = 0; s < shells.length; s++) {
+      const nShell = shells[s].n;
+      const rho = BALL_R * shells[s].f;
+      for (let i = 0; i < nShell; i++) {
+        let lx = 0;
+        let ly = 0;
+        let lz = 0;
+        if (nShell > 1) {
+          const y = 1 - (2 * (i + 0.5)) / nShell;
+          const rxy = Math.sqrt(Math.max(0, 1 - y * y));
+          const phi = i * golden;
+          lx = rho * rxy * Math.cos(phi);
+          ly = rho * y;
+          lz = rho * rxy * Math.sin(phi);
+        }
+        const r = Math.hypot(lx, ly, lz);
+        if (r > maxR) maxR = r;
+        list.push({
+          kind: types[idx],
+          lx: lx,
+          ly: ly,
+          lz: lz,
+          x: 0,
+          y: 0,
+          z: 0,
+          vx: 0,
+          vy: 0,
+          vz: 0,
+          inCluster: true
+        });
+        idx++;
+      }
+    }
+    packRadius = maxR + NUC_R;
+    return list;
+  }
+
+  function rotateLocal(lx, ly, lz) {
+    const cx = Math.cos(rotX);
+    const sx = Math.sin(rotX);
+    const y1 = ly * cx - lz * sx;
+    const z1 = ly * sx + lz * cx;
+    const cy = Math.cos(rotY);
+    const sy = Math.sin(rotY);
+    return {
+      x: lx * cy + z1 * sy,
+      y: y1,
+      z: -lx * sy + z1 * cy
+    };
+  }
+
+  function nucleonRadius(n) {
+    return Math.hypot(n.lx, n.ly, n.lz);
+  }
+
+  function pickOuter(kind, count) {
+    const pool = [];
+    for (let i = 0; i < nucleons.length; i++) {
+      if (nucleons[i].inCluster && nucleons[i].kind === kind) pool.push(nucleons[i]);
+    }
+    pool.sort(function (a, b) { return nucleonRadius(b) - nucleonRadius(a); });
+    return pool.slice(0, count);
+  }
+
+  function tetraOffsets(ux, uy, uz, s) {
+    let ax = 1;
+    let ay = 0;
+    let az = 0;
+    if (Math.abs(ux) > 0.9) { ax = 0; ay = 1; }
+    const px = ay * uz - az * uy;
+    const py = az * ux - ax * uz;
+    const pz = ax * uy - ay * ux;
+    const pl = Math.hypot(px, py, pz) || 1;
+    const qx = px / pl;
+    const qy = py / pl;
+    const qz = pz / pl;
+    const rx = uy * qz - uz * qy;
+    const ry = uz * qx - ux * qz;
+    const rz = ux * qy - uy * qx;
+    return [
+      { x: s * (ux + qx + rx), y: s * (uy + qy + ry), z: s * (uz + qz + rz) },
+      { x: s * (ux + qx - rx), y: s * (uy + qy - ry), z: s * (uz + qz - rz) },
+      { x: s * (ux - qx + rx), y: s * (uy - qy + ry), z: s * (uz - qz + rz) },
+      { x: s * (ux - qx - rx), y: s * (uy - qy - ry), z: s * (uz - qz - rz) }
+    ];
+  }
+
+  function emitAlpha() {
+    const ns = pickOuter('n', 2);
+    const ps = pickOuter('p', 2);
+    if (ns.length < 2 || ps.length < 2) return;
+    const group = [ns[0], ns[1], ps[0], ps[1]];
+    let cx = 0;
+    let cy = 0;
+    let cz = 0;
+    const views = [];
+    for (let i = 0; i < 4; i++) {
+      const v = rotateLocal(group[i].lx, group[i].ly, group[i].lz);
+      views.push(v);
+      cx += v.x;
+      cy += v.y;
+      cz += v.z;
+    }
+    cx /= 4;
+    cy /= 4;
+    cz /= 4;
+    let mag = Math.hypot(cx, cy, cz);
+    if (mag < 1) mag = 1;
+    const ux = cx / mag;
+    const uy = cy / mag;
+    const uz = cz / mag;
+    const offs = tetraOffsets(ux, uy, uz, TET_SIZE);
+    const vx = ux * ALPHA_SPEED;
+    const vy = uy * ALPHA_SPEED;
+    const vz = uz * ALPHA_SPEED;
+    for (let i = 0; i < 4; i++) {
+      group[i].inCluster = false;
+      group[i].x = cx + offs[i].x;
+      group[i].y = cy + offs[i].y;
+      group[i].z = cz + offs[i].z;
+      group[i].vx = vx;
+      group[i].vy = vy;
+      group[i].vz = vz;
+    }
+  }
+
+  function packetsLeft() {
+    let n = 0;
+    for (let i = 0; i < nucleons.length; i++) if (nucleons[i].inCluster) n++;
+    return Math.round(n / 4);
+  }
+
+  function targetPackets() {
+    return Math.max(0, Math.round(PACKETS0 * nTheory / N0));
+  }
+
+  function restoreNucleon(n) {
+    n.inCluster = true;
+    n.x = 0;
+    n.y = 0;
+    n.z = 0;
+    n.vx = 0;
+    n.vy = 0;
+    n.vz = 0;
+  }
+
+  function syncAtomicPackets(instant) {
+    let have = packetsLeft();
+    const want = targetPackets();
+    if (have > want) {
+      const extra = have - want;
+      for (let k = 0; k < extra; k++) {
+        if (instant) {
+          const ns = pickOuter('n', 2);
+          const ps = pickOuter('p', 2);
+          if (ns.length < 2 || ps.length < 2) break;
+          [ns[0], ns[1], ps[0], ps[1]].forEach(function (p) {
+            p.inCluster = false;
+            p.x = -800;
+            p.y = -800;
+            p.z = 0;
+            p.vx = 0;
+            p.vy = 0;
+            p.vz = 0;
+          });
+        } else {
+          emitAlpha();
+        }
+      }
+    } else if (have < want) {
+      const need = (want - have) * 4;
+      const goneN = [];
+      const goneP = [];
+      for (let i = 0; i < nucleons.length; i++) {
+        if (nucleons[i].inCluster) continue;
+        if (nucleons[i].kind === 'n') goneN.push(nucleons[i]);
+        else goneP.push(nucleons[i]);
+      }
+      let restored = 0;
+      while (restored < need && (goneN.length || goneP.length)) {
+        const pool = (restored % 2 === 0 && goneN.length) ? goneN : (goneP.length ? goneP : goneN);
+        const p = pool.pop();
+        if (!p) break;
+        restoreNucleon(p);
+        restored++;
+      }
+    }
+  }
+
+  function syncDecay() {
+    if (atomicMode) {
+      syncAtomicPackets(false);
+      return;
+    }
+    const target = Math.max(0, Math.min(N0, Math.round(nTheory)));
+    const live = [];
+    for (let i = 0; i < nuclei.length; i++) {
+      if (nuclei[i].undecayed) live.push(i);
+    }
+    while (live.length > target) {
+      const k = Math.floor(Math.random() * live.length);
+      const n = nuclei[live[k]];
+      n.undecayed = false;
+      n.fade = 0;
+      live.splice(k, 1);
+    }
+  }
+
+  function setNucleiCountInstant(target) {
+    const want = Math.max(0, Math.min(N0, target));
+    const live = [];
+    const dead = [];
+    for (let i = 0; i < nuclei.length; i++) {
+      if (nuclei[i].undecayed) live.push(i);
+      else dead.push(i);
+    }
+    while (live.length > want) {
+      const k = Math.floor(Math.random() * live.length);
+      const n = nuclei[live[k]];
+      n.undecayed = false;
+      n.fade = 1;
+      dead.push(live[k]);
+      live.splice(k, 1);
+    }
+    while (live.length < want) {
+      const k = Math.floor(Math.random() * dead.length);
+      const n = nuclei[dead[k]];
+      n.undecayed = true;
+      n.fade = 0;
+      live.push(dead[k]);
+      dead.splice(k, 1);
+    }
+  }
+
+  function sliderRange() {
+    return atomicMode ? { min: 20, max: 40, def: DEFAULT_T_ATOMIC } : { min: 5, max: 20, def: DEFAULT_T_GRID };
+  }
+
+  function applySliderRange() {
+    const r = sliderRange();
+    const slider = document.getElementById('hl-slider');
+    if (!slider) return;
+    slider.min = String(r.min);
+    slider.max = String(r.max);
+    slider.value = String(halfLife);
+  }
+
+  function updateReadouts() {
+    const unit = t('ctrl.unitSec');
+    const hlEl = document.getElementById('hl-value');
+    const clockEl = document.getElementById('timer-clock');
+    const hlivesEl = document.getElementById('timer-halflives');
+    const pctEl = document.getElementById('pct-value');
+    if (hlEl) hlEl.textContent = halfLife + ' ' + unit;
+    if (clockEl) clockEl.textContent = fmtTime(elapsed);
+    if (hlivesEl) hlivesEl.textContent = elapsed === 0 ? '0' : fmtSig3(elapsed / halfLife);
+    if (pctEl) pctEl.textContent = (nTheory >= 99.95 ? '100' : fmtSig3(nTheory)) + '%';
+  }
+
+  function refreshPlayButton() {
+    const btn = document.getElementById('btn-play');
+    const lbl = document.getElementById('lbl-play');
+    const wrap = document.getElementById('play-icon-wrap');
+    if (!btn || !lbl || !wrap) return;
+    btn.classList.toggle('btn-play', !playing);
+    btn.classList.toggle('btn-pause', playing);
+    lbl.setAttribute('data-i18n', playing ? 'common.pause' : 'common.play');
+    lbl.textContent = t(playing ? 'common.pause' : 'common.play');
+    wrap.innerHTML = playing
+      ? '<i data-lucide="pause" class="w-3.5 h-3.5"></i>'
+      : '<i data-lucide="play" class="w-3.5 h-3.5"></i>';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function refreshModeButton() {
+    const lbl = document.getElementById('lbl-atomic');
+    if (!lbl) return;
+    const key = atomicMode ? 'common.changeMode' : 'common.atomicView';
+    lbl.setAttribute('data-i18n', key);
+    lbl.textContent = t(key);
+  }
+
+  function syncModeUi() {
+    document.body.classList.toggle('mode-grid', !atomicMode);
+    document.body.classList.toggle('mode-atomic', atomicMode);
+    refreshModeButton();
+    applySliderRange();
+    requestAnimationFrame(function () {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+      if (canvas) canvas.style.cursor = atomicMode ? 'grab' : 'default';
+    });
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = currentLang === 'zh-Hant' ? 'zh-Hant' : 'en';
+    document.title = t('app.pageTitle');
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.getElementById('lang-en').classList.toggle('lang-active', currentLang === 'en');
+    document.getElementById('lang-zh').classList.toggle('lang-active', currentLang === 'zh-Hant');
+    const slider = document.getElementById('hl-slider');
+    if (slider) slider.setAttribute('aria-label', t('ctrl.halfLife'));
+    refreshPlayButton();
+    refreshModeButton();
+    updateReadouts();
+    syncFsUi();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  window.setLanguage = function (lang) {
+    currentLang = lang === 'zh-Hant' || lang === 'zhHant' || lang === 'zh' ? 'zh-Hant' : 'en';
+    applyLanguage();
+  };
+
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 's3phy:lang') {
+      window.setLanguage(event.data.lang);
+    }
+  });
+
+  function isFullscreen() {
+    const root = document.getElementById('hl-fs-root');
+    return document.fullscreenElement === root || document.webkitFullscreenElement === root;
+  }
+
+  function syncFsUi() {
+    const root = document.getElementById('hl-fs-root');
+    const fs = isFullscreen();
+    const fsLbl = document.getElementById('lbl-fullscreen');
+    const showLbl = document.getElementById('lbl-show-controls');
+    if (fsLbl) fsLbl.textContent = fs ? t('common.exitFullscreen') : t('common.fullscreen');
+    if (!fs) {
+      fsControlsOpen = false;
+      if (root) root.classList.remove('show-fs-controls');
+    }
+    if (showLbl) showLbl.textContent = fsControlsOpen ? t('common.hideControls') : t('common.showControls');
+  }
+
+  window.toggleFsControls = function () {
+    if (!isFullscreen()) return;
+    fsControlsOpen = !fsControlsOpen;
+    document.getElementById('hl-fs-root').classList.toggle('show-fs-controls', fsControlsOpen);
+    syncFsUi();
+    requestAnimationFrame(() => {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  };
+
+  window.togglePlay = function () {
+    playing = !playing;
+    lastTs = 0;
+    refreshPlayButton();
+  };
+
+  window.toggleMode = function () {
+    atomicMode = !atomicMode;
+    resetAll();
+  };
+
+  window.onHalfLifeInput = function (v) {
+    const r = sliderRange();
+    let n = Math.round(Number(v));
+    if (n < r.min) n = r.min;
+    if (n > r.max) n = r.max;
+    halfLife = n;
+    const slider = document.getElementById('hl-slider');
+    if (slider && Number(slider.value) !== n) slider.value = String(n);
+    updateReadouts();
+  };
+
+  window.jumpToHalfLives = function (n) {
+    if (!atomicMode) return;
+    const steps = Math.round(Number(n));
+    if (steps < 1 || steps > 3) return;
+    playing = false;
+    lastTs = 0;
+    elapsed = steps * halfLife;
+    bounceTime = elapsed;
+    nTheory = N0 * Math.pow(2, -steps);
+    syncAtomicPackets(true);
+    refreshPlayButton();
+    updateReadouts();
+  };
+
+  window.resetAll = function () {
+    playing = false;
+    lastTs = 0;
+    elapsed = 0;
+    bounceTime = 0;
+    nTheory = N0;
+    rotY = 0.55;
+    rotX = 0.32;
+    const r = sliderRange();
+    halfLife = r.def;
+    nuclei = makeNuclei();
+    nucleons = makeNucleons();
+    applySliderRange();
+    syncModeUi();
+    refreshPlayButton();
+    updateReadouts();
+  };
+
+  window.toggleFullscreen = function () {
+    const root = document.getElementById('hl-fs-root');
+    if (!isFullscreen()) {
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document);
+    }
+  };
+
+  function setupCanvas(el) {
+    if (!el) return null;
+    const c = el.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = el.getBoundingClientRect();
+    const nextW = Math.max(1, Math.round(rect.width * dpr));
+    const nextH = Math.max(1, Math.round(rect.height * dpr));
+    if (el.width !== nextW || el.height !== nextH) {
+      el.width = nextW;
+      el.height = nextH;
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.scale(dpr, dpr);
+    return { ctx: c, rect, dpr };
+  }
+
+  function setupGraphCanvas() {
+    const el = document.getElementById('graphCanvas');
+    const card = document.getElementById('graph-card');
+    if (!el || !card || atomicMode || card.classList.contains('hidden')) return null;
+    const dpr = window.devicePixelRatio || 1;
+    const width = Math.max(160, Math.floor(card.clientWidth - 24));
+    const padL = 46;
+    const padR = 18;
+    const padT = 14;
+    const padB = 38;
+    const side = Math.max(80, width - padL - padR);
+    const height = padT + side + padB;
+    el.style.width = width + 'px';
+    el.style.height = height + 'px';
+    const nextW = Math.max(1, Math.round(width * dpr));
+    const nextH = Math.max(1, Math.round(height * dpr));
+    if (el.width !== nextW || el.height !== nextH) {
+      el.width = nextW;
+      el.height = nextH;
+    }
+    const c = el.getContext('2d');
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.scale(dpr, dpr);
+    gctx = c;
+    return { ctx: c, width: width, height: height, padL: padL, padR: padR, padT: padT, padB: padB, side: side };
+  }
+
+  function viewMap(rect) {
+    const s = Math.min(rect.width / VW, rect.height / VH);
+    const ox = (rect.width - VW * s) / 2;
+    const oy = (rect.height - VH * s) / 2;
+    return { s, ox, oy };
+  }
+
+  function toScreen(x, y, vm) {
+    return { x: vm.ox + x * vm.s, y: vm.oy + y * vm.s };
+  }
+
+  function lerp(a, b, t0) {
+    return a + (b - a) * t0;
+  }
+
+  function rgbCss(rgb) {
+    return 'rgb(' + Math.round(rgb[0]) + ',' + Math.round(rgb[1]) + ',' + Math.round(rgb[2]) + ')';
+  }
+
+  function drawNucleus(n, vm) {
+    const fading = !n.undecayed;
+    const y = fading ? n.hy : n.hy + Math.sin(n.phase + bounceTime * n.omega) * n.amp;
+    const pos = toScreen(n.hx, y, vm);
+    const u = vm.s;
+    const tFade = fading ? Math.max(0, Math.min(1, n.fade)) : 0;
+    const r = (fading ? lerp(R_LIVE, R_DEAD, tFade) : R_LIVE) * u;
+    const col = fading
+      ? [lerp(LIVE_RGB[0], DEAD_RGB[0], tFade), lerp(LIVE_RGB[1], DEAD_RGB[1], tFade), lerp(LIVE_RGB[2], DEAD_RGB[2], tFade)]
+      : LIVE_RGB;
+    ctx.save();
+    if (!fading || tFade < 1) {
+      ctx.shadowColor = rgbCss(col);
+      ctx.shadowBlur = GLOW * u * (1 - tFade);
+    } else {
+      ctx.shadowBlur = 0;
+    }
+    ctx.fillStyle = rgbCss(col);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+    ctx.fill();
+    const hi = 0.55 * (1 - tFade);
+    if (hi > 0.02) {
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = 'rgba(254, 226, 226, ' + hi + ')';
+      ctx.beginPath();
+      ctx.arc(pos.x - r * 0.28, pos.y - r * 0.28, r * 0.32, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawGlossy(x, y, r, rgb) {
+    if (!(r >= 0.5)) return;
+    const grd = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, r * 0.1, x, y, r);
+    grd.addColorStop(0, 'rgba(255,255,255,0.85)');
+    grd.addColorStop(0.35, 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')');
+    grd.addColorStop(1, 'rgb(' + Math.max(0, rgb[0] - 40) + ',' + Math.max(0, rgb[1] - 40) + ',' + Math.max(0, rgb[2] - 40) + ')');
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function drawLegend(vm) {
+    const u = vm.s;
+    const y = toScreen(VW / 2, VH - 28, vm).y;
+    const x0 = toScreen(VW / 2 - 90, 0, vm).x;
+    const r = 7 * u;
+    drawGlossy(x0, y, r, N_YELLOW);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold ' + (12 * u) + 'px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(t('ctrl.neutron'), x0 + 12 * u, y);
+    const x1 = toScreen(VW / 2 + 30, 0, vm).x;
+    drawGlossy(x1, y, r, P_GREEN);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillText(t('ctrl.proton'), x1 + 12 * u, y);
+  }
+
+  function drawAtomic(vm) {
+    const u = vm.s;
+    const cx = VW / 2;
+    const cy = VH / 2 - 18;
+    const drawList = [];
+    for (let i = 0; i < nucleons.length; i++) {
+      const n = nucleons[i];
+      let px;
+      let py;
+      let pz;
+      if (n.inCluster) {
+        const v = rotateLocal(n.lx, n.ly, n.lz);
+        px = v.x;
+        py = v.y;
+        pz = v.z;
+      } else {
+        if (Math.abs(n.x) > 500 || Math.abs(n.y) > 400) continue;
+        px = n.x;
+        py = n.y;
+        pz = n.z;
+      }
+      drawList.push({ n: n, px: px, py: py, pz: pz });
+    }
+    drawList.sort(function (a, b) { return a.pz - b.pz; });
+    const r = NUC_R * u;
+    for (let i = 0; i < drawList.length; i++) {
+      const d = drawList[i];
+      const p = toScreen(cx + d.px, cy + d.py, vm);
+      drawGlossy(p.x, p.y, r, d.n.kind === 'n' ? N_YELLOW : P_GREEN);
+    }
+    drawLegend(vm);
+  }
+
+  function drawScene(rect) {
+    const vm = viewMap(rect);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+    if (atomicMode) drawAtomic(vm);
+    else {
+      for (let i = 0; i < nuclei.length; i++) drawNucleus(nuclei[i], vm);
+    }
+  }
+
+  function drawGraph() {
+    const g = setupGraphCanvas();
+    if (!g || !gctx) return;
+    const c = gctx;
+    const w = g.width;
+    const h = g.height;
+    c.clearRect(0, 0, w, h);
+    const x0 = g.padL;
+    const y0 = g.padT;
+    const side = g.side;
+    const x1 = x0 + side;
+    const y1 = y0 + side;
+
+    c.strokeStyle = '#0f172a';
+    c.lineWidth = 1.6;
+    c.beginPath();
+    c.moveTo(x0, y1);
+    c.lineTo(x0, y0);
+    c.lineTo(x0, y0 + 8);
+    c.moveTo(x0, y0);
+    c.lineTo(x0 - 5, y0 + 10);
+    c.moveTo(x0, y0);
+    c.lineTo(x0 + 5, y0 + 10);
+    c.moveTo(x0, y1);
+    c.lineTo(x1, y1);
+    c.lineTo(x1 - 10, y1 - 5);
+    c.moveTo(x1, y1);
+    c.lineTo(x1 - 10, y1 + 5);
+    c.stroke();
+
+    c.fillStyle = '#0f172a';
+    c.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
+    c.save();
+    c.translate(8, (y0 + y1) / 2);
+    c.rotate(-Math.PI / 2);
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillText(t('ctrl.undecayed'), 0, 0);
+    c.restore();
+    c.textAlign = 'center';
+    c.textBaseline = 'top';
+    c.fillText(t('ctrl.timeAxis'), (x0 + x1) / 2, y1 + 20);
+
+    c.font = 'bold 11px "JetBrains Mono", monospace';
+    c.textBaseline = 'top';
+    for (let k = 1; k <= 3; k++) {
+      const tx = x0 + (k / 3) * side;
+      c.beginPath();
+      c.moveTo(tx, y1);
+      c.lineTo(tx, y1 + 5);
+      c.stroke();
+      c.fillText(String(k * halfLife), tx, y1 + 7);
+    }
+
+    const tMax = 3 * halfLife;
+    const tNow = Math.min(elapsed, tMax);
+    const pctNow = elapsed === 0 ? 100 : Math.max(0, Math.min(100, nTheory));
+    function X(tt) { return x0 + (tt / tMax) * side; }
+    function Y(pct) { return y1 - (pct / 100) * side; }
+
+    c.strokeStyle = PURPLE;
+    c.lineWidth = 2.4;
+    c.beginPath();
+    const steps = Math.max(8, Math.floor(tNow * 20) + 1);
+    for (let i = 0; i <= steps; i++) {
+      const tt = (tNow * i) / steps;
+      const pct = 100 * Math.pow(2, -tt / halfLife);
+      const px = X(tt);
+      const py = Y(pct);
+      if (i === 0) c.moveTo(px, py);
+      else c.lineTo(px, py);
+    }
+    c.stroke();
+
+    const endX = X(tNow);
+    const endY = Y(pctNow);
+    c.setLineDash([4, 4]);
+    c.strokeStyle = PURPLE;
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.moveTo(x0, endY);
+    c.lineTo(endX, endY);
+    c.stroke();
+    c.setLineDash([]);
+
+    c.fillStyle = PURPLE;
+    c.beginPath();
+    c.arc(endX, endY, 5, 0, Math.PI * 2);
+    c.fill();
+
+    c.fillStyle = PURPLE;
+    c.font = 'bold 12px "JetBrains Mono", monospace';
+    c.textAlign = 'right';
+    c.textBaseline = 'middle';
+    c.fillText(fmtSig2(pctNow) + '%', x0 - 6, endY);
+  }
+
+  function stepFlyers(dt) {
+    for (let i = 0; i < nucleons.length; i++) {
+      const n = nucleons[i];
+      if (n.inCluster) continue;
+      n.x += n.vx * dt;
+      n.y += n.vy * dt;
+      n.z += n.vz * dt;
+    }
+  }
+
+  function step(dt) {
+    elapsed += dt;
+    bounceTime += dt;
+    nTheory *= Math.pow(2, -dt / halfLife);
+    if (nTheory < 1e-12) nTheory = 0;
+    syncDecay();
+    if (!atomicMode) {
+      for (let i = 0; i < nuclei.length; i++) {
+        const n = nuclei[i];
+        if (!n.undecayed && n.fade < 1) {
+          n.fade += dt / FADE_S;
+          if (n.fade > 1) n.fade = 1;
+        }
+      }
+    } else {
+      stepFlyers(dt);
+    }
+    updateReadouts();
+  }
+
+  function loop(now) {
+    const setup = setupCanvas(canvas);
+    if (setup) {
+      ctx = setup.ctx;
+      viewRect = setup.rect;
+      if (playing) {
+        if (!lastTs) lastTs = now;
+        let dt = (now - lastTs) / 1000;
+        lastTs = now;
+        if (dt > 0.05) dt = 0.05;
+        if (dt > 0) step(dt);
+      }
+      drawScene(setup.rect);
+      if (!atomicMode) drawGraph();
+    }
+    animId = requestAnimationFrame(loop);
+  }
+
+  function checkCDN() {
+    const warn = document.getElementById('cdn-warning');
+    if (typeof lucide === 'undefined' && warn) warn.classList.remove('hidden');
+  }
+
+  window.addEventListener('resize', () => {
+    if (canvas) setupCanvas(canvas);
+    setupGraphCanvas();
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    syncFsUi();
+    requestAnimationFrame(() => {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  });
+  document.addEventListener('webkitfullscreenchange', () => {
+    syncFsUi();
+    requestAnimationFrame(() => {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (pageParams.get('embed') === '1' || pageParams.get('embed') === 'true' || window.self !== window.top) {
+      document.documentElement.classList.add('s3phy-embed');
+      document.body.classList.add('embed-mode');
+    }
+    canvas = document.getElementById('hlCanvas');
+    graphCanvas = document.getElementById('graphCanvas');
+    nuclei = makeNuclei();
+    nucleons = makeNucleons();
+    applyLanguage();
+    syncModeUi();
+    checkCDN();
+    setTimeout(checkCDN, 400);
+
+    function onDown(ev) {
+      if (!atomicMode) return;
+      dragging = true;
+      lastMX = ev.clientX;
+      lastMY = ev.clientY;
+      if (canvas) canvas.style.cursor = 'grabbing';
+      ev.preventDefault();
+    }
+    function onMove(ev) {
+      if (!dragging || !atomicMode) return;
+      const dx = ev.clientX - lastMX;
+      const dy = ev.clientY - lastMY;
+      lastMX = ev.clientX;
+      lastMY = ev.clientY;
+      rotY += dx * 0.008;
+      rotX += dy * 0.008;
+      if (rotX > 1.2) rotX = 1.2;
+      if (rotX < -1.2) rotX = -1.2;
+    }
+    function onUp() {
+      dragging = false;
+      if (canvas) canvas.style.cursor = atomicMode ? 'grab' : 'default';
+    }
+    canvas.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    canvas.addEventListener('pointerdown', function (ev) {
+      if (canvas.setPointerCapture && ev.pointerId != null) {
+        try { canvas.setPointerCapture(ev.pointerId); } catch (e) {}
+      }
+    });
+
+    animId = requestAnimationFrame(loop);
+  });
+})();
+  </script>
+</body>
+</html>

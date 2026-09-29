@@ -91,6 +91,9 @@ export const en = {
   'tools.cloudChamber.title': 'Cloud chamber (α β γ)',
   'tools.cloudChamber.subtitle':
     'Tracks of alpha, beta and gamma radiation in a cloud chamber.',
+  'tools.halfLife.title': 'Half-life',
+  'tools.halfLife.subtitle':
+    'Undecayed nuclei versus time, with an atomic view of alpha emission.',
   'tools.rotatingMirror.toggle.origNormal': 'Orig. normal',
   'tools.rotatingMirror.toggle.origRay': 'Orig. reflected',
   'tools.rotatingMirror.toggle.newNormal': 'New normal',

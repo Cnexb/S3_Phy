@@ -1,0 +1,5 @@
+{
+  "slug": "half-life",
+  "syncAll": true,
+  "exclude": ["manifest.json"]
+}
