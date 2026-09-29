@@ -78,6 +78,9 @@ export const en = {
     'Image formation, minimum mirror size, seeing behind objects, wedge mirrors, and ray sketching with live formulas.',
   'tools.reflection3d.title': '3D Reflection Lab',
   'tools.reflection3d.subtitle': '3D simulation of regular and diffuse reflection with filling medium.',
+  'tools.motorGenerator.title': 'Motor / Generator',
+  'tools.motorGenerator.subtitle':
+    'A coil in a magnetic field as a motor, and as an A.C. or D.C. generator.',
   'tools.electrostatics.title': 'Electrostatics',
   'tools.domesticCircuit.title': 'Domestic circuit',
   'tools.magneticEffect.title': 'Magnetic effect of current',

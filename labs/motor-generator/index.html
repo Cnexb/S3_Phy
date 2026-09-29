@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta name="google" content="notranslate">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motor / Generator Laboratory (HKDSE Physics)</title>
+  <link rel="stylesheet" href="../shared/s3phy-embed.css">
+  <script src="../shared/s3phy-embed-init.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap");
+
+:root {
+  --s3-vp-pad: clamp(12px, 2vw, 24px);
+  --s3-radius: 14px;
+  --s3-font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  --tab-accent: #f43f5e;
+  --tab-accent-glow: rgba(244, 63, 94, 0.35);
+  --glass-bg: rgba(255, 255, 255, 0.82);
+}
+
+html { scrollbar-gutter: stable; }
+body {
+  font-family: "Plus Jakarta Sans", var(--s3-font), sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  overflow-x: hidden;
+}
+.mono { font-family: "JetBrains Mono", monospace; }
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.05);
+}
+.cdn-warning {
+  background: linear-gradient(90deg, #b45309, #d97706);
+  color: #fffbeb;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 12px;
+}
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+
+.bg-slate-950, canvas.bg-slate-950 {
+  background-color: #ffffff !important;
+}
+.bg-slate-950\/40 { background-color: rgba(255, 255, 255, 0.72) !important; }
+.bg-slate-900, .bg-slate-900\/95, .bg-slate-900\/60 {
+  background-color: #f1f5f9 !important;
+}
+.border-slate-800, .border-slate-800\/80, .border-slate-700 {
+  border-color: #cbd5e1 !important;
+}
+.text-slate-100, .text-slate-200, .text-slate-300, h1.text-white, h3.text-white {
+  color: #0f172a !important;
+}
+.text-slate-400 { color: #475569 !important; }
+.text-slate-500 { color: #64748b !important; }
+.bg-slate-800 { background-color: #e2e8f0 !important; color: #0f172a !important; }
+.bg-slate-800:hover { background-color: #cbd5e1 !important; }
+.lang-btn { color: #475569 !important; }
+.lang-btn:hover { color: #0f172a !important; background-color: #cbd5e1 !important; }
+.lang-active {
+  background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%) !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.1) !important;
+}
+
+.btn-play {
+  background: #16a34a !important;
+  color: #ffffff !important;
+  border-color: #15803d !important;
+}
+.btn-play:hover { background: #15803d !important; }
+.btn-pause {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #b91c1c !important;
+}
+.btn-pause:hover { background: #b91c1c !important; }
+
+.btn-atomic {
+  background: #eab308 !important;
+  color: #0f172a !important;
+  border-color: #ca8a04 !important;
+}
+.btn-atomic:hover { background: #ca8a04 !important; }
+
+.btn-factor {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border: 2px solid transparent;
+}
+.btn-factor:hover { background: #cbd5e1 !important; }
+.btn-factor.on {
+  border-color: #ef4444 !important;
+  background: #fee2e2 !important;
+  color: #9f1239 !important;
+}
+.btn-acdc-toggle {
+  background: #f97316 !important;
+  color: #0f172a !important;
+  border: 2px solid #ea580c !important;
+}
+.btn-acdc-toggle:hover { background: #fb923c !important; }
+
+.btn-dir {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+  border: 2px solid #cbd5e1 !important;
+}
+.btn-dir:hover { background: #cbd5e1 !important; }
+.btn-dir-force.on {
+  border-color: #22c55e !important;
+  background: #dcfce7 !important;
+  color: #166534 !important;
+}
+.btn-dir-field.on {
+  border-color: #ec4899 !important;
+  background: #fce7f3 !important;
+  color: #9d174d !important;
+}
+.btn-dir-current.on {
+  border-color: #a855f7 !important;
+  background: #f3e8ff !important;
+  color: #6b21a8 !important;
+}
+
+.mode-motor .gen-only { display: none !important; }
+.mode-generator .motor-only { display: none !important; }
+
+#btn-show-controls { display: none; }
+#hl-fs-root:fullscreen #btn-show-controls,
+#hl-fs-root:-webkit-full-screen #btn-show-controls {
+  display: inline-flex;
+}
+#hl-fs-root:fullscreen,
+#hl-fs-root:-webkit-full-screen {
+  background: #f8fafc;
+  padding: 12px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+#hl-fs-root:fullscreen .hl-fs-grid,
+#hl-fs-root:-webkit-full-screen .hl-fs-grid {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  gap: 0;
+  align-items: stretch;
+}
+#hl-fs-root:fullscreen .hl-sim-col,
+#hl-fs-root:-webkit-full-screen .hl-sim-col {
+  flex: 1 1 100%;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+#hl-fs-root:fullscreen .hl-sim-card,
+#hl-fs-root:-webkit-full-screen .hl-sim-card {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+#hl-fs-root:fullscreen #hl-side-panel,
+#hl-fs-root:-webkit-full-screen #hl-side-panel {
+  display: none;
+}
+#hl-fs-root:fullscreen #hl-canvas-wrap,
+#hl-fs-root:-webkit-full-screen #hl-canvas-wrap {
+  flex: 1 1 auto;
+  min-height: 0 !important;
+  height: auto !important;
+}
+#hl-fs-root:fullscreen.show-fs-controls .hl-fs-grid,
+#hl-fs-root:-webkit-full-screen.show-fs-controls .hl-fs-grid {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+}
+#hl-fs-root:fullscreen.show-fs-controls .hl-sim-col,
+#hl-fs-root:-webkit-full-screen.show-fs-controls .hl-sim-col {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: calc(100% - 24px);
+  box-sizing: border-box;
+}
+#hl-fs-root:fullscreen.show-fs-controls .hl-sim-card,
+#hl-fs-root:-webkit-full-screen.show-fs-controls .hl-sim-card {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: visible;
+}
+#hl-fs-root:fullscreen.show-fs-controls #hl-canvas-wrap,
+#hl-fs-root:-webkit-full-screen.show-fs-controls #hl-canvas-wrap {
+  overflow: hidden;
+}
+#hl-fs-root:fullscreen.show-fs-controls #hl-side-panel,
+#hl-fs-root:-webkit-full-screen.show-fs-controls #hl-side-panel {
+  display: flex;
+  position: static;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  width: min(380px, 36vw);
+  height: calc(100% - 24px);
+  flex-shrink: 0;
+  overflow-y: auto;
+  z-index: auto;
+  box-sizing: border-box;
+  gap: 0.75rem;
+}
+#hl-fs-root:fullscreen.show-fs-controls #hl-side-panel .glass-panel,
+#hl-fs-root:-webkit-full-screen.show-fs-controls #hl-side-panel .glass-panel {
+  padding: 0.75rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping, .animate-pulse { animation: none !important; }
+}
+html.s3phy-embed header,
+html.s3phy-embed footer,
+body.embed-mode header,
+body.embed-mode footer { display: none !important; }
+html.s3phy-embed body,
+body.embed-mode {
+  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+html.s3phy-embed main,
+body.embed-mode main {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+html.s3phy-embed #hl-canvas-wrap,
+body.embed-mode #hl-canvas-wrap {
+  height: calc(100dvh - 8rem);
+}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col mode-motor">
+  <div id="cdn-warning" class="cdn-warning hidden" role="alert">Some CDN resources failed to load. Please connect to the internet and refresh.</div>
+  <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-[120px] pointer-events-none opacity-40" style="background: var(--tab-accent-glow);"></div>
+  <div class="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <header class="border-b border-slate-800/80 bg-slate-950/40 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="p-2.5 bg-rose-500/10 rounded-2xl border border-rose-500/20 text-rose-500 shadow-inner">
+          <i data-lucide="zap" class="w-7 h-7 animate-pulse text-rose-500"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-extrabold tracking-tight text-white" data-i18n="app.title">Motor / Generator Laboratory</h1>
+            <span class="px-2 py-0.5 bg-rose-500/20 text-rose-700 border border-rose-500/30 rounded text-[10px] font-bold tracking-wider uppercase">HKDSE Physics</span>
+          </div>
+          <p class="text-xs text-slate-400 font-medium tracking-wide mt-0.5" data-i18n="app.subtitle">HKDSE Physics · Motor and generator</p>
+        </div>
+      </div>
+      <div class="flex bg-slate-900/95 p-1 rounded-xl border border-slate-800/80">
+        <button type="button" onclick="setLanguage('en')" id="lang-en" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200 lang-active">EN</button>
+        <button type="button" onclick="setLanguage('zh-Hant')" id="lang-zh" class="lang-btn px-3 py-2 rounded-lg text-xs font-bold transition-all duration-200">繁中</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <div id="hl-fs-root" class="relative">
+    <div class="hl-fs-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div class="hl-sim-col lg:col-span-8 flex flex-col gap-6 w-full">
+        <div class="hl-sim-card glass-panel rounded-2xl p-5 flex flex-col relative overflow-hidden">
+          <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3 gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+              <h3 class="font-bold text-sm tracking-wide text-slate-200" data-i18n="sim.title">Motor / Generator Sandbox</h3>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap justify-end">
+              <button type="button" id="btn-play" onclick="togglePlay()" class="btn-play inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold border">
+                <span id="play-icon-wrap" class="inline-flex"><i data-lucide="play" class="w-3.5 h-3.5"></i></span>
+                <span id="lbl-play" data-i18n="common.play">Play</span>
+              </button>
+              <button type="button" id="btn-acdc-toggle" onclick="toggleAcDc()" class="gen-only btn-acdc-toggle inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-bold">
+                <span id="lbl-acdc-toggle" data-i18n="ctrl.dc">D.C.</span>
+              </button>
+              <button type="button" id="btn-atomic" onclick="toggleMode()" class="btn-atomic inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-bold border">
+                <span id="lbl-atomic" data-i18n="common.toGenerator">Generator</span>
+              </button>
+              <button type="button" id="btn-show-controls" onclick="toggleFsControls()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold border border-indigo-700">
+                <span id="lbl-show-controls" data-i18n="common.showControls">Show controls</span>
+              </button>
+              <button type="button" id="btn-fullscreen" onclick="toggleFullscreen()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold border border-slate-700">
+                <span id="lbl-fullscreen" data-i18n="common.fullscreen">Full screen</span>
+              </button>
+            </div>
+          </div>
+          <div id="hl-canvas-wrap" class="relative bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 h-[calc(100dvh-12.5rem)] min-h-[24rem]">
+            <canvas id="hlCanvas" class="w-full h-full block bg-slate-950"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div id="hl-side-panel" class="lg:col-span-4 flex flex-col gap-4">
+        <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-rose-500">
+          <h4 class="font-bold text-sm text-slate-800 mb-3" data-i18n="ctrl.showDirection">Show Direction</h4>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" id="btn-dir-force" onclick="toggleShowDir('force')" class="btn-dir btn-dir-force px-2 py-2.5 rounded-xl text-xs font-bold">
+              <span id="lbl-dir-force" data-i18n="ctrl.showForce">Magnetic force</span>
+            </button>
+            <button type="button" id="btn-dir-field" onclick="toggleShowDir('field')" class="btn-dir btn-dir-field px-2 py-2.5 rounded-xl text-xs font-bold" data-i18n="ctrl.showField">Magnetic field</button>
+            <button type="button" id="btn-dir-current" onclick="toggleShowDir('current')" class="btn-dir btn-dir-current px-2 py-2.5 rounded-xl text-xs font-bold" data-i18n="ctrl.showCurrent">Current</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="btn-mag" onclick="toggleFactor('mag')" class="btn-factor w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.strongerMagnet">Stronger magnet</button>
+          <button type="button" id="btn-turns" onclick="toggleFactor('turns')" class="btn-factor w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.moreTurns">More turns in the coil</button>
+          <button type="button" id="btn-area" onclick="toggleFactor('area')" class="btn-factor w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.largerArea">Larger coil area</button>
+          <button type="button" id="btn-current" onclick="toggleFactor('current')" class="motor-only btn-factor w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.largerCurrent">Larger current</button>
+          <button type="button" id="btn-speed" onclick="toggleFactor('speed')" class="gen-only btn-factor w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.higherSpeed">Higher turning speed</button>
+        </div>
+
+        <button type="button" id="btn-curve" onclick="toggleFactor('curve')" class="btn-factor w-full px-3.5 py-3 rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.curveMagnet">Curve magnet</button>
+
+        <div id="graph-card" class="gen-only glass-panel rounded-2xl p-3 border-l-4 border-l-violet-500">
+          <canvas id="graphCanvas" class="w-full block"></canvas>
+        </div>
+
+        <button type="button" onclick="resetAll()" class="w-full px-3.5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md" data-i18n="ctrl.reset">Reset</button>
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 text-slate-500 py-5 text-center text-xs mt-auto">
+    <span data-i18n="app.footer">© 2026 Motor / Generator Lab · HKDSE Physics classroom suite</span>
+  </footer>
+
+  <script>
+(function () {
+  'use strict';
+
+  const I18N = {
+    en: {
+      app: {
+        title: 'Motor / Generator Laboratory',
+        subtitle: 'HKDSE Physics · Motor and generator',
+        pageTitle: 'Motor / Generator Laboratory (HKDSE Physics)',
+        footer: '© 2026 Motor / Generator Lab · HKDSE Physics classroom suite'
+      },
+      sim: { title: 'Motor / Generator Sandbox' },
+      common: {
+        fullscreen: 'Full screen',
+        exitFullscreen: 'Exit',
+        showControls: 'Show controls',
+        hideControls: 'Hide controls',
+        play: 'Play',
+        pause: 'Pause',
+        toGenerator: 'Generator',
+        toMotor: 'Motor'
+      },
+      ctrl: {
+        reset: 'Reset',
+        dc: 'D.C.',
+        ac: 'A.C.',
+        strongerMagnet: 'Stronger magnet',
+        moreTurns: 'More turns in the coil',
+        largerArea: 'Larger coil area',
+        largerCurrent: 'Larger current',
+        higherSpeed: 'Higher turning speed',
+        curveMagnet: 'Curve magnet',
+        showDirection: 'Show Direction',
+        showForce: 'Magnetic force',
+        showMotion: 'Motion',
+        showField: 'Magnetic field',
+        showCurrent: 'Current',
+        emfAxis: 'e.m.f. / V',
+        revAxis: 'Number of revolutions',
+        slipRings: 'slip rings',
+        commutator: 'commutator',
+        carbonBrush: 'carbon brush',
+        coil: 'coil',
+        axis: 'axis of rotation'
+      }
+    },
+    'zh-Hant': {
+      app: {
+        title: '電動機 / 發電機實驗室',
+        subtitle: 'HKDSE 物理 · 電動機與發電機',
+        pageTitle: '電動機 / 發電機實驗室 (HKDSE Physics)',
+        footer: '© 2026 電動機 / 發電機實驗室 · HKDSE 物理課堂套件'
+      },
+      sim: { title: '電動機 / 發電機沙盒' },
+      common: {
+        fullscreen: '全畫面',
+        exitFullscreen: '離開',
+        showControls: '顯示控制',
+        hideControls: '隱藏控制',
+        play: '播放',
+        pause: '暫停',
+        toGenerator: '發電機',
+        toMotor: '電動機'
+      },
+      ctrl: {
+        reset: '重設',
+        dc: '直流',
+        ac: '交流',
+        strongerMagnet: '較強磁鐵',
+        moreTurns: '較多匝數',
+        largerArea: '較大線圈面積',
+        largerCurrent: '較大電流',
+        higherSpeed: '較高轉速',
+        curveMagnet: '彎曲磁鐵',
+        showDirection: '顯示方向',
+        showForce: '磁力',
+        showMotion: '運動',
+        showField: '磁場',
+        showCurrent: '電流',
+        emfAxis: '電動勢 / V',
+        revAxis: '轉數',
+        slipRings: '滑環',
+        commutator: '換向器',
+        carbonBrush: '碳刷',
+        coil: '線圈',
+        axis: '轉軸'
+      }
+    }
+  };
+
+  const OMEGA0 = 1.15;
+  const SPEED_MUL = 1.7;
+  const GEN_FAST = 1.8;
+  const WINDOW_REV = 2;
+  const EMF_MAX = 1;
+  const GREEN = '#16a34a';
+  const COIL_ORANGE = '#f59e0b';
+  const COIL_HI = '#fdba74';
+
+  let currentLang = 'en';
+  const pageParams = new URLSearchParams(location.search);
+  const langParam = pageParams.get('lang');
+  if (langParam === 'zh' || langParam === 'zh-Hant' || langParam === 'zhHant') currentLang = 'zh-Hant';
+  else if (langParam === 'en') currentLang = 'en';
+  let generatorMode = false;
+  let acMode = true;
+  let playing = false;
+  let lastTs = 0;
+  let theta = 0;
+  let nRevs = 0;
+  let factors = { mag: false, turns: false, area: false, current: false, speed: false, curve: false };
+  let showDir = { force: false, field: false, current: false };
+  let glowPos = 0;
+  let glowLastTs = 0;
+  const GLOW_SPEED = 110;
+  let samples = [];
+  let fsControlsOpen = false;
+  let canvas, ctx, graphCanvas, gctx;
+  let animId = 0;
+  let originX = 400;
+  let originY = 260;
+  let scale3 = 2.15;
+
+  function t(path) {
+    const parts = path.split('.');
+    let node = I18N[currentLang];
+    for (let i = 0; i < parts.length; i++) {
+      if (!node) return path;
+      node = node[parts[i]];
+    }
+    return node == null ? path : node;
+  }
+
+  function nTurns() { return factors.turns ? 4 : 1; }
+
+  function anyFactorOn() {
+    if (generatorMode) return !!(factors.mag || factors.turns || factors.area || factors.speed || factors.curve);
+    return !!(factors.mag || factors.turns || factors.area || factors.current || factors.curve);
+  }
+
+  function coilOmega() {
+    if (generatorMode) return OMEGA0 * (factors.speed ? GEN_FAST : 1);
+    return OMEGA0 * (anyFactorOn() ? SPEED_MUL : 1);
+  }
+
+  function emf0() {
+    return anyFactorOn() ? EMF_MAX : EMF_MAX * 0.5;
+  }
+
+  function emfMax() {
+    return EMF_MAX;
+  }
+
+  function rawEmf() {
+    return emf0() * Math.cos(theta);
+  }
+
+  function displayEmf(raw) {
+    return (generatorMode && !acMode) ? Math.abs(raw) : raw;
+  }
+
+  function revs() {
+    return nRevs;
+  }
+
+  function refreshPlayButton() {
+    const btn = document.getElementById('btn-play');
+    const lbl = document.getElementById('lbl-play');
+    const wrap = document.getElementById('play-icon-wrap');
+    if (!btn || !lbl || !wrap) return;
+    btn.classList.toggle('btn-play', !playing);
+    btn.classList.toggle('btn-pause', playing);
+    lbl.setAttribute('data-i18n', playing ? 'common.pause' : 'common.play');
+    lbl.textContent = t(playing ? 'common.pause' : 'common.play');
+    wrap.innerHTML = playing
+      ? '<i data-lucide="pause" class="w-3.5 h-3.5"></i>'
+      : '<i data-lucide="play" class="w-3.5 h-3.5"></i>';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  function refreshModeButton() {
+    const lbl = document.getElementById('lbl-atomic');
+    if (!lbl) return;
+    const key = generatorMode ? 'common.toMotor' : 'common.toGenerator';
+    lbl.setAttribute('data-i18n', key);
+    lbl.textContent = t(key);
+  }
+
+  function refreshShowDirButtons() {
+    const forceBtn = document.getElementById('btn-dir-force');
+    const fieldBtn = document.getElementById('btn-dir-field');
+    const curBtn = document.getElementById('btn-dir-current');
+    if (forceBtn) forceBtn.classList.toggle('on', !!showDir.force);
+    if (fieldBtn) fieldBtn.classList.toggle('on', !!showDir.field);
+    if (curBtn) curBtn.classList.toggle('on', !!showDir.current);
+    const lbl = document.getElementById('lbl-dir-force');
+    if (lbl) {
+      const key = generatorMode ? 'ctrl.showMotion' : 'ctrl.showForce';
+      lbl.setAttribute('data-i18n', key);
+      lbl.textContent = t(key);
+    }
+  }
+
+  window.toggleShowDir = function (kind) {
+    if (!showDir.hasOwnProperty(kind)) return;
+    showDir[kind] = !showDir[kind];
+    refreshShowDirButtons();
+  };
+
+  function refreshAcDcToggle() {
+    const lbl = document.getElementById('lbl-acdc-toggle');
+    if (!lbl) return;
+    const key = acMode ? 'ctrl.dc' : 'ctrl.ac';
+    lbl.setAttribute('data-i18n', key);
+    lbl.textContent = t(key);
+  }
+
+  function refreshFactorButtons() {
+    const map = {
+      mag: 'btn-mag',
+      turns: 'btn-turns',
+      area: 'btn-area',
+      current: 'btn-current',
+      speed: 'btn-speed',
+      curve: 'btn-curve'
+    };
+    Object.keys(map).forEach(function (k) {
+      const el = document.getElementById(map[k]);
+      if (el) el.classList.toggle('on', !!factors[k]);
+    });
+    refreshAcDcToggle();
+    refreshShowDirButtons();
+  }
+
+  function syncModeUi() {
+    document.body.classList.toggle('mode-motor', !generatorMode);
+    document.body.classList.toggle('mode-generator', generatorMode);
+    refreshModeButton();
+    refreshFactorButtons();
+    requestAnimationFrame(function () {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = currentLang === 'zh-Hant' ? 'zh-Hant' : 'en';
+    document.title = t('app.pageTitle');
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.getElementById('lang-en').classList.toggle('lang-active', currentLang === 'en');
+    document.getElementById('lang-zh').classList.toggle('lang-active', currentLang === 'zh-Hant');
+    refreshPlayButton();
+    refreshModeButton();
+    refreshShowDirButtons();
+    refreshAcDcToggle();
+    syncFsUi();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+
+  window.setLanguage = function (lang) {
+    currentLang = lang === 'zh-Hant' || lang === 'zhHant' || lang === 'zh' ? 'zh-Hant' : 'en';
+    applyLanguage();
+  };
+
+  window.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 's3phy:lang') {
+      window.setLanguage(event.data.lang);
+    }
+  });
+
+  function isFullscreen() {
+    const root = document.getElementById('hl-fs-root');
+    return document.fullscreenElement === root || document.webkitFullscreenElement === root;
+  }
+
+  function syncFsUi() {
+    const root = document.getElementById('hl-fs-root');
+    const fs = isFullscreen();
+    const fsLbl = document.getElementById('lbl-fullscreen');
+    const showLbl = document.getElementById('lbl-show-controls');
+    if (fsLbl) fsLbl.textContent = fs ? t('common.exitFullscreen') : t('common.fullscreen');
+    if (!fs) {
+      fsControlsOpen = false;
+      if (root) root.classList.remove('show-fs-controls');
+    }
+    if (showLbl) showLbl.textContent = fsControlsOpen ? t('common.hideControls') : t('common.showControls');
+  }
+
+  window.toggleFsControls = function () {
+    if (!isFullscreen()) return;
+    fsControlsOpen = !fsControlsOpen;
+    document.getElementById('hl-fs-root').classList.toggle('show-fs-controls', fsControlsOpen);
+    syncFsUi();
+    requestAnimationFrame(function () {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  };
+
+  window.togglePlay = function () {
+    playing = !playing;
+    lastTs = 0;
+    refreshPlayButton();
+  };
+
+  function clearSim() {
+    playing = false;
+    lastTs = 0;
+    theta = 0;
+    nRevs = 0;
+    samples = [];
+    factors = { mag: false, turns: false, area: false, current: false, speed: false, curve: false };
+    showDir = { force: false, field: false, current: false };
+    glowPos = 0;
+    glowLastTs = 0;
+    if (generatorMode) acMode = true;
+  }
+
+  // Restart coil + graph from 0; keep playing / showDir / factors as-is.
+  function resetMotionAndGraph() {
+    theta = 0;
+    nRevs = 0;
+    samples = [];
+    lastTs = 0;
+    glowPos = 0;
+    glowLastTs = 0;
+  }
+
+  window.toggleMode = function () {
+    generatorMode = !generatorMode;
+    clearSim();
+    syncModeUi();
+    refreshPlayButton();
+  };
+
+  window.toggleFactor = function (key) {
+    if (!factors.hasOwnProperty(key)) return;
+    if (key === 'current' && generatorMode) return;
+    if (key === 'speed' && !generatorMode) return;
+    if (factors[key]) {
+      factors[key] = false;
+    } else {
+      factors.mag = false;
+      factors.turns = false;
+      factors.area = false;
+      factors.current = false;
+      factors.speed = false;
+      factors.curve = false;
+      factors[key] = true;
+    }
+    resetMotionAndGraph();
+    refreshFactorButtons();
+  };
+
+  window.setAcDc = function (mode) {
+    if (!generatorMode) return;
+    acMode = mode !== 'dc';
+    factors = { mag: false, turns: false, area: false, current: false, speed: false, curve: false };
+    showDir = { force: false, field: false, current: false };
+    resetMotionAndGraph();
+    playing = false;
+    refreshPlayButton();
+    refreshFactorButtons();
+  };
+
+  window.toggleAcDc = function () {
+    if (!generatorMode) return;
+    setAcDc(acMode ? 'dc' : 'ac');
+  };
+
+  window.resetAll = function () {
+    clearSim();
+    syncModeUi();
+    refreshPlayButton();
+  };
+
+  window.toggleFullscreen = function () {
+    const root = document.getElementById('hl-fs-root');
+    if (!isFullscreen()) {
+      const req = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (req) req.call(root);
+    } else {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen;
+      if (exit) exit.call(document);
+    }
+  };
+
+  function setupCanvas(el) {
+    if (!el) return null;
+    const c = el.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = el.getBoundingClientRect();
+    const nextW = Math.max(1, Math.round(rect.width * dpr));
+    const nextH = Math.max(1, Math.round(rect.height * dpr));
+    if (el.width !== nextW || el.height !== nextH) {
+      el.width = nextW;
+      el.height = nextH;
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.scale(dpr, dpr);
+    originX = rect.width * 0.42;
+    originY = rect.height * 0.58;
+    scale3 = Math.min(rect.width, rect.height) * 0.0052;
+    return { ctx: c, rect: rect, dpr: dpr };
+  }
+
+  function setupGraphCanvas() {
+    const el = document.getElementById('graphCanvas');
+    const card = document.getElementById('graph-card');
+    if (!el || !card || !generatorMode) return null;
+    const dpr = window.devicePixelRatio || 1;
+    const width = Math.max(160, Math.floor(card.clientWidth - 24));
+    const padL = 44;
+    const padR = 16;
+    const padT = 18;
+    const padB = 36;
+    const plotW = Math.max(80, width - padL - padR);
+    const plotH = Math.max(110, Math.round(plotW * 0.62));
+    const height = padT + plotH + padB;
+    el.style.width = width + 'px';
+    el.style.height = height + 'px';
+    const nextW = Math.max(1, Math.round(width * dpr));
+    const nextH = Math.max(1, Math.round(height * dpr));
+    if (el.width !== nextW || el.height !== nextH) {
+      el.width = nextW;
+      el.height = nextH;
+    }
+    const c = el.getContext('2d');
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.scale(dpr, dpr);
+    gctx = c;
+    return { ctx: c, width: width, height: height, padL: padL, padR: padR, padT: padT, padB: padB, plotW: plotW, plotH: plotH };
+  }
+
+  function rotAxis(x, y, z, ang) {
+    const c = Math.cos(ang);
+    const s = Math.sin(ang);
+    return { x: x * c - y * s, y: x * s + y * c, z: z };
+  }
+
+  function project(x, y, z) {
+    return {
+      x: originX + (x + z * 0.52) * scale3,
+      y: originY - (y + z * 0.40) * scale3,
+      z: z
+    };
+  }
+
+  function P(x, y, z) { return project(x, y, z); }
+
+  function W(x, y, z) {
+    const r = rotAxis(x, y, z, theta);
+    return P(r.x, r.y, r.z);
+  }
+
+  function fillQuad(a, b, c, d, fill, stroke) {
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.lineTo(c.x, c.y);
+    ctx.lineTo(d.x, d.y);
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+  }
+
+  function signedArea(a, b, c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+  }
+
+  function fillFrontQuad(a, b, c, d, fill, stroke) {
+    if (signedArea(a, b, c) >= 0) return;
+    fillQuad(a, b, c, d, fill, stroke);
+  }
+
+  function shadeRgb(col, s) {
+    return 'rgb(' + Math.round(col[0] * s) + ',' + Math.round(col[1] * s) + ',' + Math.round(col[2] * s) + ')';
+  }
+
+  function drawBox(x0, x1, y0, y1, z0, z1, col) {
+    const faces = [
+      { pts: [P(x1, y0, z1), P(x0, y0, z1), P(x0, y1, z1), P(x1, y1, z1)], s: 0.68, d: z1 - 0.25 * (y0 + y1) },
+      { pts: [P(x0, y0, z0), P(x0, y0, z1), P(x1, y0, z1), P(x1, y0, z0)], s: 0.50, d: (z0 + z1) / 2 - 0.7 * y0 },
+      { pts: [P(x0, y0, z1), P(x0, y0, z0), P(x0, y1, z0), P(x0, y1, z1)], s: 0.60, d: (z0 + z1) / 2 + 0.12 * x0 },
+      { pts: [P(x1, y0, z0), P(x1, y0, z1), P(x1, y1, z1), P(x1, y1, z0)], s: 0.60, d: (z0 + z1) / 2 + 0.12 * x1 },
+      { pts: [P(x0, y1, z0), P(x1, y1, z0), P(x1, y1, z1), P(x0, y1, z1)], s: 0.82, d: (z0 + z1) / 2 - 0.7 * y1 },
+      { pts: [P(x0, y0, z0), P(x1, y0, z0), P(x1, y1, z0), P(x0, y1, z0)], s: 0.94, d: z0 - 0.25 * (y0 + y1) }
+    ];
+    faces.sort(function (a, b) { return b.d - a.d; });
+    for (let i = 0; i < faces.length; i++) {
+      const f = faces[i];
+      fillFrontQuad(f.pts[0], f.pts[1], f.pts[2], f.pts[3], shadeRgb(col, f.s), null);
+    }
+  }
+
+  function line3(a, b, color, w) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = w || 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.lineTo(b.x, b.y);
+    ctx.stroke();
+  }
+
+  function polyline3(pts, color, w) {
+    if (!pts.length) return;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = w || 2.8;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.stroke();
+  }
+
+  function dash3(a, b, color) {
+    ctx.save();
+    ctx.setLineDash([7, 5]);
+    line3(a, b, color, 1.5);
+    ctx.restore();
+  }
+
+  function layout() {
+    const magS = factors.mag ? 1.32 : 1;
+    const areaS = factors.area ? 1.36 : 1;
+    return {
+      magW: 38 * magS,
+      magH: 52 * magS,
+      magZ0: 42,
+      magZ1: 128,
+      gap: 72,
+      coilH: 34 * areaS,
+      coilZ0: 40,
+      coilZ1: 122 * (factors.area ? 1.12 : 1),
+      turnGap: 7,
+      ringZ1: 8,
+      ringZ2: 22,
+      ringR: 13
+    };
+  }
+
+  function magnetLabelStyle() {
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold ' + Math.max(16, 18 * scale3 / 2.2) + 'px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+  }
+
+  // Slight concave scoop; keep G49 arc shape. Draw only camera-visible faces
+  // so back parts never show through (solid look).
+  function drawScoopedMagnet(isN) {
+    const L = layout();
+    const col = isN ? [204, 32, 32] : [37, 99, 220];
+    const sign = isN ? -1 : 1;
+    const xOuter = sign * (L.gap + L.magW);
+    const R = L.gap; // same arc as G49
+    const yBot = -L.magH;
+    const yTop = L.magH;
+    const z0 = L.magZ0;
+    const z1 = L.magZ1;
+    const edgeOverlap = 1.8; // seal front/scoop join (kills white vertical hairlines)
+
+    function faceX(y) {
+      const yy = Math.max(-R * 0.92, Math.min(R * 0.92, y));
+      return sign * Math.sqrt(Math.max(1, R * R - yy * yy));
+    }
+
+    // Scooped edge of front path, nudged toward coil to overlap the curve face
+    function frontInnerX(y) {
+      return faceX(y) - sign * edgeOverlap;
+    }
+
+    // One solid curved face (no strip seams / white hairlines)
+    function fillScoopFaceSolid() {
+      const steps = 28;
+      ctx.beginPath();
+      let p0 = P(faceX(yBot), yBot, z0);
+      ctx.moveTo(p0.x, p0.y);
+      for (let i = 1; i <= steps; i++) {
+        const y = yBot + (yTop - yBot) * (i / steps);
+        const p = P(faceX(y), y, z0);
+        ctx.lineTo(p.x, p.y);
+      }
+      for (let i = steps; i >= 0; i--) {
+        const y = yBot + (yTop - yBot) * (i / steps);
+        const p = P(faceX(y), y, z1);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = shadeRgb(col, 0.78);
+      ctx.fill();
+    }
+
+    // One solid front fill (no strip seams); overlaps scoop slightly
+    function fillFrontFaceSolid() {
+      const steps = 28;
+      ctx.beginPath();
+      let p0 = P(xOuter, yBot, z0);
+      ctx.moveTo(p0.x, p0.y);
+      for (let i = 1; i <= steps; i++) {
+        const y = yBot + (yTop - yBot) * (i / steps);
+        const p = P(xOuter, y, z0);
+        ctx.lineTo(p.x, p.y);
+      }
+      for (let i = steps; i >= 0; i--) {
+        const y = yBot + (yTop - yBot) * (i / steps);
+        const p = P(frontInnerX(y), y, z0);
+        ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = shadeRgb(col, 0.94);
+      ctx.fill();
+    }
+
+    // 1) Curved inner (toward coil) — solid, draw first
+    fillScoopFaceSolid();
+
+    // 2) Solid top cover
+    fillQuad(
+      P(xOuter, yTop, z0), P(xOuter, yTop, z1), P(faceX(yTop), yTop, z1), P(faceX(yTop), yTop, z0),
+      shadeRgb(col, 0.82), null
+    );
+
+    if (isN) {
+      // N: front toward viewer — no outer-left, no back, no bottom
+      fillFrontFaceSolid();
+    } else {
+      // S: outer right + front toward viewer — no back, no bottom
+      fillQuad(
+        P(xOuter, yBot, z0), P(xOuter, yBot, z1), P(xOuter, yTop, z1), P(xOuter, yTop, z0),
+        shadeRgb(col, 0.60), null
+      );
+      fillFrontFaceSolid();
+    }
+
+    const labX = sign * (L.gap + L.magW * 0.55);
+    const lab = P(labX, 4, z0 + 8);
+    magnetLabelStyle();
+    ctx.fillText(isN ? 'N' : 'S', lab.x, lab.y);
+  }
+
+  function drawMagnetN() {
+    if (factors.curve) {
+      drawScoopedMagnet(true);
+      return;
+    }
+    const L = layout();
+    drawBox(-L.gap - L.magW, -L.gap, -L.magH, L.magH, L.magZ0, L.magZ1, [204, 32, 32]);
+    const n = P(-L.gap - L.magW * 0.55, 4, L.magZ0 + 8);
+    magnetLabelStyle();
+    ctx.fillText('N', n.x, n.y);
+  }
+
+  function drawMagnetS() {
+    if (factors.curve) {
+      drawScoopedMagnet(false);
+      return;
+    }
+    const L = layout();
+    drawBox(L.gap, L.gap + L.magW, -L.magH, L.magH, L.magZ0, L.magZ1, [37, 99, 220]);
+    const sPt = P(L.gap + L.magW * 0.55, 4, L.magZ0 + 8);
+    magnetLabelStyle();
+    ctx.fillText('S', sPt.x, sPt.y);
+  }
+
+  function yzArc(x, yc, zc, rad, a0, a1, steps) {
+    const pts = [];
+    for (let i = 0; i <= steps; i++) {
+      const a = a0 + (a1 - a0) * (i / steps);
+      pts.push({ x: x, y: yc + rad * Math.sin(a), z: zc + rad * Math.cos(a) });
+    }
+    return pts;
+  }
+
+  function loopWorld(xOff, h, z0, z1) {
+    const rad = Math.min(10, h * 0.35, (z1 - z0) * 0.12);
+    const cNearTop = yzArc(xOff, h - rad, z0 + rad, rad, Math.PI, Math.PI / 2, 6);
+    const top = [];
+    for (let z = z0 + rad; z <= z1 - rad; z += 4) top.push({ x: xOff, y: h, z: z });
+    top.push({ x: xOff, y: h, z: z1 - rad });
+    const cFarTop = yzArc(xOff, h - rad, z1 - rad, rad, Math.PI / 2, 0, 6);
+    const far = [];
+    for (let y = h - rad; y >= -h + rad; y -= 4) far.push({ x: xOff, y: y, z: z1 });
+    far.push({ x: xOff, y: -h + rad, z: z1 });
+    const cFarBot = yzArc(xOff, -h + rad, z1 - rad, rad, 0, -Math.PI / 2, 6);
+    const bot = [];
+    for (let z = z1 - rad; z >= z0 + rad; z -= 4) bot.push({ x: xOff, y: -h, z: z });
+    bot.push({ x: xOff, y: -h, z: z0 + rad });
+    const cNearBot = yzArc(xOff, -h + rad, z0 + rad, rad, -Math.PI / 2, -Math.PI, 6);
+    return cNearTop.concat(top, cFarTop, far, cFarBot, bot, cNearBot).map(function (p) {
+      return { x: -p.y, y: p.x, z: p.z };
+    });
+  }
+
+  function projectLoop(worldPts) {
+    return worldPts.map(function (p) {
+      const r = rotAxis(p.x, p.y, p.z, theta);
+      return P(r.x, r.y, r.z);
+    });
+  }
+
+  function coilRingGeom() {
+    const L = layout();
+    const rOut = L.ringR + 1;
+    const rIn = rOut * 0.72;
+    const zMid = (L.ringZ1 + L.ringZ2) / 2;
+    const useSlip = generatorMode && acMode;
+    return {
+      L: L,
+      rIn: rIn,
+      z0: L.coilZ0,
+      zNear: useSlip ? L.ringZ1 : zMid,
+      zFar: useSlip ? L.ringZ2 : zMid
+    };
+  }
+
+  function collectorSpans() {
+    const L = layout();
+    const rOut = L.ringR + 1;
+    const rIn = rOut * 0.72;
+    const half = 5.5;
+    const useSlip = generatorMode && acMode;
+    if (useSlip) {
+      return [
+        { z0: L.ringZ1 - half, z1: L.ringZ1 + half, rIn: rIn, rOut: rOut },
+        { z0: L.ringZ2 - half, z1: L.ringZ2 + half, rIn: rIn, rOut: rOut }
+      ];
+    }
+    const zMid = (L.ringZ1 + L.ringZ2) / 2;
+    return [{ z0: zMid - half, z1: zMid + half, rIn: rIn, rOut: rOut }];
+  }
+
+  function angDiff(a, b) {
+    let d = Math.abs(a - b) % (Math.PI * 2);
+    if (d > Math.PI) d = Math.PI * 2 - d;
+    return d;
+  }
+
+  function distToSeg(px, py, ax, ay, bx, by) {
+    const abx = bx - ax;
+    const aby = by - ay;
+    const den = abx * abx + aby * aby || 1;
+    let t = ((px - ax) * abx + (py - ay) * aby) / den;
+    if (t < 0) t = 0;
+    if (t > 1) t = 1;
+    return Math.hypot(px - (ax + abx * t), py - (ay + aby * t));
+  }
+
+  function onRightBrush(sx, sy) {
+    const L = layout();
+    const rOut = L.ringR + 1;
+    const br = 15;
+    const bw = 3.5;
+    const half = 5.5;
+    const useSlip = generatorMode && acMode;
+    const z0 = useSlip ? L.ringZ2 - half : (L.ringZ1 + L.ringZ2) / 2 - half;
+    const z1 = z0 + half * 2;
+    const pts = [];
+    const xs = [rOut + 1, rOut + br];
+    const ys = [-bw, bw];
+    const zs = [z0, z1];
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 2; j++) {
+        for (let k = 0; k < 2; k++) pts.push(P(xs[i], ys[j], zs[k]));
+      }
+    }
+    pts.sort(function (a, b) { return a.x - b.x || a.y - b.y; });
+    function cross(o, a, b) { return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x); }
+    const hull = [];
+    for (let i = 0; i < pts.length; i++) {
+      while (hull.length >= 2 && cross(hull[hull.length - 2], hull[hull.length - 1], pts[i]) <= 0) hull.pop();
+      hull.push(pts[i]);
+    }
+    const lower = hull.length + 1;
+    for (let i = pts.length - 2; i >= 0; i--) {
+      while (hull.length >= lower && cross(hull[hull.length - 2], hull[hull.length - 1], pts[i]) <= 0) hull.pop();
+      hull.push(pts[i]);
+    }
+    hull.pop();
+    const pad = Math.max(2.6, 3.2 * scale3 / 2.2) * 0.55;
+    function inside(px, py) {
+      let inn = false;
+      for (let i = 0, j = hull.length - 1; i < hull.length; j = i++) {
+        const yi = hull[i].y;
+        const yj = hull[j].y;
+        if ((yi > py) !== (yj > py) && px < (hull[j].x - hull[i].x) * (py - yi) / (yj - yi) + hull[i].x) inn = !inn;
+      }
+      return inn;
+    }
+    return inside(sx, sy) || inside(sx - pad, sy) || inside(sx + pad, sy) || inside(sx, sy - pad) || inside(sx, sy + pad);
+  }
+
+  function leadSampleVisible(sx, sy) {
+    if (onRightBrush(sx, sy)) return false;
+    const spans = collectorSpans().slice().sort(function (a, b) { return a.z0 - b.z0; });
+    const gap = 0.20;
+    const useSlip = generatorMode && acMode;
+    for (let i = 0; i < spans.length; i++) {
+      const span = spans[i];
+      const front = P(0, 0, span.z0);
+      const back = P(0, 0, span.z1);
+      const rInS = span.rIn * scale3;
+      const rOutS = span.rOut * scale3;
+      const dFront = Math.hypot(sx - front.x, sy - front.y);
+      const onBody = distToSeg(sx, sy, front.x, front.y, back.x, back.y) < rOutS;
+      if (!onBody && dFront >= rOutS) continue;
+      const ang = Math.atan2(-(sy - front.y), sx - front.x);
+      const inGap = !useSlip && (angDiff(ang, theta - Math.PI / 2) < gap || angDiff(ang, theta + Math.PI / 2) < gap);
+      if (dFront < rInS) return 'hole';
+      if (inGap && dFront < rOutS) return 'gap';
+      return false;
+    }
+    return 'out';
+  }
+
+  function strokeHoleLead(x, zA, zB) {
+    const lw = Math.max(2.6, 3.2 * scale3 / 2.2);
+    const zLo = Math.min(zA, zB);
+    const zHi = Math.max(zA, zB);
+    const runs = [];
+    let run = [];
+    let onlyGap = true;
+    function flush() {
+      if (run.length >= 2) {
+        let len = 0;
+        for (let i = 1; i < run.length; i++) len += Math.hypot(run[i].x - run[i - 1].x, run[i].y - run[i - 1].y);
+        runs.push({ pts: run, gap: onlyGap, len: len });
+      }
+      run = [];
+      onlyGap = true;
+    }
+    for (let z = zLo; z <= zHi + 0.01; z += 0.55) {
+      const zz = Math.min(z, zHi);
+      const r = rotAxis(x, 0, zz, theta);
+      const s = P(r.x, r.y, r.z);
+      const vis = leadSampleVisible(s.x, s.y);
+      if (!vis) { flush(); continue; }
+      if (vis !== 'gap') onlyGap = false;
+      run.push(s);
+    }
+    flush();
+    let drop = -1;
+    let shortest = Infinity;
+    for (let i = 0; i < runs.length; i++) {
+      if (!runs[i].gap) continue;
+      if (runs[i].len < shortest) { shortest = runs[i].len; drop = i; }
+    }
+    for (let i = 0; i < runs.length; i++) {
+      if (i === drop) continue;
+      polyline3(runs[i].pts, COIL_ORANGE, lw);
+      polyline3(runs[i].pts, COIL_HI, lw * 0.45);
+    }
+  }
+
+  function drawCoilBehindRings() {
+    const g = coilRingGeom();
+    strokeHoleLead(-g.rIn, g.zNear, g.z0);
+    strokeHoleLead(g.rIn, g.z0, g.zFar);
+  }
+
+  function drawCoilAndLeads() {
+    const g = coilRingGeom();
+    const L = g.L;
+    const turns = nTurns();
+    const h = L.coilH;
+    const z0 = L.coilZ0;
+    const z1 = L.coilZ1;
+    const world = [];
+    world.push({ x: -g.rIn, y: 0, z: z0 });
+    for (let i = 0; i < turns; i++) {
+      const xOff = (i - (turns - 1) / 2) * L.turnGap;
+      const loop = loopWorld(xOff, h, z0, z1);
+      for (let k = 0; k < loop.length; k++) world.push(loop[k]);
+    }
+    world.push({ x: g.rIn, y: 0, z: z0 });
+    const scr = projectLoop(world);
+    const lw = Math.max(2.6, 3.2 * scale3 / 2.2);
+    polyline3(scr, COIL_ORANGE, lw);
+    polyline3(scr, COIL_HI, lw * 0.45);
+
+    const axisA = P(0, 0, -18);
+    const axisB = P(0, 0, L.coilZ1 + 18);
+    dash3(axisA, axisB, '#64748b');
+  }
+
+  function fillAnnulus(z, rIn, rOut, a0, a1, n, fill, stroke) {
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const a = a0 + (a1 - a0) * (i / n);
+      const p = P(rOut * Math.cos(a), rOut * Math.sin(a), z);
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    for (let i = 0; i <= n; i++) {
+      const a = a1 - (a1 - a0) * (i / n);
+      const p = P(rIn * Math.cos(a), rIn * Math.sin(a), z);
+      ctx.lineTo(p.x, p.y);
+    }
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  function radialCap(ang, rIn, rOut, z0, z1, col) {
+    const c = Math.cos(ang);
+    const s = Math.sin(ang);
+    fillQuad(
+      P(rIn * c, rIn * s, z0),
+      P(rOut * c, rOut * s, z0),
+      P(rOut * c, rOut * s, z1),
+      P(rIn * c, rIn * s, z1),
+      col,
+      '#7c2d12'
+    );
+  }
+
+  function drawRingSegment(z0, z1, rIn, rOut, a0, a1, n, caps) {
+    const rim = '#c2410c';
+    const orange = [234, 88, 12];
+    fillAnnulus(z1, rIn, rOut, a0, a1, n, shadeRgb(orange, 0.72), rim);
+    for (let i = 0; i < n; i++) {
+      const t0 = a0 + (a1 - a0) * (i / n);
+      const t1 = a0 + (a1 - a0) * ((i + 1) / n);
+      const o00 = P(rOut * Math.cos(t0), rOut * Math.sin(t0), z0);
+      const o10 = P(rOut * Math.cos(t1), rOut * Math.sin(t1), z0);
+      const o11 = P(rOut * Math.cos(t1), rOut * Math.sin(t1), z1);
+      const o01 = P(rOut * Math.cos(t0), rOut * Math.sin(t0), z1);
+      fillQuad(o00, o10, o11, o01, shadeRgb(orange, 0.86), null);
+      const i00 = P(rIn * Math.cos(t0), rIn * Math.sin(t0), z0);
+      const i10 = P(rIn * Math.cos(t1), rIn * Math.sin(t1), z0);
+      const i11 = P(rIn * Math.cos(t1), rIn * Math.sin(t1), z1);
+      const i01 = P(rIn * Math.cos(t0), rIn * Math.sin(t0), z1);
+      fillQuad(i00, i01, i11, i10, shadeRgb(orange, 0.58), null);
+    }
+    if (caps) {
+      radialCap(a0, rIn, rOut, z0, z1, shadeRgb(orange, 0.45));
+      radialCap(a1, rIn, rOut, z0, z1, shadeRgb(orange, 0.45));
+    }
+    fillAnnulus(z0, rIn, rOut, a0, a1, n, shadeRgb(orange, 1), rim);
+  }
+
+  function drawHollowRing(zMid, thick, rOut, rIn) {
+    drawRingSegment(zMid - thick / 2, zMid + thick / 2, rIn, rOut, 0, Math.PI * 2, 36, false);
+  }
+
+  function drawSplitCommutator(z0, z1, rOut, rIn) {
+    const gap = 0.20;
+    const aR0 = theta - Math.PI / 2 + gap;
+    const aR1 = theta + Math.PI / 2 - gap;
+    const aL0 = theta + Math.PI / 2 + gap;
+    const aL1 = theta + 3 * Math.PI / 2 - gap;
+    drawRingSegment(z0, z1, rIn, rOut, aR0, aR1, 18, true);
+    drawRingSegment(z0, z1, rIn, rOut, aL0, aL1, 18, true);
+  }
+
+  function cellDisk(z, r, n, zc, dx) {
+    const pts = [];
+    const shift = dx || 0;
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * Math.PI * 2;
+      const x = r * Math.cos(a);
+      const y = r * Math.sin(a);
+      pts.push(P(zc - z + shift, y, zc + x));
+    }
+    return pts;
+  }
+
+  function cellHull(pts) {
+    const p = pts.slice().sort(function (a, b) { return a.x - b.x || a.y - b.y; });
+    function cross(o, a, b) { return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x); }
+    const hull = [];
+    for (let i = 0; i < p.length; i++) {
+      while (hull.length >= 2 && cross(hull[hull.length - 2], hull[hull.length - 1], p[i]) <= 0) hull.pop();
+      hull.push(p[i]);
+    }
+    const lower = hull.length + 1;
+    for (let i = p.length - 2; i >= 0; i--) {
+      while (hull.length >= lower && cross(hull[hull.length - 2], hull[hull.length - 1], p[i]) <= 0) hull.pop();
+      hull.push(p[i]);
+    }
+    hull.pop();
+    return hull;
+  }
+
+  function fillCellPath(pts, fill, stroke) {
+    if (pts.length < 3) return;
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    if (stroke) {
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    }
+  }
+
+  function fillCellDisk(z, r, fill, zc, dx) {
+    fillCellPath(cellDisk(z, r, 28, zc, dx), fill, null);
+  }
+
+  function drawDryCell(zc, dx, showMinus) {
+    const r = 8;
+    const shift = dx || 0;
+    const zFar = zc + 8;
+    const zJoin = zc - 5;
+    const zNear = zc - 9;
+    const zBtn = zc - 10.4;
+    fillCellPath(cellHull(cellDisk(zFar, r, 24, zc, shift).concat(cellDisk(zJoin, r, 24, zc, shift))), '#27272a', '#18181b');
+    fillCellPath(cellHull(cellDisk(zJoin, r, 24, zc, shift).concat(cellDisk(zNear, r * 0.98, 24, zc, shift))), '#ea580c', '#c2410c');
+    fillCellDisk(zNear, r * 0.98, '#f97316', zc, shift);
+    fillCellDisk(zBtn, r * 0.34, '#e7e5e4', zc, shift);
+    const plus = P(zc - zJoin + shift - 2, -1.2, zc);
+    ctx.fillStyle = '#1c1917';
+    ctx.font = 'bold ' + Math.max(13, 14 * scale3 / 2.2) + 'px "Plus Jakarta Sans", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+', plus.x, plus.y);
+    if (showMinus !== false) {
+      const minus = P(zc - zFar + shift, -1.2, zc);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold ' + Math.max(15, 16 * scale3 / 2.2) + 'px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('\u2212', minus.x, minus.y);
+    }
+  }
+
+  function drawCollectorAndCircuit() {
+    const L = layout();
+    const useSlip = generatorMode && acMode;
+    const ringLen = 11;
+    const rOut = L.ringR + 1;
+    const rIn = rOut * 0.72;
+    const brushCol = [120, 113, 108];
+    const bw = 3.5;
+    const br = 15;
+    const half = ringLen / 2;
+    let b1;
+    let b2;
+    if (useSlip) {
+      drawHollowRing(L.ringZ2, ringLen, rOut, rIn);
+      drawBox(-rOut - br, -rOut - 1, -bw, bw, L.ringZ1 - half, L.ringZ1 + half, brushCol);
+      drawHollowRing(L.ringZ1, ringLen, rOut, rIn);
+      drawBox(rOut + 1, rOut + br, -bw, bw, L.ringZ2 - half, L.ringZ2 + half, brushCol);
+      b1 = P(-rOut - br, 0, L.ringZ1 - half);
+      b2 = P(rOut + br, 0, L.ringZ2);
+    } else {
+      const zMid = (L.ringZ1 + L.ringZ2) / 2;
+      const cZ0 = zMid - half;
+      const cZ1 = zMid + half;
+      drawBox(-rOut - br, -rOut - 1, -bw, bw, cZ0, cZ1, brushCol);
+      drawSplitCommutator(cZ0, cZ1, rOut, rIn);
+      drawBox(rOut + 1, rOut + br, -bw, bw, cZ0, cZ1, brushCol);
+      b1 = P(-rOut - br, 0, cZ0);
+      b2 = P(rOut + br, 0, zMid);
+    }
+
+    const frontZ = (useSlip ? L.ringZ1 : (L.ringZ1 + L.ringZ2) / 2) - half;
+    const loadZ = frontZ - 48;
+    const w2 = P(0, 0, loadZ);
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    let leftCorner;
+    let rightCorner;
+    let leftEnd;
+    let rightEnd;
+    if (generatorMode) {
+      leftCorner = P(-rOut - br, 0, loadZ);
+      rightCorner = P(rOut + br, 0, loadZ);
+      leftEnd = w2;
+      rightEnd = w2;
+    } else {
+      const cells = factors.current ? 2 : 1;
+      const halfSpan = cells > 1 ? 9.2 : 0;
+      leftCorner = P(-rOut - br, 0, loadZ);
+      rightCorner = P(rOut + br, 0, loadZ);
+      leftEnd = P(-8 - halfSpan, 0, loadZ);
+      rightEnd = P(10.4 + halfSpan, 0, loadZ);
+    }
+    ctx.beginPath();
+    ctx.moveTo(b1.x, b1.y);
+    ctx.lineTo(leftCorner.x, leftCorner.y);
+    ctx.lineTo(leftEnd.x, leftEnd.y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(b2.x, b2.y);
+    ctx.lineTo(rightCorner.x, rightCorner.y);
+    if (generatorMode) ctx.lineTo(rightEnd.x, rightEnd.y);
+    ctx.stroke();
+
+    if (generatorMode) {
+      const c = w2;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 20, 0, Math.PI * 2);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fill();
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('V', c.x, c.y);
+      ctx.font = 'bold 16px "Plus Jakarta Sans", sans-serif';
+      const signY = c.y - 10;
+      function drawOutlinedSign(ch, x, y) {
+        ctx.fillStyle = '#0f172a';
+        for (let ox = -1; ox <= 1; ox++) {
+          for (let oy = -1; oy <= 1; oy++) {
+            if (ox === 0 && oy === 0) continue;
+            ctx.fillText(ch, x + ox, y + oy);
+          }
+        }
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillText(ch, x, y);
+      }
+      drawOutlinedSign('\u2212', c.x - 28, signY);
+      if (factors.mag) {
+        drawOutlinedSign('+', c.x + 28, signY);
+      } else {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillText('+', c.x + 28, signY);
+      }
+    } else {
+      const cells = factors.current ? 2 : 1;
+      const halfSpan = cells > 1 ? 9.2 : 0;
+      if (cells === 1) {
+        drawDryCell(loadZ, 0, true);
+      } else {
+        drawDryCell(loadZ, -halfSpan, true);
+        drawDryCell(loadZ, halfSpan, true);
+      }
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(rightCorner.x, rightCorner.y);
+      ctx.lineTo(rightEnd.x, rightEnd.y);
+      ctx.stroke();
+    }
+  }
+
+  function drawOverlayArrow(x0, y0, x1, y1, color) {
+    const dx = x1 - x0;
+    const dy = y1 - y0;
+    const len = Math.hypot(dx, dy) || 1;
+    const ux = dx / len;
+    const uy = dy / len;
+    const ah = 11;
+    const aw = 7;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 3.2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1 - ux * ah, y1 - uy * ah);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - ux * ah - uy * aw, y1 - uy * ah + ux * aw);
+    ctx.lineTo(x1 - ux * ah + uy * aw, y1 - uy * ah - ux * aw);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawFieldOverlay() {
+    const L = layout();
+    const color = '#ec4899';
+    const zMid = (L.magZ0 + L.magZ1) / 2;
+    const yMax = L.magH * 0.82;
+    for (let i = 0; i < 5; i++) {
+      const t = i / 4;
+      const y0 = -yMax + t * (2 * yMax);
+      let xL = -L.gap + 6;
+      let xR = L.gap - 6;
+      let yL = y0;
+      let yR = y0;
+      if (factors.curve) {
+        const R = L.gap;
+        const yyL = Math.max(-R * 0.92, Math.min(R * 0.92, y0));
+        const fxL = Math.sqrt(Math.max(1, R * R - yyL * yyL));
+        // X through coil mid: top-left → bottom-right, bottom-left → top-right
+        yR = -y0;
+        const yyR = Math.max(-R * 0.92, Math.min(R * 0.92, yR));
+        const fxR = Math.sqrt(Math.max(1, R * R - yyR * yyR));
+        xL = -fxL + 4;
+        xR = fxR - 4;
+        yL = y0;
+      }
+      const a = P(xL, yL, zMid);
+      const b = P(xR, yR, zMid);
+      drawOverlayArrow(a.x, a.y, b.x, b.y, color);
+    }
+  }
+
+  function drawForceMotionOverlay() {
+    const L = layout();
+    const zMid = (L.coilZ0 + L.coilZ1) / 2;
+    const h = L.coilH * 0.92;
+    const left = W(-h, 0, zMid);
+    const right = W(h, 0, zMid);
+    const sense = Math.cos(theta) >= 0 ? 1 : -1;
+    const tip = 72;
+    drawOverlayArrow(left.x, left.y, left.x, left.y - tip * sense, '#22c55e');
+    drawOverlayArrow(right.x, right.y, right.x, right.y + tip * sense, '#22c55e');
+  }
+
+  function leadWorldSamples(x, zA, zB) {
+    const pts = [];
+    const steps = Math.max(10, Math.ceil(Math.abs(zB - zA) / 0.5));
+    for (let i = 0; i <= steps; i++) {
+      const z = zA + (zB - zA) * (i / steps);
+      pts.push({ x: x, y: 0, z: z });
+    }
+    return pts;
+  }
+
+  function buildCurrentGlowPath() {
+    // Match existing orange coil+leads geometry (do not move the wire).
+    const g = coilRingGeom();
+    const L = g.L;
+    const turns = nTurns();
+    const world = [];
+    const leftLead = leadWorldSamples(-g.rIn, g.zNear, g.z0);
+    for (let i = 0; i < leftLead.length; i++) world.push(leftLead[i]);
+    for (let i = 0; i < turns; i++) {
+      const xOff = (i - (turns - 1) / 2) * L.turnGap;
+      const loop = loopWorld(xOff, L.coilH, L.coilZ0, L.coilZ1);
+      for (let k = 0; k < loop.length; k++) world.push(loop[k]);
+    }
+    const rightLead = leadWorldSamples(g.rIn, g.z0, g.zFar);
+    for (let i = 0; i < rightLead.length; i++) world.push(rightLead[i]);
+    const pts = projectLoop(world);
+    return pts.length >= 2 ? [pts] : [];
+  }
+
+  function currentGlowSense() {
+    const a = ((theta % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    let s = (a > Math.PI / 2 && a < Math.PI * 3 / 2) ? -1 : 1;
+    // Motor: reverse purple-dot travel (generator keeps previous sense)
+    if (!generatorMode) s = -s;
+    return s;
+  }
+
+  function shouldAdvanceGlow() {
+    if (!showDir.current) return false;
+    if (!generatorMode) return true;
+    return !!playing;
+  }
+
+  function advanceCurrentGlow(dt) {
+    if (!shouldAdvanceGlow() || dt <= 0) return;
+    glowPos += currentGlowSense() * GLOW_SPEED * dt;
+  }
+
+  function pointAlongPolyline(pts, dist) {
+    let remain = dist;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const dx = pts[i + 1].x - pts[i].x;
+      const dy = pts[i + 1].y - pts[i].y;
+      const seg = Math.hypot(dx, dy);
+      if (seg < 1e-6) continue;
+      if (remain <= seg) {
+        const t = remain / seg;
+        return {
+          x: pts[i].x + dx * t,
+          y: pts[i].y + dy * t,
+          ux: dx / seg,
+          uy: dy / seg
+        };
+      }
+      remain -= seg;
+    }
+    const last = pts[pts.length - 1];
+    const prev = pts[pts.length - 2] || last;
+    const dx = last.x - prev.x;
+    const dy = last.y - prev.y;
+    const seg = Math.hypot(dx, dy) || 1;
+    return { x: last.x, y: last.y, ux: dx / seg, uy: dy / seg };
+  }
+
+  function polylineLength(pts) {
+    let len = 0;
+    for (let i = 0; i < pts.length - 1; i++) {
+      len += Math.hypot(pts[i + 1].x - pts[i].x, pts[i + 1].y - pts[i].y);
+    }
+    return len;
+  }
+
+  function drawGlowDot(x, y) {
+    ctx.beginPath();
+    ctx.arc(x, y, 5.5, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(168, 85, 247, 0.28)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(192, 132, 252, 0.9)';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(x, y, 1.4, 0, Math.PI * 2);
+    ctx.fillStyle = '#f3e8ff';
+    ctx.fill();
+  }
+
+  function drawCurrentGlow() {
+    const paths = buildCurrentGlowPath();
+    if (!paths.length) return;
+    const nDots = 5;
+    ctx.save();
+    for (let p = 0; p < paths.length; p++) {
+      const pts = paths[p];
+      const total = polylineLength(pts);
+      if (total < 8) continue;
+      let pos = glowPos % total;
+      if (pos < 0) pos += total;
+      const spacing = total / nDots;
+      for (let s = 0; s < nDots; s++) {
+        const d = (pos + s * spacing) % total;
+        const pt = pointAlongPolyline(pts, d);
+        drawGlowDot(pt.x, pt.y);
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawShowDirOverlays() {
+    if (showDir.field) drawFieldOverlay();
+    if (showDir.force) drawForceMotionOverlay();
+  }
+
+  function drawScene(rect) {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, rect.width, rect.height);
+    drawMagnetN();
+    drawCoilAndLeads();
+    if (showDir.current) drawCurrentGlow();
+    drawMagnetS();
+    drawCollectorAndCircuit();
+    drawCoilBehindRings();
+    drawShowDirOverlays();
+  }
+
+  function fmtTick(n) {
+    const v = Math.round(n * 2) / 2;
+    if (Math.abs(v) < 1e-6) return '0';
+    if (Math.abs(v % 1) < 1e-6) return String(Math.round(v));
+    return (Math.round(v * 2) / 2).toString();
+  }
+
+  function drawGraph() {
+    const g = setupGraphCanvas();
+    if (!g || !gctx) return;
+    const c = gctx;
+    const x0 = g.padL;
+    const y0 = g.padT;
+    const x1 = x0 + g.plotW;
+    const y1 = y0 + g.plotH;
+    const yMid = (y0 + y1) / 2;
+    const nNow = revs();
+    const nLeft = Math.max(0, nNow - WINDOW_REV);
+    const nRight = nLeft + WINDOW_REV;
+    const eMax = emfMax();
+
+    c.clearRect(0, 0, g.width, g.height);
+    c.strokeStyle = '#0f172a';
+    c.lineWidth = 1.6;
+    c.beginPath();
+    c.moveTo(x0, y1);
+    c.lineTo(x0, y0);
+    c.moveTo(x0, y0);
+    c.lineTo(x0 - 5, y0 + 8);
+    c.moveTo(x0, y0);
+    c.lineTo(x0 + 5, y0 + 8);
+    c.moveTo(x0, acMode ? yMid : y1);
+    c.lineTo(x1, acMode ? yMid : y1);
+    c.lineTo(x1 - 8, (acMode ? yMid : y1) - 4);
+    c.moveTo(x1, acMode ? yMid : y1);
+    c.lineTo(x1 - 8, (acMode ? yMid : y1) + 4);
+    c.stroke();
+
+    c.fillStyle = '#0f172a';
+    c.font = 'bold 11px "Plus Jakarta Sans", sans-serif';
+    c.save();
+    c.translate(11, (y0 + y1) / 2);
+    c.rotate(-Math.PI / 2);
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillText(t('ctrl.emfAxis'), 0, 0);
+    c.restore();
+    c.textAlign = 'center';
+    c.textBaseline = 'top';
+    c.fillText(t('ctrl.revAxis'), (x0 + x1) / 2, y1 + 18);
+
+    function X(n) {
+      return x0 + ((n - nLeft) / WINDOW_REV) * g.plotW;
+    }
+    function Y(e) {
+      if (acMode) return yMid - (e / eMax) * (g.plotH * 0.46);
+      return y1 - (e / eMax) * (g.plotH * 0.92);
+    }
+
+    c.font = 'bold 10px "JetBrains Mono", monospace';
+    c.textBaseline = 'top';
+    c.strokeStyle = '#0f172a';
+    const t0 = Math.ceil(nLeft * 2) / 2;
+    for (let n = t0; n <= nRight + 1e-6; n += 0.5) {
+      const tx = X(n);
+      if (tx < x0 - 1 || tx > x1 + 1) continue;
+      const axisY = acMode ? yMid : y1;
+      c.beginPath();
+      c.moveTo(tx, axisY);
+      c.lineTo(tx, axisY + 5);
+      c.stroke();
+      c.fillStyle = '#0f172a';
+      const label = fmtTick(n);
+      if (label === '0') {
+        c.textAlign = 'right';
+        c.fillText(label, tx - 4, axisY + 7);
+        c.textAlign = 'center';
+      } else {
+        c.fillText(label, tx, axisY + 7);
+      }
+    }
+
+    const vis = [];
+    for (let i = 0; i < samples.length; i++) {
+      if (samples[i].n >= nLeft) vis.push(samples[i]);
+    }
+    vis.push({ n: nNow, e: rawEmf() });
+
+    c.strokeStyle = GREEN;
+    c.lineWidth = 2.4;
+    c.beginPath();
+    let started = false;
+    for (let i = 0; i < vis.length; i++) {
+      const px = X(vis[i].n);
+      const py = Y(displayEmf(vis[i].e));
+      if (px < x0) continue;
+      if (!started) {
+        c.moveTo(px, py);
+        started = true;
+      } else c.lineTo(px, py);
+    }
+    c.stroke();
+
+    const endX = X(nNow);
+    const endY = Y(displayEmf(rawEmf()));
+    c.fillStyle = GREEN;
+    c.beginPath();
+    c.arc(Math.min(x1, endX), endY, 4.5, 0, Math.PI * 2);
+    c.fill();
+  }
+
+  function step(dt) {
+    const w = coilOmega();
+    theta -= w * dt;
+    nRevs += w * dt / (Math.PI * 2);
+    samples.push({ n: revs(), e: rawEmf() });
+    const cut = revs() - WINDOW_REV - 0.25;
+    while (samples.length && samples[0].n < cut) samples.shift();
+  }
+
+  function loop(now) {
+    const setup = setupCanvas(canvas);
+    if (setup) {
+      ctx = setup.ctx;
+      let dt = 0;
+      if (!glowLastTs) glowLastTs = now;
+      dt = (now - glowLastTs) / 1000;
+      glowLastTs = now;
+      if (dt > 0.05) dt = 0.05;
+      if (dt > 0) {
+        if (playing) step(dt);
+        advanceCurrentGlow(dt);
+      }
+      drawScene(setup.rect);
+      if (generatorMode) drawGraph();
+    }
+    animId = requestAnimationFrame(loop);
+  }
+
+  function checkCDN() {
+    const warn = document.getElementById('cdn-warning');
+    if (typeof lucide === 'undefined' && warn) warn.classList.remove('hidden');
+  }
+
+  window.addEventListener('resize', function () {
+    if (canvas) setupCanvas(canvas);
+    setupGraphCanvas();
+  });
+  document.addEventListener('fullscreenchange', function () {
+    syncFsUi();
+    requestAnimationFrame(function () {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  });
+  document.addEventListener('webkitfullscreenchange', function () {
+    syncFsUi();
+    requestAnimationFrame(function () {
+      if (canvas) setupCanvas(canvas);
+      setupGraphCanvas();
+    });
+  });
+
+  window.addEventListener('DOMContentLoaded', function () {
+    if (pageParams.get('embed') === '1' || pageParams.get('embed') === 'true' || window.self !== window.top) {
+      document.documentElement.classList.add('s3phy-embed');
+      document.body.classList.add('embed-mode');
+    }
+    canvas = document.getElementById('hlCanvas');
+    graphCanvas = document.getElementById('graphCanvas');
+    applyLanguage();
+    syncModeUi();
+    checkCDN();
+    setTimeout(checkCDN, 400);
+    animId = requestAnimationFrame(loop);
+  });
+})();
+  </script>
+</body>
+</html>
