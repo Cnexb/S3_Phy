@@ -314,20 +314,17 @@ export function initQuiz() {
         button.setAttribute("aria-current", "page");
       }
       button.addEventListener("click", () => {
-        if (window.top !== window.self) {
+        const id = button.dataset.quizNav;
+        if (window.parent !== window.self) {
           try {
-            window.top.dispatchEvent(
-              new CustomEvent("s3phy:heatQuizSelect", {
-                detail: { id: button.dataset.quizNav },
-              }),
+            window.parent.dispatchEvent(
+              new CustomEvent("s3phy:heatQuizSelect", { detail: { id } }),
             );
             return;
           } catch (_) {}
         }
-        sessionStorage.setItem("s3phy.heat.quiz", button.dataset.quizNav);
-        if (window.top !== window.self) {
-          window.top.location.reload();
-        } else {
+        sessionStorage.setItem("s3phy.heat.quiz", id);
+        if (window.top === window.self) {
           window.location.href = "/#/heat";
         }
       });
