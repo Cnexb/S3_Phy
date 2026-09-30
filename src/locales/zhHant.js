@@ -189,6 +189,8 @@ export const zhHant = {
   'quiz.jphg01Quiz1': 'JPHG01 測驗 1',
   'quiz.jphg01Quiz2': 'JPHG01 測驗 2',
   'quiz.jphg01Quiz3': 'JPHG01 測驗 3',
+  'quiz.jphg02Quiz': 'JPHG02 熱與內能',
+  'quiz.jphg02Title': 'JPHG02 熱與內能',
   'quiz.opticsCh3Title': 'JPWM06 光的反射',
   'quiz.opticsCh3Title2': 'JPWM06 光的反射 · 測驗 2',
   'quiz.opticsCh3Title3': 'JPWM06 光的反射 · 測驗 3',

@@ -1,0 +1,5 @@
+{
+  "slug": "jphg02-quiz",
+  "syncAll": true,
+  "exclude": ["manifest.json", "README.md"]
+}
