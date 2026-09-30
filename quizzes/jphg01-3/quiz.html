@@ -139,8 +139,33 @@ tailwind.config = {
 <aside class="bg-surface-container-lowest p-6 rounded-3xl border border-outline-variant/30 shadow-lg lg:sticky lg:top-2" id="settings-panel">
 <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-4" data-i18n="hSettings">Worksheet settings</h2>
 <div class="quiz-bank-summary mb-5 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/25 text-body-sm" id="quiz-bank-summary" aria-live="polite"></div>
-<label class="block text-body-sm font-label-bold text-on-surface-variant mb-2" data-i18n="lblTypes">Topics</label>
-<div class="space-y-2 mb-4" id="quiz-type-checks"></div>
+<label class="block text-body-sm font-label-bold text-on-surface-variant mb-2 hidden" data-i18n="lblTypes">Topics</label>
+<div class="space-y-2 mb-4 hidden" id="quiz-type-checks"></div>
+<div class="mb-5 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/25" id="quiz-navigation">
+<h3 class="font-label-bold text-on-surface mb-2" data-i18n="quizNavTitle">Choose quiz</h3>
+<div class="space-y-3 text-body-sm">
+<div data-quiz-topic-panel>
+<label class="flex items-center gap-3 font-label-bold text-on-surface-variant cursor-pointer">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" data-quiz-topic-toggle="jphg01" type="checkbox">
+<span data-i18n="quizNavJphg01">JPHG01 Temperature and thermometer</span>
+</label>
+<div class="flex flex-wrap gap-2 mt-2 hidden" data-quiz-topic-options="jphg01">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-body-sm" data-quiz-nav="jphg01" data-i18n="quizNavJphg01Q1" type="button">Quiz 1</button>
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-body-sm" data-quiz-nav="jphg01-2" data-i18n="quizNavJphg01Q2" type="button">Quiz 2</button>
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-body-sm" data-quiz-nav="jphg01-3" data-i18n="quizNavJphg01Q3" type="button">Quiz 3</button>
+</div>
+</div>
+<div data-quiz-topic-panel>
+<label class="flex items-center gap-3 font-label-bold text-on-surface-variant cursor-pointer">
+<input class="rounded border-outline-variant text-primary focus:ring-primary" data-quiz-topic-toggle="jphg02" type="checkbox">
+<span data-i18n="quizNavJphg02">JPHG02 Heat and internal energy</span>
+</label>
+<div class="flex flex-wrap gap-2 mt-2 hidden" data-quiz-topic-options="jphg02">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant/40 bg-surface text-body-sm" data-quiz-nav="jphg02" data-i18n="quizNavJphg02Q1" type="button">Quiz 1</button>
+</div>
+</div>
+</div>
+</div>
 <label class="block text-body-sm font-label-bold text-on-surface-variant mb-1" for="quiz-num-count" data-i18n="lblCount">Number of questions (1–50)</label>
 <input class="w-full mb-4 rounded-xl border-outline-variant bg-surface-container-low focus:ring-primary focus:border-primary" id="quiz-num-count" max="50" min="1" type="number" value="3"/>
 <button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-bold shadow-md hover:opacity-90 transition-opacity mb-6" id="btn-generate" type="button" data-i18n="btnGenerate">Generate questions</button>
