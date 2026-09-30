@@ -233,8 +233,9 @@ async function waitForImages(page) {
 
 function copyTargets(fileName) {
   const home = os.homedir();
+  const downloadsFolder = path.join(home, 'Downloads', 'JPWM06 Quizzes');
   const dirs = [
-    path.join(home, 'Downloads'),
+    downloadsFolder,
     path.join(home, 'Desktop'),
     path.join(home, 'OneDrive', 'Desktop'),
   ];
