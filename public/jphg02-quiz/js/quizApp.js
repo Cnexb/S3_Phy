@@ -86,6 +86,13 @@ const UI = {
     revBalanced: "Errors spread across topics — continue balanced practice.",
     hideSettings: "Hide settings",
     showSettings: "Show settings",
+    quizNavTitle: "Choose quiz",
+    quizNavJphg01: "JPHG01 Temperature and thermometer",
+    quizNavJphg01Q1: "Quiz 1",
+    quizNavJphg01Q2: "Quiz 2",
+    quizNavJphg01Q3: "Quiz 3",
+    quizNavJphg02: "JPHG02 Heat and internal energy",
+    quizNavJphg02Q1: "Quiz 1",
   },
   zh: {
     appSubtitle: "概念检查 · 界面简体中文",
@@ -146,6 +153,13 @@ const UI = {
     revBalanced: "错误分散在不同课题，宜均衡练习。",
     hideSettings: "隐藏设定",
     showSettings: "显示设定",
+    quizNavTitle: "選擇測驗",
+    quizNavJphg01: "JPHG01 溫度與溫度計",
+    quizNavJphg01Q1: "測驗 1",
+    quizNavJphg01Q2: "測驗 2",
+    quizNavJphg01Q3: "測驗 3",
+    quizNavJphg02: "JPHG02 熱與內能",
+    quizNavJphg02Q1: "測驗 1",
   },
   "zh-Hant": {
     appSubtitle: "S3 熱學 Ch.1 · 溫度計、內能、物態變化與熱傳遞 · 介面繁體中文",
@@ -276,6 +290,56 @@ export function initQuiz() {
   }
 
   const t = (key) => UI[lang]?.[key] || UI.en[key] || key;
+
+  function initQuizNavigation() {
+    const currentQuiz = {
+      "phy-jphg01": "jphg01",
+      "phy-jphg01-2": "jphg01-2",
+      "phy-jphg01-3": "jphg01-3",
+      "phy-jphg02": "jphg02",
+    }[QUIZ_META.quizId];
+    const currentTopic = currentQuiz?.startsWith("jphg01") ? "jphg01" : "jphg02";
+    document.querySelectorAll("[data-quiz-nav]").forEach((button) => {
+      if (button.dataset.quizNav === currentQuiz) {
+        button.classList.add("bg-primary", "text-on-primary");
+        button.style.setProperty("background-color", "#004e9f", "important");
+        button.style.setProperty("color", "#ffffff", "important");
+        button.setAttribute("aria-current", "page");
+      }
+      button.addEventListener("click", () => {
+        if (window.top !== window.self) {
+          try {
+            window.top.dispatchEvent(
+              new CustomEvent("s3phy:heatQuizSelect", {
+                detail: { id: button.dataset.quizNav },
+              }),
+            );
+            return;
+          } catch (_) {}
+        }
+        sessionStorage.setItem("s3phy.heat.quiz", button.dataset.quizNav);
+        if (window.top !== window.self) {
+          window.top.location.reload();
+        } else {
+          window.location.href = "/#/heat";
+        }
+      });
+    });
+    const syncTopicOptions = () => {
+      document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
+        const options = document.querySelector(`[data-quiz-topic-options="${toggle.dataset.quizTopicToggle}"]`);
+        options?.classList.toggle("hidden", !toggle.checked);
+      });
+    };
+    const currentTopicToggle = document.querySelector(
+      `[data-quiz-topic-toggle="${currentTopic}"]`,
+    );
+    if (currentTopicToggle) currentTopicToggle.checked = true;
+    document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
+      toggle.addEventListener("change", syncTopicOptions);
+    });
+    syncTopicOptions();
+  }
 
   const els = {
     typeChecks: document.getElementById("quiz-type-checks"),
@@ -801,6 +865,7 @@ export function initQuiz() {
 
   bindFilterListeners();
   applyLang();
+  initQuizNavigation();
   els.quizArea.textContent = t("empty");
   els.quizArea.className = "quiz-empty text-center text-on-surface-variant py-12 text-body-sm";
 

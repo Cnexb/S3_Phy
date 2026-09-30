@@ -81,16 +81,6 @@ function toolLabel(id) {
   return t(map[id] || id);
 }
 
-function quizLabel(id) {
-  const map = {
-    jphg01: 'quiz.jphg01Quiz1',
-    'jphg01-2': 'quiz.jphg01Quiz2',
-    'jphg01-3': 'quiz.jphg01Quiz3',
-    jphg02: 'quiz.jphg02Quiz',
-  };
-  return t(map[id] || id);
-}
-
 export function mountHeatHub(root) {
   let section = resolveHubSection(sessionStorage.getItem('s3phy.heat.section'), 'notes');
   let toolId = loadToolId(TOOL_STORAGE_KEY, TOOL_ORDER, 'liquid');
@@ -165,16 +155,8 @@ export function mountHeatHub(root) {
   }
 
   function renderQuiz() {
-    const buttons = QUIZ_ORDER.map(
-      (id) =>
-        `<button type="button" data-heat-quiz="${id}" class="${quizPickId === id ? 'active' : ''}">${quizLabel(id)}</button>`,
-    ).join('');
     return `
       <section class="panel panel--quiz-embed">
-        <div class="worksheet-picker">
-          <p class="lead">${t('quiz.pick')}</p>
-          <div class="tool-list" data-heat-quiz-list>${buttons}</div>
-        </div>
         <div class="worksheet-stage" data-heat-quiz-stage></div>
       </section>`;
   }
@@ -305,28 +287,43 @@ export function mountHeatHub(root) {
     await hydrateSummaryCards(root, HEAT_SUMMARY_ROWS);
   }
 
+  function selectQuiz(id) {
+    if (!id || id === quizPickId || !QUIZ_ORDER.includes(id)) return;
+    quizPickId = id;
+    saveToolId(QUIZ_STORAGE_KEY, quizPickId);
+    const stage = el.main?.querySelector('[data-heat-quiz-stage]');
+    if (!stage) {
+      renderMain();
+      return;
+    }
+    el.main.querySelectorAll('[data-heat-quiz]').forEach((button) => {
+      button.classList.toggle('active', button.getAttribute('data-heat-quiz') === quizPickId);
+    });
+    void mountActiveQuiz(stage);
+  }
+
   function onMainClick(ev) {
     const btn = ev.target.closest('[data-heat-quiz]');
     if (btn && section === 'quiz') {
-      const id = btn.getAttribute('data-heat-quiz');
-      if (id && id !== quizPickId && QUIZ_ORDER.includes(id)) {
-        quizPickId = id;
-        saveToolId(QUIZ_STORAGE_KEY, quizPickId);
-        renderMain();
-      }
+      selectQuiz(btn.getAttribute('data-heat-quiz'));
     }
   }
 
   const onLang = onLangChange;
   const onClick = (ev) => onMainClick(ev);
+  const onQuizSelect = (ev) => {
+    if (section === 'quiz') selectQuiz(ev.detail?.id);
+  };
 
   window.addEventListener('s3phy:lang', onLang);
+  window.addEventListener('s3phy:heatQuizSelect', onQuizSelect);
   root.addEventListener('click', onClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLang);
+    window.removeEventListener('s3phy:heatQuizSelect', onQuizSelect);
     root.removeEventListener('click', onClick);
     destroyFlashcards?.();
     destroyWorksheet?.();
