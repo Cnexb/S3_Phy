@@ -333,6 +333,16 @@ export function mountOpticsHub(root) {
     }
   }
 
+  function onOpticsQuizSelect(ev) {
+    if (section !== 'quiz') return;
+    const id = ev.detail?.id;
+    if (id && id !== quizPickId && QUIZ_ORDER.includes(id)) {
+      quizPickId = id;
+      saveToolId(QUIZ_STORAGE_KEY, quizPickId);
+      renderMain();
+    }
+  }
+
   function renderNotesShell() {
     return `
       <section class="panel">
@@ -382,12 +392,14 @@ export function mountOpticsHub(root) {
   const onClick = (ev) => onMainClick(ev);
 
   window.addEventListener('s3phy:lang', onLang);
+  window.addEventListener('s3phy:opticsQuizSelect', onOpticsQuizSelect);
   root.addEventListener('click', onClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLang);
+    window.removeEventListener('s3phy:opticsQuizSelect', onOpticsQuizSelect);
     root.removeEventListener('click', onClick);
     destroyFlashcards?.();
     destroyWorksheet?.();
