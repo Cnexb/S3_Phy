@@ -1,0 +1,60 @@
+{
+  "quizId": "jpwm07",
+  "items": [
+    {
+      "id": "jpwm07-1",
+      "topic": "JPWM07",
+      "section": "JPWM07.1",
+      "difficulty": "Standard",
+      "stem": "The figure below shows a ray of light entering medium Y from medium X. Which of the following statements is/are correct?\n(1) Light travels faster in medium X than in medium Y.\n(2) φ is the angle of refraction.\n(3) The refractive index of medium X is larger than that of medium Y.",
+      "options": [
+        { "key": "A", "text": "(1) only" },
+        { "key": "B", "text": "(3) only" },
+        { "key": "C", "text": "(1) and (2) only" },
+        { "key": "D", "text": "(2) and (3) only" }
+      ],
+      "answer": "A",
+      "hint": "The ray bends towards the normal when it enters medium Y, so its speed decreases. The angle of refraction is measured from the normal, not from the surface. Snell's law gives a larger refractive index for medium Y.",
+      "image": {
+        "src": "./assets/jpwm07-1-ray.png",
+        "alt": "Ray of light entering medium Y from medium X with angles marked from the surface",
+        "caption": "Fig · Refraction from medium X into medium Y"
+      }
+    },
+    {
+      "id": "jpwm07-2",
+      "topic": "JPWM07",
+      "section": "JPWM07.2",
+      "difficulty": "Standard",
+      "stem": "The given ray diagram shows the refraction of light at the surface of an unknown liquid. If the refractive index of the liquid is 1.52, what is the angle of incidence?",
+      "options": [
+        { "key": "A", "text": "46.9°" },
+        { "key": "B", "text": "52.6°" },
+        { "key": "C", "text": "70°" },
+        { "key": "D", "text": "77.7°" }
+      ],
+      "answer": "D",
+      "hint": "The 50° mark is between the refracted ray and the surface, so the angle of refraction is 40°. Using Snell's law: sin i = 1.52 × sin 40°, giving i ≈ 77.7°.",
+      "image": {
+        "src": "./assets/jpwm07-2-liquid.png",
+        "alt": "Ray diagram of light refracting from air into a liquid with a 50° angle marked from the surface",
+        "caption": "Fig · Refraction at an air–liquid surface"
+      }
+    },
+    {
+      "id": "jpwm07-3",
+      "topic": "JPWM07",
+      "section": "JPWM07.3",
+      "difficulty": "Foundation",
+      "stem": "The refractive index of diamond is 2.42. What is the speed of light in diamond? (Given that the speed of light in vacuum = 3 × 10⁸ ms⁻¹)",
+      "options": [
+        { "key": "A", "text": "5.80 × 10⁷ ms⁻¹" },
+        { "key": "B", "text": "1.24 × 10⁸ ms⁻¹" },
+        { "key": "C", "text": "3.00 × 10⁸ ms⁻¹" },
+        { "key": "D", "text": "7.26 × 10⁸ ms⁻¹" }
+      ],
+      "answer": "B",
+      "hint": "Use n = c / v, so v = c / n = (3 × 10⁸ ms⁻¹) / 2.42 ≈ 1.24 × 10⁸ ms⁻¹."
+    }
+  ]
+}
