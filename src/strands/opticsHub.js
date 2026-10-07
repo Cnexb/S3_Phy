@@ -199,16 +199,8 @@ export function mountOpticsHub(root) {
   }
 
   function renderQuiz() {
-    const buttons = QUIZ_ORDER.map(
-      (id) =>
-        `<button type="button" data-optics-quiz="${id}" class="${quizPickId === id ? 'active' : ''}">${quizLabel(id)}</button>`,
-    ).join('');
     return `
       <section class="panel panel--quiz-embed">
-        <div class="worksheet-picker">
-          <p class="lead">${t('quiz.pick')}</p>
-          <div class="tool-list" data-optics-quiz-list>${buttons}</div>
-        </div>
         <div class="worksheet-stage" data-optics-quiz-stage></div>
       </section>`;
   }
