@@ -1,0 +1,25 @@
+{
+  "quizId": "jpwm06-4",
+  "items": [
+    {
+      "id": "jpwm06-4-1",
+      "topic": "JPWM06",
+      "section": "JPWM06.1",
+      "difficulty": "Standard",
+      "stem": "The figure above shows a sunlight reflector installed on the roof of a building. At the instant shown, sunlight falls at an angle of 30° to the horizontal and is then reflected vertically into the building. What is the angle between the reflector and the horizontal?",
+      "options": [
+        { "key": "A", "text": "30°" },
+        { "key": "B", "text": "45°" },
+        { "key": "C", "text": "60°" },
+        { "key": "D", "text": "75°" }
+      ],
+      "answer": "C",
+      "hint": "Incident ray is 30° to the horizontal and the reflected ray is vertical. Angle of incidence equals angle of reflection, so the reflector is 60° to the horizontal.",
+      "image": {
+        "src": "./assets/jpwm06-4-reflector.png",
+        "alt": "Sunlight reflector on a roof directing light vertically into a building",
+        "caption": "Fig · Sunlight reflector"
+      }
+    }
+  ]
+}
