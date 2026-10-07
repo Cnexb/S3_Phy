@@ -12,7 +12,11 @@ function read(rel) {
 }
 
 const index = read('index.html');
-assert.match(index, /uni-education-elearning\.pages\.dev\/tracker\/uni-tracker\.js\?v=2/);
+assert.match(index, /%VITE_TRACKER_URL%\?v=2/);
+assert.match(read('.env.production'), /^VITE_TRACKER_URL=https:\/\/uni-education-elearning\.pages\.dev\/tracker\/uni-tracker\.js$/m);
+for (const envFile of ['.env.local.example', '.env.develop']) {
+  assert.match(read(envFile), /^VITE_TRACKER_URL=\S+$/m);
+}
 
 const quizApp = read('quizzes/optics-ch3/js/quizApp.js');
 assert.match(quizApp, /quizId:\s*QUIZ_META\.quizId/);

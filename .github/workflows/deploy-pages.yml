@@ -30,7 +30,11 @@ jobs:
       - name: Install and build
         run: |
           npm ci
-          npm run build
+          if [ "${{ github.ref_name }}" = "develop" ]; then
+            npm run build:develop
+          else
+            npm run build
+          fi
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
@@ -45,6 +49,7 @@ jobs:
 
   deploy-github-pages:
     needs: build
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
