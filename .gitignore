@@ -17,3 +17,7 @@ scripts/record-ai-class-promo.mjs
 exports/ai-lab-demo-5min.mp4
 exports/ai-lab-demo-5min.webm
 exports/_demo-video-tmp/
+
+# Personal env overrides (.env.local, .env.develop.local, ...)
+*.local
+dist/

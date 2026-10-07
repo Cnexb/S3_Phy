@@ -7,6 +7,7 @@
     "dev": "vite",
     "build:content": "node scripts/build-content.cjs",
     "build": "npm run build:content && vite build",
+    "build:develop": "npm run build:content && vite build --mode develop",
     "build:plane-mirror-lab": "node scripts/build-plane-mirror-lab.cjs",
     "preview": "vite preview",
     "export:heat-flashcards": "node scripts/export-heat-ch1-flashcards.js",
