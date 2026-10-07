@@ -226,6 +226,14 @@
       }
     },
     {
+      "slug": "jphg02-1",
+      "path": "content-packs/ch1-heat-and-gases/quiz/jphg02-1",
+      "title": {
+        "en": "JPHG02 Heat and internal energy",
+        "zhHant": "JPHG02 熱與內能"
+      }
+    },
+    {
       "slug": "jphg02-2",
       "path": "content-packs/ch1-heat-and-gases/quiz/jphg02-2",
       "title": {
