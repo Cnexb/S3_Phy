@@ -28,6 +28,10 @@ Examples:
 
 Keep each submission self-contained (HTML and any notes or assets together).
 
+## Optional static preview
+
+If a submission needs a shareable browser link, put a **built** static copy under `public/interview-submissions/<same-path>/` so Vite/Pages can serve it. Keep the full source here. Do not wire previews into the hub.
+
 ## Related (separate)
 
 The interview **brief** given to candidates lives under `exports/full-time-tutor-em-induction-sprint/` and is synced to `public/` for hosting. Do not put unfinished hand-ins there.
