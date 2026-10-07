@@ -1,0 +1,8 @@
+{
+  "slug": "jphg02-2",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}
