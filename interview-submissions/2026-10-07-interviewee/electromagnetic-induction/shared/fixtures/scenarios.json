@@ -1,0 +1,74 @@
+[
+  {
+    "id": "textbook",
+    "name": "Textbook: field into the page",
+    "summary": "B points into the page. The bar slides to the right.",
+    "bMag": 0.2,
+    "azimuthDeg": 0,
+    "elevationDeg": 0,
+    "ell": 0.1,
+    "R": 2,
+    "closed": true,
+    "playback": { "fromX": 0.05, "toX": 0.17, "duration": 1.6 }
+  },
+  {
+    "id": "reverse-field",
+    "name": "Reverse the field",
+    "summary": "B points out of the page. The current direction flips.",
+    "bMag": 0.2,
+    "azimuthDeg": 180,
+    "elevationDeg": 0,
+    "ell": 0.1,
+    "R": 2,
+    "closed": true,
+    "playback": { "fromX": 0.05, "toX": 0.17, "duration": 1.6 }
+  },
+  {
+    "id": "reverse-motion",
+    "name": "Reverse the motion",
+    "summary": "The same field, with the bar sliding to the left.",
+    "bMag": 0.2,
+    "azimuthDeg": 0,
+    "elevationDeg": 0,
+    "ell": 0.1,
+    "R": 2,
+    "closed": true,
+    "playback": { "fromX": 0.17, "toX": 0.05, "duration": 1.6 }
+  },
+  {
+    "id": "parallel",
+    "name": "Motion parallel to B",
+    "summary": "The field points along the rails, so the bar does not cut field lines.",
+    "bMag": 0.2,
+    "azimuthDeg": 90,
+    "elevationDeg": 0,
+    "ell": 0.1,
+    "R": 2,
+    "closed": true,
+    "playback": { "fromX": 0.05, "toX": 0.17, "duration": 1.6 }
+  },
+  {
+    "id": "open",
+    "name": "Open circuit",
+    "summary": "The bar still cuts field lines, but the circuit is open, so no current flows.",
+    "bMag": 0.2,
+    "azimuthDeg": 0,
+    "elevationDeg": 0,
+    "ell": 0.1,
+    "R": 2,
+    "closed": false,
+    "playback": { "fromX": 0.05, "toX": 0.17, "duration": 1.6 }
+  },
+  {
+    "id": "stronger",
+    "name": "Stronger field, longer bar",
+    "summary": "A larger B and a longer conductor give a larger e.m.f. at the same speed.",
+    "bMag": 0.45,
+    "azimuthDeg": 0,
+    "elevationDeg": 0,
+    "ell": 0.18,
+    "R": 2,
+    "closed": true,
+    "playback": { "fromX": 0.05, "toX": 0.17, "duration": 1.6 }
+  }
+]
