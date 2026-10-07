@@ -224,6 +224,14 @@
         "en": "JPHG01 Temperature and thermometer (Quiz 3)",
         "zhHant": "JPHG01 溫度與溫度計（測驗 3）"
       }
+    },
+    {
+      "slug": "jphg02-2",
+      "path": "content-packs/ch1-heat-and-gases/quiz/jphg02-2",
+      "title": {
+        "en": "JPHG02 Heat and internal energy (Quiz 2)",
+        "zhHant": "JPHG02 熱與內能（測驗 2）"
+      }
     }
   ],
   "summaries": [
