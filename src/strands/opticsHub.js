@@ -15,7 +15,7 @@ import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
 const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em', 'rayDiagram'];
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
-const QUIZ_ORDER = ['jpwm06', 'jpwm06-2', 'jpwm06-3', 'jpwm06-4'];
+const QUIZ_ORDER = ['jpwm06', 'jpwm06-2', 'jpwm06-3', 'jpwm06-4', 'jpwm07'];
 const QUIZ_STORAGE_KEY = 's3phy.optics.quiz';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
@@ -100,6 +100,7 @@ function quizLabel(id) {
     'jpwm06-2': 'quiz.jpwm06Quiz2',
     'jpwm06-3': 'quiz.jpwm06Quiz3',
     'jpwm06-4': 'quiz.jpwm06Quiz4',
+    jpwm07: 'quiz.jpwm07Quiz1',
   };
   return t(map[id] || id);
 }
@@ -163,6 +164,13 @@ export function mountOpticsHub(root) {
     destroyWorksheet?.();
     destroyWorksheet = null;
     stage.innerHTML = '';
+    if (quizPickId === 'jpwm07') {
+      const { createOpticsJpwm07Quiz } = await import('../worksheets/opticsJpwm07Quiz.js');
+      const node = createOpticsJpwm07Quiz(t);
+      stage.appendChild(node);
+      destroyWorksheet = node._opticsJpwm07QuizCleanup || null;
+      return;
+    }
     if (quizPickId === 'jpwm06-4') {
       const { createOpticsCh3Quiz4 } = await import('../worksheets/opticsCh3Quiz4.js');
       const node = createOpticsCh3Quiz4(t);
@@ -191,16 +199,8 @@ export function mountOpticsHub(root) {
   }
 
   function renderQuiz() {
-    const buttons = QUIZ_ORDER.map(
-      (id) =>
-        `<button type="button" data-optics-quiz="${id}" class="${quizPickId === id ? 'active' : ''}">${quizLabel(id)}</button>`,
-    ).join('');
     return `
       <section class="panel panel--quiz-embed">
-        <div class="worksheet-picker">
-          <p class="lead">${t('quiz.pick')}</p>
-          <div class="tool-list" data-optics-quiz-list>${buttons}</div>
-        </div>
         <div class="worksheet-stage" data-optics-quiz-stage></div>
       </section>`;
   }
@@ -325,6 +325,16 @@ export function mountOpticsHub(root) {
     }
   }
 
+  function onOpticsQuizSelect(ev) {
+    if (section !== 'quiz') return;
+    const id = ev.detail?.id;
+    if (id && id !== quizPickId && QUIZ_ORDER.includes(id)) {
+      quizPickId = id;
+      saveToolId(QUIZ_STORAGE_KEY, quizPickId);
+      renderMain();
+    }
+  }
+
   function renderNotesShell() {
     return `
       <section class="panel">
@@ -374,12 +384,14 @@ export function mountOpticsHub(root) {
   const onClick = (ev) => onMainClick(ev);
 
   window.addEventListener('s3phy:lang', onLang);
+  window.addEventListener('s3phy:opticsQuizSelect', onOpticsQuizSelect);
   root.addEventListener('click', onClick);
 
   render();
 
   return () => {
     window.removeEventListener('s3phy:lang', onLang);
+    window.removeEventListener('s3phy:opticsQuizSelect', onOpticsQuizSelect);
     root.removeEventListener('click', onClick);
     destroyFlashcards?.();
     destroyWorksheet?.();

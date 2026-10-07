@@ -1,9 +1,10 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js?v=20261007jpwm07q1";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
   seededShuffle,
   escHtml,
+  formatQuizText,
   formatStemHtml,
   modelAnswerText,
   resolveQuizLang,
@@ -25,7 +26,7 @@ import {
 
 const UI = {
   en: {
-    appSubtitle: "JPWM06 Light reflection · English UI",
+    appSubtitle: "S3 Optics · JPWM07 Light refraction · Quiz 1 · English / 繁體中文 UI",
     hSettings: "Worksheet settings",
     lblTypes: "Topics",
     lblFormats: "Question types",
@@ -45,7 +46,6 @@ const UI = {
     btnDocA: "Word — Answers",
     btnPrint: "Print / Save as PDF",
     hPractice: "On-screen practice",
-    txtPracticeHint: "First wrong: hint only. Second wrong: model answer.",
     btnSummary: "Session summary",
     quizCheck: "Check answer",
     empty: "Generate questions first.",
@@ -58,14 +58,13 @@ const UI = {
     progressNone: "No session yet",
     progressCompletedPrefix: "Completed ",
     correct: "Correct.",
-    hintPrefix: "Hint:",
     modelPrefix: "Model answer:",
     printConfirm: "Print ANSWER sheet? (Cancel = questions only)",
     summaryTitle: "Summary",
     summaryScoreLabel: "Score (correct / total)",
     summaryFirstTry: "Correct on first attempt",
-    summaryWrongTitle: "Wrong twice — review these",
-    summaryNoneWrong: "None — no questions failed after two attempts.",
+    summaryWrongTitle: "Incorrect — review these",
+    summaryNoneWrong: "None — all questions answered correctly.",
     summaryIncomplete: "Still in progress",
     summaryByTypeTitle: "Correct rate by topic",
     summaryByTypeColType: "Topic",
@@ -76,14 +75,14 @@ const UI = {
     revBandExcellent:
       "Overall accuracy is very high. Keep mixing topics so recall stays sharp for HKDSE.",
     revBandGood: "Good result. Use the table above to add a short round on weaker topics.",
-    revBandFair: "Mixed performance: re-read weaker Optics Ch.3 topics, then regenerate.",
+    revBandFair: "Mixed performance: re-read weaker refraction topics, then regenerate.",
     revBandLow:
-      "Several concepts need consolidation. Review reflection, Snell's law, total internal reflection, lens ray diagrams, and the lens formula before the next round.",
+      "Several concepts need consolidation. Review refraction, Snell's law and refractive index before the next round.",
     revWeakOne: "Prioritise revision on {type} — you scored {c}/{t} ({pct}%) in that topic.",
     revStrongOne: "Strength: every {type} item correct ({n} questions).",
-    revTwoStrike: "Questions missed twice: study the model answers, then regenerate those topics.",
+    revTwoStrike: "Questions answered incorrectly: study the model answers, then regenerate those topics.",
     revIncomplete: "Finish questions still in progress for a fair measure of strengths and gaps.",
-    revFirstTryLow: "Many items needed two attempts. Read each stem carefully before answering.",
+    revFirstTryLow: "Many items were answered incorrectly. Read each stem carefully before answering.",
     revBalanced: "Errors spread across topics — continue balanced practice.",
     hideSettings: "Hide settings",
     showSettings: "Show settings",
@@ -117,7 +116,6 @@ const UI = {
     btnDocA: "Word — 答案",
     btnPrint: "打印／另存 PDF",
     hPractice: "互动练习",
-    txtPracticeHint: "第一次答错只显示提示；第二次答错显示参考答案。",
     btnSummary: "学习摘要",
     quizCheck: "检查答案",
     empty: "请先按「生成题目」。",
@@ -126,18 +124,17 @@ const UI = {
     alertNoFormats: "请至少选择一种题型。",
     alertNoMatch: "没有符合条件的题目。",
     alertPoolLimited:
-      "符合课题条件的只有 {available} 题（你要求 {requested} 题）。不会重复出题。",
+      "符合课题、题型与难度条件的只有 {available} 题（你要求 {requested} 题）。不会重复出题。",
     progressNone: "尚未生成题目",
     progressCompletedPrefix: "已完成 ",
     correct: "正确。",
-    hintPrefix: "提示：",
     modelPrefix: "参考答案：",
     printConfirm: "要打印「答案版」吗？（取消 = 试题版）",
     summaryTitle: "摘要",
     summaryScoreLabel: "得分（答对／总题数）",
     summaryFirstTry: "首次即答对",
-    summaryWrongTitle: "两次皆错 — 需重温",
-    summaryNoneWrong: "没有此类题目。",
+    summaryWrongTitle: "答错 — 需重温",
+    summaryNoneWrong: "没有答错的题目。",
     summaryIncomplete: "尚未答对",
     summaryByTypeTitle: "各课题答对率",
     summaryByTypeColType: "课题",
@@ -151,9 +148,9 @@ const UI = {
     revBandLow: "多个概念仍需巩固。请先温习流动镶嵌、渗透性、渗透与主动运输。",
     revWeakOne: "建议优先温习「{type}」：本次 {c}/{t}（{pct}%）。",
     revStrongOne: "强项：「{type}」本次全对（共 {n} 题）。",
-    revTwoStrike: "曾两次答错的题目：请细读参考答案后再练。",
+    revTwoStrike: "答错的题目：请细读参考答案后再练。",
     revIncomplete: "尚有未答对题目，建议先完成。",
-    revFirstTryLow: "不少题目需第二次才答对。作答前宜放慢阅读题干。",
+    revFirstTryLow: "不少题目答错。作答前宜放慢阅读题干。",
     revBalanced: "错误分散在不同课题，宜均衡练习。",
     hideSettings: "隐藏设定",
     showSettings: "显示设定",
@@ -167,7 +164,7 @@ const UI = {
     quizNavJpwm07Q1: "测验 1",
   },
   "zh-Hant": {
-    appSubtitle: "概念檢查 · 介面繁體中文",
+    appSubtitle: "S3 光學 · JPWM07 光的折射 · 測驗 1 · 介面繁體中文",
     hSettings: "工作紙設定",
     lblTypes: "課題",
     lblFormats: "題型",
@@ -187,7 +184,6 @@ const UI = {
     btnDocA: "Word — 答案",
     btnPrint: "列印／另存 PDF",
     hPractice: "互動練習",
-    txtPracticeHint: "第一次答錯只顯示提示；第二次答錯顯示參考答案。",
     btnSummary: "學習摘要",
     quizCheck: "檢查答案",
     empty: "請先按「產生題目」。",
@@ -196,18 +192,17 @@ const UI = {
     alertNoFormats: "請至少選擇一種題型。",
     alertNoMatch: "沒有符合條件的題目。",
     alertPoolLimited:
-      "符合課題條件的只有 {available} 題（你要求 {requested} 題）。不會重複出題。",
+      "符合課題、題型與難度條件的只有 {available} 題（你要求 {requested} 題）。不會重複出題。",
     progressNone: "尚未產生題目",
     progressCompletedPrefix: "已完成 ",
     correct: "正確。",
-    hintPrefix: "提示：",
     modelPrefix: "參考答案：",
     printConfirm: "要列印「答案版」嗎？（取消 = 試題版）",
     summaryTitle: "摘要",
     summaryScoreLabel: "得分（答對／總題數）",
     summaryFirstTry: "首次即答對",
-    summaryWrongTitle: "兩次皆錯 — 需重溫",
-    summaryNoneWrong: "沒有此類題目。",
+    summaryWrongTitle: "答錯 — 需重溫",
+    summaryNoneWrong: "沒有答錯的題目。",
     summaryIncomplete: "尚未答對",
     summaryByTypeTitle: "各課題答對率",
     summaryByTypeColType: "課題",
@@ -217,13 +212,13 @@ const UI = {
     revTitle: "評語與溫習建議",
     revBandExcellent: "整體答對率很高。建議持續混合各課題練習。",
     revBandGood: "整體表現不錯。可針對較弱課題加做一輪。",
-    revBandFair: "表現參差：請重溫相關筆記後再產生題目。",
-    revBandLow: "多個概念仍需鞏固。請先溫習流動鑲嵌、滲透性、滲透與主動運輸。",
+    revBandFair: "表現參差：請重溫較弱嘅折射課題後再產生題目。",
+    revBandLow: "多個概念仍需鞏固。請先溫習折射、司乃耳定律同折射率。",
     revWeakOne: "建議優先溫習「{type}」：本次 {c}/{t}（{pct}%）。",
     revStrongOne: "強項：「{type}」本次全對（共 {n} 題）。",
-    revTwoStrike: "曾兩次答錯的題目：請細讀參考答案後再練。",
+    revTwoStrike: "答錯的題目：請細讀參考答案後再練。",
     revIncomplete: "尚有未答對題目，建議先完成。",
-    revFirstTryLow: "不少題目需第二次才答對。作答前宜放慢閱讀題幹。",
+    revFirstTryLow: "不少題目答錯。作答前宜放慢閱讀題幹。",
     revBalanced: "錯誤分散在不同課題，宜均衡練習。",
     hideSettings: "隱藏設定",
     showSettings: "顯示設定",
@@ -237,54 +232,6 @@ const UI = {
     quizNavJpwm07Q1: "測驗 1",
   },
 };
-
-function initQuizNavigation() {
-  const currentQuiz = {
-    "phy-jpwm06": "jpwm06",
-    "phy-jpwm06-2": "jpwm06-2",
-    "phy-jpwm06-3": "jpwm06-3",
-    "phy-jpwm06-4": "jpwm06-4",
-    "phy-jpwm07": "jpwm07",
-  }[QUIZ_META.quizId];
-  const currentTopic = currentQuiz?.startsWith("jpwm06") ? "jpwm06" : "jpwm07";
-  document.querySelectorAll("[data-quiz-nav]").forEach((button) => {
-    if (button.dataset.quizNav === currentQuiz) {
-      button.classList.add("bg-primary", "text-on-primary");
-      button.style.setProperty("background-color", "#004e9f", "important");
-      button.style.setProperty("color", "#ffffff", "important");
-      button.setAttribute("aria-current", "page");
-    }
-    button.addEventListener("click", () => {
-      const id = button.dataset.quizNav;
-      if (window.parent !== window.self) {
-        try {
-          window.parent.dispatchEvent(
-            new CustomEvent("s3phy:opticsQuizSelect", { detail: { id } }),
-          );
-          return;
-        } catch (_) {}
-      }
-      sessionStorage.setItem("s3phy.optics.quiz", id);
-      if (window.top === window.self) window.location.href = "/#/optics";
-    });
-  });
-  const syncTopicOptions = () => {
-    document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
-      const options = document.querySelector(
-        `[data-quiz-topic-options="${toggle.dataset.quizTopicToggle}"]`,
-      );
-      options?.classList.toggle("hidden", !toggle.checked);
-    });
-  };
-  const currentTopicToggle = document.querySelector(
-    `[data-quiz-topic-toggle="${currentTopic}"]`,
-  );
-  if (currentTopicToggle) currentTopicToggle.checked = true;
-  document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
-    toggle.addEventListener("change", syncTopicOptions);
-  });
-  syncTopicOptions();
-}
 
 export function initQuiz() {
   let lang = resolveQuizLang();
@@ -353,6 +300,54 @@ export function initQuiz() {
   }
 
   const t = (key) => UI[lang]?.[key] || UI.en[key] || key;
+
+  function initQuizNavigation() {
+    const currentQuiz = {
+      "phy-jpwm06": "jpwm06",
+      "phy-jpwm06-2": "jpwm06-2",
+      "phy-jpwm06-3": "jpwm06-3",
+      "phy-jpwm06-4": "jpwm06-4",
+      "phy-jpwm07": "jpwm07",
+    }[QUIZ_META.quizId];
+    const currentTopic = currentQuiz?.startsWith("jpwm06") ? "jpwm06" : "jpwm07";
+    document.querySelectorAll("[data-quiz-nav]").forEach((button) => {
+      if (button.dataset.quizNav === currentQuiz) {
+        button.classList.add("bg-primary", "text-on-primary");
+        button.style.setProperty("background-color", "#004e9f", "important");
+        button.style.setProperty("color", "#ffffff", "important");
+        button.setAttribute("aria-current", "page");
+      }
+      button.addEventListener("click", () => {
+        const id = button.dataset.quizNav;
+        if (window.parent !== window.self) {
+          try {
+            window.parent.dispatchEvent(
+              new CustomEvent("s3phy:opticsQuizSelect", { detail: { id } }),
+            );
+            return;
+          } catch (_) {}
+        }
+        sessionStorage.setItem("s3phy.optics.quiz", id);
+        if (window.top === window.self) window.location.href = "/#/optics";
+      });
+    });
+    const syncTopicOptions = () => {
+      document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
+        const options = document.querySelector(
+          `[data-quiz-topic-options="${toggle.dataset.quizTopicToggle}"]`,
+        );
+        options?.classList.toggle("hidden", !toggle.checked);
+      });
+    };
+    const currentTopicToggle = document.querySelector(
+      `[data-quiz-topic-toggle="${currentTopic}"]`,
+    );
+    if (currentTopicToggle) currentTopicToggle.checked = true;
+    document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
+      toggle.addEventListener("change", syncTopicOptions);
+    });
+    syncTopicOptions();
+  }
 
   const els = {
     typeChecks: document.getElementById("quiz-type-checks"),
@@ -570,34 +565,32 @@ export function initQuiz() {
       wrap.id = "q-block-" + q.id;
 
       const head = document.createElement("div");
-      head.className = "text-[11px] font-label-bold uppercase tracking-wide text-on-surface-variant mb-3";
+      head.className = q.label
+        ? "text-body-sm font-label-bold tracking-wide text-primary mb-3"
+        : "text-[11px] font-label-bold uppercase tracking-wide text-on-surface-variant mb-3";
       head.textContent =
+        q.label ||
         "Q" +
-        (idx + 1) +
-        " · " +
-        sectionLabel(itemTopicId(q), lang).toUpperCase() +
-        " · " +
-        formatTypeLabel(q) +
-        " · " +
-        q.difficulty.toUpperCase();
+          (idx + 1) +
+          " · " +
+          sectionLabel(itemTopicId(q), lang).toUpperCase() +
+          " · " +
+          formatTypeLabel(q) +
+          " · " +
+          q.difficulty.toUpperCase();
       wrap.appendChild(head);
 
-      const figures = q.images?.length
-        ? q.images
-        : q.image?.src
-          ? [q.image]
-          : [];
-      figures.forEach((img) => {
+      if (q.image?.src) {
         const fig = document.createElement("figure");
         fig.className = "quiz-fig mb-4";
-        fig.innerHTML = `<img src="${escHtml(img.src)}" alt="${escHtml(img.alt || "")}" loading="lazy" />
-          <figcaption class="text-body-sm text-on-surface-variant mt-2">${escHtml(img.caption || "")}</figcaption>`;
+        fig.innerHTML = `<img src="${escHtml(q.image.src)}" alt="${escHtml(q.image.alt || "")}" loading="lazy" />
+          <figcaption class="text-body-sm text-on-surface-variant mt-2">${escHtml(q.image.caption || "")}</figcaption>`;
         wrap.appendChild(fig);
-      });
+      }
 
       const stem = document.createElement("div");
       stem.className =
-        "font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-4";
+        "split-text-target font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 leading-tight";
       stem.innerHTML = formatStemHtml(q.stem);
       wrap.appendChild(stem);
 
@@ -657,7 +650,9 @@ export function initQuiz() {
         wrap.appendChild(fillWrap);
       } else if (q.options?.length) {
         const og = document.createElement("div");
-        og.className = "grid grid-cols-1 gap-3 mb-4";
+        og.className = q.options.some((opt) => opt.image)
+          ? "grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4"
+          : "grid grid-cols-1 gap-3 mb-4";
 
         q.options.forEach((opt) => {
           const magnet = document.createElement("div");
@@ -677,9 +672,17 @@ export function initQuiz() {
 
           const text = document.createElement("span");
           text.className = "font-body-md text-on-surface flex-1 text-left";
-          text.innerHTML = `${escHtml(opt.text)}${
-            opt.textZh ? `<span class="block text-body-sm text-on-surface-variant mt-1">${escHtml(opt.textZh)}</span>` : ""
-          }`;
+          if (opt.image) {
+            const img = document.createElement("img");
+            img.src = opt.image;
+            img.alt = opt.text || `Graph ${opt.key}`;
+            img.className = "quiz-option-fig";
+            text.appendChild(img);
+          } else {
+            text.innerHTML = `${formatQuizText(opt.text)}${
+              opt.textZh ? `<span class="block text-body-sm text-on-surface-variant mt-1">${escHtml(opt.textZh)}</span>` : ""
+            }`;
+          }
 
           btnOpt.appendChild(badge);
           btnOpt.appendChild(text);
@@ -736,9 +739,14 @@ export function initQuiz() {
 
       const showModelAnswer = () => {
         const ma = modelAnswerText(q);
+        const steps = String(q.explanation || "").trim();
         fb.className = "mt-3 text-body-sm p-3 rounded-xl bg-tertiary/10 text-tertiary border border-tertiary/25";
         fb.innerHTML = `<strong>${escHtml(t("modelPrefix"))}</strong> ${escHtml(ma.en)}${
           ma.zh ? `<span class="block mt-1 text-on-surface-variant">${escHtml(ma.zh)}</span>` : ""
+        }${
+          steps
+            ? `<span class="block mt-2">${escHtml(steps).replace(/\n/g, "<br>")}</span>`
+            : ""
         }`;
       };
 
@@ -783,7 +791,6 @@ export function initQuiz() {
 
         state.wrong += 1;
         attemptMap.set(q.id, state);
-        reportPhyAttempt(q, false, state);
 
         if (fmt !== "fill") {
           const wrongBtn = optionButtons.find((b) => b.dataset.key === state.selected);
@@ -792,36 +799,27 @@ export function initQuiz() {
           fillInputs.forEach((inp) => inp.classList.add("border-tertiary"));
         }
 
-        if (state.wrong === 1) {
-          fb.className = "mt-3 text-body-sm p-3 rounded-xl bg-primary-fixed/50 text-on-surface border border-primary/20";
-          fb.innerHTML = `<strong>${escHtml(t("hintPrefix"))}</strong> ${escHtml(q.hint || "")}`;
-        } else {
-          state.solved = true;
-          attemptMap.set(q.id, state);
-          showModelAnswer();
-          btn.disabled = true;
-          optionButtons.forEach((b) => {
-            b.disabled = true;
-            if (b.dataset.key === q.answer) {
-              b.classList.add("border-tertiary", "bg-tertiary/10");
-            }
-          });
-          fillInputs.forEach((inp) => {
-            inp.disabled = true;
-          });
-          updateProgress();
-        }
+        state.solved = true;
+        attemptMap.set(q.id, state);
+        reportPhyAttempt(q, false, state);
+        showModelAnswer();
+        btn.disabled = true;
+        optionButtons.forEach((b) => {
+          b.disabled = true;
+          if (b.dataset.key === q.answer) {
+            b.classList.add("border-tertiary", "bg-tertiary/10");
+          }
+        });
+        fillInputs.forEach((inp) => {
+          inp.disabled = true;
+        });
+        updateProgress();
       });
 
       wrap.appendChild(btn);
       wrap.appendChild(fb);
 
-      if (st.solved && st.wrong > 0 && st.wrong < 2) {
-        fb.classList.remove("hidden");
-        fb.className = "mt-3 text-body-sm p-3 rounded-xl bg-primary-fixed/50 text-on-surface border border-primary/20";
-        fb.innerHTML = `<strong>${escHtml(t("hintPrefix"))}</strong> ${escHtml(q.hint || "")}`;
-      }
-      if (st.solved && st.wrong >= 2) {
+      if (st.solved && st.wrong >= 1) {
         fb.classList.remove("hidden");
         showModelAnswer();
         btn.disabled = true;
@@ -846,13 +844,13 @@ export function initQuiz() {
   });
   document.getElementById("btn-doc-q")?.addEventListener("click", () => downloadWord(lastQuestions, false, lang));
   document.getElementById("btn-doc-a")?.addEventListener("click", () => downloadWord(lastQuestions, true, lang));
-  document.getElementById("btn-print")?.addEventListener("click", () => {
+  document.getElementById("btn-print")?.addEventListener("click", async () => {
     if (!lastQuestions.length) {
       alert(t("alertNoQuiz"));
       return;
     }
     const want = confirm(t("printConfirm"));
-    printSheet(lastQuestions, want, lang);
+    await printSheet(lastQuestions, want, lang);
   });
 
   function syncLangFromParent() {

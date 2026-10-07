@@ -1615,6 +1615,7 @@ body:has([data-hub-fullscreen]) .hub-fs-btn {
 .tool-jpwm06-quiz-3,
 .tool-jphg02-quiz,
 .tool-jpwm06-quiz-4,
+.tool-jpwm07-quiz,
 .tool-optics-ch4-em-quiz,
 .tool-heat-final-exam-quiz,
 .tool-heat-ch1-quiz,
@@ -1647,6 +1648,7 @@ body:has([data-hub-fullscreen]) .hub-fs-btn {
 .tool-jpwm06-quiz-3 iframe,
 .tool-jphg02-quiz iframe,
 .tool-jpwm06-quiz-4 iframe,
+.tool-jpwm07-quiz iframe,
 .tool-optics-ch4-em-quiz iframe,
 .tool-heat-final-exam-quiz iframe,
 .tool-heat-ch1-quiz iframe,
@@ -1851,6 +1853,7 @@ iframe.note-preview {
 .panel--quiz-embed .tool-jpwm06-quiz-2,
 .panel--quiz-embed .tool-jpwm06-quiz-3,
 .panel--quiz-embed .tool-jpwm06-quiz-4,
+.panel--quiz-embed .tool-jpwm07-quiz,
 .panel--quiz-embed .tool-foundations-quantities-quiz {
   width: 100%;
   flex: 1 1 auto;

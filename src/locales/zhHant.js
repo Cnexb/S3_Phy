@@ -199,6 +199,8 @@ export const zhHant = {
   'quiz.jpwm06Quiz2': 'JPWM06 測驗 2',
   'quiz.jpwm06Quiz3': 'JPWM06 測驗 3',
   'quiz.jpwm06Quiz4': 'JPWM06 測驗 4',
+  'quiz.jpwm07Quiz1': 'JPWM07 測驗 1',
+  'quiz.jpwm07Title': 'JPWM07 光的折射 · 測驗 1',
   'quiz.foundationsTitle': '\u4e2d\u4e09\u7269\u7406\u57fa\u790e\u6e2c\u9a57',
   'quiz.foundationsUsefulMathTitle': 'F02 \u7269\u7406\u4e2d\u5e38\u7528\u7684\u6578\u5b78',
   'quiz.label.quantitiesUnits': 'F01 \u7269\u7406\u91cf\u8207\u55ae\u4f4d',

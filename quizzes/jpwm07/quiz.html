@@ -3,8 +3,12 @@
 <head>
   <meta name="google" content="notranslate">
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>S3 · JPWM06 Light reflection</title>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>S3 · JPWM07 Light refraction · Quiz 1</title>
+<link rel="stylesheet" href="../shared/s3phy-tokens.css">
+<link rel="stylesheet" href="../shared/s3phy-embed.css">
+<link rel="stylesheet" href="../shared/quiz-shell.css">
+<script src="../shared/s3phy-embed-init.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
@@ -54,12 +58,6 @@ tailwind.config = {
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal .split-word { opacity: 1; transform: translateY(0); }
-.stem-block { display: block; }
-.stem-statement {
-  padding-left: 0.25rem;
-  border-left: 3px solid rgba(0, 78, 159, 0.25);
-  padding-left: 0.75rem;
-}
 .magnet-link { transition: transform 0.2s ease-out; }
 .true-focus-active .focus-target { filter: blur(0); opacity: 1; z-index: 10; }
 .true-focus-active .focus-dim { filter: blur(8px); opacity: 0.4; pointer-events: none; }
@@ -68,18 +66,15 @@ tailwind.config = {
   transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .q-block.q-visible { opacity: 1; transform: translateY(0); }
-.quiz-fig {
-  margin: 0 0 1rem;
-}
 .quiz-fig img {
+  display: block; width: auto; max-width: 100%; max-height: 420px; object-fit: contain;
+  border-radius: 0.75rem; background: #f7f9fb;
+}
+.quiz-option-fig {
   display: block;
   width: auto;
   max-width: 100%;
   height: auto;
-  max-height: 420px;
-  object-fit: contain;
-  object-position: left top;
-  border-radius: 0.75rem;
   background: #fff;
 }
 .summary-panel[hidden] { display: none !important; }
@@ -103,10 +98,37 @@ tailwind.config = {
 .quiz-bank-matrix .cell-zero { color: #727784; }
 .quiz-bank-matrix .cell-hit { font-weight: 700; color: #004e9f; }
 @media print {
-  body * { visibility: hidden; }
-  #quiz-pdf-sheet, #quiz-pdf-sheet * { visibility: visible; }
-  #quiz-pdf-sheet { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 1rem; }
-  #settings-panel { display: none !important; }
+  html, body {
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  body > *:not(#quiz-pdf-sheet) {
+    display: none !important;
+  }
+  #quiz-pdf-sheet {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  #quiz-pdf-sheet * {
+    visibility: visible !important;
+  }
+  #quiz-pdf-sheet .export-q {
+    page-break-inside: avoid;
+    break-inside: avoid-page;
+    margin-bottom: 1rem;
+  }
+  #quiz-pdf-sheet .export-fig img {
+    max-width: 100%;
+    height: auto;
+  }
 }
 </style>
 </head>
@@ -160,7 +182,7 @@ tailwind.config = {
 <div class="min-w-0 space-y-4">
 <div class="flex flex-wrap items-center justify-between gap-3 focus-dim">
 <div class="min-w-0 flex-1">
-<p class="font-label-bold text-primary text-body-sm mb-1">CH3 Wave Motion and Optics · JPWM06 Light reflection</p>
+<p class="font-label-bold text-primary text-body-sm mb-1">CH3 Wave Motion and Optics · JPWM07 Light refraction · Quiz 1</p>
 <p class="font-label-bold text-on-surface-variant text-body-sm" id="quiz-progress-text">No session yet</p>
 <div class="h-2.5 w-full max-w-md mt-2 bg-surface-container-high rounded-full relative overflow-hidden">
 <div class="shiny-progress-bar absolute left-0 top-0 h-full bg-primary-container rounded-full transition-all duration-500" id="quiz-progress-bar" style="width:0%"></div>
@@ -179,7 +201,6 @@ tailwind.config = {
 <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
 <div>
 <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1 split-text-target" id="page-title" data-i18n="hPractice">On-screen practice</h2>
-<p class="text-body-sm text-on-surface-variant" data-i18n="txtPracticeHint">First wrong: hint only. Second wrong: model answer.</p>
 </div>
 <button class="py-2.5 px-5 rounded-full border border-outline-variant/30 bg-surface font-label-bold text-body-sm hover:border-primary hover:text-primary transition-colors" id="btn-summary" type="button" data-i18n="btnSummary">Session summary</button>
 </div>
@@ -203,7 +224,7 @@ tailwind.config = {
     }
     console.error("Quiz module load failed:", err);
   };
-  import("./js/quizApp.js?v=20260911jpwm06imgs").catch(showLoadError);
+  import("./js/quizApp.js?v=20261007jpwm07q1").catch(showLoadError);
 </script>
 </body>
 </html>
