@@ -87,6 +87,14 @@ const UI = {
     revBalanced: "Errors spread across topics — continue balanced practice.",
     hideSettings: "Hide settings",
     showSettings: "Show settings",
+    quizNavTitle: "Choose quiz",
+    quizNavJpwm06: "JPWM06 Light reflection",
+    quizNavJpwm06Q1: "Quiz 1",
+    quizNavJpwm06Q2: "Quiz 2",
+    quizNavJpwm06Q3: "Quiz 3",
+    quizNavJpwm06Q4: "Quiz 4",
+    quizNavJpwm07: "JPWM07 Light refraction",
+    quizNavJpwm07Q1: "Quiz 1",
   },
   zh: {
     appSubtitle: "概念检查 · 界面简体中文",
@@ -149,6 +157,14 @@ const UI = {
     revBalanced: "错误分散在不同课题，宜均衡练习。",
     hideSettings: "隐藏设定",
     showSettings: "显示设定",
+    quizNavTitle: "选择测验",
+    quizNavJpwm06: "JPWM06 光的反射",
+    quizNavJpwm06Q1: "测验 1",
+    quizNavJpwm06Q2: "测验 2",
+    quizNavJpwm06Q3: "测验 3",
+    quizNavJpwm06Q4: "测验 4",
+    quizNavJpwm07: "JPWM07 光的折射",
+    quizNavJpwm07Q1: "测验 1",
   },
   "zh-Hant": {
     appSubtitle: "概念檢查 · 介面繁體中文",
@@ -211,6 +227,14 @@ const UI = {
     revBalanced: "錯誤分散在不同課題，宜均衡練習。",
     hideSettings: "隱藏設定",
     showSettings: "顯示設定",
+    quizNavTitle: "選擇測驗",
+    quizNavJpwm06: "JPWM06 光的反射",
+    quizNavJpwm06Q1: "測驗 1",
+    quizNavJpwm06Q2: "測驗 2",
+    quizNavJpwm06Q3: "測驗 3",
+    quizNavJpwm06Q4: "測驗 4",
+    quizNavJpwm07: "JPWM07 光的折射",
+    quizNavJpwm07Q1: "測驗 1",
   },
 };
 
@@ -281,6 +305,54 @@ export function initQuiz() {
   }
 
   const t = (key) => UI[lang]?.[key] || UI.en[key] || key;
+
+  function initQuizNavigation() {
+    const currentQuiz = {
+      "phy-jpwm06": "jpwm06",
+      "phy-jpwm06-2": "jpwm06-2",
+      "phy-jpwm06-3": "jpwm06-3",
+      "phy-jpwm06-4": "jpwm06-4",
+      "phy-jpwm07": "jpwm07",
+    }[QUIZ_META.quizId];
+    const currentTopic = currentQuiz?.startsWith("jpwm06") ? "jpwm06" : "jpwm07";
+    document.querySelectorAll("[data-quiz-nav]").forEach((button) => {
+      if (button.dataset.quizNav === currentQuiz) {
+        button.classList.add("bg-primary", "text-on-primary");
+        button.style.setProperty("background-color", "#004e9f", "important");
+        button.style.setProperty("color", "#ffffff", "important");
+        button.setAttribute("aria-current", "page");
+      }
+      button.addEventListener("click", () => {
+        const id = button.dataset.quizNav;
+        if (window.parent !== window.self) {
+          try {
+            window.parent.dispatchEvent(
+              new CustomEvent("s3phy:opticsQuizSelect", { detail: { id } }),
+            );
+            return;
+          } catch (_) {}
+        }
+        sessionStorage.setItem("s3phy.optics.quiz", id);
+        if (window.top === window.self) window.location.href = "/#/optics";
+      });
+    });
+    const syncTopicOptions = () => {
+      document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
+        const options = document.querySelector(
+          `[data-quiz-topic-options="${toggle.dataset.quizTopicToggle}"]`,
+        );
+        options?.classList.toggle("hidden", !toggle.checked);
+      });
+    };
+    const currentTopicToggle = document.querySelector(
+      `[data-quiz-topic-toggle="${currentTopic}"]`,
+    );
+    if (currentTopicToggle) currentTopicToggle.checked = true;
+    document.querySelectorAll("[data-quiz-topic-toggle]").forEach((toggle) => {
+      toggle.addEventListener("change", syncTopicOptions);
+    });
+    syncTopicOptions();
+  }
 
   const els = {
     typeChecks: document.getElementById("quiz-type-checks"),
@@ -807,6 +879,7 @@ export function initQuiz() {
   els.quizArea.className = "quiz-empty text-center text-on-surface-variant py-12 text-body-sm";
 
   bindTrueFocus(els.quizContainer);
+  initQuizNavigation();
 
   initSettingsToggle({
     layout: document.getElementById("quiz-layout"),
