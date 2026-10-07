@@ -1,4 +1,4 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js?v=20260930jphg02";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js?v=20261007jphg02q2";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
@@ -299,6 +299,7 @@ export function initQuiz() {
       "phy-jphg01-2": "jphg01-2",
       "phy-jphg01-3": "jphg01-3",
       "phy-jphg02": "jphg02",
+      "phy-jphg02-2": "jphg02-2",
     }[QUIZ_META.quizId];
     const currentTopic = currentQuiz?.startsWith("jphg01") ? "jphg01" : "jphg02";
     document.querySelectorAll("[data-quiz-nav]").forEach((button) => {
