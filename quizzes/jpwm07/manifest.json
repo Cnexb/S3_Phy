@@ -1,0 +1,5 @@
+{
+  "slug": "jpwm07-quiz",
+  "syncAll": true,
+  "exclude": ["manifest.json", "README.md"]
+}

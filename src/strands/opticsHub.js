@@ -15,7 +15,7 @@ import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
 const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em', 'rayDiagram'];
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
-const QUIZ_ORDER = ['jpwm06', 'jpwm06-2', 'jpwm06-3', 'jpwm06-4'];
+const QUIZ_ORDER = ['jpwm06', 'jpwm06-2', 'jpwm06-3', 'jpwm06-4', 'jpwm07'];
 const QUIZ_STORAGE_KEY = 's3phy.optics.quiz';
 const WORKSHEET_ORDER = ['lightLens', 'emWave'];
 const SUMMARY_ASSET_VERSION = '20260627-em-v2';
@@ -100,6 +100,7 @@ function quizLabel(id) {
     'jpwm06-2': 'quiz.jpwm06Quiz2',
     'jpwm06-3': 'quiz.jpwm06Quiz3',
     'jpwm06-4': 'quiz.jpwm06Quiz4',
+    jpwm07: 'quiz.jpwm07Quiz1',
   };
   return t(map[id] || id);
 }
@@ -163,6 +164,13 @@ export function mountOpticsHub(root) {
     destroyWorksheet?.();
     destroyWorksheet = null;
     stage.innerHTML = '';
+    if (quizPickId === 'jpwm07') {
+      const { createOpticsJpwm07Quiz } = await import('../worksheets/opticsJpwm07Quiz.js');
+      const node = createOpticsJpwm07Quiz(t);
+      stage.appendChild(node);
+      destroyWorksheet = node._opticsJpwm07QuizCleanup || null;
+      return;
+    }
     if (quizPickId === 'jpwm06-4') {
       const { createOpticsCh3Quiz4 } = await import('../worksheets/opticsCh3Quiz4.js');
       const node = createOpticsCh3Quiz4(t);

@@ -199,6 +199,8 @@ export const en = {
   'quiz.jpwm06Quiz2': 'JPWM06 Quiz 2',
   'quiz.jpwm06Quiz3': 'JPWM06 Quiz 3',
   'quiz.jpwm06Quiz4': 'JPWM06 Quiz 4',
+  'quiz.jpwm07Quiz1': 'JPWM07 Quiz 1',
+  'quiz.jpwm07Title': 'JPWM07 Light refraction · Quiz 1',
   'quiz.foundationsTitle': 'S3 Foundations quiz',
   'quiz.foundationsUsefulMathTitle': 'F02 Useful Mathematics in Physics',
   'quiz.label.quantitiesUnits': 'F01 Quantities and Units',
