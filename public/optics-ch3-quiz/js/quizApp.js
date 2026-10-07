@@ -364,6 +364,12 @@ export function initQuiz() {
     progressBar: document.getElementById("quiz-progress-bar"),
     quizContainer: document.getElementById("quiz-container"),
   };
+  const itemCount = Math.min(50, Math.max(1, QUIZ_ITEMS.length));
+  if (els.numCount) {
+    els.numCount.value = String(itemCount);
+    els.numCount.max = String(itemCount);
+    els.numCount.disabled = true;
+  }
 
   if (!els.quizArea) return;
 
