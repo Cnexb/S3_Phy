@@ -1,0 +1,1648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reflection · Plane Mirror</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,500;0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f3eee4;
+    --paper-deep: #e7e0d2;
+    --ink: #2c2924;
+    --muted: #5e584e;
+    --card: #fffdf8;
+    --line: #e3dacb;
+    --yellow: #f3dc8c;
+    --blue: #3c86b4;
+    --blue-soft: #e7f3fa;
+    --navy: #1c2836;
+    --panel: #101820;
+    --cyan: #67d4ff;
+    --amber: #ffc857;
+    --violet: #b388ff;
+    --orange: #f08a3c;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  @page { size: A4 portrait; margin: 0; }
+  body {
+    min-height: 100vh;
+    background: #d4cbbd;
+    color: var(--ink);
+    font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .poster {
+    width: 210mm;
+    height: 297mm;
+    flex-shrink: 0;
+    background:
+      radial-gradient(rgba(120, 90, 40, 0.035) 0.7px, transparent 0.7px);
+    background-size: 4px 4px;
+    background-color: #f7f2e8;
+    border: 1px solid #e6dece;
+    box-shadow: 0 18px 50px rgba(70, 50, 20, 0.16);
+    padding: 6mm 7mm 4.5mm;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 34mm 62mm 55mm minmax(0, 1fr);
+    grid-template-areas:
+      "mast mast"
+      "rays beams"
+      "see law"
+      "image image"
+      "sight diff";
+    gap: 2mm 2.6mm;
+  }
+
+  .mast {
+    grid-area: mast;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) 78px;
+    gap: 10px;
+    align-items: center;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand-copy { line-height: 1; }
+  .brand-name {
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    font-size: 13px;
+  }
+  .brand-tag {
+    margin-top: 4px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .hero { min-width: 0; }
+  .title-wrap { position: relative; display: inline-block; max-width: 100%; }
+  .title-wrap::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: -4%;
+    right: -2%;
+    top: 12%;
+    bottom: 6%;
+    background: var(--yellow);
+    border-radius: 46% 50% 44% 50%;
+    transform: rotate(-1.6deg) scaleX(0);
+    transform-origin: left center;
+    animation: wipe 0.9s 0.15s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  h1 {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .sketch { width: 78px; height: 78px; }
+
+  .pill {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    border-radius: 999px;
+    padding: 4px 11px;
+    margin-bottom: 6px;
+    flex: none;
+  }
+  .remarks ul, .apps ul {
+    margin: 0;
+    padding-left: 15px;
+  }
+  .remarks li, .apps li {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.12;
+    color: #3a362f;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 7px 9px 8px;
+    min-height: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(80, 60, 30, 0.04);
+    animation: rise 0.7s ease both;
+    display: flex;
+    flex-direction: column;
+  }
+  .d1 { grid-area: law; }
+  .d2 { grid-area: image; }
+  .side {
+    grid-area: side;
+    display: flex;
+    flex-direction: column;
+    gap: 2mm;
+    min-height: 0;
+  }
+  .side .d3 {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    gap: 0;
+    padding: 4px 6px 4px;
+  }
+  .side .d3 .head { margin-bottom: 0; }
+  .side .d4 {
+    flex: 1.55 1 0;
+    min-height: 0;
+  }
+  .card:nth-of-type(1) { animation-delay: 0.05s; }
+  .card.d1 { animation-delay: 0.12s; }
+  .card.d2 { animation-delay: 0.22s; }
+  .card.d3 { animation-delay: 0.32s; }
+  .card.d4 { animation-delay: 0.42s; }
+
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    flex: none;
+  }
+  .num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 12px;
+    flex: none;
+  }
+  h2 {
+    margin: 0;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 0.92fr 1.08fr;
+    gap: 8px;
+    align-items: stretch;
+    min-height: 0;
+    flex: 1;
+  }
+  .note {
+    font-size: 15px;
+    line-height: 1.45;
+    color: #3d3932;
+  }
+  .note strong { color: var(--ink); }
+  .note p { margin: 0 0 5px; }
+  .note p:last-child { margin-bottom: 0; }
+  .eq {
+    display: inline-block;
+    background: var(--blue-soft);
+    color: #1d5274;
+    border-radius: 8px;
+    padding: 1px 6px;
+    font-weight: 800;
+  }
+
+  .panel {
+    background: radial-gradient(120px 80px at 30% 20%, #1c3144, var(--panel) 70%);
+    border-radius: 10px;
+    overflow: hidden;
+    min-height: 0;
+    flex: 1;
+  }
+  .panel svg { display: block; width: 100%; height: 100%; }
+
+  .props {
+    display: grid;
+    grid-template-columns: 148px 1fr;
+    flex: none;
+    border: 1px solid #efe6d6;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .props div {
+    padding: 6px 10px;
+    font-size: 15.5px;
+    line-height: 1.35;
+    border-bottom: 1px solid #efe6d6;
+  }
+  .props div:nth-last-child(-n+2) { border-bottom: 0; }
+  .props .k {
+    font-weight: 800;
+    background: #fff8ea;
+    white-space: nowrap;
+  }
+
+  .lives {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 4px 0 2px;
+    flex: none;
+  }
+  .lives span {
+    flex: 1;
+    text-align: center;
+    background: #fff4d2;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 16px;
+    padding: 4px 0;
+    color: #8a6412;
+    animation: letter 7.5s ease-in-out infinite;
+  }
+  .lives span:nth-child(2) { animation-delay: 1.5s; }
+  .lives span:nth-child(3) { animation-delay: 3s; }
+  .lives span:nth-child(4) { animation-delay: 4.5s; }
+  .lives span:nth-child(5) { animation-delay: 6s; }
+  .caption-slot {
+    position: relative;
+    height: 18px;
+    margin-bottom: 4px;
+    flex: none;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #8a6412;
+  }
+  .caption-slot em {
+    position: absolute;
+    left: 0; right: 0;
+    font-style: normal;
+    opacity: 0;
+    animation: cap 7.5s ease-in-out infinite;
+  }
+  .caption-slot em:nth-child(2) { animation-delay: 1.5s; }
+  .caption-slot em:nth-child(3) { animation-delay: 3s; }
+  .caption-slot em:nth-child(4) { animation-delay: 4.5s; }
+  .caption-slot em:nth-child(5) { animation-delay: 6s; }
+
+  .hi { opacity: 0.5; }
+  .hi-l { animation: hi 7.5s ease-in-out infinite; }
+  .hi-i { animation: hi 7.5s ease-in-out 1.5s infinite; }
+  .hi-v { animation: hi 7.5s ease-in-out 3s infinite; }
+  .hi-e { animation: hi 7.5s ease-in-out 4.5s infinite; }
+  .hi-s { animation: hi 7.5s ease-in-out 6s infinite; }
+  .pop { opacity: 0; }
+  .pop.hi-l { animation: pop 7.5s ease-in-out infinite; }
+  .pop.hi-i { animation: pop 7.5s ease-in-out 1.5s infinite; }
+  .pop.hi-v { animation: pop 7.5s ease-in-out 3s infinite; }
+  .pop.hi-e { animation: pop 7.5s ease-in-out 4.5s infinite; }
+  .pop.hi-s { animation: pop 7.5s ease-in-out 6s infinite; }
+  .image-dash { animation: flash-v 7.5s linear infinite; }
+
+  .move {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    background: #f7f1ff;
+    border-radius: 9px;
+    padding: 3px 6px;
+    margin-top: 1px;
+    flex: none;
+  }
+  .move svg { width: 92px; height: 40px; flex: none; }
+  .move p { margin: 0; font-size: 11.5px; line-height: 1.2; }
+
+  .apps {
+    background: #f4fbf4;
+    border-color: #d7ead8;
+  }
+  .apps .num { background: #3e9a62; }
+  .apps ul { margin-top: 2px; }
+  .apps li {
+    font-size: 15px;
+    line-height: 1.35;
+    margin: 2px 0;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-right: 5px;
+  }
+  .good { background: #e5f6e8; color: #1f7a3a; }
+  .bad { background: #fde8e4; color: #a33b2b; }
+
+  .app-board {
+    flex: 1;
+    min-height: 0;
+    margin-top: 4px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+  }
+  .app-tile {
+    margin: 0;
+    min-width: 0;
+    min-height: 0;
+    background: #fffdf8;
+    border: 1px solid #d5ead6;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .app-tile svg {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    display: block;
+  }
+  .app-tile figcaption {
+    flex: none;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    color: #2c2924;
+    padding: 0 4px 5px;
+  }
+  .app-tile.plus { background: #f5fbf6; }
+  .app-tile.plus figcaption { color: #1f7a3a; }
+  .app-tile.minus { background: #fff7f5; border-color: #f0d2cc; }
+  .app-tile.minus figcaption { color: #a33b2b; }
+
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: #8a8276;
+    font-weight: 700;
+    grid-area: foot;
+    margin: 0;
+    align-self: center;
+  }
+
+  .ray {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .ray-in {
+    stroke: var(--cyan);
+    stroke-width: 3;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    filter: drop-shadow(0 0 4px rgba(103, 212, 255, 0.8));
+    animation: draw 4.8s ease-in-out infinite;
+  }
+  .ray-out {
+    stroke: var(--amber);
+    stroke-width: 3;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    filter: drop-shadow(0 0 4px rgba(255, 200, 87, 0.75));
+    animation: draw 4.8s 0.55s ease-in-out infinite;
+  }
+  .ray-back {
+    stroke: var(--violet);
+    stroke-width: 2.4;
+    stroke-dasharray: 4 5;
+    stroke-dashoffset: 80;
+    opacity: 0;
+    animation: extend 5.6s ease-in-out infinite;
+  }
+  .ghost {
+    opacity: 0;
+    animation: ghost 5.6s ease-in-out infinite;
+  }
+  .angle {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0;
+    animation: fadehold 4.8s ease-in-out infinite;
+  }
+  .ang-label {
+    opacity: 0;
+    font-size: 15px;
+    font-family: "Source Sans 3", "Segoe UI", sans-serif;
+    font-weight: 700;
+  }
+  .panel-law .ray-in {
+    animation: law-in 6s ease-in-out infinite;
+    filter: drop-shadow(0 0 2px rgba(103, 212, 255, 0.55));
+  }
+  .panel-law .ray-out {
+    animation: law-out 6s ease-in-out infinite;
+    filter: drop-shadow(0 0 2px rgba(255, 200, 87, 0.5));
+  }
+  .panel-law .angle-i,
+  .panel-law .ang-i { animation: show-i 6s ease-in-out infinite; }
+  .panel-law .angle-r,
+  .panel-law .ang-r { animation: show-r 6s ease-in-out infinite; }
+  .panel-law .spark { animation: law-spark 6s ease-in-out infinite; }
+  .spark {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+    animation: spark 4.8s 0.45s ease-in-out infinite;
+  }
+  .mirror-shift {
+    animation: nudge 4.2s ease-in-out infinite;
+  }
+  .image-shift {
+    animation: nudge2 4.2s ease-in-out infinite;
+  }
+
+  @keyframes wipe {
+    to { transform: rotate(-1.6deg) scaleX(1); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes draw {
+    0% { stroke-dashoffset: 100; opacity: 1; }
+    28% { stroke-dashoffset: 0; opacity: 1; }
+    72% { stroke-dashoffset: 0; opacity: 1; }
+    86% { opacity: 0; }
+    100% { stroke-dashoffset: 100; opacity: 0; }
+  }
+  @keyframes fadehold {
+    0%, 18% { opacity: 0; }
+    32%, 72% { opacity: 1; }
+    88%, 100% { opacity: 0; }
+  }
+  @keyframes law-in {
+    0% { stroke-dashoffset: 100; opacity: 1; }
+    32% { stroke-dashoffset: 0; opacity: 1; }
+    84% { stroke-dashoffset: 0; opacity: 1; }
+    93% { opacity: 0; }
+    100% { stroke-dashoffset: 100; opacity: 0; }
+  }
+  @keyframes law-out {
+    0%, 31% { stroke-dashoffset: 100; opacity: 0; }
+    32% { stroke-dashoffset: 100; opacity: 1; }
+    64% { stroke-dashoffset: 0; opacity: 1; }
+    84% { stroke-dashoffset: 0; opacity: 1; }
+    93% { opacity: 0; }
+    100% { stroke-dashoffset: 100; opacity: 0; }
+  }
+  @keyframes show-i {
+    0%, 28% { opacity: 0; }
+    38%, 84% { opacity: 1; }
+    93%, 100% { opacity: 0; }
+  }
+  @keyframes show-r {
+    0%, 52% { opacity: 0; }
+    66%, 84% { opacity: 1; }
+    93%, 100% { opacity: 0; }
+  }
+  @keyframes law-spark {
+    0%, 28% { opacity: 0; transform: scale(0.4); }
+    36%, 84% { opacity: 1; transform: scale(1); }
+    93%, 100% { opacity: 0; transform: scale(0.5); }
+  }
+  @keyframes spark {
+    0%, 20% { opacity: 0; transform: scale(0.4); }
+    32%, 68% { opacity: 1; transform: scale(1); }
+    84%, 100% { opacity: 0; transform: scale(0.6); }
+  }
+  @keyframes extend {
+    0%, 30% { stroke-dashoffset: 80; opacity: 0; }
+    48%, 74% { stroke-dashoffset: 0; opacity: 0.95; }
+    90%, 100% { opacity: 0; }
+  }
+  @keyframes ghost {
+    0%, 38% { opacity: 0; }
+    52%, 76% { opacity: 1; }
+    92%, 100% { opacity: 0; }
+  }
+  @keyframes letter {
+    0%, 8% { background: #fff4d2; color: #8a6412; transform: scale(1); }
+    12%, 22% { background: #f0a202; color: #fff; transform: scale(1.08); }
+    30%, 100% { background: #fff4d2; color: #8a6412; transform: scale(1); }
+  }
+  @keyframes cap {
+    0%, 8% { opacity: 0; }
+    14%, 24% { opacity: 1; }
+    32%, 100% { opacity: 0; }
+  }
+  @keyframes hi {
+    0%, 8% { opacity: 0.45; }
+    12%, 22% { opacity: 1; }
+    30%, 100% { opacity: 0.45; }
+  }
+  @keyframes pop {
+    0%, 8% { opacity: 0; }
+    12%, 22% { opacity: 1; }
+    30%, 100% { opacity: 0; }
+  }
+  .types-table tbody tr, .sign-lines li { animation: none !important; }
+  .types-table tbody tr:nth-child(even) { background: #fafafa !important; }
+  .sign-lines li {
+    background: transparent !important;
+    border: 1px solid #e6e6e6 !important;
+    color: #1a1a1a !important;
+  }
+  .formula-notes .note, .formula-notes .hi { color: #1a1a1a !important; }
+  .formula-notes .sep { border-top-color: #e0e0e0 !important; }
+  @keyframes flash-v {
+    0%, 38% { opacity: 1; }
+    42% { opacity: 0.12; }
+    46% { opacity: 1; }
+    50% { opacity: 0.12; }
+    54% { opacity: 1; }
+    58% { opacity: 0.12; }
+    62%, 100% { opacity: 1; }
+  }
+  @keyframes nudge {
+    0%, 18% { transform: translateX(0); }
+    45%, 70% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes nudge2 {
+    0%, 18% { transform: translateX(0); }
+    45%, 70% { transform: translateX(-20px); }
+    100% { transform: translateX(0); }
+  }
+
+  @media print {
+    body { background: none; padding: 0; display: block; }
+    .poster { box-shadow: none; border: 0; margin: 0; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    .title-wrap::before { transform: rotate(-1.6deg) scaleX(1); }
+    .ray-in, .ray-out { stroke-dashoffset: 0; opacity: 1; }
+    .ghost, .angle, .ang-label, .spark, .ray-back, .hi, .pop { opacity: 1; }
+    .caption-slot em { position: static; opacity: 1; display: inline; }
+    .caption-slot em::after { content: " · "; }
+  }
+
+/* Study palette: a few clear colours, light panels, readable type. */
+  :root {
+    --ink: #1c2b33;
+    --muted: #5d6d76;
+    --card: #ffffff;
+    --line: #d5e2ea;
+    --yellow: #ffe8bf;
+    --blue: #1f7ac4;
+    --blue-soft: #e7f3fb;
+    --navy: #16324a;
+    --panel: #f4f8fb;
+    --cyan: #1f7ac4;
+    --amber: #e07a1f;
+    --violet: #6d56b8;
+    --orange: #e07a1f;
+    --purple: #6d56b8;
+    --green: #1f8a5b;
+    --green-soft: #e7f6ee;
+    --red: #c4473a;
+    --gold: #c9861a;
+  }
+  body {
+    background: #d5e4ee !important;
+    color: #1c2b33 !important;
+    font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  }
+  .poster {
+    background: #fbf8f3 !important;
+    background-image: none !important;
+    border: 1px solid #c5d5e0 !important;
+    box-shadow: none !important;
+    color: #1c2b33;
+  }
+  h1, h2, h3, .subtitle, .footer, .note, .formula, .formula-box, .eq,
+  .form-table, .types-table, .pt-label, .ang-label, figcaption, li, p, td, th {
+    font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif !important;
+  }
+  h1 {
+    color: #1d6b45 !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1.02 !important;
+  }
+  h2, h3 { color: #1a5270 !important; font-weight: 700 !important; }
+  .subtitle { color: #5d6d76 !important; }
+  .title-wrap::before { content: none !important; animation: none !important; display: none !important; }
+  .brand-logo { height: 54px; width: auto; display: block; }
+  .card, .rule-tile, .app-tile, .adv-box {
+    background: #fff !important;
+    border: 1px solid #d5e2ea !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+  }
+  .app-tile.plus { background: #f3fbf6 !important; border-color: #b7dfc6 !important; }
+  .app-tile.minus { background: #fff6f4 !important; border-color: #f0cfc8 !important; }
+  .app-tile.plus figcaption { color: #1b7a45 !important; }
+  .app-tile.minus figcaption { color: #b42318 !important; }
+  .num, .apps .num, .props-list .pn {
+    background: #1f7ac4 !important;
+    color: #fff !important;
+    border: 0 !important;
+  }
+  .num.orange { background: #e07a1f !important; }
+  .num.green, .apps .num { background: #1f8a5b !important; }
+  .num.purple, .num.gold { background: #6d56b8 !important; }
+  .num.red { background: #c4473a !important; }
+  .num.blue { background: #1f7ac4 !important; }
+  .panel, .bend, .rule-panel, .tile, .ex-panel, .app-panel, .nature-panel {
+    background: #f4f8fb !important;
+    background-image: none !important;
+    border-radius: 8px !important;
+  }
+  .light-panel { background: #f7fbfe !important; border-radius: 8px !important; }
+  .bend figcaption, .tile figcaption {
+    color: #1a5270 !important;
+    background: #e7f0f6 !important;
+  }
+  .rule-cap { color: #1a5270 !important; }
+  .ray, .ray-in, .ray-out, .ray-cyan, .ray-amber, .ray-back, .ray-reflect,
+  .ray-boundary, .ray-weak, .fibre-ray, .prism-ray, .mirage-ray, .fish-ray, .white-ray {
+    filter: none !important;
+  }
+  .spectrum-line { filter: none !important; }
+  .ray-in, .ray-cyan, .fish-crit { stroke: #1f7ac4 !important; }
+  .ray-out, .ray-amber, .ray-boundary, .prism-ray { stroke: #e07a1f !important; }
+  .ray-reflect, .ray-back, .fibre-ray, .image-dash { stroke: #6d56b8 !important; }
+  .ray-weak, .fish-tir { stroke: #8aa0ae !important; }
+  .mirage-1, .mirage-2 { stroke: #1f7ac4 !important; }
+  .mirage-3 { stroke: #1f8a5b !important; }
+  .mirage-4 { stroke: #e07a1f !important; }
+  .panel-law .angle-i { stroke: #1f7ac4 !important; }
+  .panel-law .angle-r { stroke: #e07a1f !important; }
+  .panel-law .arrow-i { fill: #1f7ac4 !important; }
+  .panel-law .arrow-r { fill: #e07a1f !important; }
+  .eq, .pill {
+    background: #e7f3fb !important;
+    color: #164e78 !important;
+    border-color: #c5dff3 !important;
+  }
+  .formula, .formula-box, .formula-col .eq {
+    background: #e7f6ee !important;
+    color: #145c3a !important;
+    border: 1px solid #b7e0c8 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    animation: none !important;
+  }
+  .tag.good { background: #e5f6ea !important; color: #1b7a45 !important; }
+  .tag.bad { background: #fde8e4 !important; color: #b42318 !important; }
+  .move { background: #f4efff !important; }
+  .adv-box { background: #f7f4ec !important; }
+  .props .k { background: #fff4e4 !important; color: #1c2b33 !important; }
+  .lives span {
+    background: #fff4e4 !important;
+    color: #9a5b10 !important;
+    border: 0 !important;
+  }
+  .nature-banner, .ved-pill { background: #e7f6ee !important; color: #145c3a !important; border-color: #b7e0c8 !important; }
+  .sign-note, .formula-notes .hi, .formula-notes .note { color: #1c2b33 !important; }
+  .sign-lines li {
+    background: #e7f6ee !important;
+    border: 1px solid #b7e0c8 !important;
+    color: #145c3a !important;
+    animation: none !important;
+  }
+  .form-table th {
+    background: #1f7ac4 !important;
+    color: #fff !important;
+    border-bottom: 0 !important;
+  }
+  .form-table td, .types-table td, .props div { color: #1c2b33 !important; border-color: #e6eef3 !important; }
+  .form-table .mem { color: #1a5270 !important; }
+  .form-table .nature { color: #1c2b33 !important; }
+  .types-table th {
+    background: #e7f3fb !important;
+    color: #164e78 !important;
+    border-bottom: 1px solid #c5dff3 !important;
+  }
+  .types-table tbody tr { animation: none !important; }
+  .types-table tbody tr:nth-child(even) { background: #f7fbfe !important; }
+  .form-table tbody tr, .remarks-list li, .props-list li, .spec-trend .bar,
+  .formula, .formula-box, .formula-col .eq { animation: none !important; }
+  .axis, .lens-line { stroke: #2a3d4a !important; }
+  .lens-arrow { fill: #2a3d4a !important; }
+  .remarks-list .ico, .check, .app-tile svg, .colours-body svg { filter: none !important; }
+  svg text { fill: #243038 !important; font-family: "Source Sans 3", "Segoe UI", "Helvetica Neue", Arial, sans-serif !important; }
+  svg text.ang-i, svg text[fill="#67d4ff"], svg text[fill="#1f7ac4"] { fill: #1f7ac4 !important; }
+  svg text.ang-r, svg text[fill="#ffc857"], svg text[fill="#e07a1f"] { fill: #c26512 !important; }
+  svg text[fill="#e53935"] { fill: #e53935 !important; }
+  svg text[fill="#8e24aa"] { fill: #8e24aa !important; }
+  svg text[fill="#c9a6ff"], svg text[fill="#b39ddb"], svg text[fill="#cbb6ee"] { fill: #6d56b8 !important; }
+  [fill="#15202c"], [fill="#1a2836"], [fill="#101820"], [fill="#2a1844"], [fill="#1c3144"] { fill: #f4f8fb !important; }
+  [fill="#182838"], [fill="#24384c"] { fill: #d9e7f2 !important; }
+  [fill="#2a1f14"] { fill: #f3e6d4 !important; }
+  [fill="#2a4258"] { fill: #c5d7e6 !important; }
+  [stroke="#d5dee8"], [stroke="#c5d6e6"] { stroke: #2a3d4a !important; }
+  [stroke="#8ea0b4"], [stroke="#8aa0b4"], [stroke="#9aabbb"], [stroke="#7a8a9a"],
+  [stroke="#6e7f90"], [stroke="#9aa8b8"] { stroke: #8aa0b0 !important; }
+  [stroke="#67d4ff"], [stroke="#3c86b4"] { stroke: #1f7ac4 !important; }
+  [stroke="#ffc857"], [stroke="#ffb15a"], [stroke="#f08a3c"] { stroke: #e07a1f !important; }
+  [stroke="#c9a6ff"], [stroke="#b388ff"], [stroke="#b39ddb"] { stroke: #6d56b8 !important; }
+  [stroke="#3d6fa0"] { stroke: #8aa0ae !important; }
+  [stroke="#3d7ea6"] { stroke: #1f7ac4 !important; }
+  [stroke="#7cb342"] { stroke: #1f8a5b !important; }
+  [stroke="#c44"] { stroke: #c4473a !important; }
+  [fill="#67d4ff"], [fill="#3c86b4"] { fill: #1f7ac4 !important; }
+  [fill="#ffc857"], [fill="#ffb15a"], [fill="#f08a3c"], [fill="#f0a202"] { fill: #e07a1f !important; }
+  [fill="#fff6d4"], [fill="#f3dc8c"] { fill: #f0b429 !important; }
+  [fill="#c9a6ff"], [fill="#b39ddb"], [fill="#cbb6ee"] { fill: #6d56b8 !important; }
+  [fill="#3d6fa0"] { fill: #8aa0ae !important; }
+  [fill="#3d7ea6"] { fill: #1f7ac4 !important; }
+  [fill="#7cb342"] { fill: #1f8a5b !important; }
+  [fill="#c44"] { fill: #c4473a !important; }
+  [fill="#a33b2b"] { fill: #c4473a !important; }
+  .caption-slot, .caption-slot em { color: #9a5b10 !important; }
+  .footer { color: #5d6d76 !important; }
+  .spec-tile {
+    color: #1c2b33 !important;
+    border: 1px solid #d5e2ea !important;
+    border-radius: 8px !important;
+    animation: none !important;
+  }
+  .spec-tile:nth-child(1) { background: #fdecea !important; border-top: 3px solid #d4533c !important; }
+  .spec-tile:nth-child(2) { background: #fff1e4 !important; border-top: 3px solid #e07a1f !important; }
+  .spec-tile:nth-child(3) { background: #fde8ef !important; border-top: 3px solid #c4476a !important; }
+  .spec-tile:nth-child(4) { background: #e7f3fb !important; border-top: 3px solid #1f7ac4 !important; }
+  .spec-tile:nth-child(5) { background: #efeaff !important; border-top: 3px solid #6d56b8 !important; }
+  .spec-tile:nth-child(6) { background: #e7f6f8 !important; border-top: 3px solid #1f8a9a !important; }
+  .spec-tile:nth-child(7) { background: #eef1f4 !important; border-top: 3px solid #3d4c5c !important; }
+  .spec-tile .name, .spec-tile .range { color: #1c2b33 !important; }
+  .spec-tile .ico [fill="#fff"] { fill: #1c2b33 !important; }
+  .spec-tile .ico [stroke="#fff"],
+  .spec-tile .ico .anim-mwave,
+  .spec-tile .ico .anim-rayburst { stroke: #1c2b33 !important; }
+  .spec-trend { color: #1a5270 !important; }
+  .spec-trend .bar {
+    background: linear-gradient(90deg, #d4533c, #e07a1f, #1f8a5b, #1f7ac4, #6d56b8) !important;
+    animation: none !important;
+  }
+  .spec-trend .bar::before { border-right-color: #d4533c !important; }
+  .spec-trend .bar::after { border-left-color: #6d56b8 !important; }
+  .formula-notes .sep { border-top-color: #f0c2bc !important; }
+  @keyframes letter {
+    0%, 8% { background: #fff4e4; color: #9a5b10; transform: none; }
+    12%, 22% { background: #e07a1f; color: #fff; transform: none; }
+    30%, 100% { background: #fff4e4; color: #9a5b10; transform: none; }
+  }
+  @keyframes flash-v {
+    0%, 72%, 100% { opacity: 1; }
+    80%, 88% { opacity: 0.35; }
+  }
+
+.s-rays { grid-area: rays; }
+  .s-beams { grid-area: beams; }
+  .s-see { grid-area: see; }
+  .s-law { grid-area: law; }
+  .s-image { grid-area: image; }
+  .s-sight { grid-area: sight; }
+  .s-diff { grid-area: diff; }
+
+  .poster .card {
+    padding: 6px 8px 7px;
+    border-radius: 12px !important;
+    gap: 4px;
+  }
+  .poster .head { margin-bottom: 0; }
+  .poster h2 { font-size: 14.5px !important; color: #1a5270 !important; }
+  .poster .num { width: 21px; height: 21px; font-size: 11.5px; }
+  .s-rays .num { background: #1f7ac4 !important; }
+  .s-beams .num { background: #e07a1f !important; }
+  .s-see .num { background: #1f8a5b !important; }
+  .s-law .num { background: #6d56b8 !important; }
+  .s-image .num { background: #c4476a !important; }
+  .s-sight .num { background: #1f8a9a !important; }
+  .s-diff .num { background: #3d6b8a !important; }
+  .poster .note { font-size: 12.5px; line-height: 1.35; color: #34444d !important; flex: none; }
+  .poster .note p { margin: 0; }
+  .poster .note p + p { margin-top: 2px; }
+  .poster .note strong { color: #6d56b8; }
+
+  .poster svg text {
+    font-family: "Source Sans 3", "Segoe UI", sans-serif;
+    font-weight: 700;
+  }
+  .fig {
+    margin: 0;
+    min-height: 0;
+    flex: 1;
+    background: #f3f8fc !important;
+    border: 1px solid #dde9f1;
+    border-radius: 9px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .fig svg { flex: 1; min-height: 0; width: 100%; height: 100%; display: block; }
+  .fig figcaption {
+    flex: none;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a5270;
+    padding: 2px 4px 3px;
+    background: #e5eff6;
+  }
+
+  .rays-split {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  .rays-split .note { align-self: center; }
+  .beam-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .image-grid {
+    display: grid;
+    grid-template-columns: 0.82fr 1fr 1fr;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+  }
+  .sub {
+    margin: 0 0 3px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #c4476a;
+    letter-spacing: 0.02em;
+  }
+  .prop-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .prop-list li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #1c2b33;
+    background: #fdf1f4;
+    border-radius: 7px;
+    padding: 3px 6px;
+  }
+  .prop-list b {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #c4476a;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-size: 10.5px;
+    flex: none;
+  }
+  .col { display: flex; flex-direction: column; min-height: 0; }
+
+  .s-law .fig svg { max-height: 100%; }
+  .panel-law text.ang-label { font-size: 12px; }
+  .panel-law text.big { font-size: 16px; font-style: italic; }
+  .panel-law .ray-in, .panel-law .ray-out { filter: none !important; }
+
+  .compare {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 11.5px;
+    line-height: 1.2;
+    flex: 1;
+  }
+  .compare th {
+    font-size: 12px;
+    padding: 3px 4px;
+    border-radius: 7px 7px 0 0;
+  }
+  .compare th.reg { background: #e2eff9; color: #1f6aa8; }
+  .compare th.dif { background: #fcebdc; color: #b25f12; }
+  .compare th.blank { background: transparent; }
+  .compare td {
+    border-top: 1px solid #e3ebf0;
+    padding: 3px 4px;
+    text-align: center;
+    vertical-align: middle;
+    color: #1c2b33;
+  }
+  .compare td.reg { background: #f5f9fd; }
+  .compare td.dif { background: #fef8f2; }
+  .compare td.mid {
+    width: 25%;
+    font-weight: 800;
+    color: #3d6b8a;
+    font-size: 11px;
+  }
+  .compare tr.pic td { border-top: 0; padding: 2px; }
+  .compare svg { width: 100%; height: 56px; display: block; }
+  .compare .both td { font-weight: 800; color: #1f8a5b; }
+
+  .photon { pointer-events: none; }
+  svg.anim [data-a] { will-change: opacity, transform; }
+  .compare svg { height: 62px; }
+  .poster svg text[fill="#6d56b8"] { fill: #6d56b8 !important; }
+  .poster svg text[fill="#1f8a5b"] { fill: #1f8a5b !important; }
+  .poster svg text[fill="#c4473a"] { fill: #c4473a !important; }
+  .poster svg text[fill="#5d6d76"] { fill: #5d6d76 !important; }
+  .poster svg text[fill="#1a5270"] { fill: #1a5270 !important; }
+  .poster svg text[fill="#e07a1f"] { fill: #c9650f !important; }
+  .poster svg text[fill="#1f7ac4"] { fill: #1f6fb3 !important; }
+  /* Corrected sight and surface-reflection teaching sequences */
+  .teaching-see-new .see-cone { opacity: .08; }
+  .teaching-see-new .see-ray {
+    fill: none;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  .teaching-see-new .see-ray.tip {
+    animation: see-tip-rays 8.8s cubic-bezier(.3,.72,.3,1) infinite !important;
+  }
+  .teaching-see-new .see-ray.tail {
+    animation: see-tail-rays 8.8s cubic-bezier(.3,.72,.3,1) infinite !important;
+  }
+  .teaching-see-new .see-tip-arrow,
+  .teaching-see-new .see-tail-arrow,
+  .teaching-see-new .see-complete { opacity: 0; }
+  .teaching-see-new .see-tip-arrow { animation: see-tip-arrow 8.8s ease-in-out infinite; }
+  .teaching-see-new .see-tail-arrow { animation: see-tail-arrow 8.8s ease-in-out infinite; }
+  .teaching-see-new .see-eye {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: see-eye-focus 8.8s ease-in-out infinite;
+  }
+  .teaching-see-new .see-complete { animation: see-complete 8.8s ease-in-out infinite; }
+  .teaching-see-new .see-source {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: see-source-pulse 8.8s ease-in-out infinite;
+  }
+
+  .surface-new .surface-guide {
+    fill: none;
+    opacity: .14;
+    stroke-linecap: round;
+  }
+  .surface-new .surface-ray {
+    fill: none;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+    stroke-linecap: round;
+  }
+  .surface-new .surface-ray.in {
+    animation: surface-in-new 8.2s cubic-bezier(.3,.72,.3,1) infinite;
+  }
+  .surface-new .surface-ray.out {
+    animation: surface-out-new 8.2s cubic-bezier(.3,.72,.3,1) infinite;
+  }
+  .surface-new .surface-ray.d2 { animation-delay: .12s; }
+  .surface-new .surface-ray.d3 { animation-delay: .24s; }
+  .surface-new .surface-normal {
+    opacity: 0;
+    animation: surface-normal-new 8.2s ease-in-out infinite !important;
+  }
+  .surface-new .surface-arrow-in {
+    opacity: 0;
+    animation: surface-arrow-in-new 8.2s ease-in-out infinite !important;
+  }
+  .surface-new .surface-arrow-out {
+    opacity: 0;
+    animation: surface-arrow-out-new 8.2s ease-in-out infinite !important;
+  }
+  .surface-new .surface-hit {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: surface-hit-new 8.2s ease-in-out infinite;
+  }
+  .surface-new .surface-equal {
+    opacity: 0;
+    animation: surface-equal-new 8.2s ease-in-out infinite;
+  }
+
+  @keyframes see-tip-rays {
+    0%, 5% { stroke-dashoffset: 1; opacity: 0; }
+    10% { opacity: 1; }
+    30%, 93% { stroke-dashoffset: 0; opacity: 1; }
+    98%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+  @keyframes see-tail-rays {
+    0%, 28% { stroke-dashoffset: 1; opacity: 0; }
+    33% { opacity: 1; }
+    54%, 93% { stroke-dashoffset: 0; opacity: 1; }
+    98%, 100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+  @keyframes see-tip-arrow {
+    0%, 22% { opacity: 0; transform: translateX(-6px); }
+    31%, 93% { opacity: 1; transform: none; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes see-tail-arrow {
+    0%, 47% { opacity: 0; transform: translateX(-6px); }
+    56%, 93% { opacity: 1; transform: none; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes see-eye-focus {
+    0%, 55%, 100% { transform: scale(1); }
+    61% { transform: scaleY(.88); }
+    68%, 93% { transform: scale(1); filter: drop-shadow(0 0 3px rgba(31,122,196,.28)); }
+  }
+  @keyframes see-complete {
+    0%, 58% { opacity: 0; transform: translateY(3px); }
+    69%, 93% { opacity: 1; transform: none; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes see-source-pulse {
+    0%, 100% { transform: scale(.88); opacity: .65; }
+    10%, 24%, 34%, 88% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes surface-normal-new {
+    0%, 7% { opacity: 0; }
+    18%, 93% { opacity: 1; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes surface-in-new {
+    0%, 15% { stroke-dashoffset: 1; opacity: 0; }
+    20% { opacity: 1; }
+    44%, 93% { stroke-dashoffset: 0; opacity: 1; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes surface-out-new {
+    0%, 43% { stroke-dashoffset: 1; opacity: 0; }
+    48% { opacity: 1; }
+    70%, 93% { stroke-dashoffset: 0; opacity: 1; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes surface-arrow-in-new {
+    0%, 35% { opacity: 0; }
+    45%, 93% { opacity: 1; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes surface-arrow-out-new {
+    0%, 63% { opacity: 0; }
+    72%, 93% { opacity: 1; }
+    98%, 100% { opacity: 0; }
+  }
+  @keyframes surface-hit-new {
+    0%, 37%, 53%, 100% { opacity: 0; transform: scale(.4); }
+    45% { opacity: 1; transform: scale(1.6); }
+    50%, 93% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes surface-equal-new {
+    0%, 68% { opacity: 0; transform: translateY(2px); }
+    78%, 93% { opacity: 1; transform: none; }
+    98%, 100% { opacity: 0; }
+  }
+
+  @media print, (prefers-reduced-motion: reduce) {
+    .teaching-see-new *,
+    .surface-new * {
+      animation: none !important;
+      opacity: 1 !important;
+      stroke-dashoffset: 0 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+    .teaching-see-new .see-cone,
+    .surface-new .surface-guide { opacity: .14 !important; }
+  }
+  .s-diff .compare th { padding: 2px 3px; }
+  .s-diff .compare td {
+    padding: 3px 4px;
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  .s-diff .compare td.mid { font-size: 12px; }
+  .s-diff .compare tr.pic td { padding: 1px 2px; }
+  .s-diff .compare svg { height: 58px; }
+</style>
+</head>
+<body>
+  <article class="poster">
+    <div class="mast">
+      <header class="brand">
+        <img class="brand-logo" src="../images/uniplus-logo.png" alt="Uni+ Education">
+      </header>
+      <div class="hero">
+        <div class="title-wrap">
+          <h1>Reflection<br>Plane Mirror</h1>
+        </div>
+        <p class="subtitle">Rays, the laws of reflection, and images in a plane mirror</p>
+      </div>
+      <svg class="sketch anim" viewBox="0 0 120 120" data-loop="6" aria-hidden="true">
+        <path d="M10 92 H110" stroke="#2a3d4a" stroke-width="2.6"/>
+        <g stroke="#8a8276" stroke-width="1.3">
+          <path d="M16 92 L10 102 M30 92 L24 102 M44 92 L38 102 M58 92 L52 102 M72 92 L66 102 M86 92 L80 102 M100 92 L94 102"/>
+        </g>
+        <path data-a="fade" data-t="0.1 0.4" d="M60 92 V22" fill="none" stroke="#8aa0b0" stroke-width="1.3" stroke-dasharray="3 3"/>
+        <path data-a="ray" data-t="0.4 1" d="M18 32 L60 92" fill="none" stroke="#1f7ac4" stroke-width="2.6" stroke-linecap="round"/>
+        <path data-a="ray" data-t="1.4 1" d="M60 92 L102 32" fill="none" stroke="#e07a1f" stroke-width="2.6" stroke-linecap="round"/>
+        <circle data-a="ring" data-t="1.4 0.7" cx="60" cy="92" r="4" fill="none" stroke="#f0b429" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <section class="card s-rays">
+      <div class="head"><span class="num">1</span><h2>Light rays</h2></div>
+      <div class="rays-split">
+        <div class="note">
+          <p>Light is represented by <strong>rays</strong>.</p>
+          <p>A ray is a <strong>straight line with an arrow</strong> showing the direction light travels.</p>
+        </div>
+        <figure class="fig">
+          <svg class="anim" viewBox="0 0 170 80" data-loop="6" aria-hidden="true">
+            <g data-a="pop" data-t="0.1 0.5">
+              <circle cx="20" cy="42" r="8" fill="#f0b429"/>
+              <path d="M20 28 V24 M20 56 V60 M10 32 L7 29 M10 52 L7 55 M6 42 H2" stroke="#f0b429" stroke-width="1.8" stroke-linecap="round"/>
+            </g>
+            <path data-a="ray" data-t="0.5 1.4" d="M34 42 H160" fill="none" stroke="#1f7ac4" stroke-width="3" stroke-linecap="round"/>
+            <text data-a="fade" data-t="1.4 0.5" x="97" y="27" text-anchor="middle" fill="#1a5270" font-size="12.5">light ray</text>
+            <text data-a="fade" data-t="2 0.5" x="97" y="66" text-anchor="middle" fill="#1f7ac4" font-size="11.5">arrow shows direction</text>
+          </svg>
+        </figure>
+      </div>
+    </section>
+
+    <section class="card s-beams">
+      <div class="head"><span class="num">2</span><h2>Light beams</h2></div>
+      <div class="note"><p>A light beam is made up of a number of rays.</p></div>
+      <div class="beam-row">
+        <figure class="fig">
+          <svg class="anim" viewBox="0 0 90 56" data-loop="6" aria-hidden="true">
+            <path data-a="ray" data-t="0.3 1.2" data-arrow="0.6" d="M10 12 H80" fill="none" stroke="#1f7ac4" stroke-width="2.2" stroke-linecap="round"/>
+            <path data-a="ray" data-t="0.45 1.2" data-arrow="0.6" d="M10 28 H80" fill="none" stroke="#1f7ac4" stroke-width="2.2" stroke-linecap="round"/>
+            <path data-a="ray" data-t="0.6 1.2" data-arrow="0.6" d="M10 44 H80" fill="none" stroke="#1f7ac4" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          <figcaption>parallel</figcaption>
+        </figure>
+        <figure class="fig">
+          <svg class="anim" viewBox="0 0 90 56" data-loop="6" aria-hidden="true">
+            <path data-a="ray" data-t="0.4 1.2" data-arrow="0.6" d="M10 28 L80 6" fill="none" stroke="#e07a1f" stroke-width="2.2" stroke-linecap="round"/>
+            <path data-a="ray" data-t="0.4 1.2" data-arrow="0.6" d="M10 28 H80" fill="none" stroke="#e07a1f" stroke-width="2.2" stroke-linecap="round"/>
+            <path data-a="ray" data-t="0.4 1.2" data-arrow="0.6" d="M10 28 L80 50" fill="none" stroke="#e07a1f" stroke-width="2.2" stroke-linecap="round"/>
+            <circle data-a="pop" data-t="0.1 0.4" cx="10" cy="28" r="3" fill="#e07a1f"/>
+          </svg>
+          <figcaption>divergent</figcaption>
+        </figure>
+        <figure class="fig">
+          <svg class="anim" viewBox="0 0 90 56" data-loop="6" aria-hidden="true">
+            <path data-a="ray" data-t="0.3 1.2" data-arrow="0.55" d="M10 6 L80 28" fill="none" stroke="#1f8a5b" stroke-width="2.2" stroke-linecap="round"/>
+            <path data-a="ray" data-t="0.3 1.2" data-arrow="0.55" d="M10 28 H80" fill="none" stroke="#1f8a5b" stroke-width="2.2" stroke-linecap="round"/>
+            <path data-a="ray" data-t="0.3 1.2" data-arrow="0.55" d="M10 50 L80 28" fill="none" stroke="#1f8a5b" stroke-width="2.2" stroke-linecap="round"/>
+            <circle data-a="pop" data-t="1.5 0.4" cx="80" cy="28" r="3" fill="#1f8a5b"/>
+            <circle data-a="ring" data-t="1.5 0.8" cx="80" cy="28" r="3" fill="none" stroke="#1f8a5b" stroke-width="1.5"/>
+          </svg>
+          <figcaption>convergent</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="card s-see">
+      <div class="head"><span class="num">3</span><h2>How we see things</h2></div>
+      <div class="note">
+        <p>Draw cones of rays from the <strong>tip</strong> and <strong>tail</strong> of the object.</p>
+        <p>Point both cones towards the eye and end them at the eye.</p>
+      </div>
+      <figure class="fig">
+        <svg class="anim teaching-see-new" viewBox="0 0 240 118" data-loop="9" aria-hidden="true">
+          <polygon data-a="fade" data-t="1.7 0.5" points="34,20 176,54 176,64" fill="#1f7ac4" fill-opacity="0.12"/>
+          <polygon data-a="fade" data-t="4 0.5" points="34,96 176,54 176,64" fill="#e07a1f" fill-opacity="0.12"/>
+          <path data-a="ray" data-t="0.35 1.35" data-arrow="0.55" d="M34 20 L176 54" fill="none" stroke="#1f7ac4" stroke-width="2" stroke-linecap="round"/>
+          <path data-a="ray" data-t="0.5 1.35" data-arrow="0.55" d="M34 20 L176 64" fill="none" stroke="#1f7ac4" stroke-width="2" stroke-linecap="round"/>
+          <path data-a="ray" data-t="2.55 1.35" data-arrow="0.55" d="M34 96 L176 54" fill="none" stroke="#e07a1f" stroke-width="2" stroke-linecap="round"/>
+          <path data-a="ray" data-t="2.7 1.35" data-arrow="0.55" d="M34 96 L176 64" fill="none" stroke="#e07a1f" stroke-width="2" stroke-linecap="round"/>
+
+          <path d="M34 96 V28" fill="none" stroke="#2a3d4a" stroke-width="3.2" stroke-linecap="round"/>
+          <polygon points="34,17 26,33 42,33" fill="#2a3d4a"/>
+          <circle data-a="pop" data-t="0.05 0.35" cx="34" cy="20" r="3.5" fill="#1f7ac4" stroke="#fff" stroke-width="1"/>
+          <circle data-a="pop" data-t="2.25 0.35" cx="34" cy="96" r="3.5" fill="#e07a1f" stroke="#fff" stroke-width="1"/>
+          <text x="18" y="22" text-anchor="end" fill="#1f7ac4" font-size="11.5" font-weight="700">tip</text>
+          <text x="18" y="100" text-anchor="end" fill="#e07a1f" font-size="11.5" font-weight="700">tail</text>
+          <text x="34" y="114" text-anchor="middle" fill="#5d6d76" font-size="10.5">object</text>
+
+          <image href="eye-see.png" x="172" y="47" width="40" height="27" preserveAspectRatio="xMinYMid meet"/>
+          <circle data-a="ring" data-t="1.75 0.7" cx="176" cy="56" r="4.5" fill="none" stroke="#1f7ac4" stroke-width="1.6"/>
+          <circle data-a="ring" data-t="4.05 0.7" cx="176" cy="62" r="4.5" fill="none" stroke="#e07a1f" stroke-width="1.6"/>
+          <g data-a="fade" data-t="4.9 0.5">
+            <rect x="140" y="87" width="98" height="18" rx="9" fill="#e7f6ee" stroke="#b7e0c8"/>
+            <text x="189" y="99.5" text-anchor="middle" fill="#1f8a5b" font-size="9.5" font-weight="700">rays enter the eye ✓</text>
+          </g>
+        </svg>
+      </figure>
+    </section>
+
+    <section class="card s-law">
+      <div class="head"><span class="num">4</span><h2>The laws of reflection</h2></div>
+      <div class="note">
+        <p>The incident ray, the normal and the reflected ray all lie in the <strong>same plane</strong>.</p>
+        <p>Angle of incidence = angle of reflection, i.e. <strong>i = r</strong>.</p>
+      </div>
+      <figure class="fig">
+        <svg class="anim" viewBox="0 0 340 168" data-loop="9" aria-hidden="true">
+          <path d="M24 150 H316" stroke="#2a3d4a" stroke-width="3"/>
+          <path d="M34 150 l-8 11 M52 150 l-8 11 M70 150 l-8 11 M88 150 l-8 11 M106 150 l-8 11 M124 150 l-8 11 M142 150 l-8 11 M160 150 l-8 11 M178 150 l-8 11 M196 150 l-8 11 M214 150 l-8 11 M232 150 l-8 11 M250 150 l-8 11 M268 150 l-8 11 M286 150 l-8 11 M304 150 l-8 11" stroke="#8a8276" stroke-width="1.2"/>
+          <text x="318" y="143" text-anchor="end" fill="#5d6d76" font-size="11.5">mirror</text>
+          <path data-a="fade" data-t="0.1 0.5" d="M170 150 V24" fill="none" stroke="#8aa0b0" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <text data-a="fade" data-t="0.1 0.5" x="170" y="16" text-anchor="middle" fill="#5d6d76" font-size="12">normal</text>
+          <path data-a="ray" data-t="0.5 1.4" d="M80 42.8 L170 150" fill="none" stroke="#1f7ac4" stroke-width="3" stroke-linecap="round"/>
+          <text data-a="fade" data-t="1.1 0.5" x="74" y="37" text-anchor="end" fill="#1f7ac4" font-size="12.5">incident ray</text>
+          <circle data-a="pop" data-t="1.9 0.4" cx="170" cy="150" r="4" fill="#f0b429"/>
+          <circle data-a="ring" data-t="1.9 0.8" cx="170" cy="150" r="5" fill="none" stroke="#f0b429" stroke-width="2"/>
+          <path data-a="ray" data-t="2 1.4" d="M170 150 L260 42.8" fill="none" stroke="#e07a1f" stroke-width="3" stroke-linecap="round"/>
+          <text data-a="fade" data-t="2.9 0.5" x="266" y="37" fill="#e07a1f" font-size="12.5">reflected ray</text>
+          <path data-a="arc" data-t="3.6 0.6" d="M170 110 A40 40 0 0 0 144.3 119.4" fill="none" stroke="#1f7ac4" stroke-width="2.4" stroke-linecap="round"/>
+          <text data-a="pop" data-t="4 0.4" x="155" y="104" text-anchor="middle" fill="#1f7ac4" font-size="16" font-style="italic">i</text>
+          <text data-a="fade" data-t="4.1 0.5" x="132" y="126" text-anchor="end" fill="#1f7ac4" font-size="12">angle of</text>
+          <text data-a="fade" data-t="4.1 0.5" x="132" y="140" text-anchor="end" fill="#1f7ac4" font-size="12">incidence</text>
+          <path data-a="arc" data-t="4.6 0.6" d="M170 110 A40 40 0 0 1 195.7 119.4" fill="none" stroke="#e07a1f" stroke-width="2.4" stroke-linecap="round"/>
+          <text data-a="pop" data-t="5 0.4" x="185" y="104" text-anchor="middle" fill="#e07a1f" font-size="16" font-style="italic">r</text>
+          <text data-a="fade" data-t="5.1 0.5" x="208" y="126" fill="#e07a1f" font-size="12">angle of</text>
+          <text data-a="fade" data-t="5.1 0.5" x="208" y="140" fill="#e07a1f" font-size="12">reflection</text>
+          <g data-a="pop" data-t="5.7 0.5">
+            <rect x="266" y="70" width="58" height="24" rx="12" fill="#efeaff" stroke="#6d56b8" stroke-width="1.5"/>
+            <text x="295" y="87" text-anchor="middle" fill="#6d56b8" font-size="14">i = r</text>
+          </g>
+        </svg>
+      </figure>
+    </section>
+
+    <section class="card s-image">
+      <div class="head"><span class="num">5</span><h2>Images formed by a plane mirror</h2></div>
+      <div class="image-grid">
+        <div class="col">
+          <p class="sub">The image is</p>
+          <ol class="prop-list">
+            <li><b>1</b>laterally inverted</li>
+            <li><b>2</b>behind the mirror</li>
+            <li><b>3</b>virtual</li>
+            <li><b>4</b>object distance = image distance (OD = ID)</li>
+            <li><b>5</b>the same size as the object</li>
+          </ol>
+        </div>
+        <div class="col">
+          <p class="sub">Locating the image of a point</p>
+          <figure class="fig">
+            <svg class="anim" viewBox="0 0 220 104" data-loop="8" aria-hidden="true">
+              <path d="M110 10 V96" stroke="#2a3d4a" stroke-width="2.6"/>
+              <path d="M110 16 l10 7 M110 30 l10 7 M110 44 l10 7 M110 58 l10 7 M110 72 l10 7 M110 86 l10 7" stroke="#8a8276" stroke-width="1.1"/>
+              <text x="104" y="16" text-anchor="end" fill="#5d6d76" font-size="11">M</text>
+              <text x="104" y="98" text-anchor="end" fill="#5d6d76" font-size="11">N</text>
+              <circle data-a="pop" data-t="0.2 0.4" cx="30" cy="54" r="5" fill="#e07a1f"/>
+              <text data-a="fade" data-t="0.3 0.4" x="30" y="42" text-anchor="middle" fill="#e07a1f" font-size="13">O</text>
+              <path data-a="line" data-t="0.7 0.9" d="M30 54 H110" fill="none" stroke="#e07a1f" stroke-width="1.8"/>
+              <path data-a="fade" data-t="1.6 0.3" d="M110 46 H102 V54" fill="none" stroke="#1a5270" stroke-width="1.2"/>
+              <text data-a="fade" data-t="1.6 0.3" x="116" y="67" fill="#1a5270" font-size="11">D</text>
+              <path data-a="vray" data-t="2 0.9" d="M110 54 H190" fill="none" stroke="#6d56b8" stroke-width="1.8" stroke-dasharray="4 3"/>
+              <circle data-a="pop" data-t="2.9 0.4" cx="190" cy="54" r="5" fill="#fff" stroke="#6d56b8" stroke-width="2" stroke-dasharray="2.2 2"/>
+              <text data-a="fade" data-t="3 0.4" x="190" y="42" text-anchor="middle" fill="#6d56b8" font-size="13">I</text>
+              <g data-a="fade" data-t="3.5 0.5" stroke="#1a5270" stroke-width="1" fill="none">
+                <path d="M30 78 H107 M113 78 H190 M30 74 V82 M107 74 V82 M113 74 V82 M190 74 V82"/>
+              </g>
+              <text data-a="fade" data-t="3.7 0.4" x="68" y="92" text-anchor="middle" fill="#e07a1f" font-size="11">OD</text>
+              <text data-a="fade" data-t="3.7 0.4" x="152" y="92" text-anchor="middle" fill="#6d56b8" font-size="11">ID</text>
+            </svg>
+            <figcaption>OI ⊥ MN and OD = ID</figcaption>
+          </figure>
+        </div>
+        <div class="col">
+          <p class="sub">Locating the image of an object</p>
+          <figure class="fig">
+            <svg class="anim" viewBox="0 0 220 104" data-loop="8" aria-hidden="true">
+              <path d="M110 8 V96" stroke="#2a3d4a" stroke-width="2.6"/>
+              <path d="M110 14 l10 7 M110 28 l10 7 M110 42 l10 7 M110 56 l10 7 M110 70 l10 7 M110 84 l10 7" stroke="#8a8276" stroke-width="1.1"/>
+              <path data-a="line" data-t="0.3 0.8" d="M48 84 V32" fill="none" stroke="#e07a1f" stroke-width="2.8"/>
+              <polygon data-a="pop" data-t="1 0.35" points="48,20 41,34 55,34" fill="#e07a1f"/>
+              <text x="40" y="24" text-anchor="end" fill="#e07a1f" font-size="12">O₁</text>
+              <text x="40" y="90" text-anchor="end" fill="#e07a1f" font-size="12">O₂</text>
+              <path data-a="vray" data-t="1.5 1" d="M48 22 H172" fill="none" stroke="#8aa0b0" stroke-width="1.3" stroke-dasharray="3 3"/>
+              <path data-a="vray" data-t="1.65 1" d="M48 84 H172" fill="none" stroke="#8aa0b0" stroke-width="1.3" stroke-dasharray="3 3"/>
+              <path data-a="vray" data-t="2.9 0.8" d="M172 84 V22" fill="none" stroke="#6d56b8" stroke-width="2.4" stroke-dasharray="4 3"/>
+              <text data-a="fade" data-t="2.7 0.4" x="180" y="24" fill="#6d56b8" font-size="12">I₁</text>
+              <text data-a="fade" data-t="2.8 0.4" x="180" y="90" fill="#6d56b8" font-size="12">I₂</text>
+            </svg>
+            <figcaption>virtual image: dotted line, no arrow</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="card s-sight">
+      <div class="head"><span class="num">6</span><h2>Seeing images</h2></div>
+      <div class="note">
+        <p>You see an image only if the line from the eye to the image <strong>passes through the mirror</strong>.</p>
+        <p>Real rays: solid with arrows. Virtual rays: dotted, no arrows.</p>
+      </div>
+      <figure class="fig">
+        <svg class="anim" viewBox="0 0 300 172" data-loop="10" aria-hidden="true">
+          <path d="M180 40 V100" stroke="#2a3d4a" stroke-width="3"/>
+          <path d="M180 44 l10 7 M180 58 l10 7 M180 72 l10 7 M180 86 l10 7" stroke="#8a8276" stroke-width="1.15"/>
+          <text x="188" y="113" fill="#5d6d76" font-size="11">mirror</text>
+          <path d="M110 30 H250 M120 150 H240" stroke="#cdd8e0" stroke-width="1" stroke-dasharray="2 3"/>
+          <image href="eye-sight.png" x="18" y="98" width="52" height="34" preserveAspectRatio="xMidYMid meet"/>
+
+          <circle data-a="pop" data-t="0.2 0.4" cx="110" cy="30" r="5" fill="#e07a1f"/>
+          <text data-a="fade" data-t="0.3 0.4" x="110" y="18" text-anchor="middle" fill="#e07a1f" font-size="12.5">O₁</text>
+          <path data-a="ray" data-t="0.6 1" d="M110 30 L180 60" fill="none" stroke="#1f7ac4" stroke-width="2.3" stroke-linecap="round"/>
+          <circle data-a="ring" data-t="1.6 0.6" cx="180" cy="60" r="4" fill="none" stroke="#f0b429" stroke-width="1.8"/>
+          <path data-a="ray" data-t="1.6 1.4" data-arrow="0.5" d="M180 60 L46 117.4" fill="none" stroke="#1f7ac4" stroke-width="2.3" stroke-linecap="round"/>
+          <circle data-a="ring" data-t="3 0.7" cx="46" cy="117.4" r="6" fill="none" stroke="#1f7ac4" stroke-width="1.6"/>
+          <path data-a="vray" data-t="3.3 0.9" d="M180 60 L250 30" fill="none" stroke="#6d56b8" stroke-width="1.9" stroke-dasharray="4 3"/>
+          <circle data-a="pop" data-t="4.2 0.4" cx="250" cy="30" r="5" fill="#fff" stroke="#6d56b8" stroke-width="2" stroke-dasharray="2.2 2"/>
+          <text data-a="fade" data-t="4.2 0.4" x="250" y="18" text-anchor="middle" fill="#6d56b8" font-size="12.5">I₁</text>
+          <text data-a="fade" data-t="4.5 0.5" x="262" y="57" text-anchor="middle" fill="#1f8a5b" font-size="12">I₁ seen ✓</text>
+
+          <circle data-a="pop" data-t="5.2 0.4" cx="120" cy="150" r="5" fill="#e07a1f"/>
+          <text data-a="fade" data-t="5.2 0.4" x="120" y="168" text-anchor="middle" fill="#e07a1f" font-size="12.5">O₂</text>
+          <circle data-a="pop" data-t="5.5 0.4" cx="240" cy="150" r="5" fill="#fff" stroke="#6d56b8" stroke-width="2" stroke-dasharray="2.2 2"/>
+          <text data-a="fade" data-t="5.5 0.4" x="240" y="168" text-anchor="middle" fill="#6d56b8" font-size="12.5">I₂</text>
+          <path data-a="vray" data-t="6 1.2" d="M46 117.4 L240 150" fill="none" stroke="#c4473a" stroke-width="1.7" stroke-dasharray="4 3"/>
+          <path data-a="pop" data-t="7.2 0.4" d="M175 136 L185 146 M185 136 L175 146" stroke="#c4473a" stroke-width="2.4" stroke-linecap="round"/>
+          <text data-a="fade" data-t="7.4 0.5" x="262" y="128" text-anchor="middle" fill="#c4473a" font-size="12">I₂ not seen ✗</text>
+        </svg>
+      </figure>
+    </section>
+
+    <section class="card s-diff">
+      <div class="head"><span class="num">7</span><h2>Regular and diffuse reflection</h2></div>
+      <table class="compare">
+        <thead>
+          <tr><th class="reg">Regular</th><th class="blank"></th><th class="dif">Diffuse</th></tr>
+        </thead>
+        <tbody>
+          <tr class="pic">
+            <td class="reg">
+              <svg class="anim" viewBox="0 0 150 72" data-loop="6" aria-hidden="true">
+                <path d="M6 58 H144" stroke="#2a3d4a" stroke-width="2.2"/>
+                <path d="M18 58 l-6 9 M40 58 l-6 9 M62 58 l-6 9 M84 58 l-6 9 M106 58 l-6 9 M128 58 l-6 9" stroke="#8a8276" stroke-width="1.1"/>
+                <path data-a="fade" data-t="0.2 0.5" d="M32 58 V30 M76 58 V30 M120 58 V30" stroke="#8aa0b0" stroke-width="1.1" stroke-dasharray="2 2"/>
+                <path data-a="ray" data-t="0.45 1" d="M14 8 L32 58" fill="none" stroke="#1f7ac4" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="0.6 1" d="M58 8 L76 58" fill="none" stroke="#1f7ac4" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="0.75 1" d="M102 8 L120 58" fill="none" stroke="#1f7ac4" stroke-width="1.9" stroke-linecap="round"/>
+                <circle data-a="ring" data-t="1.45 0.45" cx="32" cy="58" r="2.3" fill="none" stroke="#f0b429" stroke-width="1.3"/>
+                <circle data-a="ring" data-t="1.6 0.45" cx="76" cy="58" r="2.3" fill="none" stroke="#f0b429" stroke-width="1.3"/>
+                <circle data-a="ring" data-t="1.75 0.45" cx="120" cy="58" r="2.3" fill="none" stroke="#f0b429" stroke-width="1.3"/>
+                <path data-a="ray" data-t="1.5 1" d="M32 58 L50 8" fill="none" stroke="#e07a1f" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="1.65 1" d="M76 58 L94 8" fill="none" stroke="#e07a1f" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="1.8 1" d="M120 58 L138 8" fill="none" stroke="#e07a1f" stroke-width="1.9" stroke-linecap="round"/>
+              </svg>
+            </td>
+            <td class="mid"></td>
+            <td class="dif">
+              <svg class="anim" viewBox="0 0 150 72" data-loop="6" aria-hidden="true">
+                <path d="M6 54 L28 60 L50 46 L74 62 L98 44 L122 58 L144 50" fill="none" stroke="#2a3d4a" stroke-width="2.2" stroke-linejoin="round"/>
+                <path data-a="fade" data-t="0.2 0.5" d="M39 53 L24 29.4 M82 56 L66.4 35.2 M110 51 L122.1 30.3" stroke="#8aa0b0" stroke-width="1.1" stroke-dasharray="2 2"/>
+                <path data-a="ray" data-t="0.45 1" d="M23.8 7.5 L39 53" fill="none" stroke="#1f7ac4" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="0.6 1" d="M66.8 10.5 L82 56" fill="none" stroke="#1f7ac4" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="0.75 1" d="M94.8 5.4 L110 51" fill="none" stroke="#1f7ac4" stroke-width="1.9" stroke-linecap="round"/>
+                <circle data-a="ring" data-t="1.45 0.45" cx="39" cy="53" r="2.3" fill="none" stroke="#f0b429" stroke-width="1.3"/>
+                <circle data-a="ring" data-t="1.6 0.45" cx="82" cy="56" r="2.3" fill="none" stroke="#f0b429" stroke-width="1.3"/>
+                <circle data-a="ring" data-t="1.75 0.45" cx="110" cy="51" r="2.3" fill="none" stroke="#f0b429" stroke-width="1.3"/>
+                <path data-a="ray" data-t="1.5 1" d="M39 53 L9.9 25.4" fill="none" stroke="#e07a1f" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="1.65 1" d="M82 56 L52.4 35.5" fill="none" stroke="#e07a1f" stroke-width="1.9" stroke-linecap="round"/>
+                <path data-a="ray" data-t="1.8 1" d="M110 51 L145.4 44" fill="none" stroke="#e07a1f" stroke-width="1.9" stroke-linecap="round"/>
+              </svg>
+            </td>
+          </tr>
+          <tr><td class="reg">smooth</td><td class="mid">Surface</td><td class="dif">rough</td></tr>
+          <tr><td class="reg">remain parallel</td><td class="mid">Reflected rays</td><td class="dif">scatter in different directions</td></tr>
+          <tr><td class="reg">clear image</td><td class="mid">Image formed</td><td class="dif">distorted image</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </article>
+
+
+
+<script>
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const FADE_OUT = 0.7;
+  const clamp = (x, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, x));
+  const easeInOut = x => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+  const easeOut = x => 1 - Math.pow(1 - x, 3);
+  const easeOutBack = x => {
+    const c1 = 1.6, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+  };
+  const STROKED = new Set(["ray", "line", "arc", "vray"]);
+  const figures = [];
+
+  function make(tag, attrs) {
+    const el = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    return el;
+  }
+
+  function addArrow(item) {
+    const { el, len } = item;
+    const f = parseFloat(el.dataset.arrow || "0.55");
+    const at = len * f;
+    const p0 = el.getPointAtLength(Math.max(0, at - 1));
+    const p1 = el.getPointAtLength(Math.min(len, at + 1));
+    const ang = Math.atan2(p1.y - p0.y, p1.x - p0.x);
+    const c = el.getPointAtLength(at);
+    const L = Math.max(8, item.sw * 3.9);
+    const W = L * 0.48;
+    const ux = Math.cos(ang), uy = Math.sin(ang);
+    const nx = -uy * W, ny = ux * W;
+    const tip = [c.x + ux * L * 0.55, c.y + uy * L * 0.55];
+    const back = [c.x - ux * L * 0.45, c.y - uy * L * 0.45];
+    const notch = [c.x - ux * L * 0.18, c.y - uy * L * 0.18];
+    const pts = [tip, [back[0] + nx, back[1] + ny], notch, [back[0] - nx, back[1] - ny]]
+      .map(p => p.map(v => v.toFixed(2)).join(",")).join(" ");
+    const arrow = make("polygon", { points: pts, fill: item.color, "stroke-linejoin": "round" });
+    arrow.style.transformBox = "fill-box";
+    arrow.style.transformOrigin = "center";
+    el.after(arrow);
+    item.arrow = arrow;
+    item.arrowF = f;
+  }
+
+  function addPhoton(item, svg) {
+    const r = Math.max(2.3, item.sw * 1.15);
+    const glow = make("circle", { r: r * 2.2, fill: item.color, opacity: "0.22" });
+    const core = make("circle", { r, fill: "#fff", stroke: item.color, "stroke-width": Math.max(1, item.sw * 0.55) });
+    const g = make("g", { class: "photon" });
+    g.append(glow, core);
+    svg.append(g);
+    item.photon = g;
+  }
+
+  function addMask(item, svg, defs) {
+    const vb = svg.viewBox.baseVal;
+    const id = "reveal-" + Math.random().toString(36).slice(2, 10);
+    const mask = make("mask", {
+      id, maskUnits: "userSpaceOnUse",
+      x: vb.x - 20, y: vb.y - 20, width: vb.width + 40, height: vb.height + 40
+    });
+    const m = make("path", {
+      d: item.el.getAttribute("d"), fill: "none", stroke: "#fff",
+      "stroke-width": item.sw + 8, "stroke-linecap": "round"
+    });
+    m.style.strokeDasharray = `${item.len} ${item.len}`;
+    mask.append(m);
+    defs.append(mask);
+    item.el.setAttribute("mask", `url(#${id})`);
+    item.maskPath = m;
+  }
+
+  function setup(svg) {
+    const loop = parseFloat(svg.dataset.loop || "8");
+    let defs = svg.querySelector("defs");
+    if (!defs) { defs = make("defs", {}); svg.prepend(defs); }
+    const items = [...svg.querySelectorAll("[data-a]")].map(el => {
+      const [s, d] = (el.dataset.t || "0 0.5").trim().split(/\s+/).map(Number);
+      const item = { el, type: el.dataset.a, s, d: d || 0.5 };
+      if (STROKED.has(item.type)) {
+        item.len = el.getTotalLength();
+        const cs = getComputedStyle(el);
+        item.color = cs.stroke;
+        item.sw = parseFloat(cs.strokeWidth) || 2;
+        if (item.type === "vray") addMask(item, svg, defs);
+        else el.style.strokeDasharray = `${item.len} ${item.len}`;
+        if (item.type === "ray") {
+          addArrow(item);
+          if (el.dataset.photon !== "0") addPhoton(item, svg);
+        }
+      } else {
+        el.style.transformBox = "fill-box";
+        el.style.transformOrigin = "center";
+      }
+      return item;
+    });
+    figures.push({ svg, loop, items });
+  }
+
+  function render(fig, t) {
+    const hold = fig.loop - FADE_OUT;
+    const out = t > hold ? 1 - easeInOut(clamp((t - hold) / FADE_OUT)) : 1;
+    for (const it of fig.items) {
+      const raw = clamp((t - it.s) / it.d);
+      const started = t >= it.s ? 1 : 0;
+      const el = it.el;
+      switch (it.type) {
+        case "ray":
+        case "line":
+        case "arc": {
+          const p = it.type === "ray" ? raw : easeInOut(raw);
+          el.style.strokeDashoffset = (it.len * (1 - p)).toFixed(2);
+          el.style.opacity = started * out;
+          if (it.arrow) {
+            const a = clamp((p - it.arrowF) / 0.14);
+            it.arrow.style.opacity = (a > 0 ? Math.min(1, a * 1.6) : 0) * out;
+            it.arrow.style.transform = `scale(${(0.35 + 0.65 * easeOutBack(a)).toFixed(3)})`;
+          }
+          if (it.photon) {
+            const tail = clamp((t - it.s - it.d) / 0.3);
+            const vis = started && raw < 1 ? 1 : (raw >= 1 ? 1 - tail : 0);
+            if (vis > 0) {
+              const pt = el.getPointAtLength(it.len * p);
+              it.photon.setAttribute("transform", `translate(${pt.x.toFixed(2)} ${pt.y.toFixed(2)})`);
+            }
+            it.photon.style.opacity = vis * out;
+          }
+          break;
+        }
+        case "vray": {
+          const p = easeInOut(raw);
+          it.maskPath.style.strokeDashoffset = (it.len * (1 - p)).toFixed(2);
+          el.style.opacity = started * out;
+          break;
+        }
+        case "fade":
+          el.style.opacity = easeOut(raw) * out;
+          break;
+        case "pop":
+          el.style.opacity = clamp(raw * 2) * out;
+          el.style.transform = `scale(${(0.4 + 0.6 * easeOutBack(raw)).toFixed(3)})`;
+          break;
+        case "ring":
+          el.style.opacity = (raw > 0 && raw < 1 ? 1 - easeOut(raw) : 0) * out;
+          el.style.transform = `scale(${(1 + 2.4 * easeOut(raw)).toFixed(3)})`;
+          break;
+      }
+    }
+  }
+
+  const finished = fig => fig.loop - FADE_OUT - 0.01;
+  const showFinished = () => figures.forEach(f => render(f, finished(f)));
+
+  document.querySelectorAll("svg.anim").forEach(setup);
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let frozenAt = null;
+  const start = performance.now();
+  function frame(now) {
+    if (frozenAt === null && !reduce.matches) {
+      const T = (now - start) / 1000;
+      figures.forEach(f => render(f, T % f.loop));
+    }
+    requestAnimationFrame(frame);
+  }
+  if (reduce.matches) showFinished();
+  reduce.addEventListener("change", () => { if (reduce.matches) showFinished(); });
+  window.addEventListener("beforeprint", () => { frozenAt = -1; showFinished(); });
+  window.addEventListener("afterprint", () => { frozenAt = null; });
+
+  window.reflectionAnim = {
+    seek(T) {
+      frozenAt = T;
+      figures.forEach(f => render(f, T === "end" ? finished(f) : Math.min(T, finished(f))));
+    },
+    play() { frozenAt = null; }
+  };
+
+  figures.forEach(f => render(f, 0));
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
