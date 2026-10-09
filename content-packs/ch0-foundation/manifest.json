@@ -47,11 +47,15 @@
   "quiz": [
     {
       "slug": "foundations-quantities",
-      "path": "content-packs/ch0-foundation/quiz/foundations-quantities"
+      "path": "content-packs/ch0-foundation/quiz/foundations-quantities",
+      "quizId": "phy-jpf01",
+      "topicCode": "JPF01"
     },
     {
       "slug": "foundations-useful-math",
-      "path": "content-packs/ch0-foundation/quiz/foundations-useful-math"
+      "path": "content-packs/ch0-foundation/quiz/foundations-useful-math",
+      "quizId": "phy-jpf02",
+      "topicCode": "JPF02"
     }
   ],
   "summaries": [

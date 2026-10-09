@@ -1,12 +1,34 @@
-/** S3 Foundations — Useful mathematics in physics */
-export const QUIZ_SECTIONS = [
-  { id: "useful-maths", label: "F02 Useful Mathematics in Physics", labelZh: "F02 物理中常用的數學" },
+/** CH0 Foundation · JPF02 Useful Mathematics In Physics */
+export const QUIZ_META = {
+  subject: "PHY",
+  quizId: "phy-jpf02",
+  chapter: "CH0 Foundation",
+  topic: "JPF02 Useful Mathematics In Physics",
+};
+
+/** Student picker: syllabus topic. CH0 has no subtopics — item.section is the topic code. */
+export const QUIZ_TOPICS = [
+  {
+    id: "JPF02",
+    label: "JPF02 Useful Mathematics In Physics",
+    labelZh: "JPF02 物理中常用的數學",
+  },
 ];
+
+export const QUIZ_SECTIONS = QUIZ_TOPICS;
+
+export function itemTopicId(q) {
+  if (q?.topic) return q.topic;
+  const sec = String(q?.section || "");
+  const i = sec.lastIndexOf(".");
+  return i > 0 ? sec.slice(0, i) : sec;
+}
 
 export const QUIZ_ITEMS = [
   {
     id: "um-q01",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "A straight line passes through (0, 4) and (3, 0). What is the y-intercept?",
     options: [
@@ -20,7 +42,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q02",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "Line AB passes through A(−3, 4) and B(−1, 1). What is the slope m_AB?",
     options: [
@@ -34,7 +57,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q03",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "A straight line passes through (0, 1) and (6, 4). Its equation is",
     options: [
@@ -48,7 +72,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q04",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "For y = 3x − 1, the slope and y-intercept are",
     options: [
@@ -62,7 +87,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q05",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "Rewrite 8x − 5y + 40 = 0 as y = mx + b.",
     options: [

@@ -1,5 +1,7 @@
 {
   "slug": "foundations-quantities-quiz",
+  "quizId": "phy-jpf01",
+  "topicCode": "JPF01",
   "syncAll": true,
   "exclude": ["manifest.json", "README.md"]
 }

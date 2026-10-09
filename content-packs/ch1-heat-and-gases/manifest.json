@@ -204,6 +204,8 @@
     {
       "slug": "jphg01-1",
       "path": "content-packs/ch1-heat-and-gases/quiz/jphg01-1",
+      "quizId": "phy-jphg01",
+      "topicCode": "JPHG01",
       "title": {
         "en": "JPHG01 Temperature and thermometer",
         "zhHant": "JPHG01 溫度與溫度計"
@@ -212,6 +214,8 @@
     {
       "slug": "jphg01-2",
       "path": "content-packs/ch1-heat-and-gases/quiz/jphg01-2",
+      "quizId": "phy-jphg01-2",
+      "topicCode": "JPHG01",
       "title": {
         "en": "JPHG01 Temperature and thermometer (Quiz 2)",
         "zhHant": "JPHG01 溫度與溫度計（測驗 2）"
@@ -220,6 +224,8 @@
     {
       "slug": "jphg01-3",
       "path": "content-packs/ch1-heat-and-gases/quiz/jphg01-3",
+      "quizId": "phy-jphg01-3",
+      "topicCode": "JPHG01",
       "title": {
         "en": "JPHG01 Temperature and thermometer (Quiz 3)",
         "zhHant": "JPHG01 溫度與溫度計（測驗 3）"
@@ -228,6 +234,8 @@
     {
       "slug": "jphg02-1",
       "path": "content-packs/ch1-heat-and-gases/quiz/jphg02-1",
+      "quizId": "phy-jphg02",
+      "topicCode": "JPHG02",
       "title": {
         "en": "JPHG02 Heat and internal energy",
         "zhHant": "JPHG02 熱與內能"
@@ -236,6 +244,8 @@
     {
       "slug": "jphg02-2",
       "path": "content-packs/ch1-heat-and-gases/quiz/jphg02-2",
+      "quizId": "phy-jphg02-2",
+      "topicCode": "JPHG02",
       "title": {
         "en": "JPHG02 Heat and internal energy (Quiz 2)",
         "zhHant": "JPHG02 熱與內能（測驗 2）"

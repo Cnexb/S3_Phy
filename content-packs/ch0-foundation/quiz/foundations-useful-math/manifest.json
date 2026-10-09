@@ -1,5 +1,7 @@
 {
   "slug": "foundations-useful-math-quiz",
+  "quizId": "phy-jpf02",
+  "topicCode": "JPF02",
   "syncAll": true,
   "exclude": ["manifest.json", "README.md"]
 }

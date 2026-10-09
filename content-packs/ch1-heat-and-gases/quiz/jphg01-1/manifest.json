@@ -1,5 +1,7 @@
 {
   "slug": "jphg01-1",
+  "quizId": "phy-jphg01",
+  "topicCode": "JPHG01",
   "syncAll": true,
   "exclude": [
     "manifest.json",

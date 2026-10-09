@@ -1,7 +1,7 @@
 {
-  "slug": "jpwm06-3",
-  "quizId": "phy-jpwm06-3",
-  "topicCode": "JPWM06",
+  "slug": "jpwm07",
+  "quizId": "phy-jpwm07",
+  "topicCode": "JPWM07",
   "syncAll": true,
   "exclude": [
     "manifest.json",

@@ -1,5 +1,7 @@
 {
   "slug": "jpwm06-1",
+  "quizId": "phy-jpwm06",
+  "topicCode": "JPWM06",
   "syncAll": true,
   "exclude": [
     "manifest.json",

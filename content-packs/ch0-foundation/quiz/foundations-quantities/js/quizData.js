@@ -1,13 +1,39 @@
-/** S3 Foundations quiz — Topics in worksheet settings are F01 and F02. */
-export const QUIZ_SECTIONS = [
-  { id: "quantities-units", label: "F01 Quantities and Units", labelZh: "F01 物理量與單位" },
-  { id: "useful-maths", label: "F02 Useful Mathematics in Physics", labelZh: "F02 物理中常用的數學" },
+/** CH0 Foundation · JPF01 Quantities and Unit + JPF02 Useful Mathematics In Physics */
+export const QUIZ_META = {
+  subject: "PHY",
+  quizId: "phy-jpf01",
+  chapter: "CH0 Foundation",
+  topic: "JPF01 Quantities and Unit",
+};
+
+/** Student picker: syllabus topic. CH0 has no subtopics — item.section is the topic code. */
+export const QUIZ_TOPICS = [
+  {
+    id: "JPF01",
+    label: "JPF01 Quantities and Unit",
+    labelZh: "JPF01 物理量與單位",
+  },
+  {
+    id: "JPF02",
+    label: "JPF02 Useful Mathematics In Physics",
+    labelZh: "JPF02 物理中常用的數學",
+  },
 ];
+
+export const QUIZ_SECTIONS = QUIZ_TOPICS;
+
+export function itemTopicId(q) {
+  if (q?.topic) return q.topic;
+  const sec = String(q?.section || "");
+  const i = sec.lastIndexOf(".");
+  return i > 0 ? sec.slice(0, i) : sec;
+}
 
 export const QUIZ_ITEMS = [
   {
     id: "qu-q01",
-    section: "quantities-units",
+    topic: "JPF01",
+    section: "JPF01",
     difficulty: "Foundation",
     stem: "What is the base SI unit of length?",
     options: [
@@ -21,7 +47,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "qu-q02",
-    section: "quantities-units",
+    topic: "JPF01",
+    section: "JPF01",
     difficulty: "Foundation",
     stem: "What is the symbol for the base SI unit of mass?",
     options: [
@@ -35,7 +62,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "qu-q03",
-    section: "quantities-units",
+    topic: "JPF01",
+    section: "JPF01",
     difficulty: "Foundation",
     stem: "Write 4600 in scientific notation (1 figure before the decimal point).",
     options: [
@@ -49,7 +77,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "qu-q04",
-    section: "quantities-units",
+    topic: "JPF01",
+    section: "JPF01",
     difficulty: "Foundation",
     stem: "Which is the most suitable prefix form of 0.007 s?",
     options: [
@@ -63,7 +92,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "qu-q05",
-    section: "quantities-units",
+    topic: "JPF01",
+    section: "JPF01",
     difficulty: "Foundation",
     stem: "Convert 36 km/h to m/s.",
     options: [
@@ -77,7 +107,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q01",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "A straight line passes through (0, 4) and (3, 0). What is the y-intercept?",
     options: [
@@ -91,7 +122,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q02",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "Line AB passes through A(−3, 4) and B(−1, 1). What is the slope m_AB?",
     options: [
@@ -105,7 +137,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q03",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "A straight line passes through (0, 1) and (6, 4). Its equation is",
     options: [
@@ -119,7 +152,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q04",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "For y = 3x − 1, the slope and y-intercept are",
     options: [
@@ -133,7 +167,8 @@ export const QUIZ_ITEMS = [
   },
   {
     id: "um-q05",
-    section: "useful-maths",
+    topic: "JPF02",
+    section: "JPF02",
     difficulty: "Foundation",
     stem: "Rewrite 8x − 5y + 40 = 0 as y = mx + b.",
     options: [
