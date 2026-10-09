@@ -11,6 +11,7 @@ Edit files in this folder on GitHub (or clone the repo). This is the source of t
 - `js/app.js` — main lab logic (rays, controls, microscopic model)
 - `js/boot.js` — bootstrap / language bar
 - `js/i18n.js` — English / Traditional Chinese strings
+- `js/bundle.js` — classic (non-module) bundle for All-In-One. Rebuild with `node build-bundle.cjs`.
 
 ## How it is used
 
