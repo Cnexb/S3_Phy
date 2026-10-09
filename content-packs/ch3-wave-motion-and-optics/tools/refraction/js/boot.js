@@ -1,5 +1,5 @@
-import { initRefractionLab } from './app.js?v=20260731_num_input_v1';
-import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20260731_num_input_v1';
+import { initRefractionLab } from './app.js?v=20261008_hide_controls';
+import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20261008_hide_controls';
 
 const root = document.getElementById('app');
 
