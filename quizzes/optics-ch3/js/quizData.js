@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-1",
     topic: "JPWM06",
     section: "JPWM06.2",
+    subtopic: "JPWM06.2 Image formed by plane mirror",
     difficulty: "Foundation",
     stem: "The figure below shows the image of a clock formed by a plane mirror. The time is",
     options: [
@@ -49,6 +50,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-2",
     topic: "JPWM06",
     section: "JPWM06.1",
+    subtopic: "JPWM06.1 Law of reflection",
     difficulty: "Standard",
     stem: "An object O is placed in front of a plane mirror and an image I is formed behind the mirror as shown in the figure below. Among rays P, Q, R and S, which of them correctly represent the reflected rays from the mirror?",
     options: [
@@ -69,6 +71,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-3",
     topic: "JPWM06",
     section: "JPWM06.2",
+    subtopic: "JPWM06.2 Image formed by plane mirror",
     difficulty: "Standard",
     stem: "Peter is standing 4 m in front of a plane mirror as shown. A lamp is located midway between Peter and the mirror. If Peter wants to take a clear photograph of the image of the lamp, at what distance should he focus?",
     options: [
@@ -89,6 +92,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-4",
     topic: "JPWM06",
     section: "JPWM06.1",
+    subtopic: "JPWM06.1 Law of reflection",
     difficulty: "Standard",
     stem: "The figure above shows a sunlight reflector installed on the roof of a building. At the instant shown, sunlight falls at an angle of 30° to the horizontal and is then reflected vertically into the building. What is the angle between the reflector and the horizontal?",
     options: [

@@ -226,7 +226,7 @@ export function initQuiz() {
   let lastQuestions = [];
   const attemptMap = new Map();
 
-  const QUIZ_META = { subject: "PHY", quizId: "phy-heat-f3-final-exam" };
+  const QUIZ_META = { subject: "PHY", quizId: "phy-foundation-quantities-units" };
 
   function getOptionOrTableText(q, key) {
     if (key === undefined || key === null) return null;

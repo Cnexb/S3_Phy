@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jpwm06-4",
   chapter: "CH3 Wave Motion and Optics",
-  topic: "JPWM06 Light reflection (Quiz 4)",
+  topic: "JPWM06 Light reflection",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-4-1",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Standard",
     stem: "In the following figure, two plane mirrors at right angles face each other. An object is placed at O. Multiple images are thus formed by the mirrors. Which of the following is/are NOT the image(s) formed by the mirrors?",
     options: [
@@ -50,6 +51,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-4-2",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Standard",
     stem: "A beam of sunlight is incident on a plane mirror as shown in the figure. The light beam is reflected and hits point P on a wall. How should the mirror be rotated so that the reflected beam hits point Q?",
     options: [
@@ -71,6 +73,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-4-3",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Standard",
     stem: "Daisy is sitting on a chair and a clock is installed on the wall at 3 m behind her. She wants to install a plane mirror on the wall at 2 m in front of her so that she can see the image of the clock in the mirror. Daisy’s eyes and the clock are at 1.5 m and 2.7 m above the ground respectively. Find the minimum height of the upper edge of the mirror.",
     options: [

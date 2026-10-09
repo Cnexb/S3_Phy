@@ -1,4 +1,4 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS } from "./quizData.js";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META } from "./quizData.js";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
@@ -215,10 +215,9 @@ export function initQuiz() {
   let lastQuestions = [];
   const attemptMap = new Map();
 
-  const QUIZ_META = { subject: "PHY", quizId: "phy-foundations-quantities" };
   const QUIZ_ID_BY_SECTION = {
-    "quantities-units": "phy-foundations-quantities",
-    "useful-maths": "phy-foundations-useful-math",
+    JPF01: "phy-jpf01",
+    JPF02: "phy-jpf02",
   };
 
   function getOptionOrTableText(q, key) {

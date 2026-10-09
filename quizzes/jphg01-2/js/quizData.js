@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jphg01-2",
   chapter: "CH1 Heat and Gases",
-  topic: "JPHG01 Temperature and thermometer (Quiz 2)",
+  topic: "JPHG01 Temperature and thermometer",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-2-1",
     topic: "JPHG01",
     section: "JPHG01.2",
+    subtopic: "JPHG01.2 Calibration of thermometer",
     difficulty: "Applied",
     stem: "A thermometer makes use of the resistance R of a platinum wire wrapped around a ceramic core to measure temperature T. The thermometer is calibrated for the two fixed points. R is assumed to change linearly with T and the solid line in the figure is used to give the reading of the thermometer. The dotted line shows the actual variation of R with T. If the thermometer gives a reading of 120 °C in a measurement, which of the following statements is correct?",
     options: [
@@ -49,6 +50,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-2-2",
     topic: "JPHG01",
     section: "JPHG01.3",
+    subtopic: "JPHG01.3 Types of thermometer",
     difficulty: "Foundation",
     stem: "A mercury-in-glass thermometer will response to temperature change more quickly if",
     options: [
@@ -64,6 +66,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-2-3",
     topic: "JPHG01",
     section: "JPHG01.3",
+    subtopic: "JPHG01.3 Types of thermometer",
     difficulty: "Foundation",
     stem: "Which of the following methods can improve the sensitivity of a liquid-in-glass thermometer?\n(1) Reduce the diameter of the glass tube.\n(2) Increase the length of the glass tube.\n(3) Use a liquid which expands less for the same temperature increase.",
     options: [

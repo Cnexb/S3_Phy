@@ -17,4 +17,4 @@ Canonical list: `content/topics/physics-topics.json` (from Physics Topics List.x
 
 Do not put F01/F02 on flashcard or summary `topic.*` strings unless the teacher asks.
 
-Frozen tracking ids (do not change in this teacher role): `phy-foundations-quantities`, `phy-foundations-useful-math`. Mapping those to F01/F02 in UniPlus is a technical-owner task.
+Tracking ids match UniPlus `phy_quiz_attempts`: `phy-jpf01` / `phy-jpf02`. Item `section` is the topic code (`JPF01`, `JPF02`); CH0 has no subtopic codes.

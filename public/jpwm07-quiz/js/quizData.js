@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jpwm07",
   chapter: "CH3 Wave Motion and Optics",
-  topic: "JPWM07 Light refraction (Quiz 1)",
+  topic: "JPWM07 Light refraction",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm07-1",
     topic: "JPWM07",
     section: "JPWM07.1",
+    subtopic: "JPWM07.1 Bending of refracted rays",
     label: "JPWM07.1 Question 1",
     difficulty: "Standard",
     stem: "The figure below shows a ray of light entering medium Y from medium X. Which of the following statements is/are correct?\n(1) Light travels faster in medium X than in medium Y.\n(2) φ is the angle of refraction.\n(3) The refractive index of medium X is larger than that of medium Y.",
@@ -51,6 +52,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm07-2",
     topic: "JPWM07",
     section: "JPWM07.2",
+    subtopic: "JPWM07.2 Snell's law",
     label: "JPWM07.2 Question 2",
     difficulty: "Standard",
     stem: "The given ray diagram shows the refraction of light at the surface of an unknown liquid. If the refractive index of the liquid is 1.52, what is the angle of incidence?",
@@ -73,6 +75,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm07-3",
     topic: "JPWM07",
     section: "JPWM07.3",
+    subtopic: "JPWM07.3 Speed of light and refraction",
     label: "JPWM07.3 Question 3",
     difficulty: "Foundation",
     stem: "The refractive index of diamond is 2.42. What is the speed of light in diamond? (Given that the speed of light in vacuum = 3 × 10⁸ ms⁻¹)",

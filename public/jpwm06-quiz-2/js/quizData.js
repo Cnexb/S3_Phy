@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jpwm06-2",
   chapter: "CH3 Wave Motion and Optics",
-  topic: "JPWM06 Light reflection (Quiz 2)",
+  topic: "JPWM06 Light reflection",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-2-1",
     topic: "JPWM06",
     section: "JPWM06.2",
+    subtopic: "JPWM06.2 Image formed by plane mirror",
     difficulty: "Applied",
     stem: "The figure above shows the image of a digital clock face formed by a plane mirror. What is the time shown by the clock?",
     options: [
@@ -49,6 +50,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-2-2",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Applied",
     stem: "Three dancers O, P and Q stand in front of a plane mirror as shown. What is the minimum width of the mirror for dancer O to see both dancers P and Q?",
     options: [
@@ -69,6 +71,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-2-3",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Applied",
     stem: "A 158-cm-tall girl stands 1.5 m from a wall mirror as shown below. Her eyes are 148 cm above the floor. The girl can just see the bottom of her skirt, which is 40 cm above the floor, in the mirror. What is the height of the bottom edge of the mirror above the floor?",
     options: [
@@ -89,6 +92,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-2-4",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Applied",
     stem: "In a room ABCD, a tall plane mirror of width 1 m is placed at the middle of the wall BD. The top view of the room is shown below. A student facing the mirror wants to see the objects placed at corners A and C at the same time. At most how far can he stand away from the mirror?",
     options: [

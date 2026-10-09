@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-1",
     topic: "JPHG01",
     section: "JPHG01.3",
+    subtopic: "JPHG01.3 Types of thermometer",
     difficulty: "Foundation",
     stem: "Which of the following thermometers measures temperature by detecting the intensity of radiation?",
     options: [
@@ -44,6 +45,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-2",
     topic: "JPHG01",
     section: "JPHG01.1",
+    subtopic: "JPHG01.1 Temperature scale",
     difficulty: "Foundation",
     stem: "Which of the following statements about the Celsius temperature scale is/are correct?\n(1) The lower fixed point is the lowest temperature existing in nature.\n(2) The upper fixed point is the temperature of steam.\n(3) The unit of this scale is °C.",
     options: [
@@ -59,6 +61,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-3",
     topic: "JPHG01",
     section: "JPHG01.2",
+    subtopic: "JPHG01.2 Calibration of thermometer",
     difficulty: "Standard",
     stem: "A faulty thermometer with uniform scale reads 5 °C and 95 °C when it is placed in melting ice and boiling water respectively. What is the actual temperature if the thermometer reads 30 °C?",
     options: [

@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jphg02-2",
   chapter: "CH1 Heat and Gases",
-  topic: "JPHG02 Heat and internal energy (Quiz 2)",
+  topic: "JPHG02 Heat and internal energy",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jphg02-2-1",
     topic: "JPHG02",
     section: "JPHG02.4",
+    subtopic: "JPHG02.4 Specific heat capacity and experiments to find specific heat capacity",
     label: "JPHG02.4 Question 1",
     difficulty: "Standard",
     stem: "Jimmy uses a joulemeter to find the specific heat capacity of water.\nMass of water = 0.2 kg\nInitial temperature = 25 °C\nFinal temperature = 42 °C\nInitial joulemeter reading = 64 350 J\nFinal joulemeter reading = 79 470 J\nWhat is the specific heat capacity of water?",
@@ -46,6 +47,7 @@ export const QUIZ_ITEMS = [
     id: "jphg02-2-2",
     topic: "JPHG02",
     section: "JPHG02.5",
+    subtopic: "JPHG02.5 Heat capacity",
     label: "JPHG02.5 Question 2",
     difficulty: "Standard",
     stem: "A heater supplies 1000 J of energy to a 5 kg metal block. The temperature of the metal block rises from 25 °C to 35 °C. Assume that there is no energy loss to the surroundings. What is the heat capacity of the metal block?",
@@ -62,6 +64,7 @@ export const QUIZ_ITEMS = [
     id: "jphg02-2-3",
     topic: "JPHG02",
     section: "JPHG02.6",
+    subtopic: "JPHG02.6 Heat transfer calculation",
     label: "JPHG02.6 Question 3",
     difficulty: "Standard",
     stem: "A metal block of mass 0.1 kg at 150 °C is put in water of mass 1 kg at 20 °C. The heat capacity of the metal block is 100 J °C−1. What is the final temperature of the mixture?\nSpecific heat capacity of water = 4200 J kg−1 °C−1",

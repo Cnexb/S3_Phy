@@ -12,10 +12,10 @@ Heat Ch.1, foundations: edit `quizData.js` directly. Optics chapters also use `q
 
 ## New topic
 
-Append to `QUIZ_SECTIONS`:
+Use the Excel topic/subtopic code as `id` (e.g. `JPF01`, `JPHG01.3`), matching UniPlus `section`. Append to `QUIZ_SECTIONS` / `QUIZ_TOPICS`:
 
 ```js
-{ id: "latent-heat", label: "Latent heat", labelZh: "潛熱" }
+{ id: "JPHG03.1", label: "JPHG03.1 Latent heat", labelZh: "JPHG03.1 潛熱" }
 ```
 
 Then add items whose `section` equals that `id`.

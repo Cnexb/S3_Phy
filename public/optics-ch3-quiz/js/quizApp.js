@@ -328,6 +328,8 @@ export function initQuiz() {
         quizId: QUIZ_META.quizId,
         questionId: String(q.id),
         section: q.section || null,
+        topic: QUIZ_META.topic || null,
+        subtopic: q.subtopic || null,
         difficulty: q.difficulty || null,
         stem: q.stem || null,
         selectedAnswer:

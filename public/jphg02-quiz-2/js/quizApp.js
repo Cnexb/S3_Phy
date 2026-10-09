@@ -1,4 +1,4 @@
-import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js?v=20261007jphg02q2";
+import { QUIZ_ITEMS, QUIZ_SECTIONS, QUIZ_META, itemTopicId } from "./quizData.js?v=20261009jphg02q2";
 import { sectionLabel, renderSessionSummary } from "./quizSummary.js";
 import { downloadWord, printSheet } from "./quizExport.js";
 import {
@@ -267,6 +267,8 @@ export function initQuiz() {
         quizId: QUIZ_META.quizId,
         questionId: String(q.id),
         section: q.section || null,
+        topic: QUIZ_META.topic || null,
+        subtopic: q.subtopic || null,
         difficulty: q.difficulty || null,
         stem: q.stem || null,
         selectedAnswer:

@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jphg01-3",
   chapter: "CH1 Heat and Gases",
-  topic: "JPHG01 Temperature and thermometer (Quiz 3)",
+  topic: "JPHG01 Temperature and thermometer",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-3-1",
     topic: "JPHG01",
     section: "JPHG01.2",
+    subtopic: "JPHG01.2 Calibration of thermometer",
     difficulty: "Standard",
     stem: "The resistance of the metal coil in a resistance thermometer is 70 Ω at 30 °C and 80 Ω at 50 °C. What is the resistance of the metal coil if it is placed in boiling water? Assume that the resistance of the coil varies linearly with temperature.",
     options: [
@@ -44,6 +45,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-3-2",
     topic: "JPHG01",
     section: "JPHG01.3",
+    subtopic: "JPHG01.3 Types of thermometer",
     difficulty: "Foundation",
     stem: "A mercury-in-glass thermometer will response to temperature change more quickly if",
     options: [
@@ -58,6 +60,7 @@ export const QUIZ_ITEMS = [
     id: "jphg01-3-3",
     topic: "JPHG01",
     section: "JPHG01.3",
+    subtopic: "JPHG01.3 Types of thermometer",
     difficulty: "Standard",
     stem: "The graphs below show the variation of the electrical resistance R of four circuit elements with temperature T. Which of the circuit elements is the most suitable for measuring temperature?",
     options: [

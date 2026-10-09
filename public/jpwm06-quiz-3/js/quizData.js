@@ -3,7 +3,7 @@ export const QUIZ_META = {
   subject: "PHY",
   quizId: "phy-jpwm06-3",
   chapter: "CH3 Wave Motion and Optics",
-  topic: "JPWM06 Light reflection (Quiz 3)",
+  topic: "JPWM06 Light reflection",
 };
 
 /** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
@@ -29,6 +29,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-3-1",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Standard",
     stem: "An object is placed near one end of a periscope as shown. Which of the following figures best represents the image observed?",
     options: [
@@ -50,6 +51,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-3-2",
     topic: "JPWM06",
     section: "JPWM06.4",
+    subtopic: "JPWM06.4 Using reflection by plane mirror",
     difficulty: "Standard",
     stem: "In the figure below the angle of incidence of a ray on a plane mirror is 30°. If the mirror is rotated anti-clockwise through an angle of 20°, what is the reflected ray rotated?",
     options: [
@@ -71,6 +73,7 @@ export const QUIZ_ITEMS = [
     id: "jpwm06-3-3",
     topic: "JPWM06",
     section: "JPWM06.3",
+    subtopic: "JPWM06.3 Diffuse reflection",
     difficulty: "Standard",
     stem: "A clear image of a pen is formed by a plane mirror but not a metal plate. Which of the following is a reason for this?",
     options: [
