@@ -12,7 +12,7 @@ function read(rel) {
 }
 
 const index = read('index.html');
-assert.match(index, /uni-education-elearning\.pages\.dev\/tracker\/uni-tracker\.js\?v=2/);
+assert.match(index, /uni-education-elearning\.pages\.dev\/tracker\/uni-tracker\.js\?v=20261013-topic-columns/);
 
 const quizApp = read('quizzes/optics-ch3/js/quizApp.js');
 assert.match(quizApp, /quizId:\s*QUIZ_META\.quizId/);
