@@ -6,6 +6,6 @@ export function createReflection3dLab(t) {
     slug: 'reflection-3d',
     titleKey: 'tools.reflection3d.title',
     className: 'tool-reflection-3d-lab',
-    extraParams: () => '&v=20260718',
+    extraParams: () => '&v=20261014k',
   });
 }
