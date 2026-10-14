@@ -114,7 +114,7 @@ export const en = {
   'tools.rotatingMirror.canvas.n': 'n',
   'tools.rotatingMirror.canvas.nPrime': 'n\u2032',
   'tools.rotatingMirror.canvas.shift': 'Shift',
-  'tools.refractionTir.title': 'Prison Break lab — refraction, Snell & TIR',
+  'tools.refractionTir.title': 'Total internal reflection',
   'tools.mirage.title': 'Mirage — TIR in hot & cold air',
   'tools.refraction.title': 'Refraction — Snell’s law',
   'tools.waveMotion.title': 'Wave Motion — Phase Analysis',

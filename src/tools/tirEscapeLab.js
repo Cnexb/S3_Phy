@@ -6,6 +6,6 @@ export function createTirEscapeLab(t) {
     slug: 'tir-escape',
     titleKey: 'tools.refractionTir.title',
     className: 'tool-tir-escape',
-    extraParams: () => '&v=20260722_tir_light_v1',
+    extraParams: () => '&v=20261014_tir_lower',
   });
 }

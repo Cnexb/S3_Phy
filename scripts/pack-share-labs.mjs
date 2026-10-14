@@ -87,20 +87,51 @@ ${bundled.outputFiles[0].text}
 `;
 }
 
-function inlineTir() {
-  const tokens = fs.readFileSync(path.join(root, 'labs', 'shared', 's3phy-tokens.css'), 'utf8');
-  const embedCss = fs.readFileSync(path.join(root, 'labs', 'shared', 's3phy-embed.css'), 'utf8');
-  const embedInit = fs.readFileSync(path.join(root, 'labs', 'shared', 's3phy-embed-init.js'), 'utf8');
-  let html = fs.readFileSync(path.join(root, 'labs', 'tir-escape', 'index.html'), 'utf8');
-  const injected = `<style>\n${tokens}\n\n${embedCss}\n</style>\n    <script>\n${embedInit}\n    </script>`;
-  const replaced = html.replace(
-    /<link rel="stylesheet" href="\.\.\/shared\/s3phy-tokens\.css">\s*<link rel="stylesheet" href="\.\.\/shared\/s3phy-embed\.css">\s*<script src="\.\.\/shared\/s3phy-embed-init\.js"><\/script>/,
-    injected,
-  );
-  if (replaced === html) {
-    throw new Error('Could not inline TIR shared CSS/JS — markup may have changed.');
-  }
-  return replaced;
+async function bundleTir() {
+  const css = [
+    path.join(root, 'labs', 'shared', 's3phy-embed.css'),
+    path.join(root, 'labs', 'tir-escape', 'styles.css'),
+  ]
+    .map((p) => fs.readFileSync(p, 'utf8'))
+    .join('\n\n');
+
+  const bundled = await build({
+    entryPoints: [path.join(root, 'labs', 'tir-escape', 'js', 'boot.js')],
+    bundle: true,
+    write: false,
+    format: 'iife',
+    platform: 'browser',
+    target: ['es2020'],
+    plugins: [stripQueryPlugin],
+  });
+
+  return `<!DOCTYPE html>
+<html lang="zh-HK" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="google" content="notranslate">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Total internal reflection</title>
+  <style>
+${css}
+  </style>
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      if (params.get('embed') === '1' || params.get('embed') === 'true') {
+        document.documentElement.classList.add('s3phy-embed');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+${bundled.outputFiles[0].text}
+  </script>
+</body>
+</html>
+`;
 }
 
 const launcher = `<!DOCTYPE html>
@@ -153,14 +184,14 @@ const launcher = `<!DOCTYPE html>
       <span>Snell's law, media, and total internal reflection</span>
     </a>
     <a class="lab" href="total-internal-reflection-lab.html">
-      <strong>全反射逃獄 · Total Internal Reflection</strong>
-      <span>Critical angle and TIR escape game</span>
+      <strong>全內反射 · Total Internal Reflection</strong>
+      <span>Critical angle and total internal reflection</span>
     </a>
     <a class="lab" href="heat-transfer-lab.html">
       <strong>熱傳遞實驗 · Heat Transfer Lab</strong>
       <span>Conduction, convection, and radiation</span>
     </a>
-    <p class="note">Heat Transfer 同全反射實驗需要網絡（字型／圖表／公式）。折射實驗可以離線開啟。<br>Heat Transfer and TIR need internet. The refraction lab works offline.</p>
+    <p class="note">Heat Transfer 需要網絡。折射同全內反射實驗可以離線開啟。<br>Heat Transfer needs internet. The refraction and TIR labs work offline.</p>
   </main>
 </body>
 </html>
@@ -171,7 +202,7 @@ fs.rmSync(path.dirname(packDir), { recursive: true, force: true });
 fs.mkdirSync(packDir, { recursive: true });
 
 const refractionHtml = await bundleRefraction();
-const tirHtml = inlineTir();
+const tirHtml = await bundleTir();
 const heatHtml = fs.readFileSync(path.join(root, 'labs', 'heat-transfer', 'index.html'), 'utf8');
 
 const files = {

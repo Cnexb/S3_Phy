@@ -1,0 +1,41 @@
+import { initTirEscapeLab } from './app.js?v=20261014_tir_lower';
+import { createT, hubLangToLocal, initLangFromUrl, setLang, getLang } from './i18n.js?v=20261014_tir_lower';
+
+const root = document.getElementById('app');
+
+function updateLangButtons(activeLang) {
+  document.querySelectorAll('.lang-btn').forEach((btn) => {
+    const lang = btn.getAttribute('data-set-lang');
+    btn.classList.toggle('active', lang === activeLang);
+  });
+}
+
+function mount() {
+  if (!root) return;
+  root.replaceChildren();
+  const current = getLang();
+  initTirEscapeLab(root, createT(current));
+  updateLangButtons(current);
+}
+
+function applyLang(lang) {
+  setLang(lang);
+  mount();
+}
+
+initLangFromUrl();
+applyLang(getLang());
+
+document.addEventListener('click', (ev) => {
+  const btn = ev.target.closest('.lang-btn');
+  if (!btn || !btn.hasAttribute('data-set-lang')) return;
+  const lang = btn.getAttribute('data-set-lang');
+  if (lang) applyLang(lang);
+});
+
+window.addEventListener('message', (ev) => {
+  if (ev.data?.type !== 's3phy:lang') return;
+  const next = hubLangToLocal(ev.data.lang);
+  if (next === getLang()) return;
+  applyLang(next);
+});
