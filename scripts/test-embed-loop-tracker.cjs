@@ -67,6 +67,8 @@ assert.doesNotMatch(opticsQuiz2, /uni-tracker|uniplus:quizAnswer|quizId/);
 const opticsHub = read('src/strands/opticsHub.js');
 assert.match(opticsHub, /createOpticsCh3Quiz2/);
 assert.match(opticsHub, /jpwm06-2/);
+assert.match(opticsHub, /createOpticsJpwm07Quiz2/);
+assert.match(opticsHub, /jpwm07-2/);
 
 const jphg01Quiz3App = read('quizzes/jphg01-3/js/quizApp.js');
 assert.match(jphg01Quiz3App, /quizId:\s*QUIZ_META\.quizId/);
@@ -103,6 +105,34 @@ const heatHub = read('src/strands/heatHub.js');
 assert.match(heatHub, /createHeatCh1Quiz3/);
 assert.match(heatHub, /jphg01-3/);
 
+const jpwm07Quiz2App = read('quizzes/jpwm07-2/js/quizApp.js');
+assert.match(jpwm07Quiz2App, /quizId:\s*QUIZ_META\.quizId/);
+assert.match(jpwm07Quiz2App, /type:\s*"uniplus:quizAnswer"/);
+assert.match(jpwm07Quiz2App, /questionId:\s*String\(q\.id\)/);
+assert.match(jpwm07Quiz2App, /section:\s*q\.section/);
+assert.match(jpwm07Quiz2App, /reportPhyAttempt/);
+assert.doesNotMatch(jpwm07Quiz2App, /embedPageUrl/);
+
+const jpwm07Quiz1Data = read('quizzes/jpwm07/js/quizData.js');
+const jpwm07Quiz2Data = read('quizzes/jpwm07-2/js/quizData.js');
+assert.match(jpwm07Quiz2Data, /quizId:\s*"phy-jpwm07-2"/);
+assert.match(jpwm07Quiz2Data, /subject:\s*"PHY"/);
+
+const jpwm07Quiz1Ids = [...jpwm07Quiz1Data.matchAll(/id:\s*"(jpwm07-[^"]+)"/g)].map((m) => m[1]);
+const jpwm07Quiz2Ids = [...jpwm07Quiz2Data.matchAll(/id:\s*"(jpwm07-2-[^"]+)"/g)].map((m) => m[1]);
+assert.deepEqual(jpwm07Quiz2Ids, ['jpwm07-2-1', 'jpwm07-2-2', 'jpwm07-2-3']);
+assert.equal(new Set(jpwm07Quiz2Ids).size, jpwm07Quiz2Ids.length, 'JPWM07 quiz 2 question ids must be unique');
+for (const id of jpwm07Quiz2Ids) {
+  assert.ok(!jpwm07Quiz1Ids.includes(id), `question id ${id} collides with quiz 1`);
+}
+assert.equal([...jpwm07Quiz2Data.matchAll(/section:\s*"JPWM07\./g)].length, jpwm07Quiz2Ids.length);
+
+const opticsJpwm07Quiz2 = read('src/worksheets/opticsJpwm07Quiz2.js');
+assert.match(opticsJpwm07Quiz2, /embedPageUrl\(`jpwm07-quiz-2\/quiz\.html/);
+assert.match(opticsJpwm07Quiz2, /s3phy:lang/);
+assert.doesNotMatch(opticsJpwm07Quiz2, /uni-tracker|uniplus:quizAnswer|quizId/);
+
 console.log('ok  embed loop fix leaves tracker / quizId wiring untouched');
 console.log('ok  JPWM06 quiz 1 and quiz 2 post distinct quizId and questionId values');
 console.log('ok  JPHG01 quiz 3 posts phy-jphg01-3 with distinct question ids');
+console.log('ok  JPWM07 quiz 2 posts phy-jpwm07-2 with distinct question ids');
