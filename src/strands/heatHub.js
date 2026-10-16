@@ -57,7 +57,7 @@ const TOOL_ORDER = [
   'liquid', 'boilingWater', 'heatingMaterials', 'changeOfState', 'heatFlow', 'heatTransfer',
 ];
 const TOOL_STORAGE_KEY = 's3phy.heat.tool';
-const QUIZ_ORDER = ['jphg01', 'jphg01-2', 'jphg01-3', 'jphg02', 'jphg02-2'];
+const QUIZ_ORDER = ['jphg01', 'jphg01-2', 'jphg01-3', 'jphg02', 'jphg02-2', 'jphg02-3'];
 const QUIZ_STORAGE_KEY = 's3phy.heat.quiz';
 
 const TOOL_LOADERS = {
@@ -153,6 +153,13 @@ export function mountHeatHub(root) {
       const node = createHeatJphg02Quiz2(t);
       stage.appendChild(node);
       destroyWorksheet = node._heatJphg02Quiz2Cleanup || null;
+      return;
+    }
+    if (quizPickId === 'jphg02-3') {
+      const { createHeatJphg02Quiz3 } = await import('../worksheets/heatJphg02Quiz3.js');
+      const node = createHeatJphg02Quiz3(t);
+      stage.appendChild(node);
+      destroyWorksheet = node._heatJphg02Quiz3Cleanup || null;
       return;
     }
     const { createHeatCh1Quiz } = await import('../worksheets/heatCh1Quiz.js');

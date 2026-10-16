@@ -1,0 +1,82 @@
+/** CH1 Heat and Gases · JPHG02 Heat and internal energy · Quiz 3 */
+export const QUIZ_META = {
+  subject: "PHY",
+  quizId: "phy-jphg02-3",
+  chapter: "CH1 Heat and Gases",
+  topic: "JPHG02 Heat and internal energy",
+};
+
+/** Student picker: syllabus topic. Subtopic codes stay on each item.section for tracker only. */
+export const QUIZ_TOPICS = [
+  {
+    id: "JPHG02",
+    label: "JPHG02 Heat and internal energy",
+    labelZh: "JPHG02 熱與內能",
+  },
+];
+
+export const QUIZ_SECTIONS = QUIZ_TOPICS;
+
+export function itemTopicId(q) {
+  if (q?.topic) return q.topic;
+  const sec = String(q?.section || "");
+  const i = sec.lastIndexOf(".");
+  return i > 0 ? sec.slice(0, i) : sec;
+}
+
+export const QUIZ_ITEMS = [
+  {
+    id: "jphg02-3-1",
+    topic: "JPHG02",
+    section: "JPHG02",
+    subtopic: "JPHG02 Heat and internal energy",
+    label: "JPHG02 Question 1",
+    difficulty: "Standard",
+    stem: "Which of the following statements concerning the internal energy of a system are correct?\n(1) The internal energy of a system is the sum of the kinetic energy due to the random motion of the molecules and the potential energy of the molecules in the system.\n(2) If the kinetic energy due to the random motion of the molecules increases, the temperature of the system must increase.\n(3) If the potential energy of the molecules increases, the temperature of the system must increase.",
+    options: [
+      { key: "A", text: "(1) and (2) only" },
+      { key: "B", text: "(1) and (3) only" },
+      { key: "C", text: "(2) and (3) only" },
+      { key: "D", text: "(1), (2) and (3)" },
+    ],
+    answer: "A",
+    explanation:
+      "Internal energy is molecular kinetic energy plus molecular potential energy, so (1) is correct. Temperature follows the average kinetic energy of random motion, so (2) is correct. Potential energy can rise during a change of state while the temperature stays the same, so (3) is not correct.",
+  },
+  {
+    id: "jphg02-3-2",
+    topic: "JPHG02",
+    section: "JPHG02",
+    subtopic: "JPHG02 Heat and internal energy",
+    label: "JPHG02 Question 2",
+    difficulty: "Standard",
+    stem: "Two blocks, P and Q, are made of the same material. P has a smaller mass than Q. P is at 200 °C and Q is at 50 °C. Which of the following statements is/are correct?\n(1) The average kinetic energy of the molecules in P is higher than that in Q.\n(2) The total kinetic energy of the molecules in P is higher than that in Q.",
+    options: [
+      { key: "A", text: "None of the above" },
+      { key: "B", text: "(1) only" },
+      { key: "C", text: "(2) only" },
+      { key: "D", text: "(1) and (2)" },
+    ],
+    answer: "B",
+    explanation:
+      "The higher temperature means a higher average molecular kinetic energy, so (1) is correct. P is hotter but lighter, so the total molecular kinetic energy cannot be ranked from the information given. (2) is not correct.",
+  },
+  {
+    id: "jphg02-3-3",
+    topic: "JPHG02",
+    section: "JPHG02",
+    subtopic: "JPHG02 Heat and internal energy",
+    label: "JPHG02 Question 3",
+    difficulty: "Standard",
+    stem: "What physical properties does the temperature of an object represent?\n(1) A measure of the degree of hotness of the object\n(2) A measure of the internal energy of the object\n(3) A measure of the average kinetic energy of the molecules of the object",
+    options: [
+      { key: "A", text: "(1) and (2) only" },
+      { key: "B", text: "(1) and (3) only" },
+      { key: "C", text: "(2) and (3) only" },
+      { key: "D", text: "(1), (2) and (3)" },
+    ],
+    answer: "B",
+    explanation:
+      "Temperature tells how hot the object is, which is the average kinetic energy of its molecules. Internal energy also depends on mass, state, and potential energy, so temperature is not a measure of internal energy.",
+  },
+];
