@@ -1,0 +1,10 @@
+{
+  "slug": "jpwm07-2",
+  "quizId": "phy-jpwm07-2",
+  "topicCode": "JPWM07",
+  "syncAll": true,
+  "exclude": [
+    "manifest.json",
+    "README.md"
+  ]
+}
