@@ -4,7 +4,7 @@
     {
       "id": "jphg02-3-1",
       "topic": "JPHG02",
-      "section": "JPHG02",
+      "section": "JPHG02.1",
       "difficulty": "Standard",
       "stem": "Which of the following statements concerning the internal energy of a system are correct?\n(1) The internal energy of a system is the sum of the kinetic energy due to the random motion of the molecules and the potential energy of the molecules in the system.\n(2) If the kinetic energy due to the random motion of the molecules increases, the temperature of the system must increase.\n(3) If the potential energy of the molecules increases, the temperature of the system must increase.",
       "options": [
@@ -19,7 +19,7 @@
     {
       "id": "jphg02-3-2",
       "topic": "JPHG02",
-      "section": "JPHG02",
+      "section": "JPHG02.1",
       "difficulty": "Standard",
       "stem": "Two blocks, P and Q, are made of the same material. P has a smaller mass than Q. P is at 200 °C and Q is at 50 °C. Which of the following statements is/are correct?\n(1) The average kinetic energy of the molecules in P is higher than that in Q.\n(2) The total kinetic energy of the molecules in P is higher than that in Q.",
       "options": [
@@ -34,7 +34,7 @@
     {
       "id": "jphg02-3-3",
       "topic": "JPHG02",
-      "section": "JPHG02",
+      "section": "JPHG02.1",
       "difficulty": "Standard",
       "stem": "What physical properties does the temperature of an object represent?\n(1) A measure of the degree of hotness of the object\n(2) A measure of the internal energy of the object\n(3) A measure of the average kinetic energy of the molecules of the object",
       "options": [
