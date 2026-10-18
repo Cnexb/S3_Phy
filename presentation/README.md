@@ -2,7 +2,7 @@
 
 離線單檔。不接入網站導覽。Teams 可直接開這個連結：
 
-https://raw.githack.com/Cnexb/S3_Phy/share-uniplus-presentation/presentation/index.html
+https://cnexb.github.io/S3_Phy/presentation/
 
 連結是公開的，任何人有網址就能看。不要貼到學生群組。
 
