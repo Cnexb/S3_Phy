@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uni+ 普通話物理班｜管理層提案</title>
+<style>
+:root {
+  --bg: #f7f5ef;
+  --paper: #ffffff;
+  --ink: #17394a;
+  --muted: #5b6c73;
+  --accent: #087a86;
+  --accent-soft: #e5f0ee;
+  --warning: #87580b;
+  --warning-soft: #fff1d8;
+  --negative: #a9443b;
+  --negative-soft: #f9e9e6;
+  --rule: #d6dfdd;
+  --font-zh: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif;
+  --slide-w: 1600px;
+  --slide-h: 900px;
+  --safe-x: 80px;
+  --radius: 8px;
+  --transition: 180ms;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  background: #e8e4db;
+  color: var(--ink);
+  font-family: var(--font-zh);
+}
+button, input, select { font-family: inherit; }
+.tabular-nums { font-variant-numeric: tabular-nums; }
+.amount { text-align: right; font-variant-numeric: tabular-nums; }
+.is-negative { color: var(--negative); }
+.is-positive { color: var(--accent); }
+.is-pending { color: var(--warning); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+.chrome {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid var(--rule);
+}
+.chrome .progress {
+  flex: 1;
+  height: 6px;
+  background: #e7eceb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.chrome .progress > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+}
+.chrome button {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--rule);
+  background: #fff;
+  color: var(--ink);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  cursor: pointer;
+}
+.chrome .page-label { min-width: 88px; text-align: center; color: var(--muted); font-size: 14px; }
+
+.stage {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+}
+.deck {
+  width: var(--slide-w);
+  height: var(--slide-h);
+  transform-origin: top center;
+}
+.slide {
+  display: none;
+  position: relative;
+  width: var(--slide-w);
+  height: var(--slide-h);
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+  padding: 48px 80px 36px;
+}
+.slide.is-active { display: block; }
+.slide.is-entering { animation: fadeIn var(--transition) ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.kicker {
+  position: relative;
+  height: 40px;
+  font-size: 20px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--rule);
+  line-height: 40px;
+}
+.kicker .tag {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  line-height: 1.2;
+}
+.brand { font-weight: 700; color: var(--ink); letter-spacing: 0.02em; }
+.tag {
+  font-size: 18px;
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.tag.stat { background: var(--accent-soft); color: var(--accent); }
+.tag.model { background: #eef2f4; color: var(--muted); }
+.tag.internal { background: var(--warning-soft); color: var(--warning); }
+h1.title {
+  margin: 24px 0 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.25;
+  max-width: 1440px;
+}
+.slide[data-id="s01"] h1.title { font-size: 76px; margin-top: 40px; }
+.slide[data-id="s01"] .content { top: 420px; height: 316px; }
+.lead {
+  margin: 12px 0 0;
+  font-size: 28px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.condition {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 756px;
+  font-size: 24px;
+  line-height: 1.35;
+  color: var(--ink);
+  background: var(--accent-soft);
+  padding: 8px 16px;
+}
+.condition.warn { background: var(--warning-soft); }
+.source {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 824px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  color: var(--muted);
+}
+.source a { color: var(--accent); text-decoration: none; }
+.source a:hover { text-decoration: underline; }
+.content { position: absolute; left: 80px; right: 80px; top: 296px; height: 440px; }
+
+.hero-nums { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 72px; }
+.hero-nums .n { font-size: 88px; font-weight: 700; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.hero-nums h3 { margin: 12px 0 0; font-size: 28px; }
+.hero-nums p { margin: 8px 0 0; font-size: 22px; color: var(--muted); line-height: 1.4; }
+
+.split-75 { display: grid; grid-template-columns: 830px 586px; gap: 24px; }
+.split-66 { display: grid; grid-template-columns: 708px 708px; gap: 24px; }
+.split-48 { display: grid; grid-template-columns: 520px 896px; gap: 24px; }
+.split-84 { display: grid; grid-template-columns: 944px 472px; gap: 24px; }
+.big-quote { font-size: 36px; font-weight: 700; line-height: 1.35; }
+.stack > * + * { margin-top: 16px; }
+.row-item { font-size: 28px; line-height: 1.4; }
+.row-item small { display: block; font-size: 22px; color: var(--muted); margin-top: 4px; }
+
+.bars { display: grid; gap: 28px; padding-top: 8px; }
+.bar-row { display: grid; grid-template-columns: 110px 1fr 110px; gap: 12px; align-items: center; font-size: 24px; }
+.bar-track { height: 28px; background: #eef2f1; position: relative; }
+.bar-fill { height: 100%; background: var(--accent); }
+.axis { display: grid; grid-template-columns: 110px 1fr 110px; font-size: 20px; color: var(--muted); margin-top: 8px; }
+.hero-side .n { font-size: 88px; font-weight: 700; color: var(--accent); line-height: 1; }
+.hero-side p { margin: 8px 0 0; font-size: 24px; line-height: 1.4; }
+
+.bands { display: grid; gap: 20px; }
+.band { background: #fff; padding: 20px 24px; border-top: 2px solid var(--rule); }
+.band h3 { margin: 0 0 8px; font-size: 24px; color: var(--muted); font-weight: 600; }
+.band p { margin: 0; font-size: 28px; line-height: 1.4; }
+
+table.cmp { width: 100%; border-collapse: collapse; font-size: 25px; }
+table.cmp th { text-align: left; font-weight: 600; color: var(--muted); font-size: 22px; padding: 6px 0 10px; border-bottom: 1px solid var(--rule); }
+table.cmp td { padding: 10px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.cmp .sub { display: block; font-size: 20px; color: var(--muted); margin-top: 2px; }
+table.cmp tr.us { background: var(--accent-soft); }
+table.cmp tr.us td { padding-left: 8px; padding-right: 8px; }
+table.dense { font-size: 22px; }
+table.dense td, table.dense th { padding: 7px 8px 7px 0; }
+
+.role-main { background: var(--accent-soft); padding: 28px 32px; height: 100%; }
+.role-side { display: grid; gap: 16px; }
+.role-card { background: #fff; padding: 20px 22px; border: 1px solid var(--rule); }
+.role-main h2 { margin: 0 0 12px; font-size: 36px; }
+.role-main p, .role-card p { margin: 0; font-size: 24px; line-height: 1.45; }
+.role-card h3 { margin: 0 0 8px; font-size: 24px; }
+
+.steps4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.step { background: #fff; padding: 16px 18px; border-top: 3px solid var(--accent); }
+.step b { display: block; font-size: 24px; margin-bottom: 8px; }
+.step span { font-size: 22px; color: var(--muted); line-height: 1.4; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px; font-size: 24px; line-height: 1.45; }
+
+.price-pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: start; }
+.price-box .n { font-size: 88px; font-weight: 700; color: var(--accent); line-height: 1; }
+.price-box h3 { margin: 8px 0 0; font-size: 28px; }
+.price-box p { margin: 8px 0 0; font-size: 24px; color: var(--muted); }
+.vline { width: 1px; background: var(--rule); height: 180px; margin-top: 20px; }
+.service-band { margin-top: 28px; font-size: 24px; line-height: 1.45; padding: 16px 20px; background: #fff; }
+
+.funnel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.funnel .box { background: #fff; padding: 20px 16px; text-align: center; position: relative; }
+.funnel .box:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -18px;
+  top: 38%;
+  color: var(--muted);
+  font-size: 24px;
+}
+.funnel .n { font-size: 56px; font-weight: 700; color: var(--accent); }
+.funnel p { margin: 8px 0 0; font-size: 22px; }
+.channels { margin-top: 24px; font-size: 24px; color: var(--muted); }
+
+.pl-chart { height: 320px; }
+.pl-row { display: grid; grid-template-columns: 220px 1fr 140px; align-items: center; height: 64px; font-size: 24px; }
+.pl-track { position: relative; height: 28px; }
+.pl-zero { position: absolute; left: 50%; top: -18px; bottom: -18px; width: 2px; background: var(--ink); }
+.pl-neg, .pl-pos { position: absolute; top: 0; height: 100%; }
+.pl-neg { right: 50%; background: #c56a63; }
+.pl-pos { left: 50%; background: var(--accent); }
+.pl-scale { display: flex; justify-content: space-between; margin: 0 0 8px 220px; width: calc(100% - 360px); font-size: 20px; color: var(--muted); }
+
+.calc { display: grid; grid-template-columns: 520px 896px; gap: 24px; }
+.calc-form { background: #fff; padding: 20px 22px; }
+.calc-form label { display: block; font-size: 22px; margin: 10px 0 4px; }
+.calc-form input, .calc-form select {
+  width: 100%;
+  font-size: 24px;
+  padding: 8px 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.btn-row button {
+  min-height: 44px;
+  border: 1px solid var(--rule);
+  background: var(--accent-soft);
+  color: var(--ink);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  cursor: pointer;
+  font-size: 20px;
+}
+.calc-out .hero { font-size: 88px; font-weight: 700; line-height: 1; }
+.calc-out .lines { margin-top: 16px; font-size: 24px; line-height: 1.5; }
+.gate { margin-top: 12px; font-size: 22px; color: var(--warning); background: var(--warning-soft); padding: 8px 12px; display: none; }
+.limit { margin-top: 12px; font-size: 20px; color: var(--muted); }
+.print-only, .print-scenarios { display: none; }
+
+.timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.tl { padding: 8px 8px 0 0; border-top: 2px solid var(--accent); }
+.tl b { display: block; font-size: 24px; margin: 10px 0 8px; }
+.tl p { margin: 0; font-size: 22px; line-height: 1.4; color: var(--muted); }
+
+.approve-list { font-size: 28px; line-height: 1.45; }
+.approve-list li { margin: 0 0 18px; }
+.pending-box { background: var(--warning-soft); padding: 20px 22px; }
+.pending-box h3 { margin: 0 0 12px; font-size: 24px; }
+.pending-box p { margin: 0 0 10px; font-size: 22px; line-height: 1.4; }
+
+svg text { font-family: var(--font-zh); }
+
+.notes-panel, .toc-panel {
+  display: none;
+  position: fixed;
+  z-index: 30;
+  background: #fff;
+  border: 1px solid var(--rule);
+  box-shadow: none;
+}
+.notes-panel.is-open, .toc-panel.is-open { display: block; }
+.notes-panel {
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  max-width: 920px;
+  margin: auto;
+  padding: 20px 24px;
+}
+.toc-panel {
+  top: 72px;
+  right: 16px;
+  width: min(420px, 92vw);
+  max-height: calc(100vh - 100px);
+  overflow: auto;
+  padding: 16px 18px;
+}
+.toc-panel a { display: block; padding: 8px 4px; color: var(--ink); text-decoration: none; font-size: 16px; }
+.toc-panel a:hover { color: var(--accent); }
+.notes-panel h2 { margin: 0 0 8px; font-size: 18px; }
+.notes-panel p { margin: 0; font-size: 18px; line-height: 1.5; }
+
+.app-table td:last-child, .app-table th:last-child { text-align: right; }
+.src-list { margin: 0; padding: 0; list-style: none; font-size: 21px; line-height: 1.4; columns: 2; column-gap: 32px; }
+.src-list li { break-inside: avoid; margin: 0 0 12px; }
+.src-list a { color: var(--accent); text-decoration: none; }
+.src-list a:hover { text-decoration: underline; }
+.src-list .id { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 8px; }
+.tbl-kicker { margin: 0 0 8px; font-size: 22px; color: var(--muted); font-weight: 600; }
+
+@media (max-width: 899px) {
+  .chrome { flex-wrap: wrap; }
+  .stage { display: block; padding: 0; }
+  .deck { width: 100%; height: auto; transform: none !important; }
+  .slide {
+    display: none;
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    padding: 20px 16px 28px;
+    overflow: visible;
+  }
+  .slide.is-active { display: block; }
+  .content, .condition, .source { position: static; height: auto; margin-top: 20px; }
+  h1.title { font-size: 32px; }
+  .slide[data-id="s01"] h1.title { font-size: 34px; }
+  .src-list { columns: 1; font-size: 16px; }
+  .lead, .row-item, .approve-list, .band p { font-size: 18px; }
+  .hero-nums, .split-75, .split-66, .split-48, .split-84, .price-pair, .calc, .steps4, .funnel, .timeline, .bars { display: block; }
+  .hero-nums .n, .hero-side .n, .price-box .n, .calc-out .hero { font-size: 48px; }
+  .hero-nums > div, .band, .role-card, .step, .funnel .box, .tl { margin-bottom: 16px; }
+  .vline { display: none; }
+  .pl-row { grid-template-columns: 1fr; height: auto; margin-bottom: 12px; }
+  table.cmp, table.dense { font-size: 16px; display: block; overflow-x: auto; }
+  .condition, .source { font-size: 16px; }
+}
+@media print {
+  html, body { background: #fff; }
+  .chrome, .notes-panel, .toc-panel { display: none !important; }
+  .stage { padding: 0; }
+  .deck { transform: none !important; width: auto; height: auto; }
+  .slide {
+    display: block !important;
+    width: 1600px;
+    height: 900px;
+    overflow: hidden;
+    page-break-after: always;
+    break-after: page;
+  }
+  .screen-only { display: none !important; }
+  .print-only { display: block !important; }
+  .print-scenarios { display: block !important; }
+  .calc-live { display: none !important; }
+}
+@page { size: 16in 9in landscape; margin: 0; }
+</style>
+</head>
+<body>
+<header class="chrome" role="banner">
+  <button type="button" id="btn-prev" aria-label="上一頁">上一頁</button>
+  <button type="button" id="btn-next" aria-label="下一頁">下一頁</button>
+  <div class="page-label" id="page-label">01／13</div>
+  <div class="progress" aria-hidden="true"><i id="progress-bar"></i></div>
+  <button type="button" id="btn-toc">目錄</button>
+  <button type="button" id="btn-notes">講稿</button>
+  <button type="button" id="btn-full">全螢幕</button>
+</header>
+<div class="stage">
+<div class="deck" id="deck">
+
+<section class="slide is-active" data-id="s01" data-kind="main" data-no="01" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　普通話物理班 · 管理層提案<span class="tag">試辦建議</span></div>
+  <h1 class="title">先用一班，<br>驗證普通話物理的付費需求</h1>
+  <p class="lead">中文教材已備妥；以實際付款及續讀驗證需求。</p>
+  <div class="content">
+    <div class="hero-nums">
+      <div><div class="n">1</div><h3>先開一班</h3><p>中三或中四，兩級不混班</p></div>
+      <div><div class="n">8–10</div><h3>單班人數</h3><p>8人起，目標及上限10人</p></div>
+      <div><div class="n">4,000</div><h3>啟動上限／港元</h3><p>首階段1,500已包括在內</p></div>
+    </div>
+  </div>
+  <div class="condition">試辦條件：人手及場地按模型另分攤；8人開班不代表90日已回本。</div>
+  <div class="source"><span>Chris｜項目負責及主教 · 佐敦突破中心｜資料截止 2026-10-16</span><span>01／13</span></div>
+  <template class="speaker-notes">我哋有教材同團隊，但今次先用一個有成本上限嘅試辦，睇清楚家長願唔願意持續付費。</template>
+</section>
+
+<section class="slide" data-id="s02" data-kind="main" data-no="02" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　價格教訓<span class="tag internal">內部經驗</span></div>
+  <h1 class="title">生物班的經驗，要求我們先處理價格阻力</h1>
+  <div class="content">
+    <div class="split-75">
+      <div class="big-quote">過往中文生物班相對大型補習社收費偏高，收生欠佳。<br><span style="font-size:24px;color:var(--muted);font-weight:400">未有查詢、試堂、報讀及續讀的歷史數字，不能畫趨勢。</span></div>
+      <div class="stack">
+        <div class="row-item">問預算<small>先分清負擔唔到，定未見到值呢個價</small></div>
+        <div class="row-item">用試堂<small>$80診斷體驗，報首期可抵扣</small></div>
+        <div class="row-item">驗證付款<small>不直接沿用原價並同時開兩班</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="condition warn">這是內部經驗，不是已量化因果；同時記錄進度、時間、交通及主教信任。</div>
+  <div class="source"><span>資料：Chris 於 2026-10-16 提供的內部經驗</span><span>02／13</span></div>
+  <template class="speaker-notes">問題唔可以單靠師資包裝解決。我想先分清楚，家長係負擔唔到，定未見到值呢個價，再決定收費同服務。</template>
+</section>
+
+<section class="slide" data-id="s03" data-kind="main" data-no="03" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　市場與需求<span class="tag stat">公開統計</span></div>
+  <h1 class="title">三區有學生基礎，<br>付費需求仍要驗證</h1>
+  <div class="content">
+    <div class="split-75">
+      <div>
+        <p class="lead" style="margin-top:0">三區學校的中三＋中四學生</p>
+        <div class="bars">
+          <div class="bar-row"><span>油尖旺</span><div class="bar-track"><div class="bar-fill" style="width:44.01%"></div></div><span class="tabular-nums">4,401</span></div>
+          <div class="bar-row"><span>深水埗</span><div class="bar-track"><div class="bar-fill" style="width:65.3%"></div></div><span class="tabular-nums">6,530</span></div>
+          <div class="bar-row"><span>九龍城</span><div class="bar-track"><div class="bar-fill" style="width:92.19%"></div></div><span class="tabular-nums">9,219</span></div>
+        </div>
+        <div class="axis"><span></span><span>0　　　　　　5,000　　　　　　10,000</span><span></span></div>
+      </div>
+      <div class="hero-side">
+        <div class="n">20,150</div>
+        <p>三區學校中三＋中四學生基數<br>付費需求仍要逐步篩選</p>
+        <p>物理需要 · 普通話偏好<br>相近進度 · 可到場時間<br>可接受收費</p>
+        <p>先驗證同級8–10人實付</p>
+      </div>
+    </div>
+  </div>
+  <div class="condition">這是學生基數，並非普通話物理的付費市場。</div>
+  <div class="source"><span>資料：<a href="#b">[3]</a> 2025/26公營與直資日校｜按學校所在地，非居住地</span><span>03／13</span></div>
+  <template class="speaker-notes">呢個數字只係我哋可以接觸嘅學生基礎。真正目標要同時符合語言、進度同預算，所以我唔會直接話有兩萬個潛在客。</template>
+</section>
+
+<section class="slide" data-id="s04" data-kind="main" data-no="04" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　競爭格局<span class="tag">待核實</span></div>
+  <h1 class="title">普通話銜接是待驗證定位，小班已有競爭</h1>
+  <div class="content">
+    <div class="bands">
+      <div class="band"><h3>大型連鎖</h3><p>凝皓有問書；遵理可見預錄視像形式。普通話授課均未確認。</p></div>
+      <div class="band"><h3>地區專科</h3><p>確一用模擬教學；Crystal 有家長回饋。兩者均非獨家。</p></div>
+      <div class="band"><h3>其他中心</h3><p>朗林 FAQ 列 4–7 人；理型官網列物理博士師資。不代表每班博士親授。</p></div>
+    </div>
+  </div>
+  <div class="condition">12個主要比較＋4個待核線索，不是全部確認當期本區開班。完整名單見<a href="#d1">D1–D4</a>。</div>
+  <div class="source"><span>資料：<a href="#c2">[5–8][15–22]</a>｜對手普通話班仍未確認，不等於沒有</span><span>04／13</span></div>
+  <template class="speaker-notes">唔可以再用「有中文notes、有問書、小班」當獨有賣點。我哋要示範普通話理解，點樣變成校內答題同訂正成果。其餘六個名字同四條線索喺附錄。</template>
+</section>
+
+<section class="slide" data-id="s05" data-kind="main" data-no="05" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　競品與收費<span class="tag">建議測試價</span></div>
+  <h1 class="title">$880／$980可以測試，<br>但不是區內最低價承諾</h1>
+  <div class="content">
+    <div class="split-66">
+      <div>
+        <p class="tbl-kicker">中三 · S3</p>
+        <table class="cmp">
+          <thead><tr><th>機構／計費條件</th><th class="amount">4堂支出</th></tr></thead>
+          <tbody>
+            <tr class="us"><td>Uni+ 建議<span class="sub">4堂 × 75分鐘｜測試方案</span></td><td class="amount">HK$880</td></tr>
+            <tr><td>Crystal<span class="sub">4堂｜2026/27｜時長待核</span></td><td class="amount">HK$1,000</td></tr>
+            <tr><td>高軒（170 × 4＝680）<span class="sub">4堂 × 60分鐘｜學年未標，當期待核</span></td><td class="amount">HK$680</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <p class="tbl-kicker">中四 · S4</p>
+        <table class="cmp">
+          <thead><tr><th>機構／計費條件</th><th class="amount">4堂支出</th></tr></thead>
+          <tbody>
+            <tr class="us"><td>Uni+ 建議<span class="sub">4堂 × 90分鐘｜測試方案</span></td><td class="amount">HK$980</td></tr>
+            <tr><td>凝皓 Roy<span class="sub">4堂 × 75分鐘｜2026/27參考價</span></td><td class="amount">HK$1,240</td></tr>
+            <tr><td>Crystal<span class="sub">4堂｜2026/27｜時長待核</span></td><td class="amount">HK$1,100</td></tr>
+            <tr><td>高軒（250 × 4＝1,000）<span class="sub">4堂 × 90分鐘｜學年未標，當期待核</span></td><td class="amount">HK$1,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="condition warn">相對高軒四堂換算：中三多HK$200；中四只低HK$20。換算並非月費報價，不作最低價排名。</div>
+  <div class="source"><span>資料：<a href="#c2">[15b][17a][19a]</a>及建議模型｜保留學年、課時及待核限制</span><span>05／13</span></div>
+  <template class="speaker-notes">我哋比部分名師班入場費低，但同平價地區中心相比，未必有大優勢。暫時保留測試價，用試堂同付款睇家長願唔願意為語言銜接付費。</template>
+</section>
+
+<section class="slide" data-id="s06" data-kind="main" data-no="06" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　角色分工<span class="tag model">內部確認</span></div>
+  <h1 class="title">Chris主教，審核與團隊支援各有角色</h1>
+  <div class="content">
+    <div class="split-84">
+      <div class="role-main">
+        <h2>Chris｜主教及項目負責</h2>
+        <p>親自授課、批改、回饋及統籌。港大哲學學士；NIU 研究生教學助理經驗；普通話流利；DSE 物理及化學 Level 5。學位學科是哲學，不是物理學位。</p>
+      </div>
+      <div class="role-side">
+        <div class="role-card">
+          <h3>Chu Sir｜課程審核</h3>
+          <p>前校長，只提供意見及審核，不是本班主教。過往 5* 個案不屬 Chris 或新班保證。</p>
+        </div>
+        <div class="role-card">
+          <h3>博士團隊｜支援待落實</h3>
+          <p>有博士級物理／化學教學資源。Dr Kaho 對新班的具體支援及工時未落實，不寫博士親授。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="condition">家長要清楚知道各人實際角色；官網碩士生措辭待更新，主頁用「NIU 研究生教學助理經驗」。</div>
+  <div class="source"><span>資料：<a href="#c1">[11][12][13][14]</a>及 Chris 本次確認</span><span>06／13</span></div>
+  <template class="speaker-notes">我會係學生每堂見到、負責教同跟進嗰位。Chu Sir做課程審核，團隊協助把關，家長要清楚知道各人實際角色。</template>
+</section>
+
+<section class="slide" data-id="s07" data-kind="main" data-no="07" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　課堂設計<span class="tag model">課程安排</span></div>
+  <h1 class="title">用普通話理解，再按學校要求答題</h1>
+  <div class="content">
+    <div class="steps4">
+      <div class="step"><b>1 概念講解</b><span>普通話拆概念</span></div>
+      <div class="step"><b>2 互動驗證</b><span>即場問、即場改</span></div>
+      <div class="step"><b>3 獨立作答</b><span>按學校語文落筆</span></div>
+      <div class="step"><b>4 訂正回饋</b><span>每週練習＋每期家長回饋</span></div>
+    </div>
+    <div class="two-col">
+      <div>對象：已在港讀中三或中四、偏好普通話且進度相近。兩級不混班。教材用中文，必要時加中英術語。</div>
+      <div>
+        <svg viewBox="0 0 360 140" width="100%" height="120" aria-label="折射示意：入射、法線、折射">
+          <line x1="20" y1="70" x2="340" y2="70" stroke="#17394a" stroke-width="2"/>
+          <line x1="180" y1="10" x2="180" y2="130" stroke="#5b6c73" stroke-dasharray="4 4" stroke-width="2"/>
+          <line x1="70" y1="18" x2="180" y2="70" stroke="#087a86" stroke-width="3"/>
+          <line x1="180" y1="70" x2="232" y2="128" stroke="#087a86" stroke-width="3"/>
+          <polygon points="170,66 180,70 172,76" fill="#087a86"/>
+          <polygon points="224,118 232,128 218,124" fill="#087a86"/>
+          <text x="28" y="24" font-size="16" fill="#17394a">入射</text>
+          <text x="186" y="28" font-size="16" fill="#5b6c73">法線</text>
+          <text x="238" y="122" font-size="16" fill="#17394a">折射</text>
+          <text x="28" y="96" font-size="14" fill="#5b6c73">介面</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="condition">普通話是教學語言，不代表學生一定考中文卷。授課、教材與答題語言分開處理。</div>
+  <div class="source"><span>資料：課程設計方案</span><span>07／13</span></div>
+  <template class="speaker-notes">普通話係教學語言，唔代表學生一定考中文卷。我會按學校要求安排中文或者英文作答，避免只係聽明但落筆答唔到。</template>
+</section>
+
+<section class="slide" data-id="s08" data-kind="main" data-no="08" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　收費方案<span class="tag">建議測試價</span></div>
+  <h1 class="title">以清楚收費，界定可持續的服務</h1>
+  <div class="content">
+    <div class="price-pair">
+      <div class="price-box"><div class="n">880</div><h3>中三／4堂</h3><p>每堂 75 分鐘</p></div>
+      <div class="vline" aria-hidden="true"></div>
+      <div class="price-box"><div class="n">980</div><h3>中四／4堂</h3><p>每堂 90 分鐘</p></div>
+    </div>
+    <div class="service-band">首兩期同價，先開一級，8人起、最多10人。含指定筆記、每週短練習批改及每期簡短回饋；$80 診斷體驗報首期可抵扣。</div>
+  </div>
+  <div class="condition warn">建議測試價，尚待批准。現有官網月費 $1,320／$1,480 是另一階段方案，不是已獲批折扣。</div>
+  <div class="source"><span>資料：新班規劃假設｜<a href="#c1">[10]</a> 現有標價只供比較</span><span>08／13</span></div>
+  <template class="speaker-notes">我建議用四堂一期嘅完整價錢，減低家庭第一次嘗試嘅壓力。但批改同支援要定清範圍，唔可以平咗之後又無限增加工作。</template>
+</section>
+
+<section class="slide" data-id="s09" data-kind="main" data-no="09" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　招生驗證<span class="tag model">目標</span></div>
+  <h1 class="title">先驗證查詢和試堂，再小額投放</h1>
+  <div class="content">
+    <div class="funnel">
+      <div class="box"><div class="n">60</div><p>合資格查詢<br>目標</p></div>
+      <div class="box"><div class="n">30</div><p>預約<br>目標</p></div>
+      <div class="box"><div class="n">24</div><p>到場<br>目標</p></div>
+      <div class="box"><div class="n">10</div><p>付費<br>目標</p></div>
+    </div>
+    <p class="channels">渠道次序：現有關係／轉介 → 家長社群與 Chris 短片 → 一至兩個小額廣告。媒體測試 HK$1,000。先做 15–20 個訪談，每一步記錄拒絕原因。</p>
+  </div>
+  <div class="condition">全部是執行目標，不是實績或業界平均。只看觀看量不夠，要分清少人睇廣告同試完覺得太貴。</div>
+  <div class="source"><span>資料：執行目標，並非實績</span><span>09／13</span></div>
+  <template class="speaker-notes">我會先睇邊個環節跌人。只係少人睇廣告，同試完覺得太貴，係兩個完全唔同嘅問題。</template>
+</section>
+
+<section class="slide" data-id="s10" data-kind="main" data-no="10" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　財務與風險<span class="tag model">模型假設</span></div>
+  <h1 class="title">8人可維持一期營運，<br>10人才接近回收首輪投入</h1>
+  <div class="content">
+    <p class="lead" style="margin-top:0">90日項目餘額／港元</p>
+    <div class="pl-scale tabular-nums"><span>−3,000</span><span>−1,500</span><span>0</span><span>+1,500</span><span>+3,000</span></div>
+    <div class="pl-chart" id="pl-chart"></div>
+  </div>
+  <div class="condition">每期8人營運餘額：中三 +660／中四 +860；仍未收回啟動投入。90日兩期，已扣HK$4,000，成本分攤，非中心淨利。</div>
+  <div class="source"><span>模型：business_model.json｜6人壓力測試見<a href="#a2">附錄A2</a></span><span>10／13</span></div>
+  <template class="speaker-notes">所以八個人開到班，唔等於試辦已經回本。十個人讀足兩期都只係少量餘額，成本同續讀一定要跟實。</template>
+</section>
+
+<section class="slide" data-id="s11" data-kind="main" data-no="11" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　續讀試算<span class="tag model">模型假設</span></div>
+  <h1 class="title">續讀稍為下降，首輪仍可能虧損</h1>
+  <div class="content">
+    <div class="calc calc-live screen-only">
+      <form class="calc-form" id="calc-form" autocomplete="off">
+        <label for="calc-grade">級別</label>
+        <select id="calc-grade">
+          <option value="S3" selected>中三</option>
+          <option value="S4">中四</option>
+        </select>
+        <label for="calc-n1">第一期人數（6–10）</label>
+        <input id="calc-n1" type="number" min="6" max="10" step="1" value="10">
+        <label for="calc-n2">第二期人數（0–10）</label>
+        <input id="calc-n2" type="number" min="0" max="10" step="1" value="10">
+        <label for="calc-fee">每人每期收費（港元）</label>
+        <input id="calc-fee" type="number" min="0" step="10" value="880">
+        <div class="btn-row">
+          <button type="button" data-scene="reset">重設建議方案</button>
+          <button type="button" data-scene="88">8→8</button>
+          <button type="button" data-scene="108">10→8</button>
+        </div>
+        <p class="limit">成本分攤假設／非盈利預測。固定成本兩期均計，即使第二期0人。</p>
+      </form>
+      <div class="calc-out">
+        <p class="lead" id="calc-scene" style="margin-top:0">當前情境：中三 10→10 · 建議價</p>
+        <div class="hero tabular-nums" id="calc-hero">+600</div>
+        <p>90日項目餘額／港元</p>
+        <div class="lines" id="calc-lines"></div>
+        <div class="gate" id="calc-gate">低於建議開班或延續門檻，只作壓力測試。</div>
+      </div>
+    </div>
+    <div class="print-scenarios print-only">
+      <p class="lead" style="margin-top:0">列印用固定參考表，不是即時輸入。</p>
+      <table class="cmp dense" id="print-scenario-table"></table>
+    </div>
+  </div>
+  <div class="condition">10→8 是參考情境：中三 −1,040、中四 −440。80%續讀仍可能首輪虧損，不能聲稱達標便回本。</div>
+  <div class="source"><span>來源：同一計算函式及 JSON expected_outputs</span><span>11／13</span></div>
+  <template class="speaker-notes">呢度可以即場調人數同價錢。如果第二期少兩個人，或者每期再平一百蚊，回報就會明顯改變。我建議按呢啲真實條件決定投入。</template>
+</section>
+
+<section class="slide" data-id="s12" data-kind="main" data-no="12" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　90日安排<span class="tag">試辦計劃</span></div>
+  <h1 class="title">90日內，按付款和續讀決定是否繼續</h1>
+  <div class="content">
+    <div class="timeline">
+      <div class="tl"><b>第1–2週</b><p>訪談及示範。先用 $1,500。交付：15–20個家庭接觸紀錄。</p></div>
+      <div class="tl"><b>第3–4週</b><p>試堂及訂位。同級至少8人才開。交付：實付名單。</p></div>
+      <div class="tl"><b>第5–8週</b><p>第一期。記錄工時、學習及續費意向。</p></div>
+      <div class="tl"><b>第9–12週</b><p>第二期。第90日前決定延續／調整／停止。</p></div>
+    </div>
+  </div>
+  <div class="condition">首階段$1,500包含於$4,000。首班穩定、另一級亦有至少8人付費意向才另編預算。</div>
+  <div class="source"><span>資料：試辦計劃｜90日＝約4週準備＋8週授課，只有兩個收費期</span><span>12／13</span></div>
+  <template class="speaker-notes">我會用每個階段嘅證據推進，唔會一開始就用盡預算再等收生。另一級亦要獨立達標先開。</template>
+</section>
+
+<section class="slide" data-id="s13" data-kind="main" data-no="13" data-total="13">
+  <div class="kicker"><span class="brand">Uni+</span>　批准事項<span class="tag">待決定</span></div>
+  <h1 class="title">請批准單班試辦，並核定成本及開班條件</h1>
+  <div class="content">
+    <div class="split-84">
+      <ol class="approve-list">
+        <li>方向：Chris 主教；中三或中四先開一班；測試收費 $880／$980。</li>
+        <li>投入：啟動上限 $4,000，首階段 $1,500；授課／場地分攤另核定。</li>
+        <li>條件：最低8人、目標10人；接受8人維持兩期約 $2,280–$2,680 模型虧損，否則提高門檻並重評。</li>
+      </ol>
+      <div class="pending-box">
+        <h3>待落實</h3>
+        <p>舊生物班實際收費與轉化數字</p>
+        <p>Chris 可用時段與實際成本</p>
+        <p>Chu Sir 審核安排及正式教室</p>
+        <p>博士導師具體支援及工時</p>
+      </div>
+    </div>
+  </div>
+  <div class="condition warn">今日確認有上限的試辦方向。之後用實際付費同續讀決定值唔值得做大。此頁不是已批准紀錄。</div>
+  <div class="source"><span>資料：本提案決策清單｜附錄見<a href="#a1">A</a> <a href="#b">B</a> <a href="#c1">C</a> <a href="#d1">D</a></span><span>13／13</span></div>
+  <template class="speaker-notes">今日希望先確認呢個有上限嘅試辦方向，同攞到舊班數字及可用資源。之後用實際付費同續讀決定值唔值得做大。</template>
+</section>
+
+<section class="slide" data-id="a1" data-kind="app" data-label="A1">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 A1 · 成本<span class="tag model">模型假設</span></div>
+  <h1 class="title">單班固定分攤、變動費與啟動上限</h1>
+  <div class="content">
+    <div class="split-66">
+      <table class="cmp dense">
+        <thead><tr><th>每期固定項目</th><th>中三工時</th><th>中四工時</th><th>時薪</th></tr></thead>
+        <tbody>
+          <tr><td>Chris授課</td><td>5</td><td>6</td><td class="amount">450</td></tr>
+          <tr><td>備課、批改及問書</td><td>6</td><td>6</td><td class="amount">250</td></tr>
+          <tr><td>Chu Sir課程審核</td><td>1</td><td>1</td><td class="amount">500</td></tr>
+          <tr><td>Chris項目管理及招生跟進</td><td>3</td><td>3</td><td class="amount">200</td></tr>
+          <tr><td>CS行政</td><td>3</td><td>3</td><td class="amount">100</td></tr>
+          <tr><td>課室及營運分攤</td><td>5</td><td>6</td><td class="amount">150</td></tr>
+          <tr><td>每期固定合計</td><td colspan="2">中三 5,900；中四 6,500</td><td></td></tr>
+        </tbody>
+      </table>
+      <div>
+        <p class="row-item">每生每期變動費 HK$60。試堂 $80 報首期可抵，不另計收入。</p>
+        <p class="row-item">啟動共 4,000：準備 1,500、媒體 1,000、短片 500、試堂 500、後備 500。首階段 1,500 已含在內。</p>
+        <p class="row-item">90日餘額＝兩期營運餘額 − 4,000。固定成本兩期均計。</p>
+      </div>
+    </div>
+  </div>
+  <div class="condition">收費及時薪是規劃假設，不是已批准價格或實際薪酬。不得再把整份月薪重複計入。</div>
+  <div class="source"><span>資料：business_model.json｜兩級是替代方案，不同時相加</span><span>A1</span></div>
+  <template class="speaker-notes">呢頁係完整成本表。固定分攤唔一定係新增現金，但壓力測試當資源已預留。</template>
+</section>
+
+<section class="slide" data-id="a2" data-kind="app" data-label="A2">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 A2 · 標準情境<span class="tag model">模型假設</span></div>
+  <h1 class="title">6／8／10人、續讀及降價均保留</h1>
+  <div class="content">
+    <table class="cmp dense" id="appendix-scenario-table"></table>
+  </div>
+  <div class="condition">10→8 即 80% 續讀，中三仍 −1,040、中四 −440。降價至 780／880：中三 −1,400、中四 −600。</div>
+  <div class="source"><span>資料：JSON expected_outputs｜非中心淨利，未計稅項或博士新增支援</span><span>A2</span></div>
+  <template class="speaker-notes">標準表用嚟對核試算，避免即場輸入被當成正式預測。</template>
+</section>
+
+<section class="slide" data-id="b" data-kind="app" data-label="B">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 B · 市場範圍<span class="tag stat">公開統計</span></div>
+  <h1 class="title">統計能說明基礎，不能說明付費市場</h1>
+  <div class="content">
+    <div class="split-66">
+      <div>
+        <p class="row-item">教育局 2025/26 公營與直資日校，按學校所在地：油尖旺 4,401、深水埗 6,530、九龍城 9,219，合共 20,150。</p>
+        <p class="row-item">全港同範圍中三 56,264、中四 52,838。不是居住地、物理選科或普通話人數。</p>
+      </div>
+      <div>
+        <p class="row-item">考評局 2025 物理：全體報考 12,560、出席 11,816、中文比例 37.1%；日校報考 9,961、出席 9,582、中文比例 27.8%。</p>
+        <p class="row-item">中文作答 ≠ 普通話偏好；S6 考生 ≠ S3/S4 可招生市場。</p>
+      </div>
+    </div>
+  </div>
+  <div class="condition">網站沒列普通話，不足以宣稱對手沒有提供，更不支持「全港獨家」。</div>
+  <div class="source"><span>資料：<a href="#c1">[1][2][3]</a>｜假設比例只在講稿，不是調查發現</span><span>B</span></div>
+  <template class="speaker-notes">如果有人問 0.25% 到 1%，大約 50、101、202 人，嗰啲只係純假設，唔係訪問結果，所以我唔放上畫面。</template>
+</section>
+
+<section class="slide" data-id="c1" data-kind="app" data-label="C1">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 C1 · 來源<span class="tag stat">官方／Uni+</span></div>
+  <h1 class="title">官方統計與 Uni+ 師資來源</h1>
+  <div class="content">
+    <ul class="src-list">
+      <li><span class="id">[1]</span><a href="https://www.hkeaa.edu.hk/DocLibrary/HKDSE/Exam_Report/Examination_Statistics/dseexamstat25_5.pdf" target="_blank" rel="noopener">2025考評局成績分析表5a/5b</a> · 中文卷比例，不推算普通話市場</li>
+      <li><span class="id">[2]</span><a href="https://www.hkeaa.edu.hk/DocLibrary/Media/PR/HKDSE26_ResultsReleased_tc.pdf" target="_blank" rel="noopener">2026放榜公布</a> · 不與2025統計混算增長</li>
+      <li><span class="id">[3]</span><a href="https://www.edb.gov.hk/attachment/en/about-edb/publications-stat/figures/Enrol_2025.pdf" target="_blank" rel="noopener">教育局2025/26學生人數表4.7 B</a> · 三區基數；2026年7月</li>
+      <li><span class="id">[4]</span><a href="https://www.unipluseducation.com/coursepthbio" target="_blank" rel="noopener">Uni+普通話生物頁</a> · 只確認已公開服務</li>
+      <li><span class="id">[10]</span><a href="https://www.unipluseducation.com/physics-course" target="_blank" rel="noopener">Uni+皇牌物理</a> · 現月費$1,320／$1,480</li>
+      <li><span class="id">[11]</span><a href="https://www.unipluseducation.com/chusir" target="_blank" rel="noopener">Chu Sir介紹</a> · 本班只審核</li>
+      <li><span class="id">[12]</span><a href="https://www.unipluseducation.com/drkaho" target="_blank" rel="noopener">Dr Kaho介紹</a> · 支援待落實</li>
+      <li><span class="id">[13]</span><a href="https://www.unipluseducation.com/chrissir" target="_blank" rel="noopener">Chris介紹</a> · 哲學背景、教助經驗</li>
+      <li><span class="id">[14]</span>Chris CV及內部確認 · 主教、生物班價格經驗；完整私人資料不在包內</li>
+    </ul>
+  </div>
+  <div class="condition">離線仍可見名稱、日期與限制。網址需網路才開啟原文。</div>
+  <div class="source"><span>資料截止 2026-10-16</span><span>C1</span></div>
+  <template class="speaker-notes">官方同官網來源喺呢一頁。競品來源下一頁。</template>
+</section>
+
+<section class="slide" data-id="c2" data-kind="app" data-label="C2">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 C2 · 來源<span class="tag">競品</span></div>
+  <h1 class="title">12個主要比較的公開來源</h1>
+  <div class="content">
+    <ul class="src-list">
+      <li><span class="id">[5]</span><a href="https://www.beacon.com.hk/sciencebest/" target="_blank" rel="noopener">遵理理科導師</a>／<a href="https://www.beacon.com.hk/course-leaflets/25-26/regular/cwsham_r04_254PCWS.pdf" target="_blank" rel="noopener">25/26中四章程</a> · 現行價待核</li>
+      <li><span class="id">[6]</span><a href="https://www.kge.hk/tutorialRWD/teacher/YC.php?examSbjCode=phy" target="_blank" rel="noopener">英皇 C Y</a>／<a href="https://www.kge.hk/tutorial/tutors/courseInfo/2025Regular/YC.pdf" target="_blank" rel="noopener">25/26 $980視像班</a></li>
+      <li><span class="id">[7]</span><a href="https://www.keypoint.edu.hk/" target="_blank" rel="noopener">Keypoint官網</a> · 佐敦盛華；常規價待核</li>
+      <li><span class="id">[8]</span><a href="https://www.lumosedu.hk/course/PHY/PHY0197-siuma-physics-2028dse-r4-4" target="_blank" rel="noopener">明道中五 $1,180</a> · 不作同級現價</li>
+      <li><span class="id">[15]</span><a href="https://www.definingeducation.com.hk/wp-content/uploads/2026/09/Roy-Sir-S.4-Regular-Course-26-27V2.pdf" target="_blank" rel="noopener">凝皓 Roy S4 26/27 $1,240</a> · 只代表該導師該級</li>
+      <li><span class="id">[16]</span><a href="https://physics.precise1education.com/courses" target="_blank" rel="noopener">確一物理</a> · 模擬教學；收費待核</li>
+      <li><span class="id">[17]</span><a href="https://www.crystallee.hk/phyregularcourse" target="_blank" rel="noopener">Crystal 26/27</a> · S3 $1,000／S4 $1,100</li>
+      <li><span class="id">[18]</span><a href="https://www.phy.school/" target="_blank" rel="noopener">朗林 FAQ</a> · $1,200／4×60；未標學年</li>
+      <li><span class="id">[19]</span><a href="https://gohineducation.com/course/物理補習/" target="_blank" rel="noopener">高軒</a> · $170／$250；四堂換算非月費</li>
+      <li><span class="id">[20]</span><a href="https://www.smartlearningacademyhk.com/classinfo" target="_blank" rel="noopener">Smart價表</a> · 計費單位待核，不乘四</li>
+      <li><span class="id">[21]</span><a href="https://matterofeducation.com/teaching-team/" target="_blank" rel="noopener">理型團隊</a> · 博士≠每班親授</li>
+      <li><span class="id">[22]</span><a href="https://www.joinin-education.com/course_mathematics.html" target="_blank" rel="noopener">進研</a> · 高中物理 $1,280／4×75</li>
+    </ul>
+  </div>
+  <div class="condition">價格只代表所列章程或頁面；不同導師、年級、形式不可共用一個價。</div>
+  <div class="source"><span>完整限制見 D1–D3</span><span>C2</span></div>
+  <template class="speaker-notes">呢啲係公開頁，我哋冇打電話詢價。</template>
+</section>
+
+<section class="slide" data-id="c3" data-kind="app" data-label="C3">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 C3 · 待核<span class="tag">待核實</span></div>
+  <h1 class="title">線索來源與仍待確認的業務資料</h1>
+  <div class="content">
+    <div class="split-66">
+      <ul class="src-list" style="columns:1">
+        <li><span class="id">[23]</span><a href="https://applications.edb.gov.hk/schoolsearch/schoolfee/603023.pdf" target="_blank" rel="noopener">起維2015-12-23收費證書</a> · 不是2026/27現價</li>
+        <li><span class="id">[24]</span><a href="https://calvinscience.com/" target="_blank" rel="noopener">Calvin官網</a>；地址屬二手線索</li>
+        <li><span class="id">[25]</span><a href="https://dsephysics.com/" target="_blank" rel="noopener">Tesla搜尋摘要</a> · 網站開啟受阻</li>
+        <li><span class="id">[26]</span><a href="https://crescenteduhk.com/science-phychembio/" target="_blank" rel="noopener">弦月理科頁</a> · 校址與行政區待核</li>
+        <li><span class="id">[9]</span><a href="https://www.hkta.edu.hk/tutor/detail/168655" target="_blank" rel="noopener">HKTA個別導師例子</a> · 自報時薪，不是市場平均</li>
+      </ul>
+      <div>
+        <p class="row-item">未確認：生物班實際價格及轉化；新班正式時段、樓層及成本；博士工時。</p>
+        <p class="row-item">Chu Sir 5* 個案尚待核對公開範圍。CV 學位狀態待更新。</p>
+      </div>
+    </div>
+  </div>
+  <div class="condition">4條線索不計入已確認本區開班數。未有代為聯絡。</div>
+  <div class="source"><span>資料截止 2026-10-16</span><span>C3</span></div>
+  <template class="speaker-notes">待核項目唔好當已經查完。詢價次序喺 D4。</template>
+</section>
+
+<section class="slide" data-id="d1" data-kind="app" data-label="D1">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 D1 · 連鎖及佐敦<span class="tag">公開資料</span></div>
+  <h1 class="title">凝皓、遵理、英皇、Keypoint、明道</h1>
+  <div class="content">
+    <table class="cmp dense">
+      <thead><tr><th>名稱＋位置</th><th>年級＋模式</th><th>價格＋堂數＋時長＋年份</th><th>教材／語言</th></tr></thead>
+      <tbody>
+        <tr><td>凝皓教育<br>太子／旺角多址</td><td>Roy S4–S6；Live／Online</td><td>Roy S4 $1,240／4×75；2026/27參考價。Live每期3–4堂現場。具體太子校舍待核。</td><td>教材及普通話待核</td></tr>
+        <tr><td>遵理 C W Sham<br>油尖旺分校待核</td><td>物理專科；25/26預錄視像</td><td>現行常規價待核</td><td>普通話未確認</td></tr>
+        <tr><td>英皇 C Y Physics<br>分校待核</td><td>視像班；中英對照筆記</td><td>$980／4×75；2025/26，現價待核</td><td>普通話未確認</td></tr>
+        <tr><td>Keypoint<br>佐敦盛華2樓A</td><td>S1–S6；面授／網課／錄影</td><td>常規價待核</td><td>普通話未確認</td></tr>
+        <tr><td>明道 Siuma<br>佐敦恒福1樓</td><td>中五R4，頁面稱適合F4–F5</td><td>$1,180／4×80；中五產品，非同級</td><td>中英筆記可選；普通話未確認</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="condition">不稱全為同級對手。英皇$980必須帶「2025/26視像班」；明道$1,180必須帶「中五課程」。</div>
+  <div class="source"><span>來源：[15][5][6][7][8]</span><span>D1</span></div>
+  <template class="speaker-notes">連鎖同佐敦五個。凝皓價錢只代表 Roy 中四。</template>
+</section>
+
+<section class="slide" data-id="d2" data-kind="app" data-label="D2">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 D2 · 專科<span class="tag">公開資料</span></div>
+  <h1 class="title">確一、Crystal、朗林、高軒</h1>
+  <div class="content">
+    <table class="cmp dense">
+      <thead><tr><th>名稱＋位置</th><th>年級＋模式</th><th>價格＋堂數＋時長＋年份</th><th>待核</th></tr></thead>
+      <tbody>
+        <tr><td>確一 Precise One<br>佐敦四海大廈6樓，門牌待核</td><td>頁列S3–S6；FAQ稱S4–S6</td><td>收費、課時、班額未公開核實</td><td>S3實際班；模擬教學是宣傳</td></tr>
+        <tr><td>Crystal Lee<br>旺角皆旺6樓606</td><td>S3–S6；小班面授／網課</td><td>26/27 S3 $1,000／4堂；S4 $1,100／4堂；時長待核</td><td>不沿用舊摘要佐敦地址</td></tr>
+        <tr><td>朗林 Phy.school<br>太子華邦17樓11室</td><td>一般4–5人、上限7人</td><td>FAQ $1,200／4×60；未標學年</td><td>2026/27適用年級及現價</td></tr>
+        <tr><td>高軒 Go Hin<br>油麻地彌敦商務2樓C</td><td>S3–S6；按月每週一堂</td><td>S3 $170／60分鐘；S4 $250／90分鐘；四堂換算$680／$1,000</td><td>學年未標；換算不是月費</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="condition">中文教材已見於高軒；普通話口語授課仍未確認。不能寫「沒有普通話」。</div>
+  <div class="source"><span>來源：[16][17][18][19]</span><span>D2</span></div>
+  <template class="speaker-notes">高軒係最接近嘅平價對照，但學年未標，所以唔好話我哋已經核實當期價。</template>
+</section>
+
+<section class="slide" data-id="d3" data-kind="app" data-label="D3">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 D3 · 其他中心<span class="tag">公開資料</span></div>
+  <h1 class="title">Smart、理型、進研：計費與產品限制</h1>
+  <div class="content">
+    <table class="cmp dense">
+      <thead><tr><th>名稱＋位置</th><th>年級＋模式</th><th>價格條件</th><th>限制</th></tr></thead>
+      <tbody>
+        <tr><td>Smart Learning<br>太子華邦203室</td><td>S3–S5物理時段；小組／一對一；90分鐘</td><td>小組表 S1–S3 $350、S4–S6 $380；計費單位待核</td><td>不乘四、不算時薪；S3有物化生混合課</td></tr>
+        <tr><td>理型教育<br>太子怡寧閣2樓203</td><td>中學數理；當期S3/S4班待核</td><td>收費、班額、時長待核</td><td>Jack Koo列科大物理博士，不代表每班博士親授</td></tr>
+        <tr><td>進研 Join-In<br>太子華邦10樓1009–1010</td><td>S4–S6物理；S1–S3綜合科學</td><td>高中物理$1,280／4×75；初中科學$1,240／4堂；學年待核</td><td>初中科學不是S3純物理</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="condition">不把綜合中心都叫物理單科補習社。小班、博士、問書、模擬或中文筆記均非獨有。</div>
+  <div class="source"><span>來源：[20][21][22]</span><span>D3</span></div>
+  <template class="speaker-notes">Smart 個價未講清係每堂定每期，所以我冇乘四。</template>
+</section>
+
+<section class="slide" data-id="d4" data-kind="app" data-label="D4">
+  <div class="kicker"><span class="brand">Uni+</span>　附錄 D4 · 線索<span class="tag">待核實</span></div>
+  <h1 class="title">四條待核線索，及尚未執行的詢價次序</h1>
+  <div class="content">
+    <table class="cmp dense">
+      <thead><tr><th>名稱</th><th>目前證據</th><th>缺口</th><th>下一步</th></tr></thead>
+      <tbody>
+        <tr><td>起維 Alpha Mind<br>太子華邦508</td><td>教育局名錄及2015-12-23證書，S3–S4 $820／期</td><td>是否開班、老師、堂數、時長、實收</td><td>不當現價；直接確認</td></tr>
+        <tr><td>Calvin Science</td><td>官網有DSE物理；二手名錄列上海街28號3樓307</td><td>官方現址、當期班</td><td>地址屬二手線索</td></tr>
+        <tr><td>Tesla Physics</td><td>搜尋摘要列旺角總校、Live與影片</td><td>網站開啟受阻；校址未核</td><td>不納入已確認供應數</td></tr>
+        <tr><td>弦月 Crescent</td><td>官網列南昌大角咀、DSE物理</td><td>具體校址與行政區界</td><td>確定在油尖旺才計入</td></tr>
+      </tbody>
+    </table>
+    <p class="lead">首批詢價：高軒、凝皓 Roy S4、Crystal、朗林、確一。未有代為聯絡。</p>
+  </div>
+  <div class="condition">詢價欄位包括學年、級別、口語授課、主教、班額、堂數、分鐘、必需費用及退費條件。</div>
+  <div class="source"><span>來源：[23][24][25][26]｜返回<a href="#s01">主頁</a></span><span>D4</span></div>
+  <template class="speaker-notes">四條線索得呢啲證據。如果要跟進，先問上面五間。</template>
+</section>
+
+</div>
+</div>
+
+<aside class="notes-panel" id="notes-panel" hidden tabindex="-1">
+  <h2>講者備註</h2>
+  <p id="notes-text"></p>
+</aside>
+<nav class="toc-panel" id="toc-panel" hidden tabindex="-1" aria-label="目錄"></nav>
+
+<script type="application/json" id="business-model">
+{
+  "metadata": {
+    "currency": "HKD",
+    "as_of": "2026-10-16",
+    "status": "planning_assumptions_not_actual_results",
+    "scope": "one_class_S3_OR_S4",
+    "notes": "來源：修訂提案第9節。90日只有兩個收費期。"
+  },
+  "schedule": {
+    "preparation_weeks": 4,
+    "teaching_weeks": 8,
+    "paid_periods": 2,
+    "lessons_per_period": 4,
+    "minimum_students": 8,
+    "maximum_students": 10,
+    "target_students": 10
+  },
+  "startup": {
+    "total": 4000,
+    "first_stage_included_in_total": 1500,
+    "items": [
+      {
+        "name": "課程整理及示範準備",
+        "amount": 1500
+      },
+      {
+        "name": "付費媒體",
+        "amount": 1000
+      },
+      {
+        "name": "短片及圖文",
+        "amount": 500
+      },
+      {
+        "name": "試堂額外人手／材料",
+        "amount": 500
+      },
+      {
+        "name": "後備",
+        "amount": 500
+      }
+    ]
+  },
+  "variable_cost_per_student_per_period": 60,
+  "trial_fee": {
+    "amount": 80,
+    "credit_against_first_period": true,
+    "count_as_extra_revenue": false
+  },
+  "cost_items": [
+    {
+      "name": "Chris授課",
+      "hours_S3": 5,
+      "hours_S4": 6,
+      "rate": 450
+    },
+    {
+      "name": "備課、批改及問書",
+      "hours_S3": 6,
+      "hours_S4": 6,
+      "rate": 250
+    },
+    {
+      "name": "Chu Sir課程審核",
+      "hours_S3": 1,
+      "hours_S4": 1,
+      "rate": 500
+    },
+    {
+      "name": "Chris項目管理及招生跟進",
+      "hours_S3": 3,
+      "hours_S4": 3,
+      "rate": 200
+    },
+    {
+      "name": "CS行政",
+      "hours_S3": 3,
+      "hours_S4": 3,
+      "rate": 100
+    },
+    {
+      "name": "課室及營運分攤",
+      "hours_S3": 5,
+      "hours_S4": 6,
+      "rate": 150
+    }
+  ],
+  "grades": {
+    "S3": {
+      "label": "中三",
+      "fee_per_student_per_period": 880,
+      "minutes_per_lesson": 75,
+      "fixed_cost_per_period": 5900,
+      "lower_price_stress_test": 780
+    },
+    "S4": {
+      "label": "中四",
+      "fee_per_student_per_period": 980,
+      "minutes_per_lesson": 90,
+      "fixed_cost_per_period": 6500,
+      "lower_price_stress_test": 880
+    }
+  },
+  "formulas": {
+    "period_revenue": "students * fee",
+    "period_operating_surplus": "students * (fee - variable_cost_per_student_per_period) - fixed_cost_per_period",
+    "two_period_revenue": "(students_period1 + students_period2) * fee",
+    "two_period_operating_surplus": "(students_period1 + students_period2) * (fee - variable_cost_per_student_per_period) - 2 * fixed_cost_per_period",
+    "project_90_day_surplus": "two_period_operating_surplus - startup.total"
+  },
+  "rules": [
+    "固定成本兩期均計，即使第二期0人；壓力測試假設資源已預留。",
+    "收費及時薪均為規劃假設，並非已批准價格或實際薪酬。",
+    "不同工種的Chris工時須分開記錄；不得再把整份月薪重複計入。",
+    "固定分攤不一定是新增現金支出；如佔用可售時段，另評機會成本。",
+    "未計稅項、額外總部成本或博士導師新增支援，不能稱公司淨利。",
+    "兩級是替代方案，不同時相加。"
+  ],
+  "expected_outputs": [
+    {
+      "grade": "S3",
+      "scenario": "below_threshold",
+      "students_period1": 6,
+      "students_period2": 6,
+      "fee": 880,
+      "period1_revenue": 5280,
+      "period2_revenue": 5280,
+      "period1_operating_surplus": -980,
+      "period2_operating_surplus": -980,
+      "two_period_revenue": 10560,
+      "two_period_operating_surplus": -1960,
+      "project_90_day_surplus": -5960
+    },
+    {
+      "grade": "S3",
+      "scenario": "minimum",
+      "students_period1": 8,
+      "students_period2": 8,
+      "fee": 880,
+      "period1_revenue": 7040,
+      "period2_revenue": 7040,
+      "period1_operating_surplus": 660,
+      "period2_operating_surplus": 660,
+      "two_period_revenue": 14080,
+      "two_period_operating_surplus": 1320,
+      "project_90_day_surplus": -2680
+    },
+    {
+      "grade": "S3",
+      "scenario": "target",
+      "students_period1": 10,
+      "students_period2": 10,
+      "fee": 880,
+      "period1_revenue": 8800,
+      "period2_revenue": 8800,
+      "period1_operating_surplus": 2300,
+      "period2_operating_surplus": 2300,
+      "two_period_revenue": 17600,
+      "two_period_operating_surplus": 4600,
+      "project_90_day_surplus": 600
+    },
+    {
+      "grade": "S3",
+      "scenario": "retention_stress",
+      "students_period1": 10,
+      "students_period2": 8,
+      "fee": 880,
+      "period1_revenue": 8800,
+      "period2_revenue": 7040,
+      "period1_operating_surplus": 2300,
+      "period2_operating_surplus": 660,
+      "two_period_revenue": 15840,
+      "two_period_operating_surplus": 2960,
+      "project_90_day_surplus": -1040
+    },
+    {
+      "grade": "S3",
+      "scenario": "price_stress",
+      "students_period1": 10,
+      "students_period2": 10,
+      "fee": 780,
+      "period1_revenue": 7800,
+      "period2_revenue": 7800,
+      "period1_operating_surplus": 1300,
+      "period2_operating_surplus": 1300,
+      "two_period_revenue": 15600,
+      "two_period_operating_surplus": 2600,
+      "project_90_day_surplus": -1400
+    },
+    {
+      "grade": "S4",
+      "scenario": "below_threshold",
+      "students_period1": 6,
+      "students_period2": 6,
+      "fee": 980,
+      "period1_revenue": 5880,
+      "period2_revenue": 5880,
+      "period1_operating_surplus": -980,
+      "period2_operating_surplus": -980,
+      "two_period_revenue": 11760,
+      "two_period_operating_surplus": -1960,
+      "project_90_day_surplus": -5960
+    },
+    {
+      "grade": "S4",
+      "scenario": "minimum",
+      "students_period1": 8,
+      "students_period2": 8,
+      "fee": 980,
+      "period1_revenue": 7840,
+      "period2_revenue": 7840,
+      "period1_operating_surplus": 860,
+      "period2_operating_surplus": 860,
+      "two_period_revenue": 15680,
+      "two_period_operating_surplus": 1720,
+      "project_90_day_surplus": -2280
+    },
+    {
+      "grade": "S4",
+      "scenario": "target",
+      "students_period1": 10,
+      "students_period2": 10,
+      "fee": 980,
+      "period1_revenue": 9800,
+      "period2_revenue": 9800,
+      "period1_operating_surplus": 2700,
+      "period2_operating_surplus": 2700,
+      "two_period_revenue": 19600,
+      "two_period_operating_surplus": 5400,
+      "project_90_day_surplus": 1400
+    },
+    {
+      "grade": "S4",
+      "scenario": "retention_stress",
+      "students_period1": 10,
+      "students_period2": 8,
+      "fee": 980,
+      "period1_revenue": 9800,
+      "period2_revenue": 7840,
+      "period1_operating_surplus": 2700,
+      "period2_operating_surplus": 860,
+      "two_period_revenue": 17640,
+      "two_period_operating_surplus": 3560,
+      "project_90_day_surplus": -440
+    },
+    {
+      "grade": "S4",
+      "scenario": "price_stress",
+      "students_period1": 10,
+      "students_period2": 10,
+      "fee": 880,
+      "period1_revenue": 8800,
+      "period2_revenue": 8800,
+      "period1_operating_surplus": 1700,
+      "period2_operating_surplus": 1700,
+      "two_period_revenue": 17600,
+      "two_period_operating_surplus": 3400,
+      "project_90_day_surplus": -600
+    }
+  ]
+}
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById("business-model").textContent);
+const MODEL = {
+  variable: DATA.variable_cost_per_student_per_period,
+  startup: DATA.startup.total,
+  grades: {
+    S3: {
+      label: DATA.grades.S3.label,
+      fee: DATA.grades.S3.fee_per_student_per_period,
+      fixed: DATA.grades.S3.fixed_cost_per_period,
+      low: DATA.grades.S3.lower_price_stress_test
+    },
+    S4: {
+      label: DATA.grades.S4.label,
+      fee: DATA.grades.S4.fee_per_student_per_period,
+      fixed: DATA.grades.S4.fixed_cost_per_period,
+      low: DATA.grades.S4.lower_price_stress_test
+    }
+  }
+};
+
+function periodRevenue(n, fee) { return n * fee; }
+function periodOp(n, fee, fixed) { return n * (fee - MODEL.variable) - fixed; }
+function twoPeriodRev(n1, n2, fee) { return (n1 + n2) * fee; }
+function twoPeriodOp(n1, n2, fee, fixed) { return (n1 + n2) * (fee - MODEL.variable) - 2 * fixed; }
+function project90(n1, n2, fee, fixed) { return twoPeriodOp(n1, n2, fee, fixed) - MODEL.startup; }
+
+function signed(n) {
+  const v = Math.round(n);
+  return (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toLocaleString("en-HK");
+}
+
+const EXPECTED = DATA.expected_outputs.map((row) => [
+  row.grade,
+  row.students_period1,
+  row.students_period2,
+  row.fee,
+  row.project_90_day_surplus
+]);
+
+function verifyModel() {
+  const bad = DATA.expected_outputs.filter((row) => {
+    const fixed = MODEL.grades[row.grade].fixed;
+    return (
+      periodRevenue(row.students_period1, row.fee) !== row.period1_revenue ||
+      periodOp(row.students_period1, row.fee, fixed) !== row.period1_operating_surplus ||
+      twoPeriodRev(row.students_period1, row.students_period2, row.fee) !== row.two_period_revenue ||
+      twoPeriodOp(row.students_period1, row.students_period2, row.fee, fixed) !== row.two_period_operating_surplus ||
+      project90(row.students_period1, row.students_period2, row.fee, fixed) !== row.project_90_day_surplus
+    );
+  });
+  if (bad.length) console.error("Model mismatch", bad);
+  else console.info("Model verified", DATA.expected_outputs.length, "scenarios");
+}
+
+const PL = [
+  { label: "中三｜8→8人", v: project90(8, 8, MODEL.grades.S3.fee, MODEL.grades.S3.fixed) },
+  { label: "中三｜10→10人", v: project90(10, 10, MODEL.grades.S3.fee, MODEL.grades.S3.fixed) },
+  { label: "中四｜8→8人", v: project90(8, 8, MODEL.grades.S4.fee, MODEL.grades.S4.fixed) },
+  { label: "中四｜10→10人", v: project90(10, 10, MODEL.grades.S4.fee, MODEL.grades.S4.fixed) }
+];
+
+function renderPL() {
+  const host = document.getElementById("pl-chart");
+  if (!host) return;
+  host.innerHTML = PL.map((row) => {
+    const pct = Math.min(50, Math.abs(row.v) / 3000 * 50);
+    const bar = row.v < 0
+      ? `<span class="pl-neg" style="width:${pct}%"></span>`
+      : `<span class="pl-pos" style="width:${pct}%"></span>`;
+    const cls = row.v < 0 ? "is-negative" : "is-positive";
+    return `<div class="pl-row"><div>${row.label}</div><div class="pl-track"><span class="pl-zero"></span>${bar}</div><div class="tabular-nums ${cls}">${signed(row.v)}</div></div>`;
+  }).join("");
+}
+
+function scenarioRows() {
+  const names = [
+    "中三 6→6", "中三 8→8", "中三 10→10", "中三 10→8", "中三降價780",
+    "中四 6→6", "中四 8→8", "中四 10→10", "中四 10→8", "中四降價880"
+  ];
+  return EXPECTED.map(([g, a, b, fee], i) => {
+    const fixed = MODEL.grades[g].fixed;
+    return `<tr><td>${names[i]}</td><td class="amount">${signed(periodOp(a, fee, fixed))}</td><td class="amount">${signed(twoPeriodOp(a, b, fee, fixed))}</td><td class="amount">${signed(project90(a, b, fee, fixed))}</td></tr>`;
+  }).join("");
+}
+
+function fillScenarioTables() {
+  const head = "<thead><tr><th>情境</th><th>一期營運餘額</th><th>兩期營運餘額</th><th>90日項目餘額</th></tr></thead>";
+  const html = `<table class="cmp dense">${head}<tbody>${scenarioRows()}</tbody></table>`;
+  const a = document.getElementById("appendix-scenario-table");
+  const p = document.getElementById("print-scenario-table");
+  if (a) a.outerHTML = html;
+  if (p) p.innerHTML = `${head}<tbody>${scenarioRows()}</tbody>`;
+}
+
+const slides = [...document.querySelectorAll(".slide")];
+let index = 0;
+const notesPanel = document.getElementById("notes-panel");
+const tocPanel = document.getElementById("toc-panel");
+
+function isFormEvent(e) {
+  const el = e.target;
+  return el && (el.matches("input, select, textarea, button") || el.closest("form"));
+}
+
+function show(i, pushHash) {
+  index = (i + slides.length) % slides.length;
+  slides.forEach((s, n) => {
+    const on = n === index;
+    s.classList.toggle("is-active", on);
+    s.setAttribute("aria-hidden", on ? "false" : "true");
+  });
+  const s = slides[index];
+  const label = document.getElementById("page-label");
+  const bar = document.getElementById("progress-bar");
+  if (s.dataset.kind === "main") {
+    label.textContent = `${s.dataset.no}／${s.dataset.total}`;
+    bar.style.width = `${(Number(s.dataset.no) / 13) * 100}%`;
+  } else {
+    label.textContent = s.dataset.label;
+    bar.style.width = "100%";
+  }
+  const note = s.querySelector(".speaker-notes");
+  document.getElementById("notes-text").textContent = (note?.content?.textContent || note?.textContent || "").trim();
+  if (pushHash !== false) history.replaceState(null, "", "#" + s.dataset.id);
+}
+
+function buildToc() {
+  tocPanel.innerHTML = slides.map((s, i) => {
+    const title = s.querySelector("h1")?.textContent.replace(/\s+/g, " ").trim() || s.dataset.id;
+    const prefix = s.dataset.kind === "main" ? s.dataset.no : s.dataset.label;
+    return `<a href="#${s.dataset.id}" data-i="${i}">${prefix}　${title}</a>`;
+  }).join("");
+}
+
+function goHash() {
+  const id = location.hash.replace("#", "");
+  const i = slides.findIndex((s) => s.dataset.id === id);
+  if (i >= 0) show(i, false);
+}
+
+function scaleDeck() {
+  const deck = document.getElementById("deck");
+  const stage = document.querySelector(".stage");
+  if (window.matchMedia("(max-width: 899px)").matches || window.matchMedia("print").matches) {
+    deck.style.transform = "none";
+    stage.style.height = "";
+    return;
+  }
+  const chrome = document.querySelector(".chrome").offsetHeight;
+  const availW = window.innerWidth - 32;
+  const availH = window.innerHeight - chrome - 32;
+  const s = Math.min(availW / 1600, availH / 900, 1);
+  deck.style.transform = `scale(${s})`;
+  stage.style.height = `${Math.round(900 * s + 32)}px`;
+}
+
+function currentSceneLabel(grade, n1, n2, fee) {
+  const g = MODEL.grades[grade];
+  let scene = `${g.label} ${n1}→${n2}`;
+  if (n1 === 10 && n2 === 10 && fee === g.fee) scene += " · 建議價";
+  else if (n1 === 8 && n2 === 8 && fee === g.fee) scene += " · 8→8";
+  else if (n1 === 10 && n2 === 8 && fee === g.fee) scene += " · 10→8 參考情境";
+  else scene += " · 自訂";
+  return "當前情境：" + scene;
+}
+
+function updateCalc() {
+  const grade = document.getElementById("calc-grade").value;
+  const g = MODEL.grades[grade];
+  const n1 = Number(document.getElementById("calc-n1").value);
+  const n2 = Number(document.getElementById("calc-n2").value);
+  const fee = Number(document.getElementById("calc-fee").value);
+  const hero = document.getElementById("calc-hero");
+  const lines = document.getElementById("calc-lines");
+  const gate = document.getElementById("calc-gate");
+  const scene = document.getElementById("calc-scene");
+  if (![n1, n2, fee].every((x) => Number.isFinite(x)) || fee < 0) {
+    hero.textContent = "—";
+    lines.textContent = "請輸入有效非負數字。";
+    return;
+  }
+  const rev = twoPeriodRev(n1, n2, fee);
+  const op = twoPeriodOp(n1, n2, fee, g.fixed);
+  const p90 = project90(n1, n2, fee, g.fixed);
+  hero.textContent = signed(p90);
+  hero.className = "hero tabular-nums " + (p90 < 0 ? "is-negative" : "is-positive");
+  lines.innerHTML = `兩期總收入 ${signed(rev)}<br>兩期營運餘額 ${signed(op)}<br>啟動費 −${MODEL.startup.toLocaleString("en-HK")}`;
+  scene.textContent = currentSceneLabel(grade, n1, n2, fee);
+  gate.style.display = n1 < 8 || n2 < 8 ? "block" : "none";
+}
+
+function applyScene(kind) {
+  const grade = document.getElementById("calc-grade").value;
+  const g = MODEL.grades[grade];
+  document.getElementById("calc-fee").value = g.fee;
+  if (kind === "88") {
+    document.getElementById("calc-n1").value = 8;
+    document.getElementById("calc-n2").value = 8;
+  } else if (kind === "108") {
+    document.getElementById("calc-n1").value = 10;
+    document.getElementById("calc-n2").value = 8;
+  } else {
+    document.getElementById("calc-n1").value = 10;
+    document.getElementById("calc-n2").value = 10;
+  }
+  updateCalc();
+}
+
+function bindCalc() {
+  const form = document.getElementById("calc-form");
+  if (!form) return;
+  form.addEventListener("input", updateCalc);
+  form.addEventListener("change", (e) => {
+    if (e.target.id === "calc-grade") {
+      document.getElementById("calc-fee").value = MODEL.grades[e.target.value].fee;
+    }
+    updateCalc();
+  });
+  form.querySelectorAll("[data-scene]").forEach((btn) => {
+    btn.addEventListener("click", () => applyScene(btn.dataset.scene));
+  });
+  updateCalc();
+}
+
+let lastTrigger = null;
+
+function closeOverlays() {
+  notesPanel.hidden = true;
+  notesPanel.classList.remove("is-open");
+  tocPanel.hidden = true;
+  tocPanel.classList.remove("is-open");
+  lastTrigger?.focus();
+}
+
+function toggleNotes() {
+  const open = notesPanel.hidden;
+  tocPanel.hidden = true;
+  tocPanel.classList.remove("is-open");
+  notesPanel.hidden = !open;
+  notesPanel.classList.toggle("is-open", open);
+  if (open) {
+    lastTrigger = document.getElementById("btn-notes");
+    notesPanel.querySelector("p")?.focus?.();
+  } else lastTrigger?.focus();
+}
+
+function toggleToc() {
+  const open = tocPanel.hidden;
+  notesPanel.hidden = true;
+  notesPanel.classList.remove("is-open");
+  tocPanel.hidden = !open;
+  tocPanel.classList.toggle("is-open", open);
+  if (open) {
+    lastTrigger = document.getElementById("btn-toc");
+    tocPanel.querySelector("a")?.focus();
+  } else lastTrigger?.focus();
+}
+
+function requestFull() {
+  const el = document.documentElement;
+  if (!document.fullscreenElement && el.requestFullscreen) el.requestFullscreen().catch(() => {});
+  else if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+}
+
+document.getElementById("deck").addEventListener("click", (e) => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a) return;
+  const id = a.getAttribute("href").slice(1);
+  const i = slides.findIndex((s) => s.dataset.id === id);
+  if (i >= 0) {
+    e.preventDefault();
+    show(i);
+  }
+});
+
+document.getElementById("btn-prev").addEventListener("click", () => show(index - 1));
+document.getElementById("btn-next").addEventListener("click", () => show(index + 1));
+document.getElementById("btn-notes").addEventListener("click", toggleNotes);
+document.getElementById("btn-toc").addEventListener("click", toggleToc);
+document.getElementById("btn-full").addEventListener("click", requestFull);
+tocPanel.addEventListener("click", (e) => {
+  const a = e.target.closest("a");
+  if (!a) return;
+  e.preventDefault();
+  show(Number(a.dataset.i));
+  closeOverlays();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { closeOverlays(); return; }
+  if (isFormEvent(e)) {
+    if (["ArrowLeft", "ArrowRight", " ", "Spacebar", "PageUp", "PageDown", "Home", "End"].includes(e.key)) return;
+    if (/^[nNfF]$/.test(e.key)) return;
+  }
+  if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); show(index + 1); }
+  if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); show(index - 1); }
+  if (e.key === "Home") { e.preventDefault(); show(0); }
+  if (e.key === "End") {
+    e.preventDefault();
+    const lastMain = slides.findLastIndex((s) => s.dataset.kind === "main");
+    show(e.shiftKey ? slides.length - 1 : lastMain);
+  }
+  if (e.key === "n" || e.key === "N") toggleNotes();
+  if (e.key === "f" || e.key === "F") requestFull();
+});
+
+window.addEventListener("hashchange", goHash);
+window.addEventListener("resize", scaleDeck);
+window.addEventListener("beforeprint", () => { document.getElementById("deck").style.transform = "none"; });
+window.addEventListener("afterprint", scaleDeck);
+
+verifyModel();
+renderPL();
+fillScenarioTables();
+bindCalc();
+buildToc();
+goHash();
+if (!location.hash) show(0, false);
+scaleDeck();
+</script>
+</body>
+</html>
+
+ 
