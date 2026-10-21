@@ -95,6 +95,7 @@ const UI = {
     quizNavJpwm07: "JPWM07 Light refraction",
     quizNavJpwm07Q1: "Quiz 1",
     quizNavJpwm07Q2: "Quiz 2",
+    quizNavJpwm07Q3: "Quiz 3",
   },
   zh: {
     appSubtitle: "概念检查 · 界面简体中文",
@@ -164,6 +165,7 @@ const UI = {
     quizNavJpwm07: "JPWM07 光的折射",
     quizNavJpwm07Q1: "测验 1",
     quizNavJpwm07Q2: "测验 2",
+    quizNavJpwm07Q3: "测验 3",
   },
   "zh-Hant": {
     appSubtitle: "S3 光學 · JPWM07 光的折射 · 測驗 1 · 介面繁體中文",
@@ -233,6 +235,7 @@ const UI = {
     quizNavJpwm07: "JPWM07 光的折射",
     quizNavJpwm07Q1: "測驗 1",
     quizNavJpwm07Q2: "測驗 2",
+    quizNavJpwm07Q3: "測驗 3",
   },
 };
 
