@@ -95,6 +95,7 @@ const UI = {
     quizNavJphg02Q1: "Quiz 1",
     quizNavJphg02Q2: "Quiz 2",
     quizNavJphg02Q3: "Quiz 3",
+    quizNavJphg02Q4: "Quiz 4",
   },
   zh: {
     appSubtitle: "概念检查 · 界面简体中文",
@@ -164,6 +165,7 @@ const UI = {
     quizNavJphg02Q1: "测验 1",
     quizNavJphg02Q2: "测验 2",
     quizNavJphg02Q3: "测验 3",
+    quizNavJphg02Q4: "测验 4",
   },
   "zh-Hant": {
     appSubtitle: "S3 熱學 Ch.1 · 溫度計、內能、物態變化與熱傳遞 · 介面繁體中文",
@@ -233,6 +235,7 @@ const UI = {
     quizNavJphg02Q1: "測驗 1",
     quizNavJphg02Q2: "測驗 2",
     quizNavJphg02Q3: "測驗 3",
+    quizNavJphg02Q4: "測驗 4",
   },
 };
 
