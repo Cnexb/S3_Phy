@@ -313,11 +313,11 @@ function formatLength(m, lang = 'zh') {
 /** @file Session-wide ray colour preferences and per-ray resolution. */
 
 const RAY_COLOR_PRESETS = [
-  '#00e676', '#a78bfa', '#22d3ee', '#ffcc00',
-  '#ff5252', '#fb923c', '#e4e4e7', '#f472b6',
+  '#3e7356', '#6b5f8c', '#4d7c88', '#8d6e3f',
+  '#a45c58', '#a67a52', '#6e737b', '#8d5c6e',
 ];
 
-const prefs = { real: '#00e676', virtual: '#a78bfa' };
+const prefs = { real: '#3e7356', virtual: '#6b5f8c' };
 
 function getRayColor(kind) {
   return prefs[kind];
@@ -348,23 +348,23 @@ function resolveRayColor(ray) {
  * - mirrorNeed: minimum required mirror segment (exam highlight)
  */
 const COLORS = {
-  bg: '#f8f9fa',
-  grid: '#e8eaed',
-  gridMajor: '#d1d5db',
-  mirror: '#0891b2',
-  mirrorNeed: '#ca8a04',
-  mirrorFail: '#dc2626',
-  rayReal: '#16a34a',
-  rayVirtual: '#7c3aed',
-  object: '#374151',
-  image: '#4f46e5',
-  eye: '#db2777',
-  wall: '#9ca3af',
-  ground: '#d1d5db',
-  label: '#1a1c2c',
-  visible: '#16a34a',
-  hidden: '#9ca3af',
-  accent: '#2563eb',
+  bg: '#f7f5f1',
+  grid: '#e6e1d8',
+  gridMajor: '#d4cdc2',
+  mirror: '#4d7c88',
+  mirrorNeed: '#8d6e3f',
+  mirrorFail: '#a45c58',
+  rayReal: '#3e7356',
+  rayVirtual: '#6b5f8c',
+  object: '#3e4450',
+  image: '#5a628c',
+  eye: '#8d5c6e',
+  wall: '#8b908f',
+  ground: '#c9c2b6',
+  label: '#2c2e33',
+  visible: '#3e7356',
+  hidden: '#9aa09a',
+  accent: '#4e6c90',
 };
 
 function createWorldView(canvas, opts = {}) {
@@ -548,9 +548,9 @@ function drawPolarWedgeGrid(ctx, view, t, opts = {}) {
     const onBisector = Math.abs(a - phi) < 0.04;
     const onMirror = Math.abs(a - angMin) < 0.04 || Math.abs(a - angMax) < 0.04;
     ctx.strokeStyle = onBisector
-      ? 'rgba(255,204,0,0.22)'
+      ? 'rgba(141,110,63,0.22)'
       : onMirror
-        ? 'rgba(34,211,238,0.18)'
+        ? 'rgba(77,124,136,0.2)'
         : COLORS.grid;
     ctx.lineWidth = onBisector ? 1.5 : 1;
     const s0 = toScreen(view, t, apex);
@@ -614,8 +614,8 @@ function drawEyeSideView(ctx, cx, cy, r = 12, facingRight = true) {
     ctx.scale(-1, 1);
   }
 
-  const strokeColor = '#f472b6'; // COLORS.eye (pink) for theme consistency
-  const eyelashColor = '#f472b6';
+  const strokeColor = COLORS.eye;
+  const eyelashColor = COLORS.eye;
 
   // 1. Draw iris/pupil: black ellipse on the right
   ctx.fillStyle = '#000000';
@@ -717,7 +717,7 @@ function drawArrow(ctx, view, t, from, to, opts = {}) {
     ctx.save();
     ctx.strokeStyle = color;
     ctx.lineWidth = width + 4;
-    ctx.globalAlpha = 0.12;
+    ctx.globalAlpha = 0.08;
     ctx.beginPath();
     ctx.moveTo(s0.x, s0.y);
     ctx.lineTo(s1.x, s1.y);
@@ -924,10 +924,10 @@ class RayAnimator {
     if (localSteps <= 0) return;
 
     const { objectPt, eye, image, reflectPt } = ray;
-    const realColor = fail ? '#ff5252' : undefined;
+    const realColor = fail ? '#a45c58' : undefined;
 
     if (localSteps >= 1) {
-      draw.drawPoint?.(objectPt, fail ? '#ff5252' : undefined);
+      draw.drawPoint?.(objectPt, fail ? '#a45c58' : undefined);
     }
 
     if (localSteps >= 2 && image) {
@@ -1710,10 +1710,10 @@ function createMinMirrorHeightScenario() {
       drawPerson(ctx, view, txf, 0, c.hEye, c.hEye);
       if (c.hObj > 0.01) {
         drawArrow(ctx, view, txf, { x: c.objX, y: 0 }, { x: c.objX, y: c.hObj }, {
-          color: '#fbbf24', width: 3, head: true,
+          color: '#8d6e3f', width: 3, head: true,
         });
       } else {
-        drawPoint(ctx, view, txf, c.obj, 6, '#fbbf24', getLang() === 'zh' ? '蟲' : 'Bug');
+        drawPoint(ctx, view, txf, c.obj, 6, '#8d6e3f', getLang() === 'zh' ? '蟲' : 'Bug');
       }
       drawVerticalMirror(ctx, view, txf, c.mirrorX, c.y, c.y + 1.5, COLORS.mirrorNeed, 5);
       const rp = { x: c.mirrorX, y: c.y };
@@ -1765,7 +1765,7 @@ function drawDimLabel(ctx, txf, from, to, text, offset = { x: 0, y: 0 }) {
   const my = (from.y + to.y) / 2;
   const sx = txf.ox + mx * txf.pxPerM + offset.x;
   const sy = txf.oy - my * txf.pxPerM + offset.y;
-  drawLabel(ctx, sx, sy, text, '#fbbf24');
+  drawLabel(ctx, sx, sy, text, '#8d6e3f');
 }
 
 /** Small triangle at eye: d_eye (horizontal) and h (vertical below eye level). */
@@ -1775,8 +1775,8 @@ function drawCeilingSmallTriangle(ctx, view, txf, c) {
   const foot = { x: 0, y: c.hEye };
   const reflect = { x: 0, y: mirrorY };
 
-  drawRightTriangle(ctx, view, txf, eye, foot, reflect, 'rgba(255,204,0,0.14)', 'rgba(255,204,0,0.85)');
-  const dash = { dashed: true, color: 'rgba(255,204,0,0.75)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, foot, reflect, 'rgba(141,110,63,0.1)', 'rgba(141,110,63,0.55)');
+  const dash = { dashed: true, color: 'rgba(141,110,63,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, foot, dash);
   drawArrow(ctx, view, txf, foot, reflect, dash);
 
@@ -1791,8 +1791,8 @@ function drawCeilingLargeTriangle(ctx, view, txf, c) {
   const dh = hCeiling - hEye;
   const underImage = { x: image.x, y: hEye };
 
-  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(167,139,250,0.14)', 'rgba(167,139,250,0.7)');
-  const dash = { dashed: true, color: 'rgba(167,139,250,0.7)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(107,95,140,0.1)', 'rgba(107,95,140,0.5)');
+  const dash = { dashed: true, color: 'rgba(107,95,140,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, underImage, dash);
   drawArrow(ctx, view, txf, underImage, image, dash);
 
@@ -1807,8 +1807,8 @@ function drawSpiderSmallTriangle(ctx, view, txf, c) {
   const foot = { x: 0, y: hEye };
   const top = { x: 0, y: mirrorTop };
 
-  drawRightTriangle(ctx, view, txf, eye, foot, top, 'rgba(255,204,0,0.14)', 'rgba(255,204,0,0.85)');
-  const dash = { dashed: true, color: 'rgba(255,204,0,0.75)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, foot, top, 'rgba(141,110,63,0.1)', 'rgba(141,110,63,0.55)');
+  const dash = { dashed: true, color: 'rgba(141,110,63,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, foot, dash);
   drawArrow(ctx, view, txf, foot, top, dash);
 
@@ -1822,8 +1822,8 @@ function drawSpiderLargeTriangle(ctx, view, txf, c) {
   const totalBase = 2 * dEye + dWall;
   const underImage = { x: image.x, y: hEye };
 
-  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(167,139,250,0.14)', 'rgba(167,139,250,0.7)');
-  const dash = { dashed: true, color: 'rgba(167,139,250,0.7)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(107,95,140,0.1)', 'rgba(107,95,140,0.5)');
+  const dash = { dashed: true, color: 'rgba(107,95,140,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, underImage, dash);
   drawArrow(ctx, view, txf, underImage, image, dash);
 
@@ -1997,7 +1997,7 @@ function createSeeBackObjectScenario() {
       drawWall(ctx, view, txf, c.light.x, 0, c.hCeiling);
       drawVerticalMirror(ctx, view, txf, c.mirrorX, 0, c.mirrorY, COLORS.mirrorNeed, 5);
       drawPoint(ctx, view, txf, c.eye, 6, COLORS.eye, 'E');
-      drawPoint(ctx, view, txf, c.light, 7, '#fbbf24', 'L');
+      drawPoint(ctx, view, txf, c.light, 7, '#8d6e3f', 'L');
       drawPoint(ctx, view, txf, c.image, 6, COLORS.image, "L'");
       if (c.reflectPt) {
         const ray = { objectPt: c.light, eye: c.eye, image: c.image, reflectPt: c.reflectPt };
@@ -2008,7 +2008,7 @@ function createSeeBackObjectScenario() {
       drawVerticalMirror(ctx, view, txf, c.mirrorX, 0, c.mirrorTop + 0.3, COLORS.mirror, 3);
       drawWall(ctx, view, txf, c.backWallX, 0, 3);
       drawPoint(ctx, view, txf, c.eye, 6, COLORS.eye, 'E');
-      drawPoint(ctx, view, txf, c.spider, 7, '#ef4444', 'S');
+      drawPoint(ctx, view, txf, c.spider, 7, '#a45c58', 'S');
       drawPoint(ctx, view, txf, c.image, 6, COLORS.image, "S'");
       const ray = { objectPt: c.spider, eye: c.eye, image: c.image, reflectPt: c.reflectPt };
       RayAnimator.drawSightRay(ctx, view, txf, helpers, ray, stepIndex, 0, 1);
@@ -2150,9 +2150,9 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   const coreW = 3 + 2 * pulse;
   ctx.save();
   ctx.lineCap = 'round';
-  ctx.shadowColor = 'rgba(255,220,80,0.55)';
-  ctx.shadowBlur = 3 + 5 * pulse;
-  ctx.strokeStyle = `rgba(255,255,255,${0.2 + 0.25 * pulse})`;
+  ctx.shadowColor = 'rgba(141,110,63,0.28)';
+  ctx.shadowBlur = 2 + 3 * pulse;
+  ctx.strokeStyle = `rgba(247,245,241,${0.16 + 0.1 * pulse})`;
   ctx.lineWidth = glowW + 3;
   ctx.setLineDash([]);
   ctx.beginPath();
@@ -2160,7 +2160,7 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   ctx.lineTo(s1.x, s1.y);
   ctx.stroke();
   ctx.shadowBlur = 0;
-  ctx.strokeStyle = `rgba(255,204,0,${0.35 + 0.35 * pulse})`;
+  ctx.strokeStyle = `rgba(141,110,63,${0.28 + 0.18 * pulse})`;
   ctx.lineWidth = glowW;
   if (virtual) ctx.setLineDash([8, 6]);
   ctx.beginPath();
@@ -2168,7 +2168,7 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   ctx.lineTo(s1.x, s1.y);
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.strokeStyle = '#fff';
+  ctx.strokeStyle = '#efe6d4';
   ctx.lineWidth = coreW;
   if (virtual) ctx.setLineDash([6, 5]);
   ctx.beginPath();
@@ -2177,11 +2177,11 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   ctx.stroke();
   ctx.setLineDash([]);
   const tipR = 4 + 2 * pulse;
-  ctx.fillStyle = `rgba(255,204,0,${0.35 + 0.35 * pulse})`;
+  ctx.fillStyle = `rgba(141,110,63,${0.28 + 0.18 * pulse})`;
   ctx.beginPath();
   ctx.arc(s1.x, s1.y, tipR, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = '#fff';
+  ctx.strokeStyle = '#efe6d4';
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.restore();
@@ -2754,7 +2754,7 @@ function createAngledMirrorsScenario() {
     const s0 = { x: txf.ox + a.x * txf.pxPerM, y: txf.oy - a.y * txf.pxPerM };
     const s1 = { x: txf.ox + b.x * txf.pxPerM, y: txf.oy - b.y * txf.pxPerM };
     ctx.save();
-    ctx.strokeStyle = 'rgba(255,204,0,0.75)';
+    ctx.strokeStyle = 'rgba(141,110,63,0.55)';
     ctx.lineWidth = 2;
     ctx.setLineDash([6, 5]);
     ctx.beginPath();
@@ -2917,7 +2917,7 @@ function createAngledMirrorsScenario() {
     };
     const ax0 = toScreen(txf, apexWorld);
     const ax1 = toScreen(txf, bisEnd);
-    ctx.strokeStyle = 'rgba(255,204,0,0.25)';
+    ctx.strokeStyle = 'rgba(141,110,63,0.2)';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 6]);
     ctx.beginPath();
@@ -2929,7 +2929,7 @@ function createAngledMirrorsScenario() {
     drawMirror(ctx, view, txf, c.m1.a, c.m1.b, 'M₁');
     drawMirror(ctx, view, txf, c.m2.a, c.m2.b, 'M₂');
 
-    ctx.fillStyle = 'rgba(255,204,0,0.12)';
+    ctx.fillStyle = 'rgba(141,110,63,0.08)';
     ctx.beginPath();
     ctx.arc(ax0.x, ax0.y, 5, 0, Math.PI * 2);
     ctx.fill();
@@ -3011,7 +3011,7 @@ function createAngledMirrorsScenario() {
 
     const angM1 = Math.atan2(-c.m1.b.y, c.m1.b.x);
     const angM2 = Math.atan2(-c.m2.b.y, c.m2.b.x);
-    ctx.strokeStyle = 'rgba(255,204,0,0.3)';
+    ctx.strokeStyle = 'rgba(141,110,63,0.22)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(ax0.x, ax0.y, 40, angM2, angM1);
@@ -4430,6 +4430,13 @@ const TAB_KEYS = [
 
 let currentIdx = 0;
 let currentSub = null;
+let sceneLocked = false;
+
+function lockedSceneIndex() {
+  const scene = new URLSearchParams(location.search).get('scene');
+  if (!scene) return -1;
+  return TAB_KEYS.indexOf(scene);
+}
 
 const els = {
   canvas: null,
@@ -4514,6 +4521,13 @@ function renderFormulaPanel(latexEl, fallbackEl, latex, fallbackText, opts = {})
 
 function buildTabs() {
   const bar = document.getElementById('tabBar');
+  if (!bar) return;
+  if (sceneLocked) {
+    bar.hidden = true;
+    bar.innerHTML = '';
+    return;
+  }
+  bar.hidden = false;
   bar.innerHTML = '';
   TAB_KEYS.forEach((key, i) => {
     const btn = document.createElement('button');
@@ -4937,6 +4951,13 @@ function init() {
   initLangFromLocation();
   bindLangToggle();
   bindHubLangSync();
+
+  const locked = lockedSceneIndex();
+  if (locked >= 0) {
+    currentIdx = locked;
+    sceneLocked = true;
+    document.documentElement.classList.add('scene-locked');
+  }
 
   applyI18n();
   buildTabs();

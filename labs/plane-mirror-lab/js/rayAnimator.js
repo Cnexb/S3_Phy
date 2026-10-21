@@ -84,10 +84,10 @@ export class RayAnimator {
     if (localSteps <= 0) return;
 
     const { objectPt, eye, image, reflectPt } = ray;
-    const realColor = fail ? '#ff5252' : undefined;
+    const realColor = fail ? '#a45c58' : undefined;
 
     if (localSteps >= 1) {
-      draw.drawPoint?.(objectPt, fail ? '#ff5252' : undefined);
+      draw.drawPoint?.(objectPt, fail ? '#a45c58' : undefined);
     }
 
     if (localSteps >= 2 && image) {
