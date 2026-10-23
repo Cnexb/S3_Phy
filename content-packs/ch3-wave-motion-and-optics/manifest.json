@@ -436,6 +436,16 @@
         "en": "JPWM07 Light refraction",
         "zhHant": "JPWM07 光的折射"
       }
+    },
+    {
+      "slug": "jpwm07-2",
+      "path": "content-packs/ch3-wave-motion-and-optics/quiz/jpwm07-2",
+      "quizId": "phy-jpwm07-2",
+      "topicCode": "JPWM07",
+      "title": {
+        "en": "JPWM07 Light refraction (Quiz 2)",
+        "zhHant": "JPWM07 光的折射（測驗 2）"
+      }
     }
   ],
   "summaries": [
