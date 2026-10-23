@@ -242,14 +242,64 @@
       "query": "embed=1"
     },
     {
-      "slug": "plane-mirror-lab",
+      "slug": "plane-mirror-image",
       "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
-      "toolId": "planeMirrorLab",
+      "toolId": "planeMirrorImage",
       "title": {
-        "en": "Plane mirror lab",
-        "zhHant": "平面鏡反射實驗室"
+        "en": "Image formation",
+        "zhHant": "像的形成"
       },
-      "query": "embed=1"
+      "query": "embed=1&scene=imageFormation"
+    },
+    {
+      "slug": "plane-mirror-min-length",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorMinLength",
+      "title": {
+        "en": "Shortest mirror to see yourself",
+        "zhHant": "看見全身的最短鏡"
+      },
+      "query": "embed=1&scene=minLength"
+    },
+    {
+      "slug": "plane-mirror-min-height",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorMinHeight",
+      "title": {
+        "en": "How high to place the mirror",
+        "zhHant": "鏡子應放多高"
+      },
+      "query": "embed=1&scene=minHeight"
+    },
+    {
+      "slug": "plane-mirror-see-back",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorSeeBack",
+      "title": {
+        "en": "Seeing what is behind you",
+        "zhHant": "看見身後的物件"
+      },
+      "query": "embed=1&scene=seeBack"
+    },
+    {
+      "slug": "plane-mirror-angled",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorAngled",
+      "title": {
+        "en": "Images from two mirrors",
+        "zhHant": "兩面鏡所成的像"
+      },
+      "query": "embed=1&scene=angledMirrors"
+    },
+    {
+      "slug": "plane-mirror-sketch",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorSketch",
+      "title": {
+        "en": "Ray diagram practice",
+        "zhHant": "光線作圖練習"
+      },
+      "query": "embed=1&scene=raySketch"
     },
     {
       "slug": "reflection-3d",
@@ -276,8 +326,8 @@
       "path": "content-packs/ch3-wave-motion-and-optics/tools/tir-escape",
       "toolId": "refractionTir",
       "title": {
-        "en": "Prison Break lab — refraction, Snell & TIR",
-        "zhHant": "逃獄遊戲 — 折射、司乃耳與全內反射"
+        "en": "Total internal reflection",
+        "zhHant": "全內反射"
       },
       "query": "embed=1"
     },
@@ -435,6 +485,16 @@
       "title": {
         "en": "JPWM07 Light refraction",
         "zhHant": "JPWM07 光的折射"
+      }
+    },
+    {
+      "slug": "jpwm07-2",
+      "path": "content-packs/ch3-wave-motion-and-optics/quiz/jpwm07-2",
+      "quizId": "phy-jpwm07-2",
+      "topicCode": "JPWM07",
+      "title": {
+        "en": "JPWM07 Light refraction (Quiz 2)",
+        "zhHant": "JPWM07 光的折射（測驗 2）"
       }
     },
     {
