@@ -95,7 +95,6 @@ const UI = {
     quizNavJpwm06Q4: "Quiz 4",
     quizNavJpwm07: "JPWM07 Light refraction",
     quizNavJpwm07Q1: "Quiz 1",
-    quizNavJpwm07Q2: "Quiz 2",
   },
   zh: {
     appSubtitle: "概念检查 · 界面简体中文",
@@ -166,7 +165,6 @@ const UI = {
     quizNavJpwm06Q4: "测验 4",
     quizNavJpwm07: "JPWM07 光的折射",
     quizNavJpwm07Q1: "测验 1",
-    quizNavJpwm07Q2: "测验 2",
   },
   "zh-Hant": {
     appSubtitle: "概念檢查 · 介面繁體中文",
@@ -237,7 +235,6 @@ const UI = {
     quizNavJpwm06Q4: "測驗 4",
     quizNavJpwm07: "JPWM07 光的折射",
     quizNavJpwm07Q1: "測驗 1",
-    quizNavJpwm07Q2: "測驗 2",
   },
 };
 
@@ -316,7 +313,6 @@ export function initQuiz() {
       "phy-jpwm06-3": "jpwm06-3",
       "phy-jpwm06-4": "jpwm06-4",
       "phy-jpwm07": "jpwm07",
-      "phy-jpwm07-2": "jpwm07-2",
     }[QUIZ_META.quizId];
     const currentTopic = currentQuiz?.startsWith("jpwm06") ? "jpwm06" : "jpwm07";
 
