@@ -13,7 +13,22 @@ import { renderToolsShell, hydrateToolsShell } from '../tools/toolsShell.js';
 import { mountFlashcardStudy } from '../flashcards/flashcardStudy.js';
 import { buildOpticsDeck } from '../flashcards/flashcardDeck.js';
 
-const TOOL_ORDER = ['rotatingMirror', 'planeMirrorLab', 'reflection3d', 'refraction', 'refractionTir', 'lens', 'rgbMixer', 'em', 'rayDiagram'];
+const TOOL_ORDER = [
+  'rotatingMirror',
+  'planeMirrorImage',
+  'planeMirrorMinLength',
+  'planeMirrorMinHeight',
+  'planeMirrorSeeBack',
+  'planeMirrorAngled',
+  'planeMirrorSketch',
+  'reflection3d',
+  'refraction',
+  'refractionTir',
+  'lens',
+  'rgbMixer',
+  'em',
+  'rayDiagram',
+];
 const TOOL_STORAGE_KEY = 's3phy.optics.tool';
 const QUIZ_ORDER = ['jpwm06', 'jpwm06-2', 'jpwm06-3', 'jpwm06-4', 'jpwm07', 'jpwm07-2', 'jpwm07-3'];
 const QUIZ_STORAGE_KEY = 's3phy.optics.quiz';
@@ -61,7 +76,12 @@ const WORKSHEET_LOADERS = {
 
 const TOOL_LOADERS = {
   rotatingMirror: () => import('../tools/rotatingMirrorLab.js').then((m) => m.createRotatingMirrorLab),
-  planeMirrorLab: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorLab),
+  planeMirrorImage: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorImageLab),
+  planeMirrorMinLength: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorMinLengthLab),
+  planeMirrorMinHeight: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorMinHeightLab),
+  planeMirrorSeeBack: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorSeeBackLab),
+  planeMirrorAngled: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorAngledLab),
+  planeMirrorSketch: () => import('../tools/planeMirrorLab.js').then((m) => m.createPlaneMirrorSketchLab),
   reflection3d: () => import('../tools/reflection3dLab.js').then((m) => m.createReflection3dLab),
   refraction: () => import('../tools/refractionLab.js').then((m) => m.createRefractionLab),
   refractionTir: () => import('../tools/tirEscapeLab.js').then((m) => m.createTirEscapeLab),
@@ -74,7 +94,12 @@ const TOOL_LOADERS = {
 function toolLabel(id) {
   const map = {
     rotatingMirror: 'tools.rotatingMirror.title',
-    planeMirrorLab: 'tools.planeMirror.title',
+    planeMirrorImage: 'tools.planeMirror.image.title',
+    planeMirrorMinLength: 'tools.planeMirror.minLength.title',
+    planeMirrorMinHeight: 'tools.planeMirror.minHeight.title',
+    planeMirrorSeeBack: 'tools.planeMirror.seeBack.title',
+    planeMirrorAngled: 'tools.planeMirror.angled.title',
+    planeMirrorSketch: 'tools.planeMirror.sketch.title',
     reflection3d: 'tools.reflection3d.title',
     refraction: 'tools.refraction.title',
     refractionTir: 'tools.refractionTir.title',
