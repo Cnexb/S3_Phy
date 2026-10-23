@@ -242,14 +242,64 @@
       "query": "embed=1"
     },
     {
-      "slug": "plane-mirror-lab",
+      "slug": "plane-mirror-image",
       "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
-      "toolId": "planeMirrorLab",
+      "toolId": "planeMirrorImage",
       "title": {
-        "en": "Plane mirror lab",
-        "zhHant": "平面鏡反射實驗室"
+        "en": "Image formation",
+        "zhHant": "像的形成"
       },
-      "query": "embed=1"
+      "query": "embed=1&scene=imageFormation"
+    },
+    {
+      "slug": "plane-mirror-min-length",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorMinLength",
+      "title": {
+        "en": "Shortest mirror to see yourself",
+        "zhHant": "看見全身的最短鏡"
+      },
+      "query": "embed=1&scene=minLength"
+    },
+    {
+      "slug": "plane-mirror-min-height",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorMinHeight",
+      "title": {
+        "en": "How high to place the mirror",
+        "zhHant": "鏡子應放多高"
+      },
+      "query": "embed=1&scene=minHeight"
+    },
+    {
+      "slug": "plane-mirror-see-back",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorSeeBack",
+      "title": {
+        "en": "Seeing what is behind you",
+        "zhHant": "看見身後的物件"
+      },
+      "query": "embed=1&scene=seeBack"
+    },
+    {
+      "slug": "plane-mirror-angled",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorAngled",
+      "title": {
+        "en": "Images from two mirrors",
+        "zhHant": "兩面鏡所成的像"
+      },
+      "query": "embed=1&scene=angledMirrors"
+    },
+    {
+      "slug": "plane-mirror-sketch",
+      "path": "content-packs/ch3-wave-motion-and-optics/tools/plane-mirror-lab",
+      "toolId": "planeMirrorSketch",
+      "title": {
+        "en": "Ray diagram practice",
+        "zhHant": "光線作圖練習"
+      },
+      "query": "embed=1&scene=raySketch"
     },
     {
       "slug": "reflection-3d",
