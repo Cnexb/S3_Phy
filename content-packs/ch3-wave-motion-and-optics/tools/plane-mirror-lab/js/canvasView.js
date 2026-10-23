@@ -10,23 +10,23 @@ import { getRayColor } from './rayColors.js';
  * - mirrorNeed: minimum required mirror segment (exam highlight)
  */
 export const COLORS = {
-  bg: '#f8f9fa',
-  grid: '#e8eaed',
-  gridMajor: '#d1d5db',
-  mirror: '#0891b2',
-  mirrorNeed: '#ca8a04',
-  mirrorFail: '#dc2626',
-  rayReal: '#16a34a',
-  rayVirtual: '#7c3aed',
-  object: '#374151',
-  image: '#4f46e5',
-  eye: '#db2777',
-  wall: '#9ca3af',
-  ground: '#d1d5db',
-  label: '#1a1c2c',
-  visible: '#16a34a',
-  hidden: '#9ca3af',
-  accent: '#2563eb',
+  bg: '#f7f5f1',
+  grid: '#e6e1d8',
+  gridMajor: '#d4cdc2',
+  mirror: '#4d7c88',
+  mirrorNeed: '#8d6e3f',
+  mirrorFail: '#a45c58',
+  rayReal: '#3e7356',
+  rayVirtual: '#6b5f8c',
+  object: '#3e4450',
+  image: '#5a628c',
+  eye: '#8d5c6e',
+  wall: '#8b908f',
+  ground: '#c9c2b6',
+  label: '#2c2e33',
+  visible: '#3e7356',
+  hidden: '#9aa09a',
+  accent: '#4e6c90',
 };
 
 export function createWorldView(canvas, opts = {}) {
@@ -210,9 +210,9 @@ export function drawPolarWedgeGrid(ctx, view, t, opts = {}) {
     const onBisector = Math.abs(a - phi) < 0.04;
     const onMirror = Math.abs(a - angMin) < 0.04 || Math.abs(a - angMax) < 0.04;
     ctx.strokeStyle = onBisector
-      ? 'rgba(255,204,0,0.22)'
+      ? 'rgba(141,110,63,0.22)'
       : onMirror
-        ? 'rgba(34,211,238,0.18)'
+        ? 'rgba(77,124,136,0.2)'
         : COLORS.grid;
     ctx.lineWidth = onBisector ? 1.5 : 1;
     const s0 = toScreen(view, t, apex);
@@ -276,8 +276,8 @@ export function drawEyeSideView(ctx, cx, cy, r = 12, facingRight = true) {
     ctx.scale(-1, 1);
   }
 
-  const strokeColor = '#f472b6'; // COLORS.eye (pink) for theme consistency
-  const eyelashColor = '#f472b6';
+  const strokeColor = COLORS.eye;
+  const eyelashColor = COLORS.eye;
 
   // 1. Draw iris/pupil: black ellipse on the right
   ctx.fillStyle = '#000000';
@@ -379,7 +379,7 @@ export function drawArrow(ctx, view, t, from, to, opts = {}) {
     ctx.save();
     ctx.strokeStyle = color;
     ctx.lineWidth = width + 4;
-    ctx.globalAlpha = 0.12;
+    ctx.globalAlpha = 0.08;
     ctx.beginPath();
     ctx.moveTo(s0.x, s0.y);
     ctx.lineTo(s1.x, s1.y);

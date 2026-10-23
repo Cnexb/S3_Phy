@@ -28,7 +28,7 @@ function drawDimLabel(ctx, txf, from, to, text, offset = { x: 0, y: 0 }) {
   const my = (from.y + to.y) / 2;
   const sx = txf.ox + mx * txf.pxPerM + offset.x;
   const sy = txf.oy - my * txf.pxPerM + offset.y;
-  drawLabel(ctx, sx, sy, text, '#fbbf24');
+  drawLabel(ctx, sx, sy, text, '#8d6e3f');
 }
 
 /** Small triangle at eye: d_eye (horizontal) and h (vertical below eye level). */
@@ -38,8 +38,8 @@ function drawCeilingSmallTriangle(ctx, view, txf, c) {
   const foot = { x: 0, y: c.hEye };
   const reflect = { x: 0, y: mirrorY };
 
-  drawRightTriangle(ctx, view, txf, eye, foot, reflect, 'rgba(255,204,0,0.14)', 'rgba(255,204,0,0.85)');
-  const dash = { dashed: true, color: 'rgba(255,204,0,0.75)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, foot, reflect, 'rgba(141,110,63,0.1)', 'rgba(141,110,63,0.55)');
+  const dash = { dashed: true, color: 'rgba(141,110,63,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, foot, dash);
   drawArrow(ctx, view, txf, foot, reflect, dash);
 
@@ -54,8 +54,8 @@ function drawCeilingLargeTriangle(ctx, view, txf, c) {
   const dh = hCeiling - hEye;
   const underImage = { x: image.x, y: hEye };
 
-  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(167,139,250,0.14)', 'rgba(167,139,250,0.7)');
-  const dash = { dashed: true, color: 'rgba(167,139,250,0.7)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(107,95,140,0.1)', 'rgba(107,95,140,0.5)');
+  const dash = { dashed: true, color: 'rgba(107,95,140,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, underImage, dash);
   drawArrow(ctx, view, txf, underImage, image, dash);
 
@@ -70,8 +70,8 @@ function drawSpiderSmallTriangle(ctx, view, txf, c) {
   const foot = { x: 0, y: hEye };
   const top = { x: 0, y: mirrorTop };
 
-  drawRightTriangle(ctx, view, txf, eye, foot, top, 'rgba(255,204,0,0.14)', 'rgba(255,204,0,0.85)');
-  const dash = { dashed: true, color: 'rgba(255,204,0,0.75)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, foot, top, 'rgba(141,110,63,0.1)', 'rgba(141,110,63,0.55)');
+  const dash = { dashed: true, color: 'rgba(141,110,63,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, foot, dash);
   drawArrow(ctx, view, txf, foot, top, dash);
 
@@ -85,8 +85,8 @@ function drawSpiderLargeTriangle(ctx, view, txf, c) {
   const totalBase = 2 * dEye + dWall;
   const underImage = { x: image.x, y: hEye };
 
-  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(167,139,250,0.14)', 'rgba(167,139,250,0.7)');
-  const dash = { dashed: true, color: 'rgba(167,139,250,0.7)', width: 1 };
+  drawRightTriangle(ctx, view, txf, eye, underImage, image, 'rgba(107,95,140,0.1)', 'rgba(107,95,140,0.5)');
+  const dash = { dashed: true, color: 'rgba(107,95,140,0.5)', width: 1 };
   drawArrow(ctx, view, txf, eye, underImage, dash);
   drawArrow(ctx, view, txf, underImage, image, dash);
 
@@ -260,7 +260,7 @@ export function createSeeBackObjectScenario() {
       drawWall(ctx, view, txf, c.light.x, 0, c.hCeiling);
       drawVerticalMirror(ctx, view, txf, c.mirrorX, 0, c.mirrorY, COLORS.mirrorNeed, 5);
       drawPoint(ctx, view, txf, c.eye, 6, COLORS.eye, 'E');
-      drawPoint(ctx, view, txf, c.light, 7, '#fbbf24', 'L');
+      drawPoint(ctx, view, txf, c.light, 7, '#8d6e3f', 'L');
       drawPoint(ctx, view, txf, c.image, 6, COLORS.image, "L'");
       if (c.reflectPt) {
         const ray = { objectPt: c.light, eye: c.eye, image: c.image, reflectPt: c.reflectPt };
@@ -271,7 +271,7 @@ export function createSeeBackObjectScenario() {
       drawVerticalMirror(ctx, view, txf, c.mirrorX, 0, c.mirrorTop + 0.3, COLORS.mirror, 3);
       drawWall(ctx, view, txf, c.backWallX, 0, 3);
       drawPoint(ctx, view, txf, c.eye, 6, COLORS.eye, 'E');
-      drawPoint(ctx, view, txf, c.spider, 7, '#ef4444', 'S');
+      drawPoint(ctx, view, txf, c.spider, 7, '#a45c58', 'S');
       drawPoint(ctx, view, txf, c.image, 6, COLORS.image, "S'");
       const ray = { objectPt: c.spider, eye: c.eye, image: c.image, reflectPt: c.reflectPt };
       RayAnimator.drawSightRay(ctx, view, txf, helpers, ray, stepIndex, 0, 1);

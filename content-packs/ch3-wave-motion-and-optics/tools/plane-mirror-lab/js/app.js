@@ -23,6 +23,13 @@ const TAB_KEYS = [
 
 let currentIdx = 0;
 let currentSub = null;
+let sceneLocked = false;
+
+function lockedSceneIndex() {
+  const scene = new URLSearchParams(location.search).get('scene');
+  if (!scene) return -1;
+  return TAB_KEYS.indexOf(scene);
+}
 
 const els = {
   canvas: null,
@@ -107,6 +114,13 @@ function renderFormulaPanel(latexEl, fallbackEl, latex, fallbackText, opts = {})
 
 function buildTabs() {
   const bar = document.getElementById('tabBar');
+  if (!bar) return;
+  if (sceneLocked) {
+    bar.hidden = true;
+    bar.innerHTML = '';
+    return;
+  }
+  bar.hidden = false;
   bar.innerHTML = '';
   TAB_KEYS.forEach((key, i) => {
     const btn = document.createElement('button');
@@ -530,6 +544,13 @@ function init() {
   initLangFromLocation();
   bindLangToggle();
   bindHubLangSync();
+
+  const locked = lockedSceneIndex();
+  if (locked >= 0) {
+    currentIdx = locked;
+    sceneLocked = true;
+    document.documentElement.classList.add('scene-locked');
+  }
 
   applyI18n();
   buildTabs();

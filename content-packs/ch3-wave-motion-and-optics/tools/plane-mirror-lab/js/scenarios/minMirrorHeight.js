@@ -203,10 +203,10 @@ export function createMinMirrorHeightScenario() {
       drawPerson(ctx, view, txf, 0, c.hEye, c.hEye);
       if (c.hObj > 0.01) {
         drawArrow(ctx, view, txf, { x: c.objX, y: 0 }, { x: c.objX, y: c.hObj }, {
-          color: '#fbbf24', width: 3, head: true,
+          color: '#8d6e3f', width: 3, head: true,
         });
       } else {
-        drawPoint(ctx, view, txf, c.obj, 6, '#fbbf24', getLang() === 'zh' ? '蟲' : 'Bug');
+        drawPoint(ctx, view, txf, c.obj, 6, '#8d6e3f', getLang() === 'zh' ? '蟲' : 'Bug');
       }
       drawVerticalMirror(ctx, view, txf, c.mirrorX, c.y, c.y + 1.5, COLORS.mirrorNeed, 5);
       const rp = { x: c.mirrorX, y: c.y };

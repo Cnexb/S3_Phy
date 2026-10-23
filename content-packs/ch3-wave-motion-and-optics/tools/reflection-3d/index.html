@@ -7,13 +7,8 @@
   <title>3D Reflection of Light Simulation / 3D 光的反射模擬實驗</title>
   <link rel="stylesheet" href="../shared/s3phy-embed.css">
   <script src="../shared/s3phy-embed-init.js"></script>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Three.js CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- OrbitControls CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <!-- Lucide Icons CDN Removed -->
+  <!-- Styles the controls. Deferred so it does not block the 3D scene. -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
   
   <style>
     /* Custom Range Slider Styling */
@@ -59,14 +54,6 @@
   <div id="overlay-label-i" class="absolute pointer-events-none bg-amber-500/90 text-white text-xs font-bold px-2 py-1 rounded shadow-lg border border-amber-400 transform -translate-x-1/2 -translate-y-1/2 z-20 hidden transition-opacity duration-150">i = 45.0°</div>
   <div id="overlay-label-r" class="absolute pointer-events-none bg-red-500/90 text-white text-xs font-bold px-2 py-1 rounded shadow-lg border border-red-400 transform -translate-x-1/2 -translate-y-1/2 z-20 hidden transition-opacity duration-150">r = 45.0°</div>
 
-  <!-- Loading Screen -->
-  <div id="loading" class="absolute inset-0 flex items-center justify-center bg-white z-50 transition-opacity duration-500">
-    <div class="text-center">
-      <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto"></div>
-      <p class="text-slate-600 mt-4 font-medium" data-i18n="loadingText">Loading 3D Simulation Engine...</p>
-    </div>
-  </div>
-
   <!-- Floating, Draggable, Collapsible Control Panel -->
   <div id="control-panel" class="absolute top-4 right-4 z-30 bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200/80 w-80 md:w-96 flex flex-col overflow-hidden">
     <!-- Panel Header (Draggable) -->
@@ -94,15 +81,15 @@
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-sky-500"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></svg>
-            <span data-i18n="fillingLevel">Surface Flatness / Filling Level</span>
+            <span data-i18n="fillingLevel">Surface</span>
           </h3>
           <span id="filling-percent" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">0%</span>
         </div>
         <div class="space-y-1">
           <input type="range" id="slider-filling" min="0" max="100" value="0" class="w-full">
           <div class="flex justify-between text-[10px] text-slate-400 font-medium">
-            <span data-i18n="fillingLow">Rough (No Filling)</span>
-            <span data-i18n="fillingHigh">Smooth (Fully Filled)</span>
+            <span data-i18n="fillingLow">Diffuse (rough)</span>
+            <span data-i18n="fillingHigh">Regular (smooth)</span>
           </div>
         </div>
       </div>
@@ -123,18 +110,9 @@
       <div class="space-y-2 border-t border-slate-100 pt-3">
         <span class="text-[11px] font-medium text-slate-400" data-i18n="rayMode">Ray Mode</span>
         <div class="flex bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
-          <button id="btn-mode-multi" onclick="setRayMode(false)" class="flex-1 py-1.5 text-center rounded-md bg-white text-slate-800 shadow-sm transition-all duration-150" data-i18n="multiRay">Multi-Ray (Diffuse/Regular)</button>
-          <button id="btn-mode-single" onclick="setRayMode(true)" class="flex-1 py-1.5 text-center rounded-md text-slate-500 hover:text-slate-800 transition-all duration-150" data-i18n="singleRay">Single-Ray (Law of Reflection)</button>
+          <button id="btn-mode-multi" onclick="setRayMode(false)" class="flex-1 py-1.5 text-center rounded-md bg-white text-slate-800 shadow-sm transition-all duration-150" data-i18n="multiRay">Many rays</button>
+          <button id="btn-mode-single" onclick="setRayMode(true)" class="flex-1 py-1.5 text-center rounded-md text-slate-500 hover:text-slate-800 transition-all duration-150" data-i18n="singleRay">One ray</button>
         </div>
-      </div>
-
-      <!-- Multi-Ray Controls -->
-      <div id="multi-ray-controls" class="space-y-2">
-        <div class="flex justify-between text-xs font-medium text-slate-600">
-          <span data-i18n="rayCount">Ray Count</span>
-          <span id="ray-count-val" class="font-bold text-slate-800">5</span>
-        </div>
-        <input type="range" id="slider-ray-count" min="2" max="10" value="5" class="w-full">
       </div>
 
       <!-- Single-Ray Controls -->
@@ -147,39 +125,22 @@
         <p class="text-[10px] text-slate-400 leading-relaxed mt-1" data-i18n="singleRayPosDesc">Drag the slider to move the incident ray and observe how the local surface normal affects the reflection direction.</p>
       </div>
 
-      <!-- Display Options -->
-      <div class="space-y-3 border-t border-slate-100 pt-3">
-        <h3 class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-blue-500"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polygon points="2 17 12 22 22 17"/><polygon points="2 12 12 17 22 12"/></svg>
+      <div class="flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
+        <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600">
+          <input type="checkbox" id="chk-show-normals" class="rounded text-blue-500 focus:ring-blue-500 w-4 h-4">
           <span data-i18n="showNormals">Show Normals</span>
-        </h3>
-        <div class="grid grid-cols-2 gap-3">
-          <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600">
-            <input type="checkbox" id="chk-show-normals" checked class="rounded text-blue-500 focus:ring-blue-500 w-4 h-4">
-            <span data-i18n="showNormals">Show Normals</span>
-          </label>
-          <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-slate-600">
-            <input type="checkbox" id="chk-show-filling" checked class="rounded text-blue-500 focus:ring-blue-500 w-4 h-4">
-            <span data-i18n="showFilling">Show Filling Medium</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Camera and Environment Controls -->
-      <div class="flex gap-2 border-t border-slate-100 pt-3">
-        <button id="btn-reset-camera" onclick="resetCamera()" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all duration-150">
+        </label>
+        <button id="btn-reset-camera" onclick="resetCamera()" class="py-1.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all duration-150">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 7 8"/></svg>
           <span data-i18n="resetCamera">Reset Camera</span>
         </button>
-        <button id="btn-toggle-rotate" onclick="toggleAutoRotate()" class="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all duration-150">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 7 8"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><polyline points="16 16 21 16 21 21"/></svg>
-          <span data-i18n="autoRotate">Auto Rotate</span>
-        </button>
-        <button id="btn-toggle-grid" onclick="toggleGrid()" class="py-1.5 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200 flex items-center justify-center gap-1.5 transition-all duration-150">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
-        </button>
       </div>
     </div>
+  </div>
+
+  <!-- Fill status: diffuse, partial, or regular -->
+  <div id="reflection-status" class="absolute bottom-4 left-4 z-20 max-w-xs sm:max-w-sm bg-white/90 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-xl border border-slate-200/80 pointer-events-none">
+    <div id="reflection-status-text" class="text-sm font-semibold text-slate-800 leading-snug">Diffuse reflection — parallel rays scatter</div>
   </div>
 
   <!-- Floating Legend Card (Bottom Right) -->
@@ -232,19 +193,21 @@
   </div>
 
   <!-- JavaScript Section -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script>
     // --- Translation Dictionary (i18n) ---
     const i18n = {
       en: {
         loadingText: "Loading 3D Simulation Engine...",
         controlsTitle: "Simulation Controls",
-        fillingLevel: "Surface Flatness / Filling Level",
-        fillingLow: "Rough (No Filling)",
-        fillingHigh: "Smooth (Fully Filled)",
+        fillingLevel: "Surface",
+        fillingLow: "Diffuse (rough)",
+        fillingHigh: "Regular (smooth)",
         angleIncidence: "Angle of Incidence",
         rayMode: "Ray Mode",
-        multiRay: "Multi-Ray (Diffuse/Regular)",
-        singleRay: "Single-Ray (Law of Reflection)",
+        multiRay: "Many rays",
+        singleRay: "One ray",
         rayCount: "Ray Count",
         singleRayPos: "Single Ray Position (X)",
         singleRayPosDesc: "Drag the slider to move the incident ray and observe how the local surface normal affects the reflection direction.",
@@ -264,17 +227,21 @@
         angleR: "Angle of Reflection (r)",
         angleR_invalid: "Diffuse (Scattered)",
         angleR_invalid_desc: "On a rough surface, rays reflect in various directions. The Law of Reflection still holds locally at each point, but the overall reflection is scattered.",
+        statusDiffuse: "Diffuse reflection — parallel rays scatter",
+        statusPartial: "Partly filled — some rays still scatter",
+        statusRegular: "Regular reflection — parallel rays stay parallel",
+        localLawNote: "The law still holds here (i = r). This normal is tilted, so the ray leaves in a different direction. Many rays like this make diffuse reflection.",
       },
       zh: {
         loadingText: "正在載入 3D 模擬引擎...",
         controlsTitle: "模擬控制面板",
-        fillingLevel: "表面平滑度 / 介質填補量",
-        fillingLow: "粗糙 (未填補)",
-        fillingHigh: "平滑 (完全填補)",
+        fillingLevel: "表面",
+        fillingLow: "漫反射（粗糙）",
+        fillingHigh: "規則反射（平滑）",
         angleIncidence: "入射角",
         rayMode: "光線模式",
-        multiRay: "多光線 (漫反射/鏡面反射)",
-        singleRay: "單光線 (反射定律)",
+        multiRay: "多光線",
+        singleRay: "單光線",
         rayCount: "光線數量",
         singleRayPos: "單光線位置 (X)",
         singleRayPosDesc: "拖動滑桿移動入射光線，觀察局部表面法線如何影響反射方向。",
@@ -294,6 +261,10 @@
         angleR: "反射角 (r)",
         angleR_invalid: "漫反射 (散射)",
         angleR_invalid_desc: "在粗糙表面上，光線向各個方向反射。反射定律在每個局部點仍然成立，但整體反射呈現散射狀態。",
+        statusDiffuse: "漫反射 — 平行光線向各方散射",
+        statusPartial: "部分填補 — 仍有部分光線散射",
+        statusRegular: "規則反射 — 平行光線保持平行",
+        localLawNote: "反射定律在這一點仍然成立（i = r）。此處法線傾斜，所以光線反射到另一個方向。許多這樣的光線就形成漫反射。",
       }
     };
 
@@ -339,6 +310,7 @@
       
       // Update dynamic text
       updateRays();
+      updateReflectionStatus();
     }
 
     // --- 3D Scene Setup ---
@@ -349,9 +321,16 @@
     let fillingFrontMesh, fillingBackMesh, fillingLeftMesh, fillingRightMesh;
     const raycaster = new THREE.Raycaster();
 
-    // Analytical Surface Profile
-    function getSkinHeight(x) {
-      return Math.sin(x * 0.9) * 1.2 + Math.sin(x * 2.5) * 0.15;
+    // A few large hills along the ray plane, plus a milder rise and fall in z.
+    // Peaks stay below the full-fill level (1.5) and valleys stay above the empty level (-1.5).
+    // Large hills plus smaller ripples so the surface looks and reflects more roughly.
+    // Peaks stay below the full-fill level (1.5).
+    function getSkinHeight(x, z) {
+      return Math.sin(x * Math.PI / 8) * 0.85
+        + Math.sin(x * 1.7 + 0.6) * 0.26
+        + Math.sin(x * 3.1 + 1.4) * 0.11
+        + Math.cos(z * 0.85) * 0.16
+        + Math.sin(x * 0.55 + z * 1.15) * 0.09;
     }
 
     // Helper to create side walls (skirts) along X axis
@@ -441,12 +420,20 @@
     // Simulation parameters
     let fillingLevel = -1.5; // range: -1.5 (empty) to 1.5 (full)
     let currentAngle = 45; // angle of incidence in degrees
-    let rayCount = 5;
+    let rayCount = 3;
     let singleRayX = 0;
     let isSingleRayMode = false;
-    let showNormals = true;
+    let showNormals = false;
     let showFilling = true;
     let autoRotate = false;
+    let skinHeightMin = Infinity;
+    let skinHeightMax = -Infinity;
+    let reflectionKind = "diffuse";
+    const SURFACE_SEG_X = 128;
+    const SURFACE_SEG_Z = 56;
+    const SKIN_BOTTOM = -2.4;
+    const CAMERA_HOME = new THREE.Vector3(1.2, 4.6, 26);
+    const CAMERA_TARGET = new THREE.Vector3(0, -3.2, 0);
 
     // Global variables to store the last ray calculation state for overlay labels
     let lastHitPoint = null;
@@ -458,23 +445,16 @@
 
     // DOM Elements
     const canvasContainer = document.getElementById("canvas-container");
-    const loadingEl = document.getElementById("loading");
     const sliderFilling = document.getElementById("slider-filling");
     const fillingPercentEl = document.getElementById("filling-percent");
     const sliderAngle = document.getElementById("slider-angle");
     const angleValEl = document.getElementById("angle-val");
-    const sliderRayCount = document.getElementById("slider-ray-count");
-    const rayCountValEl = document.getElementById("ray-count-val");
     const sliderRayPos = document.getElementById("slider-ray-pos");
     const rayPosValEl = document.getElementById("ray-pos-val");
-    const multiRayControls = document.getElementById("multi-ray-controls");
     const singleRayControls = document.getElementById("single-ray-controls");
     const btnModeMulti = document.getElementById("btn-mode-multi");
     const btnModeSingle = document.getElementById("btn-mode-single");
     const chkShowNormals = document.getElementById("chk-show-normals");
-    const chkShowFilling = document.getElementById("chk-show-filling");
-    const btnToggleRotate = document.getElementById("btn-toggle-rotate");
-    const btnToggleGrid = document.getElementById("btn-toggle-grid");
     const angleCard = document.getElementById("angle-card");
     const angleIValEl = document.getElementById("angle-i-val");
     const angleRValEl = document.getElementById("angle-r-val");
@@ -483,20 +463,70 @@
     const lawBadge = document.getElementById("law-badge");
     const angleErrorMsg = document.getElementById("angle-error-msg");
 
+    function createMirrorEnvMap() {
+      function face(c0, c1) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+        const g = canvas.getContext("2d");
+        const grad = g.createLinearGradient(0, 0, 0, 128);
+        grad.addColorStop(0, c0);
+        grad.addColorStop(1, c1);
+        g.fillStyle = grad;
+        g.fillRect(0, 0, 128, 128);
+        return canvas;
+      }
+      const tex = new THREE.CubeTexture([
+        face("#e2e8f0", "#94a3b8"),
+        face("#e2e8f0", "#94a3b8"),
+        face("#ffffff", "#dbeafe"),
+        face("#cbd5e1", "#64748b"),
+        face("#f0f9ff", "#7dd3fc"),
+        face("#f8fafc", "#cbd5e1")
+      ]);
+      tex.encoding = THREE.sRGBEncoding;
+      tex.needsUpdate = true;
+      return tex;
+    }
+
+    function updateReflectionStatus() {
+      const el = document.getElementById("reflection-status-text");
+      if (!el) return;
+      const t = i18n[currentLang];
+      const key = reflectionKind === "regular"
+        ? "statusRegular"
+        : reflectionKind === "partial"
+          ? "statusPartial"
+          : "statusDiffuse";
+      el.textContent = t[key];
+    }
+
+    function syncFillState() {
+      const anyFill = showFilling && fillingLevel > skinHeightMin + 0.02;
+      const covering = showFilling && fillingLevel >= skinHeightMax - 0.001;
+      reflectionKind = covering ? "regular" : anyFill ? "partial" : "diffuse";
+      if (fillingGroup) fillingGroup.visible = anyFill;
+      updateReflectionStatus();
+    }
+
     function init3D() {
       // 1. Scene
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0xffffff); // white background
+      scene.background = new THREE.Color(0xf8fafc);
 
       // 2. Camera
       const width = canvasContainer.clientWidth || window.innerWidth || 800;
       const height = canvasContainer.clientHeight || window.innerHeight || 600;
       camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-      camera.position.set(0, 6, 22); // lowered from 8 to 6 to match the lowered surface
+      camera.position.copy(CAMERA_HOME);
 
       // 3. Renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.setSize(width, height);
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       canvasContainer.appendChild(renderer.domElement);
@@ -506,25 +536,39 @@
       controls.enableDamping = true;
       controls.dampingFactor = 0.05;
       controls.maxPolarAngle = Math.PI / 2 - 0.05; // don't go below ground
-      controls.minDistance = 5;
-      controls.maxDistance = 50;
-      controls.target.set(0, -4.5, 0); // lowered from -2.5 to -4.5
+      controls.minDistance = 8;
+      controls.maxDistance = 60;
+      controls.target.copy(CAMERA_TARGET);
 
       // 5. Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-      scene.add(ambientLight);
+      scene.add(new THREE.HemisphereLight(0xf8fafc, 0xd6d3d1, 0.55));
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-      dirLight.position.set(10, 20, 10);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.05);
+      dirLight.position.set(10, 16, 12);
       dirLight.castShadow = true;
       dirLight.shadow.mapSize.width = 2048;
       dirLight.shadow.mapSize.height = 2048;
-      dirLight.shadow.bias = -0.001;
+      dirLight.shadow.bias = -0.0006;
+      dirLight.shadow.normalBias = 0.04;
+      dirLight.shadow.camera.near = 1;
+      dirLight.shadow.camera.far = 50;
+      dirLight.shadow.camera.left = -20;
+      dirLight.shadow.camera.right = 20;
+      dirLight.shadow.camera.top = 20;
+      dirLight.shadow.camera.bottom = -20;
       scene.add(dirLight);
 
+      const fillLight = new THREE.DirectionalLight(0xe0f2fe, 0.28);
+      fillLight.position.set(-12, 6, -6);
+      scene.add(fillLight);
+
+      const rimLight = new THREE.DirectionalLight(0xffffff, 0.22);
+      rimLight.position.set(-4, 10, 16);
+      scene.add(rimLight);
+
       // 6. Grid Helper (hidden initially)
-      gridHelper = new THREE.GridHelper(40, 40, 0xcbd5e1, 0xe2e8f0); // light gray grid helper
-      gridHelper.position.y = -9.5; // lowered from -6.5 to -9.5 (sits exactly at the bottom of the skin block)
+      gridHelper = new THREE.GridHelper(40, 40, 0xcbd5e1, 0xe2e8f0);
+      gridHelper.position.y = -4.5 + SKIN_BOTTOM;
       gridHelper.visible = false;
       scene.add(gridHelper);
 
@@ -533,19 +577,24 @@
       skinGroup.position.y = -4.5; // lowered from -2.5 to -4.5
       scene.add(skinGroup);
 
-      const skinGeo = new THREE.PlaneGeometry(24, 12, 160, 40);
+      const skinGeo = new THREE.PlaneGeometry(24, 12, SURFACE_SEG_X, SURFACE_SEG_Z);
       const pos = skinGeo.attributes.position;
+      skinHeightMin = Infinity;
+      skinHeightMax = -Infinity;
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
-        const yVal = getSkinHeight(x);
+        const z = -pos.getY(i);
+        const yVal = getSkinHeight(x, z);
         pos.setZ(i, yVal);
+        if (yVal < skinHeightMin) skinHeightMin = yVal;
+        if (yVal > skinHeightMax) skinHeightMax = yVal;
       }
       skinGeo.computeVertexNormals();
 
       const skinMat = new THREE.MeshStandardMaterial({
-        color: 0xf59e0b, // Tailwind amber-500
-        roughness: 0.8,
-        metalness: 0.1,
+        color: 0x14532d,
+        roughness: 0.96,
+        metalness: 0.05,
         side: THREE.DoubleSide,
         flatShading: false
       });
@@ -556,15 +605,15 @@
       skinGroup.add(skinMesh);
 
       // Add skin side walls and bottom to make it a solid block
-      skinFrontMesh = new THREE.Mesh(createStripGeometry(-12, 12, 160, 6, getSkinHeight, (x) => -5.0), skinMat);
-      skinBackMesh = new THREE.Mesh(createStripGeometry(-12, 12, 160, -6, getSkinHeight, (x) => -5.0, true), skinMat);
-      skinLeftMesh = new THREE.Mesh(createStripGeometryZ(-6, 6, 40, -12, (z) => getSkinHeight(-12), (z) => -5.0), skinMat);
-      skinRightMesh = new THREE.Mesh(createStripGeometryZ(-6, 6, 40, 12, (z) => getSkinHeight(12), (z) => -5.0, true), skinMat);
+      skinFrontMesh = new THREE.Mesh(createStripGeometry(-12, 12, SURFACE_SEG_X, 6, (x) => getSkinHeight(x, 6), () => SKIN_BOTTOM), skinMat);
+      skinBackMesh = new THREE.Mesh(createStripGeometry(-12, 12, SURFACE_SEG_X, -6, (x) => getSkinHeight(x, -6), () => SKIN_BOTTOM, true), skinMat);
+      skinLeftMesh = new THREE.Mesh(createStripGeometryZ(-6, 6, SURFACE_SEG_Z, -12, (z) => getSkinHeight(-12, z), () => SKIN_BOTTOM), skinMat);
+      skinRightMesh = new THREE.Mesh(createStripGeometryZ(-6, 6, SURFACE_SEG_Z, 12, (z) => getSkinHeight(12, z), () => SKIN_BOTTOM, true), skinMat);
       
       const bottomGeo = new THREE.PlaneGeometry(24, 12);
       skinBottomMesh = new THREE.Mesh(bottomGeo, skinMat);
       skinBottomMesh.rotation.x = Math.PI / 2;
-      skinBottomMesh.position.y = -5.0;
+      skinBottomMesh.position.y = SKIN_BOTTOM;
 
       // Enable shadows for side walls and bottom
       [skinFrontMesh, skinBackMesh, skinLeftMesh, skinRightMesh].forEach(mesh => {
@@ -580,15 +629,22 @@
       fillingGroup.position.y = -4.5; // lowered from -2.5 to -4.5
       scene.add(fillingGroup);
 
-      const fillingGeo = new THREE.PlaneGeometry(24, 12, 160, 40);
-      const fillingMat = new THREE.MeshStandardMaterial({
-        color: 0x38bdf8, // Tailwind sky-400
-        roughness: 0.1,
-        metalness: 0.1,
+      const fillingGeo = new THREE.PlaneGeometry(24, 12, SURFACE_SEG_X, SURFACE_SEG_Z);
+      const fillingMat = new THREE.MeshPhysicalMaterial({
+        color: 0x3b0764,
+        roughness: 0.03,
+        metalness: 0.12,
+        clearcoat: 1,
+        clearcoatRoughness: 0.04,
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.42,
+        envMap: createMirrorEnvMap(),
+        envMapIntensity: 1.35,
         side: THREE.DoubleSide,
-        flatShading: false
+        flatShading: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -1,
+        polygonOffsetUnits: -1
       });
       fillingMesh = new THREE.Mesh(fillingGeo, fillingMat);
       fillingMesh.rotation.x = -Math.PI / 2;
@@ -609,7 +665,15 @@
 
       fillingGroup.add(fillingFrontMesh, fillingBackMesh, fillingLeftMesh, fillingRightMesh);
 
-      // Set initial visibility
+      const floor = new THREE.Mesh(
+        new THREE.PlaneGeometry(70, 50),
+        new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 1, metalness: 0 })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -4.5 + SKIN_BOTTOM - 0.02;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
       fillingGroup.visible = showFilling;
 
       // 9. Rays Group
@@ -619,97 +683,113 @@
       // Initial updates
       updateFillingGeometry();
       updateRays();
-
-      // Hide loading screen
-      setTimeout(() => {
-        loadingEl.classList.add("opacity-0");
-        setTimeout(() => loadingEl.classList.add("hidden"), 500);
-      }, 600);
-
-      // Start animation loop
       animate();
     }
 
     // --- Update Filling Geometry ---
     function updateFillingGeometry() {
-      if (!fillingMesh) return;
+      if (!fillingMesh || !skinMesh) return;
 
       const posFilling = fillingMesh.geometry.attributes.position;
       const posSkin = skinMesh.geometry.attributes.position;
+      const gridX1 = SURFACE_SEG_X + 1;
 
       for (let i = 0; i < posFilling.count; i++) {
-        const skinZ = posSkin.getZ(i);
-        // The filling medium fills the valleys up to fillingLevel
-        const fillingZ = Math.max(skinZ, fillingLevel);
-        // Add a tiny offset to prevent z-fighting
-        posFilling.setZ(i, fillingZ + 0.01);
+        posFilling.setZ(i, fillingLevel + 0.02);
       }
-      fillingMesh.geometry.computeVertexNormals();
-      fillingMesh.geometry.attributes.position.needsUpdate = true;
 
-      // Update Side Walls
+      const indices = [];
+      for (let iy = 0; iy < SURFACE_SEG_Z; iy++) {
+        for (let ix = 0; ix < SURFACE_SEG_X; ix++) {
+          const a = ix + gridX1 * iy;
+          const b = ix + gridX1 * (iy + 1);
+          const c = (ix + 1) + gridX1 * (iy + 1);
+          const d = (ix + 1) + gridX1 * iy;
+          const covered =
+            posSkin.getZ(a) <= fillingLevel &&
+            posSkin.getZ(b) <= fillingLevel &&
+            posSkin.getZ(c) <= fillingLevel &&
+            posSkin.getZ(d) <= fillingLevel;
+          if (!covered) continue;
+          indices.push(a, b, d);
+          indices.push(b, c, d);
+        }
+      }
+
+      fillingMesh.geometry.setIndex(indices);
+      fillingMesh.geometry.computeVertexNormals();
+      fillingMesh.geometry.boundingSphere = null;
+      fillingMesh.geometry.boundingBox = null;
+      posFilling.needsUpdate = true;
+
+      const cap = (x, z) => Math.max(getSkinHeight(x, z), fillingLevel) + 0.02;
+      const bed = (x, z) => getSkinHeight(x, z) + 0.01;
+
       if (fillingFrontMesh) {
         fillingFrontMesh.geometry.dispose();
-        fillingFrontMesh.geometry = createStripGeometry(-12, 12, 160, 6, 
-          (x) => Math.max(getSkinHeight(x), fillingLevel) + 0.01, 
-          (x) => getSkinHeight(x) + 0.01
+        fillingFrontMesh.geometry = createStripGeometry(-12, 12, SURFACE_SEG_X, 6,
+          (x) => cap(x, 6),
+          (x) => bed(x, 6)
         );
       }
       if (fillingBackMesh) {
         fillingBackMesh.geometry.dispose();
-        fillingBackMesh.geometry = createStripGeometry(-12, 12, 160, -6, 
-          (x) => Math.max(getSkinHeight(x), fillingLevel) + 0.01, 
-          (x) => getSkinHeight(x) + 0.01,
+        fillingBackMesh.geometry = createStripGeometry(-12, 12, SURFACE_SEG_X, -6,
+          (x) => cap(x, -6),
+          (x) => bed(x, -6),
           true
         );
       }
       if (fillingLeftMesh) {
         fillingLeftMesh.geometry.dispose();
-        fillingLeftMesh.geometry = createStripGeometryZ(-6, 6, 40, -12, 
-          (z) => Math.max(getSkinHeight(-12), fillingLevel) + 0.01, 
-          (z) => getSkinHeight(-12) + 0.01
+        fillingLeftMesh.geometry = createStripGeometryZ(-6, 6, SURFACE_SEG_Z, -12,
+          (z) => cap(-12, z),
+          (z) => bed(-12, z)
         );
       }
       if (fillingRightMesh) {
         fillingRightMesh.geometry.dispose();
-        fillingRightMesh.geometry = createStripGeometryZ(-6, 6, 40, 12, 
-          (z) => Math.max(getSkinHeight(12), fillingLevel) + 0.01, 
-          (z) => getSkinHeight(12) + 0.01,
+        fillingRightMesh.geometry = createStripGeometryZ(-6, 6, SURFACE_SEG_Z, 12,
+          (z) => cap(12, z),
+          (z) => bed(12, z),
           true
         );
       }
+
+      syncFillState();
     }
 
     // --- Draw Light Ray Cylinder with Arrow ---
-    function drawBeam(start, end, colorHex, radius = 0.06) {
+    function drawBeam(start, end, colorHex, radius = 0.08) {
       const distance = start.distanceTo(end);
       if (distance < 0.1) return;
 
-      // Cylinder geometry
-      const geom = new THREE.CylinderGeometry(radius, radius, distance, 8);
-      geom.translate(0, distance / 2, 0); // pivot at start
+      function addRod(from, to, rodRadius, opacity, segments) {
+        const length = from.distanceTo(to);
+        const geom = new THREE.CylinderGeometry(rodRadius, rodRadius, length, segments);
+        geom.translate(0, length / 2, 0);
+        const mat = new THREE.MeshBasicMaterial({
+          color: colorHex,
+          transparent: opacity < 1,
+          opacity: opacity,
+          depthWrite: opacity >= 1
+        });
+        const mesh = new THREE.Mesh(geom, mat);
+        mesh.position.copy(from);
+        mesh.lookAt(to);
+        mesh.rotateX(Math.PI / 2);
+        raysGroup.add(mesh);
+      }
 
-      const mat = new THREE.MeshBasicMaterial({
-        color: colorHex,
-        transparent: true,
-        opacity: 0.8
-      });
-      const mesh = new THREE.Mesh(geom, mat);
-      mesh.position.copy(start);
-      mesh.lookAt(end);
-      mesh.rotateX(Math.PI / 2);
-      raysGroup.add(mesh);
+      addRod(start, end, radius * 2.6, 0.22, 12);
+      addRod(start, end, radius, 1, 16);
 
-      // Arrow cone
-      const coneLength = 0.45;
-      const coneRadius = radius * 2.5;
-      const coneGeom = new THREE.ConeGeometry(coneRadius, coneLength, 8);
+      const coneLength = 0.85;
+      const coneRadius = radius * 2.8;
+      const coneGeom = new THREE.ConeGeometry(coneRadius, coneLength, 16);
       coneGeom.translate(0, coneLength / 2, 0);
-      const coneMat = new THREE.MeshBasicMaterial({ color: colorHex });
-      const coneMesh = new THREE.Mesh(coneGeom, coneMat);
-
-      // Position cone at 60% along the beam
-      const conePos = new THREE.Vector3().lerpVectors(start, end, 0.6);
+      const coneMesh = new THREE.Mesh(coneGeom, new THREE.MeshBasicMaterial({ color: colorHex }));
+      const conePos = new THREE.Vector3().lerpVectors(start, end, 0.55);
       coneMesh.position.copy(conePos);
       coneMesh.lookAt(end);
       coneMesh.rotateX(Math.PI / 2);
@@ -795,27 +875,17 @@
         angleCard.classList.remove("hidden");
       } else {
         angleCard.classList.add("hidden");
-        if (rayCount === 1) {
-          xPositions = [0];
-        } else {
-          const startX = -9;
-          const endX = 9;
-          const step = (endX - startX) / (rayCount - 1);
-          for (let i = 0; i < rayCount; i++) {
-            xPositions.push(startX + i * step);
-          }
-        }
+        xPositions = [-7, 0, 4];
       }
 
       // Intersect targets
       const targets = [];
       if (skinMesh) targets.push(skinMesh);
-      if (fillingMesh && showFilling && fillingLevel > -1.49) targets.push(fillingMesh);
+      if (fillingMesh && showFilling && fillingLevel > skinHeightMin + 0.02) targets.push(fillingMesh);
 
       xPositions.forEach(xStart => {
-        // Position starting point high above the surface
-        // Account for lowered surface position in world space
-        const startPoint = new THREE.Vector3(xStart - 12 * Math.sin(theta), 12 - 4.5, 0);
+        const rayLength = 8;
+        const startPoint = new THREE.Vector3(xStart - rayLength * Math.sin(theta), rayLength - 4.5, 0);
         raycaster.set(startPoint, dirIn);
 
         const intersects = raycaster.intersectObjects(targets);
@@ -830,7 +900,7 @@
           normal.applyMatrix3(normalMatrix).normalize();
 
           // Draw incident ray (amber)
-          drawBeam(startPoint, hitPoint, 0xf59e0b, 0.06);
+          drawBeam(startPoint, hitPoint, 0xf59e0b, 0.08);
 
           // Draw normal (dashed slate)
           if (showNormals) {
@@ -840,10 +910,12 @@
 
           // Calculate reflected ray direction
           const dirRef = dirIn.clone().reflect(normal).normalize();
-          const endPoint = hitPoint.clone().add(dirRef.clone().multiplyScalar(12));
 
-          // Draw reflected ray (red)
-          drawBeam(hitPoint, endPoint, 0xef4444, 0.06);
+          // Skip rays that would enter the solid. They still obey i = r, but they are not the outgoing beam.
+          if (dirRef.y > 0.05) {
+            const endPoint = hitPoint.clone().add(dirRef.clone().multiplyScalar(rayLength));
+            drawBeam(hitPoint, endPoint, 0xef4444, 0.08);
+          }
 
           // Update angle card and overlay labels for Single Ray mode
           if (isSingleRayMode) {
@@ -894,19 +966,15 @@
         angleRValEl.textContent = angleR.toFixed(1) + "°";
         angleRBar.style.width = (angleR / 90 * 100) + "%";
         angleRValEl.className = "font-bold text-red-600";
-        
-        // Check if reflection is regular (surface flat) or diffuse
-        // If normal is very close to straight up (0, 1, 0), it's regular
-        const isFlat = Math.abs(lastNormal.x) < 0.02;
-        
+
+        lawBadge.textContent = t.obeyed;
+        lawBadge.className = "px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700";
+        const isFlat = lastNormal && lastNormal.y > 0.992;
         if (isFlat) {
-          lawBadge.textContent = t.obeyed;
-          lawBadge.className = "px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-700";
           angleErrorMsg.classList.add("hidden");
         } else {
-          lawBadge.textContent = t.disobeyed;
-          lawBadge.className = "px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-100 text-amber-700";
-          angleErrorMsg.textContent = t.angleR_invalid_desc;
+          angleErrorMsg.textContent = t.localLawNote;
+          angleErrorMsg.className = "text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-200 font-medium";
           angleErrorMsg.classList.remove("hidden");
         }
       } else {
@@ -916,7 +984,7 @@
         lawBadge.textContent = t.disobeyed;
         lawBadge.className = "px-2 py-0.5 text-[10px] font-bold rounded-full bg-red-100 text-red-700";
         angleErrorMsg.textContent = errorMsg || t.angleR_invalid_desc;
-        angleErrorMsg.classList.remove("hidden");
+        angleErrorMsg.className = "text-[11px] text-red-500 bg-red-50 p-2 rounded-lg border border-red-100 font-medium";
       }
     }
 
@@ -1003,6 +1071,7 @@
       const height = canvasContainer.clientHeight || window.innerHeight || 600;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       renderer.setSize(width, height);
     });
 
@@ -1027,73 +1096,38 @@
       updateRays();
     });
 
-    // 3. Ray Count Slider (Multi-Ray Mode)
-    sliderRayCount.addEventListener("input", (e) => {
-      rayCount = parseInt(e.target.value);
-      rayCountValEl.textContent = rayCount;
-      updateRays();
-    });
-
-    // 4. Ray Position Slider (Single-Ray Mode)
     sliderRayPos.addEventListener("input", (e) => {
       singleRayX = parseFloat(e.target.value);
       rayPosValEl.textContent = singleRayX.toFixed(1);
       updateRays();
     });
 
-    // 5. Ray Mode Toggle
     function setRayMode(singleMode) {
       isSingleRayMode = singleMode;
+      showNormals = singleMode;
+      chkShowNormals.checked = singleMode;
       if (isSingleRayMode) {
         btnModeSingle.className = "flex-1 py-1.5 text-center rounded-md bg-white text-slate-800 shadow-sm transition-all duration-150";
         btnModeMulti.className = "flex-1 py-1.5 text-center rounded-md text-slate-500 hover:text-slate-800 transition-all duration-150";
-        multiRayControls.classList.add("hidden");
         singleRayControls.classList.remove("hidden");
       } else {
         btnModeMulti.className = "flex-1 py-1.5 text-center rounded-md bg-white text-slate-800 shadow-sm transition-all duration-150";
         btnModeSingle.className = "flex-1 py-1.5 text-center rounded-md text-slate-500 hover:text-slate-800 transition-all duration-150";
         singleRayControls.classList.add("hidden");
-        multiRayControls.classList.remove("hidden");
       }
       updateRays();
     }
 
-    // 6. Checkboxes (Normals & Filling)
     chkShowNormals.addEventListener("change", (e) => {
       showNormals = e.target.checked;
       updateRays();
     });
 
-    chkShowFilling.addEventListener("change", (e) => {
-      showFilling = e.target.checked;
-      if (fillingGroup) fillingGroup.visible = showFilling;
-      updateRays();
-    });
-
-    // 7. Reset Camera
     function resetCamera() {
       if (camera && controls) {
-        camera.position.set(0, 8, 22);
-        controls.target.set(0, -4.5, 0);
+        camera.position.copy(CAMERA_HOME);
+        controls.target.copy(CAMERA_TARGET);
         controls.update();
-      }
-    }
-
-    // 8. Toggle Auto Rotate
-    function toggleAutoRotate() {
-      autoRotate = !autoRotate;
-      btnToggleRotate.classList.toggle("bg-blue-50", autoRotate);
-      btnToggleRotate.classList.toggle("text-blue-600", autoRotate);
-      btnToggleRotate.classList.toggle("border-blue-200", autoRotate);
-    }
-
-    // 9. Toggle Grid
-    function toggleGrid() {
-      if (gridHelper) {
-        gridHelper.visible = !gridHelper.visible;
-        btnToggleGrid.classList.toggle("bg-blue-50", gridHelper.visible);
-        btnToggleGrid.classList.toggle("text-blue-600", gridHelper.visible);
-        btnToggleGrid.classList.toggle("border-blue-200", gridHelper.visible);
       }
     }
 
@@ -1203,11 +1237,8 @@
     // Initialize Draggable Control Panel
     makeDraggable(controlPanel, panelHeader);
 
-    // --- On Load Initialization ---
-    window.onload = () => {
-      init3D();
-      syncLanguage();
-    };
+    init3D();
+    syncLanguage();
   </script>
 </body>
 </html>

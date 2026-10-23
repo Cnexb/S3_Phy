@@ -127,9 +127,9 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   const coreW = 3 + 2 * pulse;
   ctx.save();
   ctx.lineCap = 'round';
-  ctx.shadowColor = 'rgba(255,220,80,0.55)';
-  ctx.shadowBlur = 3 + 5 * pulse;
-  ctx.strokeStyle = `rgba(255,255,255,${0.2 + 0.25 * pulse})`;
+  ctx.shadowColor = 'rgba(141,110,63,0.28)';
+  ctx.shadowBlur = 2 + 3 * pulse;
+  ctx.strokeStyle = `rgba(247,245,241,${0.16 + 0.1 * pulse})`;
   ctx.lineWidth = glowW + 3;
   ctx.setLineDash([]);
   ctx.beginPath();
@@ -137,7 +137,7 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   ctx.lineTo(s1.x, s1.y);
   ctx.stroke();
   ctx.shadowBlur = 0;
-  ctx.strokeStyle = `rgba(255,204,0,${0.35 + 0.35 * pulse})`;
+  ctx.strokeStyle = `rgba(141,110,63,${0.28 + 0.18 * pulse})`;
   ctx.lineWidth = glowW;
   if (virtual) ctx.setLineDash([8, 6]);
   ctx.beginPath();
@@ -145,7 +145,7 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   ctx.lineTo(s1.x, s1.y);
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.strokeStyle = '#fff';
+  ctx.strokeStyle = '#efe6d4';
   ctx.lineWidth = coreW;
   if (virtual) ctx.setLineDash([6, 5]);
   ctx.beginPath();
@@ -154,11 +154,11 @@ function drawMirrorHighlight(ctx, txf, a, b, { virtual, pulse }) {
   ctx.stroke();
   ctx.setLineDash([]);
   const tipR = 4 + 2 * pulse;
-  ctx.fillStyle = `rgba(255,204,0,${0.35 + 0.35 * pulse})`;
+  ctx.fillStyle = `rgba(141,110,63,${0.28 + 0.18 * pulse})`;
   ctx.beginPath();
   ctx.arc(s1.x, s1.y, tipR, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = '#fff';
+  ctx.strokeStyle = '#efe6d4';
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.restore();
@@ -731,7 +731,7 @@ export function createAngledMirrorsScenario() {
     const s0 = { x: txf.ox + a.x * txf.pxPerM, y: txf.oy - a.y * txf.pxPerM };
     const s1 = { x: txf.ox + b.x * txf.pxPerM, y: txf.oy - b.y * txf.pxPerM };
     ctx.save();
-    ctx.strokeStyle = 'rgba(255,204,0,0.75)';
+    ctx.strokeStyle = 'rgba(141,110,63,0.55)';
     ctx.lineWidth = 2;
     ctx.setLineDash([6, 5]);
     ctx.beginPath();
@@ -894,7 +894,7 @@ export function createAngledMirrorsScenario() {
     };
     const ax0 = toScreen(txf, apexWorld);
     const ax1 = toScreen(txf, bisEnd);
-    ctx.strokeStyle = 'rgba(255,204,0,0.25)';
+    ctx.strokeStyle = 'rgba(141,110,63,0.2)';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 6]);
     ctx.beginPath();
@@ -906,7 +906,7 @@ export function createAngledMirrorsScenario() {
     drawMirror(ctx, view, txf, c.m1.a, c.m1.b, 'M₁');
     drawMirror(ctx, view, txf, c.m2.a, c.m2.b, 'M₂');
 
-    ctx.fillStyle = 'rgba(255,204,0,0.12)';
+    ctx.fillStyle = 'rgba(141,110,63,0.08)';
     ctx.beginPath();
     ctx.arc(ax0.x, ax0.y, 5, 0, Math.PI * 2);
     ctx.fill();
@@ -988,7 +988,7 @@ export function createAngledMirrorsScenario() {
 
     const angM1 = Math.atan2(-c.m1.b.y, c.m1.b.x);
     const angM2 = Math.atan2(-c.m2.b.y, c.m2.b.x);
-    ctx.strokeStyle = 'rgba(255,204,0,0.3)';
+    ctx.strokeStyle = 'rgba(141,110,63,0.22)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.arc(ax0.x, ax0.y, 40, angM2, angM1);
