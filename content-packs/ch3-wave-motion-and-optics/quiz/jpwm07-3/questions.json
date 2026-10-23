@@ -1,0 +1,50 @@
+{
+  "quizId": "phy-jpwm07-3",
+  "items": [
+    {
+      "id": "jpwm07-3-1",
+      "topic": "JPWM07",
+      "section": "JPWM07.2",
+      "difficulty": "Standard",
+      "stem": "A ray of light travels from air into glass. The refractive index of glass is $1.50$ and the angle of incidence is $40.0^\\circ$. What is the angle of refraction?",
+      "options": [
+        { "key": "A", "text": "$25.4^\\circ$" },
+        { "key": "B", "text": "$26.7^\\circ$" },
+        { "key": "C", "text": "$40.0^\\circ$" },
+        { "key": "D", "text": "$74.6^\\circ$" }
+      ],
+      "answer": "A",
+      "hint": "Using Snell's law, $1 \\times \\sin 40.0^\\circ = 1.50 \\times \\sin r$, so $\\sin r = \\sin 40.0^\\circ / 1.50 = 0.4285$ and $r = 25.4^\\circ$. Dividing the angle by $1.50$ gives $26.7^\\circ$. Leaving the angle unchanged gives $40.0^\\circ$. Swapping the indices gives $\\sin r = 1.50 \\times \\sin 40.0^\\circ$, so $r = 74.6^\\circ$."
+    },
+    {
+      "id": "jpwm07-3-2",
+      "topic": "JPWM07",
+      "section": "JPWM07.3",
+      "difficulty": "Standard",
+      "stem": "The speed of light in a liquid is $2.21 \\times 10^{8}\\ \\text{m s}^{-1}$. The speed of light in vacuum is $3.00 \\times 10^{8}\\ \\text{m s}^{-1}$. What is the refractive index of the liquid?",
+      "options": [
+        { "key": "A", "text": "$0.737$" },
+        { "key": "B", "text": "$1.36$" },
+        { "key": "C", "text": "$2.21$" },
+        { "key": "D", "text": "$3.00$" }
+      ],
+      "answer": "B",
+      "hint": "$n = \\dfrac{c}{v} = \\dfrac{3.00 \\times 10^{8}\\ \\text{m s}^{-1}}{2.21 \\times 10^{8}\\ \\text{m s}^{-1}} = 1.36$, to 3 significant figures. Option A is $\\dfrac{v}{c}$."
+    },
+    {
+      "id": "jpwm07-3-3",
+      "topic": "JPWM07",
+      "section": "JPWM07.5",
+      "difficulty": "Standard",
+      "stem": "A coin lies at the bottom of a tank of liquid. Its real depth is $12.0\\ \\text{cm}$. Viewed from directly above in air, its apparent depth is $8.00\\ \\text{cm}$. What is the refractive index of the liquid?",
+      "options": [
+        { "key": "A", "text": "$0.667$" },
+        { "key": "B", "text": "$1.50$" },
+        { "key": "C", "text": "$4.00$" },
+        { "key": "D", "text": "$20.0$" }
+      ],
+      "answer": "B",
+      "hint": "$n = \\dfrac{\\text{real depth}}{\\text{apparent depth}} = \\dfrac{12.0\\ \\text{cm}}{8.00\\ \\text{cm}} = 1.50$. Option A is the reciprocal. Option C is the difference of the depths in centimetres. Option D is their sum."
+    }
+  ]
+}
